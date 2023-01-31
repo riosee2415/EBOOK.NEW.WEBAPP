@@ -1,0 +1,31 @@
+const DataTypes = require("sequelize");
+const { Model } = DataTypes;
+
+module.exports = class SnsInfoHistory extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        content: {
+          type: DataTypes.STRING(300),
+          allowNull: false, // 필수
+        },
+        name: {
+          type: DataTypes.STRING(300),
+          allowNull: false, // 필수
+        },
+        updator: {
+          type: DataTypes.INTEGER,
+          allowNull: true, // 필수
+        },
+      },
+      {
+        modelName: "SnsInfoHistory",
+        tableName: "snsInfoHistory",
+        charset: "utf8mb4",
+        collate: "utf8mb4_general_ci", // 한글 저장
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {}
+};
