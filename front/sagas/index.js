@@ -10,6 +10,8 @@ import acceptSaga from "./accept";
 import editSaga from "./editor";
 import logoSaga from "./logo";
 import faqSaga from "./faq";
+import lectureSaga from "./lecture";
+import mediaSaga from "./media";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -30,6 +32,8 @@ export default function* rootSaga() {
     fork(editSaga),
     fork(logoSaga),
     fork(faqSaga),
+    fork(lectureSaga),
+    fork(mediaSaga),
     //
   ]);
 }

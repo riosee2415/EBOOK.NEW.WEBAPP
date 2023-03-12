@@ -7,18 +7,18 @@ module.exports = () => {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: "email",
+        usernameField: "userId",
         passwordField: "password",
       },
-      async (email, password, done) => {
+      async (userId, password, done) => {
         try {
           const user = await User.findOne({
-            where: { email },
+            where: { userId },
           });
 
           if (!user) {
             return done(null, false, {
-              reason: "존재하지 않는 이메일 입니다.",
+              reason: "존재하지 않는 아이디 입니다.",
             });
           }
 

@@ -6,8 +6,8 @@ module.exports = class User extends Model {
     return super.init(
       {
         // id가 기본적으로 들어있다.
-        email: {
-          type: DataTypes.STRING(60), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+        userId: {
+          type: DataTypes.STRING(30),
           allowNull: false, // 필수
           unique: true, // 고유한 값
         },
@@ -15,25 +15,63 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(30), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: false, // 필수
         },
-        nickname: {
-          type: DataTypes.STRING(30),
-          allowNull: false, // 필수
-          unique: true, // 고유한 값
-        },
-        mobile: {
-          type: DataTypes.STRING(30),
-          allowNull: false, // 필수
-        },
+
         password: {
           type: DataTypes.STRING(100),
           allowNull: false, // 필수
         },
+
+        birth: {
+          type: DataTypes.STRING(50),
+          allowNull: false, // 필수
+        },
+        gender: {
+          type: DataTypes.STRING(20),
+          defaultValue: "-",
+          allowNull: false, // 필수
+        },
+
+        zoneCode: {
+          type: DataTypes.STRING(300),
+          defaultValue: "-",
+          allowNull: false, // 필수
+        },
+
+        address: {
+          type: DataTypes.STRING(300),
+          defaultValue: "-",
+          allowNull: false, // 필수
+        },
+
+        detailAddress: {
+          type: DataTypes.STRING(300),
+          defaultValue: "-",
+          allowNull: false, // 필수
+        },
+
+        tel: {
+          type: DataTypes.STRING(30),
+          defaultValue: "-",
+          allowNull: true, // 필수
+        },
+        mobile: {
+          type: DataTypes.STRING(30),
+          defaultValue: "-",
+          allowNull: true, // 필수
+        },
+        email: {
+          type: DataTypes.STRING(60), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+          allowNull: false, // 필수
+          defaultValue: "-",
+        },
+
         level: {
           // 사용자 권한 [1 : 일반회원, 2 : 비어있음, 3: 운영자, 4: 최고관리자, 5: 개발사]
           type: DataTypes.INTEGER,
           allowNull: false, //
           defaultValue: 1,
         },
+
         secret: {
           type: DataTypes.STRING(10),
           allowNull: true,
@@ -114,6 +152,42 @@ module.exports = class User extends Model {
           type: DataTypes.DATE,
           allowNull: true,
         },
+
+        isAgreement1: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+
+        isAgreement2: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+
+        isAgreement3: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+
+        isAgreement4: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+
+        userTypeAd: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 1,
+        },
+
+        adType: {
+          type: DataTypes.STRING(10),
+          allowNull: false,
+          defaultValue: "1",
+        },
       },
       {
         modelName: "User",
@@ -124,7 +198,5 @@ module.exports = class User extends Model {
       }
     );
   }
-  static associate(db) {
-    db.User.hasMany(db.Question);
-  }
+  static associate(db) {}
 };

@@ -1,0 +1,50 @@
+const DataTypes = require("sequelize");
+const { Model } = DataTypes;
+
+// 강의구매
+module.exports = class Media extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        title: {
+          type: DataTypes.STRING(300),
+          allowNull: false,
+        },
+        mediaOriginName: {
+          type: DataTypes.STRING(300),
+          allowNull: false,
+        },
+        mediaPath: {
+          type: DataTypes.STRING(700),
+          allowNull: false,
+        },
+        duration: {
+          type: DataTypes.STRING(300),
+          defaultValue: "0",
+          allowNull: false,
+        },
+        sort: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        isDelete: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
+        deletedAt: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        modelName: "Media",
+        tableName: "media",
+        charset: "utf8mb4",
+        collate: "utf8mb4_general_ci", // 한글 저장
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {}
+};

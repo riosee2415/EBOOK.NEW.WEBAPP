@@ -12,17 +12,18 @@ import {
 import styled from "styled-components";
 import Theme from "./Theme";
 import { AlignRightOutlined } from "@ant-design/icons";
-import { Drawer } from "antd";
+import { Drawer, message } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { useRouter } from "next/router";
+import useWidth from "../hooks/useWidth";
+import { LOAD_MY_INFO_REQUEST, LOGOUT_REQUEST } from "../reducers/user";
 
 const MobileRow = styled(RowWrapper)`
   display: none;
 
   background: transparent;
-  position: fixed;
   top: 0;
   left: 0;
   z-index: 10000;
@@ -34,57 +35,40 @@ const MobileRow = styled(RowWrapper)`
     backdrop-filter: blur(3px);
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 1100px) {
     display: flex;
-  }
-`;
-
-const SubMenu = styled(Wrapper)`
-  width: 140px;
-  position: absolute;
-  top: 90px;
-  left: 0;
-  background: ${(props) => props.theme.white_C};
-  padding: 30px 0;
-  opacity: 0;
-  visibility: hidden;
-
-  & ${Text} {
-    margin-bottom: 16px;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  & ${Text}:last-child {
-    margin-bottom: 0;
   }
 `;
 
 const Menu = styled.h2`
   height: 90px;
   line-height: 90px;
-  font-size: 18px;
-  font-weight: bold;
-  color: ${Theme.white_C};
-  width: 140px;
+  font-size: 23px;
+  font-weight: 600;
+  /* color: ${Theme.white_C}; */
   text-align: center;
   position: relative;
-  margin: 0;
+  margin: 0 42px;
 
   border-bottom: ${(props) =>
     props.isActive && `3px solid ${props.theme.white_C}`};
 
+  cursor: pointer;
   &:hover {
-    cursor: pointer;
-    border-bottom: 3px solid ${Theme.white_C};
-    transition: 0.4s;
+    color: ${(props) => props.theme.basicTheme_C};
+    /* border-bottom: 3px solid ${Theme.white_C};
+    transition: 0.4s; */
+  }
+`;
 
-    & ${SubMenu} {
-      opacity: 1;
-      visibility: visible;
-    }
+const HoverText = styled(Text)`
+  padding: 6px 14px;
+  color: ${(props) => props.theme.grey3_C};
+  font-size: 20px;
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
   }
 `;
 
@@ -92,6 +76,7 @@ const AppHeader = ({}) => {
   ////////////// - USE STATE- ///////////////
   const router = useRouter();
   const dispatch = useDispatch();
+  const width = useWidth();
 
   const [headerScroll, setHeaderScroll] = useState(false);
   const [pageY, setPageY] = useState(0);
@@ -101,6 +86,9 @@ const AppHeader = ({}) => {
   const [subMenu, setSubMenu] = useState(``);
 
   const { logos } = useSelector((state) => state.logo);
+  const { me, st_logoutDone, st_logoutError } = useSelector(
+    (state) => state.user
+  );
 
   ///////////// - EVENT HANDLER- ////////////
 
@@ -116,6 +104,12 @@ const AppHeader = ({}) => {
     setPageY(pageYOffset);
   });
 
+  const logoutHandler = useCallback(() => {
+    dispatch({
+      type: LOGOUT_REQUEST,
+    });
+  }, []);
+
   ////////////// - USE EFFECT- //////////////
   useEffect(() => {
     document.addEventListener("scroll", handleScroll);
@@ -126,95 +120,87 @@ const AppHeader = ({}) => {
     dispatch({
       type: LOGO_GET_REQUEST,
     });
-  }, []);
+  }, [router.query]);
+
+  useEffect(() => {
+    if (st_logoutDone) {
+      dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+      return message.success("로그아웃 되었습니다.");
+    }
+
+    if (st_logoutError) {
+      return message.error(st_logoutError);
+    }
+  }, [st_logoutDone, st_logoutError]);
+
   return (
     <>
       <WholeWrapper
-        position={`fixed`}
+        display={width < 1100 && "none"}
+        // position={`fixed`}
         top={`0`}
         left={`0`}
         zIndex={`99`}
-        bgColor={headerScroll === true && Theme.black_C}
+        // bgColor={headerScroll === true && Theme.black_C}
       >
         <RsWrapper dr={`row`} ju={`space-between`}>
-          <ATag href="/" width={`155px`}>
+          <ATag href="/" width={`210px`}>
             {logos && logos.find((data) => data.typeOf === "H") && (
               <Image
-                width={`155px`}
+                width={`100%`}
                 src={logos.find((data) => data.typeOf === "H").imageURL}
                 alt="logo"
               />
             )}
           </ATag>
           <Wrapper dr={`row`} width={`auto`}>
-            <Menu isActive={router.pathname.includes(`/company`)}>
-              회사소개
-              <SubMenu>
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/intro`}>
-                    <a>회사개요</a>
-                  </Link>
-                </Text>
-
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/area`}>
-                    <a>사업영역</a>
-                  </Link>
-                </Text>
-
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/tree`}>
-                    <a>연혁</a>
-                  </Link>
-                </Text>
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/vision`}>
-                    <a>비전 및 핵심가치</a>
-                  </Link>
-                </Text>
-              </SubMenu>
-            </Menu>
             <Link href={`/finance`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>재무정보</Menu>
+                <Menu isActive={router.pathname === `/finance`}>수강신청</Menu>
+              </a>
+            </Link>
+            <Link href={`/finance`}>
+              <a>
+                <Menu isActive={router.pathname === `/finance`}>커리큘럼</Menu>
               </a>
             </Link>
             <Link href={`/develop`}>
               <a>
-                <Menu isActive={router.pathname === `/develop`}>연구개발</Menu>
+                <Menu isActive={router.pathname === `/develop`}>수강후기</Menu>
               </a>
             </Link>
             <Link href={`/info`}>
               <a>
-                <Menu isActive={router.pathname === `/info`}>사업장 정보</Menu>
+                <Menu isActive={router.pathname === `/info`}>고객센터</Menu>
               </a>
             </Link>
           </Wrapper>
-          <Wrapper width={`155px`}></Wrapper>
+          {me ? (
+            <Wrapper width={`auto`} dr={`row`}>
+              <Link href={`/user/login`}>
+                <a>
+                  <HoverText>마이페이지</HoverText>
+                </a>
+              </Link>
+
+              <HoverText onClick={logoutHandler}>로그아웃</HoverText>
+            </Wrapper>
+          ) : (
+            <Wrapper width={`auto`} dr={`row`}>
+              <Link href={`/user/login`}>
+                <a>
+                  <HoverText>로그인</HoverText>
+                </a>
+              </Link>
+              <Link href={`/user/signup`}>
+                <a>
+                  <HoverText>회원가입</HoverText>
+                </a>
+              </Link>
+            </Wrapper>
+          )}
         </RsWrapper>
       </WholeWrapper>
 
@@ -231,12 +217,7 @@ const AppHeader = ({}) => {
             )}
           </ATag>
         </ColWrapper>
-        <ColWrapper
-          span={11}
-          al={`flex-end`}
-          fontSize={`2rem`}
-          color={Theme.white_C}
-        >
+        <ColWrapper span={11} al={`flex-end`} fontSize={`2rem`}>
           <AlignRightOutlined onClick={drawarToggle} />
         </ColWrapper>
 
@@ -247,7 +228,40 @@ const AppHeader = ({}) => {
             onClose={drawarToggle}
             visible={drawarToggle}
             getContainer={false}
-          ></Drawer>
+          >
+            <Wrapper width={`auto`} dr={`row`} margin={`20px 0 0`}>
+              <Link href={`/info`}>
+                <a>
+                  <HoverText>로그인</HoverText>
+                </a>
+              </Link>
+              <Link href={`/info`}>
+                <a>
+                  <HoverText>회원가입</HoverText>
+                </a>
+              </Link>
+            </Wrapper>
+            <Link href={`/finance`}>
+              <a>
+                <Menu isActive={router.pathname === `/finance`}>수강신청</Menu>
+              </a>
+            </Link>
+            <Link href={`/finance`}>
+              <a>
+                <Menu isActive={router.pathname === `/finance`}>커리큘럼</Menu>
+              </a>
+            </Link>
+            <Link href={`/develop`}>
+              <a>
+                <Menu isActive={router.pathname === `/develop`}>수강후기</Menu>
+              </a>
+            </Link>
+            <Link href={`/info`}>
+              <a>
+                <Menu isActive={router.pathname === `/info`}>고객센터</Menu>
+              </a>
+            </Link>
+          </Drawer>
         )}
       </MobileRow>
     </>

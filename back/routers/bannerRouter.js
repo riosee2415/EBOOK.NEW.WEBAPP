@@ -60,72 +60,16 @@ const upload = multer({
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.post("/list", async (req, res, next) => {
-  const selectQ = `
-  SELECT	A.id,
-          A.title,
-          A.titleUseYn ,
-          A.content ,
-          A.contentUseYn ,
-          A.imageURL ,
-          A.sort,
-          A.link,
-          A.linkUseYn,
-          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")	AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt , "%Y년 %m월 %d일")	AS updatedAt,
-          B.username,
-          ROW_NUMBER() OVER(ORDER BY A.sort) AS num
-    FROM	mainBanners A 
-   INNER
-    JOIN	users		B
-      ON	A.updator  = B.id
-   ORDER  BY  sort  ASC
-  `;
-
-  try {
-    const result = await models.sequelize.query(selectQ);
-
-    return res.status(200).json(result[0]);
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(403)
-      .send("데이터를 가져올 수 없습니다. 개발사에 문의해주세요.");
-  }
-});
-
-router.post("/sort/update", isAdminCheck, async (req, res, next) => {
-  const { id, title, nextFlag } = req.body;
-
-  const updateQ = `
-    UPDATE  mainBanners
-       SET  sort = ${nextFlag},
-            updator = ${req.user.id},
-            updatedAt = now()
-     WHERE  id = ${id}
-  `;
-
-  const insertQuery2 = `
-  INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
-  (
-    "우선순위 변경",
-    "${title}",
-    ${req.user.id},
-    now(),
-    now()
-  )
-  `;
-
-  try {
-    await models.sequelize.query(updateQ);
-    await models.sequelize.query(insertQuery2);
-
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("메인베너 우선순위를 변경할 수 없습니다.");
-  }
-});
+// const insertQuery2 = `
+// INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES
+// (
+//   "우선순위 변경",
+//   "${title}",
+//   ${req.user.id},
+//   now(),
+//   now()
+// )
+// `;
 
 router.post(
   "/image",
@@ -136,187 +80,73 @@ router.post(
   }
 );
 
-router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, title, content, link } = req.body;
+router.post("/list", async (req, res, next) => {
+  const { type } = req.body;
 
-  const updateQ = `
-  UPDATE  mainBanners
-     SET  title = "${title}",
-          content = "${content}",
-          link = "${link}",
-          updatedAt = now(),
-          updator = ${req.user.id}
-   WHERE  id = ${id}
-  `;
+  const _type = type ? parseInt(type) : null;
 
-  const insertQuery2 = `
-  INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
-  (
-    "기본정보 변경",
-    "${title}",
-    ${req.user.id},
-    now(),
-    now()
-  )
-  `;
-
-  try {
-    await models.sequelize.query(updateQ);
-    await models.sequelize.query(insertQuery2);
-
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("메인베너의 기본정보를 변경할 수 없습니다.");
-  }
-});
-
-router.post("/imageUpdate", isAdminCheck, async (req, res, next) => {
-  const { id, imageURL, title } = req.body;
-
-  const updateQ = `
-  UPDATE  mainBanners
-     SET  imageURL = "${imageURL}",
-          updatedAt = now(),
-          updator = ${req.user.id}
-   WHERE  id = ${id}
-  `;
-
-  const insertQuery2 = `
-  INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
-  (
-    "이미지 변경",
-    "${title}",
-    ${req.user.id},
-    now(),
-    now()
-  )
+  const selectQ = `
+  SELECT  ROW_NUMBER() OVER(ORDER BY sort ASC)		AS num,
+          id,
+          type,
+          CASE
+            WHEN type = 1 THEN '메인'
+            WHEN type = 2 THEN '큐레이션'
+            WHEN type = 3 THEN '수강후기'
+            WHEN type = 4 THEN '고객센터'
+          END                                     AS viewType,
+          sort,
+          imagePath,
+          mobileImagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일") AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일") AS viewUpdatedAt
+    FROM  banner
+   WHERE  1 = 1
+          ${_type ? `AND  type = ${_type}` : ``}
+   ORDER  BY  sort ASC 
   `;
 
   try {
-    await models.sequelize.query(updateQ);
-    await models.sequelize.query(insertQuery2);
+    const list = await models.sequelize.query(selectQ);
 
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("메인베너의 이미지를 변경할 수 없습니다.");
+    return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("베너를 불러올 수 없습니다.");
   }
 });
 
 router.post("/create", isAdminCheck, async (req, res, next) => {
-  const { title, content, imagePath } = req.body;
+  const { type } = req.body;
 
-  try {
-    const createResult = await MainBanner.create({
-      title,
-      content,
-      imagePath,
-    });
+  const typeArr = [
+    { type: 1, name: "메인" },
+    { type: 2, name: "큐레이션" },
+    { type: 3, name: "수강후기" },
+    { type: 4, name: "고객센터" },
+  ];
 
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(401)
-      .send(
-        "새로운 메인베너 생성에 실패했습니다. 개발사에 문의해주세요. [CODE 0002]"
-      );
-  }
-});
-
-router.post("/delete", isAdminCheck, async (req, res, next) => {
-  const { id, title } = req.body;
-
-  try {
-    const deleteQ = `
-      DELETE  FROM mainBanners
-       WHERE  id = ${id}
-    `;
-
-    const insertQuery2 = `
-    INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
-    (
-      "데이터 삭제",
-      "${title}",
-      ${req.user.id},
-      now(),
-      now()
-    )
-  `;
-
-    await models.sequelize.query(deleteQ);
-    await models.sequelize.query(insertQuery2);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(403).send("[서버장애 발생] 개발사에 문의해주세요.");
-  }
-});
-
-router.post("/updateUseYn", isAdminCheck, async (req, res, next) => {
-  const { id, title, nextFlag, type } = req.body;
-
-  let updateQ = `
-    UPDATE  mainBanners
-       SET  updator = ${req.user.id},
-            updatedAt = now()    
-  `;
-
-  switch (parseInt(type)) {
-    case 1: // 이미지 명칭 뷰
-      updateQ += `, titleUseYn = ${nextFlag}
-                WHERE  id = ${id}`;
-      break;
-
-    case 2: // 텍스트 뷰
-      updateQ += `, contentUseYn = ${nextFlag}
-                WHERE  id = ${id}`;
-      break;
-
-    case 3: // 링크사용여부
-      updateQ += `, linkUseYn = ${nextFlag}
-                WHERE  id = ${id}`;
-      break;
-
-    default:
-      break;
-  }
-
-  const insertQuery2 = `
-  INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
+  const insertQ = `
+  INSERT  INTO  banner
   (
-    "사용여부 변경",
-    "${title}",
-    ${req.user.id},
-    now(),
-    now()
+    type,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    ${type},
+    NOW(),
+    NOW()
   )
   `;
 
-  try {
-    await models.sequelize.query(updateQ);
-    await models.sequelize.query(insertQuery2);
-
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("메인베너의 사용여부를 변경할 수 없습니다.");
-  }
-});
-
-router.post("/fastCreate", isAdminCheck, async (req, res, next) => {
-  const insertQ = `
-    INSERT INTO mainBanners (title, imageURL, updator, createdAt, updatedAt) VALUES
-    ("New Banner", "https://via.placeholder.com/1000x300?text=please%20upload%20your%20image", ${req.user.id}, now(), now())
-  `;
-
-  const insertQuery2 = `
-  INSERT INTO mainBannerHistory (content, title, updator, createdAt, updatedAt) VALUES 
+  const insertQ2 = `
+  INSERT INTO bannerHistory (content, updator, createdAt, updatedAt) VALUES
   (
-    "데이터 생성",
-    "$New Banner",
+    "${typeArr.find((data) => data.type === type).name}유형 베너 생성",
     ${req.user.id},
     now(),
     now()
@@ -325,46 +155,125 @@ router.post("/fastCreate", isAdminCheck, async (req, res, next) => {
 
   try {
     await models.sequelize.query(insertQ);
-    await models.sequelize.query(insertQuery2);
+    await models.sequelize.query(insertQ2);
 
-    return res.status(201).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("새로운 배너를 생성할 수 없습니다.");
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("베너를 생성할 수 없습니다.");
   }
 });
 
-router.post("/history/list", isAdminCheck, async (req, res, next) => {
-  const { datePick } = req.body;
+router.post("/update", isAdminCheck, async (req, res, next) => {
+  const { id, type, imagePath, mobileImagePath } = req.body;
 
-  const _datePick = datePick ? datePick : null;
+  const typeArr = [
+    { type: 1, name: "메인" },
+    { type: 2, name: "큐레이션" },
+    { type: 3, name: "수강후기" },
+    { type: 4, name: "고객센터" },
+  ];
 
-  const selectQuery = `
-    SELECT 	A.id,
-            A.content,
-            A.title,
-            B.username,
-            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일 %H:%i:%s")	AS  createdAt
-      FROM 	mainBannerHistory		A
-     INNER
-      JOIN	users 			B
-        ON	A.updator = B.id
-     WHERE  1=1
-      ${
-        _datePick
-          ? `AND  DATE_FORMAT(A.createdAt, "%Y%m%d") = DATE_FORMAT("${datePick}", "%Y%m%d")`
-          : ""
-      }
-     ORDER  BY  A.createdAt  DESC
-    `;
+  const updateQ = `
+  UPDATE  banner
+     SET  type = ${type},
+          imagePath = '${imagePath}',
+          mobileImagePath = '${mobileImagePath}'
+   WHERE  id = ${id}
+  `;
+
+  const updateQ2 = `
+  INSERT INTO bannerHistory (content, updator, createdAt, updatedAt) VALUES
+  (
+    "${typeArr.find((data) => data.type === type).name}유형 베너 수정",
+    ${req.user.id},
+    now(),
+    now()
+  )
+  `;
 
   try {
-    const result = await models.sequelize.query(selectQuery);
+    await models.sequelize.query(updateQ);
+    await models.sequelize.query(updateQ2);
 
-    return res.status(200).json(result[0]);
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send("데이터를 불러올 수 없습니다.");
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("베너를 수정할 수 없습니다.");
+  }
+});
+
+router.post("/sort/update", isAdminCheck, async (req, res, next) => {
+  const { id, type, sort } = req.body;
+
+  const typeArr = [
+    { type: 1, name: "메인" },
+    { type: 2, name: "큐레이션" },
+    { type: 3, name: "수강후기" },
+    { type: 4, name: "고객센터" },
+  ];
+
+  const updateQ = `
+  UPDATE  banner
+     SET  sort = ${sort}
+   WHERE  id = ${id}
+  `;
+
+  const updateQ2 = `
+  INSERT INTO bannerHistory (content, updator, createdAt, updatedAt) VALUES
+  (
+    "${typeArr.find((data) => data.type === type).name}유형 베너 순서 변경",
+    ${req.user.id},
+    now(),
+    now()
+  )
+  `;
+
+  try {
+    await models.sequelize.query(updateQ);
+    await models.sequelize.query(updateQ2);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("베너를 삭제할 수 없습니다.");
+  }
+});
+
+router.post("/delete", isAdminCheck, async (req, res, next) => {
+  const { id, type } = req.body;
+
+  const typeArr = [
+    { type: 1, name: "메인" },
+    { type: 2, name: "큐레이션" },
+    { type: 3, name: "수강후기" },
+    { type: 4, name: "고객센터" },
+  ];
+
+  const deleteQ = `
+  DELETE 
+    FROM banner 
+   WHERE id = ${id}
+  `;
+
+  const deleteQ2 = `
+  INSERT INTO bannerHistory (content, updator, createdAt, updatedAt) VALUES
+  (
+    "${typeArr.find((data) => data.type === type).name}유형 베너 삭제",
+    ${req.user.id},
+    now(),
+    now()
+  )
+  `;
+
+  try {
+    await models.sequelize.query(deleteQ);
+    await models.sequelize.query(deleteQ2);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("베너를 삭제할 수 없습니다.");
   }
 });
 

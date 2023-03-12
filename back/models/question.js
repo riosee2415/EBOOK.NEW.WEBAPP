@@ -39,6 +39,5 @@ module.exports = class Question extends Model {
   }
   static associate(db) {
     db.Question.belongsTo(db.QuestionType);
-    db.Question.belongsTo(db.User);
   }
 };

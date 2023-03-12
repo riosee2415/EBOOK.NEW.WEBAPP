@@ -17,6 +17,10 @@ import {
   USERLIST_SUCCESS,
   USERLIST_FAILURE,
   /////////////////////////////
+  USER_FIND_USERID_REQUEST,
+  USER_FIND_USERID_SUCCESS,
+  USER_FIND_USERID_FAILURE,
+  /////////////////////////////
   USERLIST_UPDATE_REQUEST,
   USERLIST_UPDATE_SUCCESS,
   USERLIST_UPDATE_FAILURE,
@@ -52,6 +56,11 @@ import {
   ADMINUSER_EXITFALSE_REQUEST,
   ADMINUSER_EXITFALSE_SUCCESS,
   ADMINUSER_EXITFALSE_FAILURE,
+  /////////////////////////////
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -175,6 +184,32 @@ function* userList(action) {
     console.error(err);
     yield put({
       type: USERLIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function findUserIdAPI(data) {
+  return await axios.post(`/api/user/find/userid`, data);
+}
+
+function* findUserId(action) {
+  try {
+    const result = yield call(findUserIdAPI, action.data);
+    yield put({
+      type: USER_FIND_USERID_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_FIND_USERID_FAILURE,
       error: err.response.data,
     });
   }
@@ -400,6 +435,33 @@ function* adminUserExitFalse(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function logoutAPI() {
+  return await axios.get(`/api/user/logout`);
+}
+
+function* logout(action) {
+  try {
+    const result = yield call(logoutAPI, action.data);
+
+    yield put({
+      type: LOGOUT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOGOUT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -420,6 +482,10 @@ function* watchSignUp() {
 
 function* watchUserList() {
   yield takeLatest(USERLIST_REQUEST, userList);
+}
+
+function* watchFindUserId() {
+  yield takeLatest(USER_FIND_USERID_REQUEST, findUserId);
 }
 
 function* watchUserListUpdate() {
@@ -454,6 +520,10 @@ function* watchAdminUserExitFalse() {
   yield takeLatest(ADMINUSER_EXITFALSE_REQUEST, adminUserExitFalse);
 }
 
+function* watchLogout() {
+  yield takeLatest(LOGOUT_REQUEST, logout);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -462,6 +532,7 @@ export default function* userSaga() {
     fork(watchSigninAdmin),
     fork(watchSignUp),
     fork(watchUserList),
+    fork(watchFindUserId),
     fork(watchUserListUpdate),
     fork(watchKakaoLogin),
     fork(watchUserHistory),
@@ -470,6 +541,7 @@ export default function* userSaga() {
     fork(watchAdminUserRightHistoryList),
     fork(watchAdminUserExitTrue),
     fork(watchAdminUserExitFalse),
+    fork(watchLogout),
     //
   ]);
 }

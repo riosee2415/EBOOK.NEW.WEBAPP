@@ -12,11 +12,15 @@ import Theme from "../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../components/popup/popup";
-import Mainslider from "../components/slide/MainSlider";
-import CC02 from "../components/common/CC02";
+import { BANNER_LIST_REQUEST } from "../reducers/banner";
+// import Mainslider from "../components/slide/MainSlider";
+// import CC02 from "../components/common/CC02";
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
+  const { bannerList } = useSelector((state) => state.banner);
+
+  console.log(bannerList);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -38,8 +42,20 @@ const Home = ({}) => {
 
       <ClientLayout>
         <WholeWrapper>
-          <Mainslider />
-          <CC02 />
+          {/* <Mainslider />
+          <CC02 /> */}
+
+          {bannerList &&
+            bannerList.map((data) => {
+              return (
+                <Image
+                  width={`100%`}
+                  height={`auto`}
+                  src={width < 700 ? data.mobileImagePath : data.imagePath}
+                  alt="bannerImage"
+                />
+              );
+            })}
 
           <Popup />
         </WholeWrapper>
@@ -61,6 +77,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BANNER_LIST_REQUEST,
+      data: {
+        type: 1,
+      },
     });
 
     // 구현부 종료

@@ -24,7 +24,7 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           id,
           email,
           username,
-          nickname,
+          
           mobile,
           level,
           isExit,
@@ -315,7 +315,6 @@ router.get("/signin", async (req, res, next) => {
         where: { id: req.user.id },
         attributes: [
           "id",
-          "nickname",
           "email",
           "level",
           "menuRight1",
@@ -368,7 +367,6 @@ router.post("/signin", (req, res, next) => {
         where: { id: user.id },
         attributes: [
           "id",
-          "nickname",
           "email",
           "level",
           "username",
@@ -419,7 +417,6 @@ router.post("/signin/admin", (req, res, next) => {
         where: { id: user.id },
         attributes: [
           "id",
-          "nickname",
           "email",
           "level",
           "username",
@@ -444,7 +441,19 @@ router.post("/signin/admin", (req, res, next) => {
 });
 
 router.post("/signup", async (req, res, next) => {
-  const { email, username, nickname, mobile, password, terms } = req.body;
+  const {
+    userId,
+    username,
+    password,
+    birth,
+    gender,
+    zoneCode,
+    address,
+    detailAddress,
+    email,
+    mobile,
+    terms,
+  } = req.body;
 
   if (!terms) {
     return res.status(401).send("이용약관에 동의해주세요.");
@@ -452,28 +461,79 @@ router.post("/signup", async (req, res, next) => {
 
   try {
     const exUser = await User.findOne({
-      where: { email: email },
+      where: { userId: userId },
     });
 
     if (exUser) {
-      return res.status(401).send("이미 가입된 이메일 입니다.");
+      return res.status(401).send("이미 가입된 회원 입니다.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const result = await User.create({
-      email,
+    const insertQ = `
+    INSERT INTO users 
+    (
+      userId,
       username,
-      nickname,
+      password,
+      birth,
+      gender,
+      zoneCode,
+      address,
+      detailAddress,
+      email,
       mobile,
       terms,
-      password: hashedPassword,
-    });
+      createdAt,
+      updatedAt
+    )
+    VALUES
+    (
+      "${userId}",
+      "${username}",
+      "${hashedPassword}",
+      ${birth ? `"${birth}"` : `"-"`},
+      ${gender ? `"${gender}"` : `"-"`},
+      ${zoneCode ? `"${zoneCode}"` : `"-"`},
+      ${address ? `"${address}"` : `"-"`},
+      ${detailAddress ? `"${detailAddress}"` : `"-"`},
+      "${email}",
+      "${mobile}",
+      ${terms},
+      NOW(),
+      NOW()
+    )
+    `;
 
-    res.status(201).send("SUCCESS");
+    await models.sequelize.query(insertQ);
+
+    return res.status(201).send("SUCCESS");
   } catch (error) {
     console.error(error);
     next(error);
+  }
+});
+
+router.post("/find/userid", async (req, res, next) => {
+  const { userId } = req.body;
+
+  const selectQ = `
+  SELECT  id
+    FROM  users
+   WHERE  userId = "${userId}"
+  `;
+
+  try {
+    const find = await models.sequelize.query(selectQ);
+
+    if (find[0].length > 0) {
+      return res.status(400).send("중복된 아이디가 있습니다.");
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("중복확인을 할 수 없습니다.");
   }
 });
 
@@ -487,7 +547,7 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/me/update", isLoggedIn, async (req, res, next) => {
-  const { id, nickname, mobile } = req.body;
+  const { id, mobile } = req.body;
 
   try {
     const exUser = await User.findOne({ where: { id: parseInt(id) } });
@@ -497,7 +557,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
     }
 
     const updateUser = await User.update(
-      { nickname, mobile },
+      { mobile },
       {
         where: { id: parseInt(id) },
       }
@@ -511,12 +571,11 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/findemail", async (req, res, next) => {
-  const { nickname, mobile } = req.body;
+  const { mobile } = req.body;
 
   try {
     const exUser = await User.findOne({
       where: {
-        nickname,
         mobile,
       },
     });
@@ -533,7 +592,7 @@ router.post("/findemail", async (req, res, next) => {
 });
 
 router.post("/modifypass", isLoggedIn, async (req, res, next) => {
-  const { email, nickname, mobile } = req.body;
+  const { email, mobile } = req.body;
 
   try {
     const cookieEmail = req.user.dataValues.email;
@@ -761,6 +820,14 @@ router.post("/exit/update/false", isAdminCheck, async (req, res, next) => {
     console.error(error);
     return res.status(400).send("요청을 처리할 수 없습니다.");
   }
+});
+
+router.get("/logout", function (req, res) {
+  req.logout();
+  req.session.save(() => {
+    res.clearCookie("connect.sid");
+    res.redirect("/");
+  });
 });
 
 module.exports = router;

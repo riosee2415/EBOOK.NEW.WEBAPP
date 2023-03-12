@@ -54,13 +54,25 @@ export const items = {
   ],
   배너관리: [
     {
-      name: "메인배너관리",
-      link: "/admin/banner/mainbanner",
+      name: "팝업관리",
+      link: "/admin/banner/popup",
+      useYn: false,
+    },
+    {
+      name: "베너관리",
+      link: "/admin/banner/banner",
+      useYn: true,
+    },
+  ],
+  강의관리: [
+    {
+      name: "강의상품관리",
+      link: "/admin/lecture/list",
       useYn: true,
     },
     {
-      name: "팝업관리",
-      link: "/admin/banner/popup",
+      name: "강의영상관리",
+      link: "/admin/lecture/media",
       useYn: true,
     },
   ],
@@ -142,7 +154,6 @@ export const items = {
       useYn: true,
     },
   ],
-  서버관리: [],
 };
 
 const AdminLayout = ({ children }) => {
@@ -278,8 +289,8 @@ const AdminLayout = ({ children }) => {
           />
           <AdminMenuBox
             right={me && me.menuRight8}
-            title={`서버관리`}
-            menus={items["서버관리"]}
+            title={`강의관리`}
+            menus={items["강의관리"]}
           />
         </Wrapper>
       ) : (

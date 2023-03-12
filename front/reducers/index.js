@@ -11,6 +11,8 @@ import accept from "./accept";
 import editor from "./editor";
 import logo from "./logo";
 import faq from "./faq";
+import lecture from "./lecture";
+import media from "./media";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -30,6 +32,8 @@ const rootReducer = (state, action) => {
         editor,
         logo,
         faq,
+        lecture,
+        media,
       });
       return combinedReducer(state, action);
     }

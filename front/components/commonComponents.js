@@ -111,6 +111,7 @@ export const WholeWrapper = styled.section`
 export const Wrapper = styled.div`
   width: ${(props) => props.width || `100%`};
   min-width: ${(props) => props.minWidth};
+  max-width: ${(props) => props.maxWidth};
   height: ${(props) => props.height};
   min-height: ${(props) => props.minHeight};
   display: ${(props) => props.display || `flex`};
@@ -210,6 +211,22 @@ export const CommonButton = styled(Button)`
   border-radius: ${(props) => props.radius || `7px`};
 
   ${(props) => !props.kindOf && `background : ${props.theme.white_C};`}
+
+  ${(props) =>
+    !props.kindOf && `border : 1px solid ${props.theme.basicTheme_C};`}
+  ${(props) =>
+    props.kindOf === `basic` && `background : ${props.theme.basicTheme_C};`}
+  ${(props) => props.kindOf === `basic` && `color : ${props.theme.white_C};`}
+
+
+  ${(props) =>
+    props.kindOf === `gray` && `background : ${props.theme.lightGrey2_C};`}
+    ${(props) => props.kindOf === `gray` && `color : ${props.theme.grey2_C};`}
+    ${(props) =>
+    props.kindOf === `gray` &&
+    `border : 1px solid ${props.theme.lightGrey2_C};`}
+
+
   ${(props) =>
     props.kindOf === `white` && `background : ${props.theme.basicTheme_C};`}
   ${(props) => props.kindOf === `white` && `color : ${props.theme.subTheme_C};`}
@@ -241,10 +258,27 @@ export const CommonButton = styled(Button)`
 
 
 &:hover {
-    background: ${(props) => props.theme.white_C};
-    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.basicTheme_C};
+    color: ${(props) => props.theme.white_C};
     ${(props) =>
       !props.kindOf && `border :1px solid ${props.theme.basicTheme_C};`}
+
+    ${(props) =>
+      props.kindOf === `basic` && `background : ${props.theme.white_C};`}
+    ${(props) =>
+      props.kindOf === `basic` && `color : ${props.theme.basicTheme_C};`}
+    ${(props) =>
+      props.kindOf === `basic` &&
+      `border : 1px solid ${props.theme.basicTheme_C};`}
+
+    ${(props) =>
+      props.kindOf === `gray` && `background : ${props.theme.lightGrey2_C};`}
+    ${(props) =>
+      props.kindOf === `gray` && `color : ${props.theme.basicTheme_C};`}
+    ${(props) =>
+      props.kindOf === `gray` &&
+      `border : 1px solid ${props.theme.lightGrey2_C};`}
+
     ${(props) =>
       props.kindOf === `white` && `background ${props.theme.basicTheme_C};`}
     ${(props) => props.kindOf === `white` && `color ${props.theme.white_C};`}
@@ -414,7 +448,6 @@ export const TextInput = styled.input`
   }
 
   &:read-only {
-    background-color: ${(props) => props.theme.lightGrey_C};
     cursor: auto;
   }
 
@@ -423,9 +456,9 @@ export const TextInput = styled.input`
   }
 
   &::placeholder {
-    font-size: 14px;
+    font-size: 18px;
     line-height: 1.6;
-    color: ${(props) => props.theme.lightGrey_C};
+    color: ${(props) => props.theme.grey2_C};
   }
 `;
 

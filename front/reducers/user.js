@@ -24,6 +24,10 @@ export const initailState = {
   st_userListDone: false,
   st_userListError: null,
   //
+  st_userFindUserIdLoading: false,
+  st_userFindUserIdDone: false,
+  st_userFindUserIdError: null,
+  //
   st_userListUpdateLoading: false,
   st_userListUpdateDone: false,
   st_userListUpdateError: null,
@@ -55,6 +59,10 @@ export const initailState = {
   st_adminUserExitFalseLoading: false, // 재가입
   st_adminUserExitFalseDone: false,
   st_adminUserExitFalseError: null,
+  //
+  st_logoutLoading: false, // 로그아웃
+  st_logoutDone: false,
+  st_logoutError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -72,6 +80,10 @@ export const SIGNUP_FAILURE = "SIGNUP_FAILURE";
 export const USERLIST_REQUEST = "USERLIST_REQUEST";
 export const USERLIST_SUCCESS = "USERLIST_SUCCESS";
 export const USERLIST_FAILURE = "USERLIST_FAILURE";
+
+export const USER_FIND_USERID_REQUEST = "USER_FIND_USERID_REQUEST";
+export const USER_FIND_USERID_SUCCESS = "USER_FIND_USERID_SUCCESS";
+export const USER_FIND_USERID_FAILURE = "USER_FIND_USERID_FAILURE";
 
 export const USERLIST_UPDATE_REQUEST = "USERLIST_UPDATE_REQUEST";
 export const USERLIST_UPDATE_SUCCESS = "USERLIST_UPDATE_SUCCESS";
@@ -108,6 +120,10 @@ export const ADMINUSER_EXITTRUE_FAILURE = "ADMINUSER_EXITTRUE_FAILURE";
 export const ADMINUSER_EXITFALSE_REQUEST = "ADMINUSER_EXITFALSE_REQUEST";
 export const ADMINUSER_EXITFALSE_SUCCESS = "ADMINUSER_EXITFALSE_SUCCESS";
 export const ADMINUSER_EXITFALSE_FAILURE = "ADMINUSER_EXITFALSE_FAILURE";
+//
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -213,6 +229,26 @@ const reducer = (state = initailState, action) =>
         draft.st_userListLoading = false;
         draft.st_userListDone = false;
         draft.st_userListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_FIND_USERID_REQUEST: {
+        draft.st_userFindUserIdLoading = true;
+        draft.st_userFindUserIdDone = false;
+        draft.st_userFindUserIdError = null;
+        break;
+      }
+      case USER_FIND_USERID_SUCCESS: {
+        draft.st_userFindUserIdLoading = false;
+        draft.st_userFindUserIdDone = true;
+        draft.st_userFindUserIdError = null;
+        break;
+      }
+      case USER_FIND_USERID_FAILURE: {
+        draft.st_userFindUserIdLoading = false;
+        draft.st_userFindUserIdDone = false;
+        draft.st_userFindUserIdError = action.error;
         break;
       }
       //////////////////////////////////////////////
@@ -385,6 +421,26 @@ const reducer = (state = initailState, action) =>
         draft.st_adminUserExitFalseLoading = false;
         draft.st_adminUserExitFalseDone = false;
         draft.st_adminUserExitFalseError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case LOGOUT_REQUEST: {
+        draft.st_logoutLoading = true;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_SUCCESS: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = true;
+        draft.st_logoutError = null;
+        break;
+      }
+      case LOGOUT_FAILURE: {
+        draft.st_logoutLoading = false;
+        draft.st_logoutDone = false;
+        draft.st_logoutError = action.error;
         break;
       }
       //////////////////////////////////////////////
