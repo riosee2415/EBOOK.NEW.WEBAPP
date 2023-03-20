@@ -30,7 +30,6 @@ import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import {
   NOTICE_LIST_REQUEST,
   NOTICE_UPDATE_REQUEST,
-  NOTICE_UPDATE_TOP_REQUEST,
   NOTICE_FILE_REQUEST,
   NOTICE_FILE_INFO_REQUEST,
   UPLOAD_PATH_INIT,
@@ -46,6 +45,26 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import { saveAs } from "file-saver";
+
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
+import "react-quill/dist/quill.snow.css";
+
+const QuillWrapper = styled(ReactQuill)`
+  & .ql-container {
+    min-height: 400px;
+  }
+
+  & .ql-toolbar.ql-snow {
+    border-radius: 5px 5px 0 0;
+  }
+  & .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    border-radius: 0 0 5px 5px;
+  }
+`;
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -71,15 +90,18 @@ const Notice = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
     notices,
+    //
     st_noticeUpdateDone,
     st_noticeUpdateError,
-    st_noticeUpdateTopDone,
-    st_noticeUpdateTopError,
+    //
     uploadFilePath,
+    //
     st_noticeFileLoading,
     st_noticeFileDone,
+    //
     st_noticeFileInfoDone,
     st_noticeFileInfoError,
+    //
     st_noticeCreateDone,
     st_noticeCreateError,
   } = useSelector((state) => state.notice);
@@ -219,45 +241,6 @@ const Notice = ({}) => {
     }
   }, [st_noticeUpdateError]);
 
-  // ********************** 공지사항 상단고정 수정 *************************
-  useEffect(() => {
-    if (st_noticeUpdateTopDone) {
-      let sendType = "";
-
-      switch (tab) {
-        case 0:
-          sendType = "";
-          break;
-
-        case 1:
-          sendType = "공지사항";
-          break;
-
-        case 2:
-          sendType = "새소식";
-          break;
-
-        default:
-          break;
-      }
-
-      dispatch({
-        type: NOTICE_LIST_REQUEST,
-        data: {
-          type: sendType,
-        },
-      });
-
-      return message.success("정보가 업데이트 되었습니다.");
-    }
-  }, [st_noticeUpdateTopDone]);
-
-  useEffect(() => {
-    if (st_noticeFileInfoError) {
-      return message.error(st_noticeFileInfoError);
-    }
-  }, [st_noticeFileInfoError]);
-
   // ********************** 공지사항 파일정보 적용 *************************
   useEffect(() => {
     if (st_noticeFileInfoDone) {
@@ -266,10 +249,10 @@ const Notice = ({}) => {
   }, [st_noticeFileInfoDone]);
 
   useEffect(() => {
-    if (st_noticeUpdateTopError) {
-      return message.error(st_noticeUpdateError);
+    if (st_noticeFileInfoError) {
+      return message.error(st_noticeFileInfoError);
     }
-  }, [st_noticeUpdateTopError]);
+  }, [st_noticeFileInfoError]);
 
   useEffect(() => {
     setCurrentData(null);
@@ -431,22 +414,6 @@ const Notice = ({}) => {
     });
   }, [uploadFilePath, currentData]);
 
-  const isTopChangeHandler = useCallback(
-    (data) => {
-      setCurrentTop((prev) => !prev);
-
-      dispatch({
-        type: NOTICE_UPDATE_TOP_REQUEST,
-        data: {
-          id: currentData.id,
-          flag: data ? 1 : 0,
-          title: currentData.title,
-        },
-      });
-    },
-    [currentData, currentTop]
-  );
-
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -517,6 +484,7 @@ const Notice = ({}) => {
           <GuideLi>
             공지사항을 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
           </GuideLi>
+          <GuideLi isImpo={true}>업데이트 시 회원에게 보일수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
             삭제처리 된 공지사항은 복구가 불가능합니다.
           </GuideLi>
@@ -528,7 +496,6 @@ const Notice = ({}) => {
         <Button
           type={tab === 0 ? "primary" : "default"}
           size="small"
-          style={{ marginRight: "5px" }}
           onClick={() => setTab(0)}
         >
           전체
@@ -536,7 +503,6 @@ const Notice = ({}) => {
         <Button
           type={tab === 1 ? "primary" : "default"}
           size="small"
-          style={{ marginRight: "5px" }}
           onClick={() => setTab(1)}
         >
           공지사항
@@ -544,7 +510,6 @@ const Notice = ({}) => {
         <Button
           type={tab === 2 ? "primary" : "default"}
           size="small"
-          style={{ marginRight: "5px" }}
           onClick={() => setTab(2)}
         >
           새소식
@@ -584,24 +549,6 @@ const Notice = ({}) => {
         >
           {currentData ? (
             <>
-              <Wrapper margin={`0px 0px 5px 0px`}>
-                <InfoTitle>
-                  <CheckOutlined />
-                  상단고정 제어
-                </InfoTitle>
-              </Wrapper>
-
-              <Wrapper dr="row" ju="flex-start" al="flex-start" padding="20px">
-                <Switch onChange={isTopChangeHandler} checked={currentTop} />
-              </Wrapper>
-
-              <Wrapper
-                width="100%"
-                height="1px"
-                bgColor={Theme.lightGrey_C}
-                margin={`30px 0px`}
-              ></Wrapper>
-
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
@@ -646,7 +593,26 @@ const Notice = ({}) => {
                     { required: true, message: "내용은 필수 입력사항 입니다." },
                   ]}
                 >
-                  <Input.TextArea rows={10} />
+                  <QuillWrapper
+                    style={{ width: `100%`, height: `100%` }}
+                    theme="snow"
+                    modules={{
+                      toolbar: [
+                        ["bold", "italic", "underline", "strike"], // toggled buttons
+                        ["blockquote"],
+
+                        [{ header: 1 }, { header: 2 }], // custom button values
+                        [{ list: "ordered" }, { list: "bullet" }],
+
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                        [{ align: [] }],
+
+                        ["link", "image", "video"],
+                      ],
+                    }}
+                  />
                 </Form.Item>
 
                 <Form.Item label="조회수" name="hit">

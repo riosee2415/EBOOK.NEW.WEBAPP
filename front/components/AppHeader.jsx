@@ -50,8 +50,7 @@ const Menu = styled.h2`
   position: relative;
   margin: 0 42px;
 
-  border-bottom: ${(props) =>
-    props.isActive && `3px solid ${props.theme.white_C}`};
+  color: ${(props) => props.isActive && Theme.basicTheme_C};
 
   cursor: pointer;
   &:hover {
@@ -156,24 +155,26 @@ const AppHeader = ({}) => {
             )}
           </ATag>
           <Wrapper dr={`row`} width={`auto`}>
-            <Link href={`/finance`}>
+            <Link href={`/enrolment`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>수강신청</Menu>
+                <Menu isActive={router.pathname === `/enrolment`}>
+                  수강신청
+                </Menu>
               </a>
             </Link>
-            <Link href={`/finance`}>
+            <Link href={`/lecture`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>커리큘럼</Menu>
+                <Menu isActive={router.pathname === `/lecture`}>커리큘럼</Menu>
               </a>
             </Link>
-            <Link href={`/develop`}>
+            <Link href={`/review`}>
               <a>
-                <Menu isActive={router.pathname === `/develop`}>수강후기</Menu>
+                <Menu isActive={router.pathname === `/review`}>수강후기</Menu>
               </a>
             </Link>
-            <Link href={`/info`}>
+            <Link href={`/center`}>
               <a>
-                <Menu isActive={router.pathname === `/info`}>고객센터</Menu>
+                <Menu isActive={router.pathname === `/center`}>고객센터</Menu>
               </a>
             </Link>
           </Wrapper>
@@ -241,24 +242,26 @@ const AppHeader = ({}) => {
                 </a>
               </Link>
             </Wrapper>
-            <Link href={`/finance`}>
+            <Link href={`/enrolment`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>수강신청</Menu>
+                <Menu isActive={router.pathname === `/enrolment`}>
+                  수강신청
+                </Menu>
               </a>
             </Link>
-            <Link href={`/finance`}>
+            <Link href={`/lecture`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>커리큘럼</Menu>
+                <Menu isActive={router.pathname === `/lecture`}>커리큘럼</Menu>
               </a>
             </Link>
-            <Link href={`/develop`}>
+            <Link href={`/review`}>
               <a>
-                <Menu isActive={router.pathname === `/develop`}>수강후기</Menu>
+                <Menu isActive={router.pathname === `/review`}>수강후기</Menu>
               </a>
             </Link>
-            <Link href={`/info`}>
+            <Link href={`/center`}>
               <a>
-                <Menu isActive={router.pathname === `/info`}>고객센터</Menu>
+                <Menu isActive={router.pathname === `/center`}>고객센터</Menu>
               </a>
             </Link>
           </Drawer>

@@ -1,18 +1,22 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import useInput from "../hooks/useInput";
-import ClientLayout from "../components/ClientLayout";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import useInput from "../../hooks/useInput";
+import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
-import wrapper from "../store/configureStore";
+import wrapper from "../../store/configureStore";
 import { END } from "redux-saga";
-import { Image, WholeWrapper, Wrapper } from "../components/commonComponents";
-import useWidth from "../hooks/useWidth";
-import Theme from "../components/Theme";
+import {
+  Image,
+  WholeWrapper,
+  Wrapper,
+} from "../../components/commonComponents";
+import useWidth from "../../hooks/useWidth";
+import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import Popup from "../components/popup/popup";
-import { BANNER_LIST_REQUEST } from "../reducers/banner";
+import Popup from "../../components/popup/popup";
+import { BANNER_LIST_REQUEST } from "../../reducers/banner";
 import { Empty } from "antd";
 // import Mainslider from "../components/slide/MainSlider";
 // import CC02 from "../components/common/CC02";
@@ -32,7 +36,7 @@ const Home = ({}) => {
   return (
     <>
       <Head>
-        <title>친절한 영어교실</title>
+        <title>친절한 영어교실 | 커리큘럼</title>
       </Head>
 
       <ClientLayout>
@@ -43,7 +47,7 @@ const Home = ({}) => {
           {bannerList &&
             (bannerList.length === 0 ? (
               <Wrapper height={`100vh`}>
-                <Empty description="메인 베너가 없습니다." />
+                <Empty description="커리큘럼 베너가 없습니다." />
               </Wrapper>
             ) : (
               bannerList.map((data) => {
@@ -83,7 +87,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: BANNER_LIST_REQUEST,
       data: {
-        type: 1,
+        type: 2,
       },
     });
 

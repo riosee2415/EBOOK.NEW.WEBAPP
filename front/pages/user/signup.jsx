@@ -98,9 +98,9 @@ const SignUp = () => {
     st_signUpLoading,
     st_signUpDone,
     //
-    st_userFindUserIdLoading,
-    st_userFindUserIdDone,
-    st_userFindUserIdError,
+    st_userCheckUserIdLoading,
+    st_userCheckUserIdDone,
+    st_userCheckUserIdError,
   } = useSelector((state) => state.user);
   ////// USEEFFECT //////
   useEffect(() => {
@@ -110,13 +110,13 @@ const SignUp = () => {
   }, [st_signUpDone]);
 
   useEffect(() => {
-    if (st_userFindUserIdDone) {
+    if (st_userCheckUserIdDone) {
       return message.success("사용가능한 아이디입니다.");
     }
-    if (st_userFindUserIdError) {
-      return message.error(st_userFindUserIdError);
+    if (st_userCheckUserIdError) {
+      return message.error(st_userCheckUserIdError);
     }
-  }, [st_userFindUserIdDone, st_userFindUserIdError]);
+  }, [st_userCheckUserIdDone, st_userCheckUserIdError]);
   ////// TOGGLE //////
 
   const checkBox01Toggle = useCallback(() => {
@@ -175,7 +175,7 @@ const SignUp = () => {
   // 생성
   const signupHandler = useCallback(
     (data) => {
-      if (!st_userFindUserIdDone) {
+      if (!st_userCheckUserIdDone) {
         return message.info("중복확인 후 이용해주세요.");
       }
 
@@ -200,7 +200,7 @@ const SignUp = () => {
         },
       });
     },
-    [selectGender, st_userFindUserIdDone]
+    [selectGender, st_userCheckUserIdDone]
   );
 
   const moveLinkHandler = useCallback((link) => {
@@ -230,14 +230,18 @@ const SignUp = () => {
   return (
     <>
       <Head>
-        <title></title>
+        <title>친절한 영어교실 | 회원가입</title>
       </Head>
 
       <ClientLayout>
         <WholeWrapper>
           <RsWrapper>
             <Wrapper margin={`120px 0 100px`}>
-              <Text fontSize={`36px`} fontWeight={`700`} margin={`0 0 40px`}>
+              <Text
+                fontSize={width < 700 ? `30px` : `36px`}
+                fontWeight={`700`}
+                margin={`0 0 40px`}
+              >
                 회원가입
               </Text>
 
@@ -819,7 +823,7 @@ const SignUp = () => {
                         width={`140px`}
                         height={`54px`}
                         margin={`0 0 23px`}
-                        loading={st_userFindUserIdLoading}
+                        loading={st_userCheckUserIdLoading}
                       >
                         중복확인
                       </CommonButton>
@@ -915,6 +919,7 @@ const SignUp = () => {
                         ]}
                       >
                         <TextInput
+                          type="email"
                           width={`100%`}
                           height={`54px`}
                           radius={`5px`}
@@ -941,6 +946,7 @@ const SignUp = () => {
                         ]}
                       >
                         <TextInput
+                          type="number"
                           width={`100%`}
                           height={`54px`}
                           radius={`5px`}

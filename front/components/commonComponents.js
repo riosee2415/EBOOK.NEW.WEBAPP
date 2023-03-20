@@ -337,6 +337,8 @@ export const Text = styled.p`
   border-bottom: ${(props) => props.borderBottom};
   opacity: ${(props) => props.opacity};
   letter-spacing: ${(props) => props.letterSpacing};
+  text-decoration: ${(props) => props.textDecoration};
+  border-radius: ${(props) => props.radius};
 
   ${(props) =>
     props.isEllipsis
@@ -473,6 +475,7 @@ export const TextArea = styled.textarea`
   margin: ${(props) => props.margin};
   resize: none;
   border-radius: ${(props) => props.radius || `10px`};
+  font-size: ${(props) => props.fontSize};
 
   &:focus {
     outline: none;
@@ -480,9 +483,9 @@ export const TextArea = styled.textarea`
   }
 
   &::placeholder {
-    font-size: 14px;
+    font-size: 18px;
     line-height: 1.6;
-    color: ${(props) => props.theme.lightGrey_C};
+    color: ${(props) => props.theme.grey2_C};
   }
 `;
 
@@ -490,10 +493,12 @@ export const CustomPage = styled(Pagination)`
   margin: 60px 0 100px;
 
   & .ant-pagination-next > button,
-  .ant-pagination-item,
+  & .ant-pagination-item,
   & .ant-pagination-prev > button {
     border: none;
     border-radius: 100%;
+    font-size: 18px;
+    font-weight: 700;
   }
 
   & {
@@ -546,6 +551,7 @@ export const CustomPage = styled(Pagination)`
       min-width: 25px;
       height: 25px;
       line-height: 25px;
+      font-size: 14px;
     }
   }
 `;

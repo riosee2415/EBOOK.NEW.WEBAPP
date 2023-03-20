@@ -17,6 +17,10 @@ import {
   USERLIST_SUCCESS,
   USERLIST_FAILURE,
   /////////////////////////////
+  USER_CHECK_USERID_REQUEST,
+  USER_CHECK_USERID_SUCCESS,
+  USER_CHECK_USERID_FAILURE,
+  /////////////////////////////
   USER_FIND_USERID_REQUEST,
   USER_FIND_USERID_SUCCESS,
   USER_FIND_USERID_FAILURE,
@@ -60,6 +64,18 @@ import {
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
   LOGOUT_FAILURE,
+  /////////////////////////////
+  MODIFYPASS_SEND_REQUEST,
+  MODIFYPASS_SEND_SUCCESS,
+  MODIFYPASS_SEND_FAILURE,
+  /////////////////////////////
+  MODIFYPASS_CHECKED_REQUEST,
+  MODIFYPASS_CHECKED_SUCCESS,
+  MODIFYPASS_CHECKED_FAILURE,
+  /////////////////////////////
+  MODIFYPASS_UPDATE_REQUEST,
+  MODIFYPASS_UPDATE_SUCCESS,
+  MODIFYPASS_UPDATE_FAILURE,
   /////////////////////////////
 } from "../reducers/user";
 
@@ -195,8 +211,34 @@ function* userList(action) {
 
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function checkUserIdAPI(data) {
+  return await axios.post(`/api/user/check/userid`, data);
+}
+
+function* checkUserId(action) {
+  try {
+    const result = yield call(checkUserIdAPI, action.data);
+    yield put({
+      type: USER_CHECK_USERID_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_CHECK_USERID_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function findUserIdAPI(data) {
-  return await axios.post(`/api/user/find/userid`, data);
+  return await axios.post(`/api/user/find/userId`, data);
 }
 
 function* findUserId(action) {
@@ -462,6 +504,87 @@ function* logout(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function modifyPassSendAPI(data) {
+  return await axios.post(`/api/user/modifypass`, data);
+}
+
+function* modifyPassSend(action) {
+  try {
+    const result = yield call(modifyPassSendAPI, action.data);
+
+    yield put({
+      type: MODIFYPASS_SEND_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MODIFYPASS_SEND_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function modifyPassCheckedAPI(data) {
+  return await axios.post(`/api/user/modifypass/checked`, data);
+}
+
+function* modifyPassChecked(action) {
+  try {
+    const result = yield call(modifyPassCheckedAPI, action.data);
+
+    yield put({
+      type: MODIFYPASS_CHECKED_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MODIFYPASS_CHECKED_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function modifyPassUpdateAPI(data) {
+  return await axios.post(`/api/user/modifypass/update`, data);
+}
+
+function* modifyPassUpdate(action) {
+  try {
+    const result = yield call(modifyPassUpdateAPI, action.data);
+
+    yield put({
+      type: MODIFYPASS_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MODIFYPASS_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -486,6 +609,10 @@ function* watchUserList() {
 
 function* watchFindUserId() {
   yield takeLatest(USER_FIND_USERID_REQUEST, findUserId);
+}
+
+function* watchCheckUserId() {
+  yield takeLatest(USER_CHECK_USERID_REQUEST, checkUserId);
 }
 
 function* watchUserListUpdate() {
@@ -524,6 +651,18 @@ function* watchLogout() {
   yield takeLatest(LOGOUT_REQUEST, logout);
 }
 
+function* watchModifyPassSend() {
+  yield takeLatest(MODIFYPASS_SEND_REQUEST, modifyPassSend);
+}
+
+function* watchModifyPassChecked() {
+  yield takeLatest(MODIFYPASS_CHECKED_REQUEST, modifyPassChecked);
+}
+
+function* watchModifyPassUpdate() {
+  yield takeLatest(MODIFYPASS_UPDATE_REQUEST, modifyPassUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -533,6 +672,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchUserList),
     fork(watchFindUserId),
+    fork(watchCheckUserId),
     fork(watchUserListUpdate),
     fork(watchKakaoLogin),
     fork(watchUserHistory),
@@ -542,6 +682,9 @@ export default function* userSaga() {
     fork(watchAdminUserExitTrue),
     fork(watchAdminUserExitFalse),
     fork(watchLogout),
+    fork(watchModifyPassSend),
+    fork(watchModifyPassChecked),
+    fork(watchModifyPassUpdate),
     //
   ]);
 }

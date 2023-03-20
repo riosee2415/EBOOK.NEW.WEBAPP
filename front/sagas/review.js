@@ -1,53 +1,54 @@
-import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
+import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
-  LECTURE_LIST_REQUEST,
-  LECTURE_LIST_SUCCESS,
-  LECTURE_LIST_FAILURE,
-  //
-  LECTURE_ADMIN_LIST_REQUEST,
-  LECTURE_ADMIN_LIST_SUCCESS,
-  LECTURE_ADMIN_LIST_FAILURE,
-  //
-  LECTURE_DETAIL_REQUEST,
-  LECTURE_DETAIL_SUCCESS,
-  LECTURE_DETAIL_FAILURE,
-  //
-  LECTURE_IMAGE_UPLOAD_REQUEST,
-  LECTURE_IMAGE_UPLOAD_SUCCESS,
-  LECTURE_IMAGE_UPLOAD_FAILURE,
-  //
-  LECTURE_CREATE_REQUEST,
-  LECTURE_CREATE_SUCCESS,
-  LECTURE_CREATE_FAILURE,
-  //
-  LECTURE_UPDATE_REQUEST,
-  LECTURE_UPDATE_SUCCESS,
-  LECTURE_UPDATE_FAILURE,
-  //
-  LECTURE_DELETE_REQUEST,
-  LECTURE_DELETE_SUCCESS,
-  LECTURE_DELETE_FAILURE,
-} from "../reducers/lecture";
+  REVIEW_LIST_REQUEST,
+  REVIEW_LIST_SUCCESS,
+  REVIEW_LIST_FAILURE,
+  /////////////////////////////
+  REVIEW_ADMIN_LIST_REQUEST,
+  REVIEW_ADMIN_LIST_SUCCESS,
+  REVIEW_ADMIN_LIST_FAILURE,
+  /////////////////////////////
+  REVIEW_DETAIL_REQUEST,
+  REVIEW_DETAIL_SUCCESS,
+  REVIEW_DETAIL_FAILURE,
+  /////////////////////////////
+  REVIEW_CREATE_REQUEST,
+  REVIEW_CREATE_SUCCESS,
+  REVIEW_CREATE_FAILURE,
+  /////////////////////////////
+  REVIEW_UPDATE_REQUEST,
+  REVIEW_UPDATE_SUCCESS,
+  REVIEW_UPDATE_FAILURE,
+  /////////////////////////////
+  REVIEW_DELETE_REQUEST,
+  REVIEW_DELETE_SUCCESS,
+  REVIEW_DELETE_FAILURE,
+  /////////////////////////////
+  REVIEW_ADMIN_DELETE_REQUEST,
+  REVIEW_ADMIN_DELETE_SUCCESS,
+  REVIEW_ADMIN_DELETE_FAILURE,
+  /////////////////////////////
+} from "../reducers/review";
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureListAPI(data) {
-  return await axios.post(`/api/lecture/list`, data);
+async function reviewListAPI(data) {
+  return await axios.post(`/api/review/list`, data);
 }
 
-function* lectureList(action) {
+function* reviewList(action) {
   try {
-    const result = yield call(lectureListAPI, action.data);
-
+    const result = yield call(reviewListAPI, action.data);
     yield put({
-      type: LECTURE_LIST_SUCCESS,
+      type: REVIEW_LIST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_LIST_FAILURE,
+      type: REVIEW_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -57,24 +58,24 @@ function* lectureList(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureAdminListAPI(data) {
-  return await axios.post(`/api/lecture/admin/list`, data);
+async function reviewAdminListAPI(data) {
+  return await axios.post(`/api/review/admin/list`, data);
 }
 
-function* lectureAdminList(action) {
+function* reviewAdminList(action) {
   try {
-    const result = yield call(lectureAdminListAPI, action.data);
-
+    const result = yield call(reviewAdminListAPI, action.data);
     yield put({
-      type: LECTURE_ADMIN_LIST_SUCCESS,
+      type: REVIEW_ADMIN_LIST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_ADMIN_LIST_FAILURE,
+      type: REVIEW_ADMIN_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -84,24 +85,24 @@ function* lectureAdminList(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureDetailAPI(data) {
-  return await axios.post(`/api/lecture/detail`, data);
+async function reviewDetailAPI(data) {
+  return await axios.post(`/api/review/detail`, data);
 }
 
-function* lectureDetail(action) {
+function* reviewDetail(action) {
   try {
-    const result = yield call(lectureDetailAPI, action.data);
-
+    const result = yield call(reviewDetailAPI, action.data);
     yield put({
-      type: LECTURE_DETAIL_SUCCESS,
+      type: REVIEW_DETAIL_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_DETAIL_FAILURE,
+      type: REVIEW_DETAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -111,24 +112,24 @@ function* lectureDetail(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureImageUploadAPI(data) {
-  return await axios.post(`/api/lecture/image`, data);
+async function reviewCreateAPI(data) {
+  return await axios.post(`/api/review/create`, data);
 }
 
-function* lectureImageUpload(action) {
+function* reviewCreate(action) {
   try {
-    const result = yield call(lectureImageUploadAPI, action.data);
-
+    const result = yield call(reviewCreateAPI, action.data);
     yield put({
-      type: LECTURE_IMAGE_UPLOAD_SUCCESS,
+      type: REVIEW_CREATE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_IMAGE_UPLOAD_FAILURE,
+      type: REVIEW_CREATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -138,24 +139,24 @@ function* lectureImageUpload(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureCreateAPI(data) {
-  return await axios.post(`/api/lecture/create`, data);
+async function reviewUpdateAPI(data) {
+  return await axios.post(`/api/review/update`, data);
 }
 
-function* lectureCreate(action) {
+function* reviewUpdate(action) {
   try {
-    const result = yield call(lectureCreateAPI, action.data);
-
+    const result = yield call(reviewUpdateAPI, action.data);
     yield put({
-      type: LECTURE_CREATE_SUCCESS,
+      type: REVIEW_UPDATE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_CREATE_FAILURE,
+      type: REVIEW_UPDATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -165,24 +166,24 @@ function* lectureCreate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureUpdateAPI(data) {
-  return await axios.post(`/api/lecture/update`, data);
+async function reviewDeleteAPI(data) {
+  return await axios.post(`/api/review/delete`, data);
 }
 
-function* lectureUpdate(action) {
+function* reviewDelete(action) {
   try {
-    const result = yield call(lectureUpdateAPI, action.data);
-
+    const result = yield call(reviewDeleteAPI, action.data);
     yield put({
-      type: LECTURE_UPDATE_SUCCESS,
+      type: REVIEW_DELETE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_UPDATE_FAILURE,
+      type: REVIEW_DELETE_FAILURE,
       error: err.response.data,
     });
   }
@@ -192,24 +193,24 @@ function* lectureUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
-async function lectureDeleteAPI(data) {
-  return await axios.post(`/api/lecture/delete`, data);
+async function reviewAdminDeleteAPI(data) {
+  return await axios.post(`/api/review/admin/delete`, data);
 }
 
-function* lectureDelete(action) {
+function* reviewAdminDelete(action) {
   try {
-    const result = yield call(lectureDeleteAPI, action.data);
-
+    const result = yield call(reviewAdminDeleteAPI, action.data);
     yield put({
-      type: LECTURE_DELETE_SUCCESS,
+      type: REVIEW_ADMIN_DELETE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LECTURE_DELETE_FAILURE,
+      type: REVIEW_ADMIN_DELETE_FAILURE,
       error: err.response.data,
     });
   }
@@ -218,46 +219,46 @@ function* lectureDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
+
+function* watchReviewList() {
+  yield takeLatest(REVIEW_LIST_REQUEST, reviewList);
+}
+
+function* watchReviewAdminList() {
+  yield takeLatest(REVIEW_ADMIN_LIST_REQUEST, reviewAdminList);
+}
+
+function* watchReviewDetail() {
+  yield takeLatest(REVIEW_DETAIL_REQUEST, reviewDetail);
+}
+
+function* watchReviewCreate() {
+  yield takeLatest(REVIEW_CREATE_REQUEST, reviewCreate);
+}
+
+function* watchReviewUpdate() {
+  yield takeLatest(REVIEW_UPDATE_REQUEST, reviewUpdate);
+}
+
+function* watchReviewDelete() {
+  yield takeLatest(REVIEW_DELETE_REQUEST, reviewDelete);
+}
+
+function* watchReviewAdminDelete() {
+  yield takeLatest(REVIEW_ADMIN_DELETE_REQUEST, reviewAdminDelete);
+}
 
 //////////////////////////////////////////////////////////////
-function* watchLectureList() {
-  yield takeLatest(LECTURE_LIST_REQUEST, lectureList);
-}
-
-function* watchLectureAdminList() {
-  yield takeLatest(LECTURE_ADMIN_LIST_REQUEST, lectureAdminList);
-}
-
-function* watchLectureDetail() {
-  yield takeLatest(LECTURE_DETAIL_REQUEST, lectureDetail);
-}
-
-function* watchLectureImageUpload() {
-  yield takeLatest(LECTURE_IMAGE_UPLOAD_REQUEST, lectureImageUpload);
-}
-
-function* watchlectureCreate() {
-  yield takeLatest(LECTURE_CREATE_REQUEST, lectureCreate);
-}
-
-function* watchlectureUpdate() {
-  yield takeLatest(LECTURE_UPDATE_REQUEST, lectureUpdate);
-}
-
-function* watchLectureDelete() {
-  yield takeLatest(LECTURE_DELETE_REQUEST, lectureDelete);
-}
-
-//////////////////////////////////////////////////////////////
-export default function* lectureSaga() {
+export default function* reviewSaga() {
   yield all([
-    fork(watchLectureList),
-    fork(watchLectureAdminList),
-    fork(watchLectureDetail),
-    fork(watchLectureImageUpload),
-    fork(watchlectureCreate),
-    fork(watchlectureUpdate),
-    fork(watchLectureDelete),
+    fork(watchReviewList),
+    fork(watchReviewAdminList),
+    fork(watchReviewDetail),
+    fork(watchReviewCreate),
+    fork(watchReviewUpdate),
+    fork(watchReviewDelete),
+    fork(watchReviewAdminDelete),
+
     //
   ]);
 }

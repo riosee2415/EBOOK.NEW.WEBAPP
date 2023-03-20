@@ -2,12 +2,22 @@ import produce from "../util/produce";
 
 export const initailState = {
   lectureAdminList: [],
+  lectureList: [],
+  lectureDetail: null,
 
   thumbnailPath: null,
+
+  st_lectureListLoading: false,
+  st_lectureListDone: false,
+  st_lectureListError: null,
 
   st_lectureAdminListLoading: false,
   st_lectureAdminListDone: false,
   st_lectureAdminListError: null,
+
+  st_lectureDetailLoading: false,
+  st_lectureDetailDone: false,
+  st_lectureDetailError: null,
 
   st_lectureImageUploadLoading: false,
   st_lectureImageUploadDone: false,
@@ -26,9 +36,17 @@ export const initailState = {
   st_lectureDeleteError: null,
 };
 
+export const LECTURE_LIST_REQUEST = "LECTURE_LIST_REQUEST";
+export const LECTURE_LIST_SUCCESS = "LECTURE_LIST_SUCCESS";
+export const LECTURE_LIST_FAILURE = "LECTURE_LIST_FAILURE";
+
 export const LECTURE_ADMIN_LIST_REQUEST = "LECTURE_ADMIN_LIST_REQUEST";
 export const LECTURE_ADMIN_LIST_SUCCESS = "LECTURE_ADMIN_LIST_SUCCESS";
 export const LECTURE_ADMIN_LIST_FAILURE = "LECTURE_ADMIN_LIST_FAILURE";
+
+export const LECTURE_DETAIL_REQUEST = "LECTURE_DETAIL_REQUEST";
+export const LECTURE_DETAIL_SUCCESS = "LECTURE_DETAIL_SUCCESS";
+export const LECTURE_DETAIL_FAILURE = "LECTURE_DETAIL_FAILURE";
 
 export const LECTURE_IMAGE_UPLOAD_REQUEST = "LECTURE_IMAGE_UPLOAD_REQUEST";
 export const LECTURE_IMAGE_UPLOAD_SUCCESS = "LECTURE_IMAGE_UPLOAD_SUCCESS";
@@ -52,6 +70,26 @@ const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       ///////////////////////////////////////////////////////
+      case LECTURE_LIST_REQUEST: {
+        draft.st_lectureListLoading = true;
+        draft.st_lectureListDone = false;
+        draft.st_lectureListError = null;
+        break;
+      }
+      case LECTURE_LIST_SUCCESS: {
+        draft.st_lectureListLoading = false;
+        draft.st_lectureListDone = true;
+        draft.st_lectureListError = null;
+        draft.lectureList = action.data;
+        break;
+      }
+      case LECTURE_LIST_FAILURE: {
+        draft.st_lectureListLoading = false;
+        draft.st_lectureListDone = false;
+        draft.st_lectureListError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
       case LECTURE_ADMIN_LIST_REQUEST: {
         draft.st_lectureAdminListLoading = true;
         draft.st_lectureAdminListDone = false;
@@ -69,6 +107,26 @@ const reducer = (state = initailState, action) =>
         draft.st_lectureAdminListLoading = false;
         draft.st_lectureAdminListDone = false;
         draft.st_lectureAdminListError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      case LECTURE_DETAIL_REQUEST: {
+        draft.st_lectureDetailLoading = true;
+        draft.st_lectureDetailDone = false;
+        draft.st_lectureDetailError = null;
+        break;
+      }
+      case LECTURE_DETAIL_SUCCESS: {
+        draft.st_lectureDetailLoading = false;
+        draft.st_lectureDetailDone = true;
+        draft.st_lectureDetailError = null;
+        draft.lectureDetail = action.data;
+        break;
+      }
+      case LECTURE_DETAIL_FAILURE: {
+        draft.st_lectureDetailLoading = false;
+        draft.st_lectureDetailDone = false;
+        draft.st_lectureDetailError = action.error;
         break;
       }
       ///////////////////////////////////////////////////////

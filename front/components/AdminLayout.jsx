@@ -87,6 +87,16 @@ export const items = {
       link: "/admin/boards/gallery",
       useYn: true,
     },
+    {
+      name: "강의후기",
+      link: "/admin/boards/review",
+      useYn: true,
+    },
+    {
+      name: "자료실",
+      link: "/admin/boards/reference",
+      useYn: true,
+    },
   ],
   회원관리: [
     {

@@ -13,6 +13,8 @@ import logo from "./logo";
 import faq from "./faq";
 import lecture from "./lecture";
 import media from "./media";
+import review from "./review";
+import reference from "./reference";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -34,6 +36,8 @@ const rootReducer = (state, action) => {
         faq,
         lecture,
         media,
+        review,
+        reference,
       });
       return combinedReducer(state, action);
     }

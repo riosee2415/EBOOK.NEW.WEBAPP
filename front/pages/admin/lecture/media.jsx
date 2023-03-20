@@ -477,7 +477,7 @@ const Media = ({}) => {
           margin="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
-          {currentData && (
+          {currentData ? (
             <>
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
@@ -580,6 +580,17 @@ const Media = ({}) => {
                 margin={`30px 0px`}
               ></Wrapper>
             </>
+          ) : (
+            <Wrapper padding={`50px 0px`} dr="row">
+              <AlertOutlined
+                style={{
+                  fontSize: "20px",
+                  color: Theme.red_C,
+                  marginRight: "5px",
+                }}
+              />
+              좌측 데이터를 선택하여 상세정보를 확인하세요.
+            </Wrapper>
           )}
         </Wrapper>
       </Wrapper>

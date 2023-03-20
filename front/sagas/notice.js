@@ -5,6 +5,14 @@ import {
   NOTICE_LIST_SUCCESS,
   NOTICE_LIST_FAILURE,
   //
+  NOTICE_PAGE_LIST_REQUEST,
+  NOTICE_PAGE_LIST_SUCCESS,
+  NOTICE_PAGE_LIST_FAILURE,
+  //
+  NOTICE_DETAIL_REQUEST,
+  NOTICE_DETAIL_SUCCESS,
+  NOTICE_DETAIL_FAILURE,
+  //
   NOTICE_CREATE_REQUEST,
   NOTICE_CREATE_SUCCESS,
   NOTICE_CREATE_FAILURE,
@@ -52,6 +60,60 @@ function* noticeList(action) {
     console.error(err);
     yield put({
       type: NOTICE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function noticePageListAPI(data) {
+  return await axios.post(`/api/notice/page/list`, data);
+}
+
+function* noticePageList(action) {
+  try {
+    const result = yield call(noticePageListAPI, action.data);
+
+    yield put({
+      type: NOTICE_PAGE_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: NOTICE_PAGE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function noticeDetailAPI(data) {
+  return await axios.post(`/api/notice/detail`, data);
+}
+
+function* noticeDetail(action) {
+  try {
+    const result = yield call(noticeDetailAPI, action.data);
+
+    yield put({
+      type: NOTICE_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: NOTICE_DETAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -255,6 +317,14 @@ function* watchNoticeList() {
   yield takeLatest(NOTICE_LIST_REQUEST, noticeList);
 }
 
+function* watchNoticePageList() {
+  yield takeLatest(NOTICE_PAGE_LIST_REQUEST, noticePageList);
+}
+
+function* watchNoticeDetail() {
+  yield takeLatest(NOTICE_DETAIL_REQUEST, noticeDetail);
+}
+
 function* watchNoticeCreate() {
   yield takeLatest(NOTICE_CREATE_REQUEST, noticeCreate);
 }
@@ -287,6 +357,8 @@ function* watchNoticeHistory() {
 export default function* noticeSaga() {
   yield all([
     fork(watchNoticeList),
+    fork(watchNoticePageList),
+    fork(watchNoticeDetail),
     fork(watchNoticeCreate),
     fork(watchNoticeUpdate),
     fork(watchNoticeUpdateTop),

@@ -7,10 +7,21 @@ export const initailState = {
   detailModal: false,
   uploadFilePath: null,
   noticeHistory: [],
+  noticeList: [],
+  noticeLastPage: 1,
+  noticeDetail: null,
   //
   st_noticeListLoading: false, // 공지사항 가져오기
   st_noticeListDone: false,
   st_noticeListError: null,
+  //
+  st_noticePageListLoading: false, // 공지사항 페이지네이션 리스트 가져오기
+  st_noticePageListDone: false,
+  st_noticePageListError: null,
+  //
+  st_noticeDetailLoading: false, // 공지사항 상세보기
+  st_noticeDetailDone: false,
+  st_noticeDetailError: null,
   //
   st_noticeCreateLoading: false, // 공지사항 생성하기
   st_noticeCreateDone: false,
@@ -45,6 +56,14 @@ export const initailState = {
 export const NOTICE_LIST_REQUEST = "NOTICE_LIST_REQUEST";
 export const NOTICE_LIST_SUCCESS = "NOTICE_LIST_SUCCESS";
 export const NOTICE_LIST_FAILURE = "NOTICE_LIST_FAILURE";
+
+export const NOTICE_PAGE_LIST_REQUEST = "NOTICE_PAGE_LIST_REQUEST";
+export const NOTICE_PAGE_LIST_SUCCESS = "NOTICE_PAGE_LIST_SUCCESS";
+export const NOTICE_PAGE_LIST_FAILURE = "NOTICE_PAGE_LIST_FAILURE";
+//
+export const NOTICE_DETAIL_REQUEST = "NOTICE_DETAIL_REQUEST";
+export const NOTICE_DETAIL_SUCCESS = "NOTICE_DETAIL_SUCCESS";
+export const NOTICE_DETAIL_FAILURE = "NOTICE_DETAIL_FAILURE";
 //
 export const NOTICE_CREATE_REQUEST = "NOTICE_CREATE_REQUEST";
 export const NOTICE_CREATE_SUCCESS = "NOTICE_CREATE_SUCCESS";
@@ -87,13 +106,14 @@ const reducer = (state = initailState, action) =>
     switch (action.type) {
       case NOTICE_LIST_REQUEST: {
         draft.st_noticeListLoading = true;
-        draft.st_noticeListDone = null;
-        draft.st_noticeListError = false;
+        draft.st_noticeListDone = false;
+        draft.st_noticeListError = null;
         break;
       }
       case NOTICE_LIST_SUCCESS: {
         draft.st_noticeListLoading = false;
         draft.st_noticeListDone = true;
+        draft.st_noticeListError = null;
         draft.notices = action.data;
         break;
       }
@@ -101,6 +121,47 @@ const reducer = (state = initailState, action) =>
         draft.st_noticeListLoading = false;
         draft.st_noticeListDone = false;
         draft.st_noticeListError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      case NOTICE_PAGE_LIST_REQUEST: {
+        draft.st_noticePageListLoading = true;
+        draft.st_noticePageListDone = false;
+        draft.st_noticePageListError = null;
+        break;
+      }
+      case NOTICE_PAGE_LIST_SUCCESS: {
+        draft.st_noticePageListLoading = false;
+        draft.st_noticePageListDone = true;
+        draft.st_noticePageListError = null;
+        draft.noticeList = action.data.list;
+        draft.noticeLastPage = action.data.lastPage;
+        break;
+      }
+      case NOTICE_PAGE_LIST_FAILURE: {
+        draft.st_noticePageListLoading = false;
+        draft.st_noticePageListDone = false;
+        draft.st_noticePageListError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      case NOTICE_DETAIL_REQUEST: {
+        draft.st_noticeDetailLoading = true;
+        draft.st_noticeDetailDone = false;
+        draft.st_noticeDetailError = null;
+        break;
+      }
+      case NOTICE_DETAIL_SUCCESS: {
+        draft.st_noticeDetailLoading = false;
+        draft.st_noticeDetailDone = true;
+        draft.st_noticeDetailError = null;
+        draft.noticeDetail = action.data;
+        break;
+      }
+      case NOTICE_DETAIL_FAILURE: {
+        draft.st_noticeDetailLoading = false;
+        draft.st_noticeDetailDone = false;
+        draft.st_noticeDetailError = action.error;
         break;
       }
       ///////////////////////////////////////////////////////

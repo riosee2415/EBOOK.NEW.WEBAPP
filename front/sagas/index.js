@@ -12,6 +12,8 @@ import logoSaga from "./logo";
 import faqSaga from "./faq";
 import lectureSaga from "./lecture";
 import mediaSaga from "./media";
+import reviewSaga from "./review";
+import referenceSaga from "./reference";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -34,6 +36,8 @@ export default function* rootSaga() {
     fork(faqSaga),
     fork(lectureSaga),
     fork(mediaSaga),
+    fork(reviewSaga),
+    fork(referenceSaga),
     //
   ]);
 }

@@ -7,6 +7,7 @@ export const initailState = {
   updateModal: false,
   userHistory: [],
   adminUserRightHistory: [],
+  findUserId: null,
   //
   st_loginLoading: false,
   st_loginDone: false,
@@ -24,7 +25,11 @@ export const initailState = {
   st_userListDone: false,
   st_userListError: null,
   //
-  st_userFindUserIdLoading: false,
+  st_userCheckUserIdLoading: false, // 아아디 중복확인
+  st_userCheckUserIdDone: false,
+  st_userCheckUserIdError: null,
+  //
+  st_userFindUserIdLoading: false, // 아아디 찾기
   st_userFindUserIdDone: false,
   st_userFindUserIdError: null,
   //
@@ -63,6 +68,18 @@ export const initailState = {
   st_logoutLoading: false, // 로그아웃
   st_logoutDone: false,
   st_logoutError: null,
+  //
+  st_modifyPassSendLoading: false, // 비밀번호 찾기
+  st_modifyPassSendDone: false,
+  st_modifyPassSendError: null,
+  //
+  st_modifyPassCheckedLoading: false, // 비밀번호 찾기
+  st_modifyPassCheckedDone: false,
+  st_modifyPassCheckedError: null,
+  //
+  st_modifyPassUpdateLoading: false, // 비밀번호 찾기
+  st_modifyPassUpdateDone: false,
+  st_modifyPassUpdateError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -80,6 +97,10 @@ export const SIGNUP_FAILURE = "SIGNUP_FAILURE";
 export const USERLIST_REQUEST = "USERLIST_REQUEST";
 export const USERLIST_SUCCESS = "USERLIST_SUCCESS";
 export const USERLIST_FAILURE = "USERLIST_FAILURE";
+
+export const USER_CHECK_USERID_REQUEST = "USER_CHECK_USERID_REQUEST";
+export const USER_CHECK_USERID_SUCCESS = "USER_CHECK_USERID_SUCCESS";
+export const USER_CHECK_USERID_FAILURE = "USER_CHECK_USERID_FAILURE";
 
 export const USER_FIND_USERID_REQUEST = "USER_FIND_USERID_REQUEST";
 export const USER_FIND_USERID_SUCCESS = "USER_FIND_USERID_SUCCESS";
@@ -124,6 +145,18 @@ export const ADMINUSER_EXITFALSE_FAILURE = "ADMINUSER_EXITFALSE_FAILURE";
 export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
+//
+export const MODIFYPASS_SEND_REQUEST = "MODIFYPASS_SEND_REQUEST";
+export const MODIFYPASS_SEND_SUCCESS = "MODIFYPASS_SEND_SUCCESS";
+export const MODIFYPASS_SEND_FAILURE = "MODIFYPASS_SEND_FAILURE";
+//
+export const MODIFYPASS_CHECKED_REQUEST = "MODIFYPASS_CHECKED_REQUEST";
+export const MODIFYPASS_CHECKED_SUCCESS = "MODIFYPASS_CHECKED_SUCCESS";
+export const MODIFYPASS_CHECKED_FAILURE = "MODIFYPASS_CHECKED_FAILURE";
+//
+export const MODIFYPASS_UPDATE_REQUEST = "MODIFYPASS_UPDATE_REQUEST";
+export const MODIFYPASS_UPDATE_SUCCESS = "MODIFYPASS_UPDATE_SUCCESS";
+export const MODIFYPASS_UPDATE_FAILURE = "MODIFYPASS_UPDATE_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -233,6 +266,26 @@ const reducer = (state = initailState, action) =>
       }
       //////////////////////////////////////////////
 
+      case USER_CHECK_USERID_REQUEST: {
+        draft.st_userCheckUserIdLoading = true;
+        draft.st_userCheckUserIdDone = false;
+        draft.st_userCheckUserIdError = null;
+        break;
+      }
+      case USER_CHECK_USERID_SUCCESS: {
+        draft.st_userCheckUserIdLoading = false;
+        draft.st_userCheckUserIdDone = true;
+        draft.st_userCheckUserIdError = null;
+        break;
+      }
+      case USER_CHECK_USERID_FAILURE: {
+        draft.st_userCheckUserIdLoading = false;
+        draft.st_userCheckUserIdDone = false;
+        draft.st_userCheckUserIdError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
       case USER_FIND_USERID_REQUEST: {
         draft.st_userFindUserIdLoading = true;
         draft.st_userFindUserIdDone = false;
@@ -243,6 +296,7 @@ const reducer = (state = initailState, action) =>
         draft.st_userFindUserIdLoading = false;
         draft.st_userFindUserIdDone = true;
         draft.st_userFindUserIdError = null;
+        draft.findUserId = action.data.userId;
         break;
       }
       case USER_FIND_USERID_FAILURE: {
@@ -441,6 +495,66 @@ const reducer = (state = initailState, action) =>
         draft.st_logoutLoading = false;
         draft.st_logoutDone = false;
         draft.st_logoutError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case MODIFYPASS_SEND_REQUEST: {
+        draft.st_modifyPassSendLoading = true;
+        draft.st_modifyPassSendDone = false;
+        draft.st_modifyPassSendError = null;
+        break;
+      }
+      case MODIFYPASS_SEND_SUCCESS: {
+        draft.st_modifyPassSendLoading = false;
+        draft.st_modifyPassSendDone = true;
+        draft.st_modifyPassSendError = null;
+        break;
+      }
+      case MODIFYPASS_SEND_FAILURE: {
+        draft.st_modifyPassSendLoading = false;
+        draft.st_modifyPassSendDone = false;
+        draft.st_modifyPassSendError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case MODIFYPASS_CHECKED_REQUEST: {
+        draft.st_modifyPassCheckedLoading = true;
+        draft.st_modifyPassCheckedDone = false;
+        draft.st_modifyPassCheckedError = null;
+        break;
+      }
+      case MODIFYPASS_CHECKED_SUCCESS: {
+        draft.st_modifyPassCheckedLoading = false;
+        draft.st_modifyPassCheckedDone = true;
+        draft.st_modifyPassCheckedError = null;
+        break;
+      }
+      case MODIFYPASS_CHECKED_FAILURE: {
+        draft.st_modifyPassCheckedLoading = false;
+        draft.st_modifyPassCheckedDone = false;
+        draft.st_modifyPassCheckedError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case MODIFYPASS_UPDATE_REQUEST: {
+        draft.st_modifyPassUpdateLoading = true;
+        draft.st_modifyPassUpdateDone = false;
+        draft.st_modifyPassUpdateError = null;
+        break;
+      }
+      case MODIFYPASS_UPDATE_SUCCESS: {
+        draft.st_modifyPassUpdateLoading = false;
+        draft.st_modifyPassUpdateDone = true;
+        draft.st_modifyPassUpdateError = null;
+        break;
+      }
+      case MODIFYPASS_UPDATE_FAILURE: {
+        draft.st_modifyPassUpdateLoading = false;
+        draft.st_modifyPassUpdateDone = false;
+        draft.st_modifyPassUpdateError = action.error;
         break;
       }
       //////////////////////////////////////////////

@@ -21,6 +21,7 @@ import {
 } from "../../components/commonComponents";
 import styled from "styled-components";
 import Theme from "../../components/Theme";
+import useWidth from "../../hooks/useWidth";
 
 const LoginForm = styled(Form)`
   width: 100%;
@@ -36,6 +37,7 @@ const Login = () => {
     (state) => state.user
   );
   ////// HOOKS //////
+  const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
   ////// REDUX //////
@@ -73,14 +75,18 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title></title>
+        <title>친절한 영어교실 | 로그인</title>
       </Head>
 
       <ClientLayout>
         <WholeWrapper>
           <RsWrapper>
             <Wrapper maxWidth={`420px`} margin={`120px 0`}>
-              <Text fontSize={`36px`} fontWeight={`700`} margin={`0 0 40px`}>
+              <Text
+                fontSize={width < 700 ? `30px` : `36px`}
+                fontWeight={`700`}
+                margin={`0 0 40px`}
+              >
                 로그인
               </Text>
               <LoginForm layout="inline" onFinish={loginHandler}>
@@ -147,6 +153,7 @@ const Login = () => {
                     fontSize={`20px`}
                     fontWeight={`600`}
                     kindOf={`gray`}
+                    onClick={() => moveLinkHandler("/user/find")}
                   >
                     아이디 / 비밀번호 찾기
                   </CommonButton>
