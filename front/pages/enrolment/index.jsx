@@ -23,6 +23,7 @@ import { BANNER_LIST_REQUEST } from "../../reducers/banner";
 import { Empty } from "antd";
 import { LECTURE_LIST_REQUEST } from "../../reducers/lecture";
 import { useRouter } from "next/router";
+import { numberWithCommas } from "../../components/commonUtils";
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
@@ -165,7 +166,7 @@ const Home = ({}) => {
                             radius={`5px`}
                             color={Theme.white_C}
                           >
-                            {data.viewDiscountPrice}원 즉시 할인
+                            {data.viewLecturePrice}원 즉시 할인
                           </Text>
                         </Wrapper>
 
@@ -173,7 +174,7 @@ const Home = ({}) => {
                           dr={`row`}
                           ju={`flex-start`}
                           al={`flex-end`}
-                          margin={width < 800 ? `3px 0 10px` : `3px 0 108px`}
+                          margin={width < 800 ? `3px 0 10px` : `3px 0 20px`}
                         >
                           <Text
                             fontSize={`38px`}
@@ -181,10 +182,32 @@ const Home = ({}) => {
                             lineHeight={`1`}
                             margin={`0 6px 0 0`}
                           >
-                            {data.viewLecturePrice}
+                            {data.viewDiscountPrice}
                           </Text>
                           <Text fontSize={`18px`} color={Theme.grey3_C}>
                             원/{data.viewType}
+                          </Text>
+                        </Wrapper>
+
+                        <Wrapper
+                          dr={`row`}
+                          ju={`flex-start`}
+                          al={`flex-end`}
+                          margin={width < 800 ? `3px 0 10px` : `3px 0 10px`}
+                        >
+                          <Text
+                            fontSize={`38px`}
+                            fontWeight={`600`}
+                            lineHeight={`1`}
+                            margin={`0 6px 0 0`}
+                          >
+                            월&nbsp;
+                            {numberWithCommas(
+                              parseInt(data.discountPrice / 12)
+                            )}
+                          </Text>
+                          <Text fontSize={`18px`} color={Theme.grey3_C}>
+                            원/{data.viewType} 무이자 시
                           </Text>
                         </Wrapper>
 

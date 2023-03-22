@@ -172,6 +172,8 @@ const BuyLecture = ({}) => {
       const scvData = [];
       const scvData2 = [];
 
+      console.log(boughtAdminList);
+
       boughtAdminList &&
         boughtAdminList.map((data, idx) => {
           // console.log(data.mobile);
@@ -179,6 +181,7 @@ const BuyLecture = ({}) => {
             no: data.boughtDate,
             name: data.receiver,
             mobile: data.mobile + "'",
+            zoneCode: data.zoneCode,
             address:
               (data.address === "-" ? "해외결제" : data.address) +
               " " +
@@ -204,6 +207,7 @@ const BuyLecture = ({}) => {
             no: data.boughtDate,
             name: data.receiver,
             mobile: data.mobile.replace(regex, "") + "ㅤ",
+            zoneCode: data.zoneCode,
             address:
               (data.address === "-" ? "해외결제" : data.address) +
               " " +
@@ -500,7 +504,9 @@ const BuyLecture = ({}) => {
     { label: "신청일자", key: "no" },
     { label: "성함", key: "name" },
     { label: "연락처", key: "mobile" },
+    { label: "배송지", key: "zoneCode" },
     { label: "배송지", key: "address" },
+    { label: "배송지", key: "detailAddress" },
     { label: "배송여부", key: "none" },
     { label: "아이디", key: "id" },
     { label: "생년월일", key: "birth" },

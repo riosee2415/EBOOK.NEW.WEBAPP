@@ -159,6 +159,7 @@ const Home = ({}) => {
   const [isBuyBook, setIsBuyBook] = useState(1);
   const [isBuyType, setIsBuyType] = useState(null);
   const [isOverseas, setIsOverseas] = useState(false);
+  const [overAddress, setOverAddress] = useState(false);
 
   const dataArr = [
     {
@@ -246,6 +247,7 @@ const Home = ({}) => {
     (data) => {
       setIsOverseas(data);
 
+      setIsBuyType(null);
       if (!data) {
         infoForm.setFieldsValue({
           username: me.username,
@@ -280,76 +282,230 @@ const Home = ({}) => {
     [isBuyType]
   );
 
+  // 해외 주소 변경
+  const overAddressChange = useCallback(
+    (data) => {
+      setOverAddress(data);
+    },
+    [overAddress]
+  );
+
+  // 환율 계산 함수
+  const dollarChange = useCallback(async (inputDollar) => {
+    const res = await fetch(
+      "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD"
+    );
+    const result = await res.json();
+
+    const exchangeRate = result[0].basePrice;
+    const exchangedWon = inputDollar / exchangeRate;
+
+    return exchangedWon;
+  }, []);
+
   // 결제
   const buyHandler = useCallback(
-    (data) => {
+    async (data) => {
+      if (!isBuyType) {
+        return message.error("결제 방법을 선택해주세요.");
+      }
+
       const IMP = window.IMP;
 
       const address = isOverseas
-        ? dataArr[data.address] +
+        ? dataArr.find((value) => value.id === data.overAddress).title +
           " / " +
-          data.detailAddress +
+          (data.detailAddress ? data.detailAddress : "") +
           " " +
-          data.detailAddress2 +
+          (data.detailAddress2 ? data.detailAddress2 : "") +
           " " +
-          data.detailAddress3
+          (data.detailAddress3 ? data.detailAddress3 : "")
         : data.address;
+
+      // console.log(address);
+      // console.log({
+      //   mobile: data.mobile,
+      //   receiver: data.receiver,
+      //   zoneCode: data.zoneCode,
+      //   address: address,
+      //   detailAddress: isOverseas ? "-" : data.detailAddress,
+      //   payType: isBuyType,
+      //   pay:
+      //     lectureDetail.lecturePrice +
+      //     (isBuyBook === 1
+      //       ? lectureDetail.bookEndDate
+      //         ? lectureDetail.bookBuyPrice
+      //         : lectureDetail.bookPrice
+      //       : 0),
+      //   lectureType: lectureDetail.type,
+      //   name: data.username,
+      //   // impUid: rsp.imp_uid,
+      //   // merchantUid: rsp.merchant_uid,
+      //   isBuyBook: isBuyBook === 1 ? 1 : 0,
+      //   bookPrice:
+      //     isBuyBook === 1
+      //       ? lectureDetail.bookEndDate
+      //         ? lectureDetail.bookBuyPrice
+      //         : lectureDetail.bookPrice
+      //       : 0,
+      // });
 
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
-      IMP.request_pay(
-        {
-          pg: "danal_tpay.A010052124",
-          pay_method: isBuyType,
-          buyer_name: lectureDetail.subTitle,
-          merchant_uid: orderPK,
-          name: me.username,
-          biz_num: me.mobile,
-          amount: 150,
-          // amount:
-          //   lectureDetail.lecturePrice +
-          //   (isBuyBook === 1
-          //     ? lectureDetail.bookEndDate
-          //       ? lectureDetail.bookBuyPrice
-          //       : lectureDetail.bookPrice
-          //     : 0),
-        },
-        async (rsp) => {
-          if (rsp.success) {
-            dispatch({
-              type: BOUGHT_CREATE_REQUEST,
-              data: {
-                mobile: data.mobile,
-                receiver: data.receiver,
-                zoneCode: data.zoneCode,
-                address: address,
-                detailAddress: isOverseas ? "-" : data.detailAddress,
-                payType: isBuyType,
-                pay:
-                  lectureDetail.lecturePrice +
-                  (isBuyBook === 1
-                    ? lectureDetail.bookEndDate
-                      ? lectureDetail.bookBuyPrice
-                      : lectureDetail.bookPrice
-                    : 0),
-                lectureType: lectureDetail.type,
-                name: data.username,
-                impUid: rsp.imp_uid,
-                merchantUid: rsp.merchant_uid,
-                isBuyBook: isBuyBook === 1 ? 1 : 0,
-                bookPrice:
-                  isBuyBook === 1
-                    ? lectureDetail.bookEndDate
-                      ? lectureDetail.bookBuyPrice
-                      : lectureDetail.bookPrice
-                    : 0,
-              },
-            });
+      let paypalPay = null;
+
+      await dollarChange(
+        lectureDetail.discountPrice +
+          (isBuyBook === 1 && overAddress
+            ? dataArr.find((data) => data.id === overAddress).price
+            : 0) +
+          (isBuyBook === 1
+            ? lectureDetail.bookEndDate
+              ? lectureDetail.bookDiscountPrice
+              : lectureDetail.bookPrice
+            : 0)
+      ).then((data) => {
+        paypalPay = data;
+      });
+
+      if (isBuyType === "nobank") {
+      } else if (isBuyType === "paypal") {
+        IMP.request_pay(
+          {
+            pg: `${isBuyType}.sb-otnjs25340282_api1.business.example.com`,
+            pay_method: "card",
+            merchant_uid: orderPK,
+            name: lectureDetail && lectureDetail.title,
+            currency: "USD",
+            amount: paypalPay,
+            // amount: 0.12,
+            m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
+              lectureDetail &&
+              lectureDetail.discountPrice +
+                (isBuyBook === 1 && overAddress
+                  ? dataArr.find((data) => data.id === overAddress).price
+                  : 0) +
+                (isBuyBook === 1
+                  ? lectureDetail.bookEndDate
+                    ? lectureDetail.bookDiscountPrice
+                    : lectureDetail.bookPrice
+                  : 0)
+            }&address=${address}&mobile=${data.mobile}&receiver=${
+              data.receiver
+            }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
+              lectureDetail &&
+              lectureDetail.discountPrice +
+                (isBuyBook === 1 && overAddress
+                  ? dataArr.find((data) => data.id === overAddress).price
+                  : 0) +
+                (isBuyBook === 1
+                  ? lectureDetail.bookEndDate
+                    ? lectureDetail.bookDiscountPrice
+                    : lectureDetail.bookPrice
+                  : 0)
+            }&type=${
+              lectureDetail && lectureDetail.type
+            }&isBuyBook=${isBuyBook}&bookPrice=${
+              isBuyBook === 1
+                ? lectureDetail.bookEndDate
+                  ? lectureDetail.bookDiscountPrice
+                  : lectureDetail.bookPrice
+                : 0
+            }`,
+          },
+          async (rsp) => {
+            if (rsp.success) {
+              dispatch({
+                type: BOUGHT_CREATE_REQUEST,
+                data: {
+                  mobile: data.mobile,
+                  receiver: data.receiver,
+                  zoneCode: data.zoneCode,
+                  address: address,
+                  detailAddress: isOverseas ? "-" : data.detailAddress,
+                  payType: isBuyType,
+                  pay: paypalPay,
+                  lectureType: lectureDetail.type,
+                  name: data.username,
+                  impUid: rsp.imp_uid,
+                  merchantUid: rsp.merchant_uid,
+                  isBuyBook: isBuyBook === 1 ? 1 : 0,
+                  bookPrice:
+                    isBuyBook === 1
+                      ? lectureDetail.bookEndDate
+                        ? lectureDetail.bookBuyPrice
+                        : lectureDetail.bookPrice
+                      : 0,
+                },
+              });
+            } else {
+              console.log(rsp.error_msg);
+              if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
+                message.error(
+                  "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
+                );
+              }
+            }
           }
-        }
-      );
+        );
+      } else {
+        IMP.request_pay(
+          {
+            pg: "danal_tpay.A010052124",
+            pay_method: isBuyType,
+            merchant_uid: orderPK,
+            name: lectureDetail && lectureDetail.title,
+            buyer_name: me.username,
+            biz_num: me.mobile,
+            // amount: 150,
+            amount:
+              lectureDetail.discountPrice +
+              (isBuyBook === 1 && overAddress
+                ? dataArr.find((data) => data.id === overAddress).price
+                : 0) +
+              (isBuyBook === 1
+                ? lectureDetail.bookEndDate
+                  ? lectureDetail.bookDiscountPrice
+                  : lectureDetail.bookPrice
+                : 0),
+          },
+          async (rsp) => {
+            if (rsp.success) {
+              dispatch({
+                type: BOUGHT_CREATE_REQUEST,
+                data: {
+                  mobile: data.mobile,
+                  receiver: data.receiver,
+                  zoneCode: data.zoneCode,
+                  address: address,
+                  detailAddress: isOverseas ? "-" : data.detailAddress,
+                  payType: isBuyType,
+                  pay:
+                    lectureDetail.lecturePrice +
+                    (isBuyBook === 1
+                      ? lectureDetail.bookEndDate
+                        ? lectureDetail.bookBuyPrice
+                        : lectureDetail.bookPrice
+                      : 0),
+                  lectureType: lectureDetail.type,
+                  name: data.username,
+                  impUid: rsp.imp_uid,
+                  merchantUid: rsp.merchant_uid,
+                  isBuyBook: isBuyBook === 1 ? 1 : 0,
+                  bookPrice:
+                    isBuyBook === 1
+                      ? lectureDetail.bookEndDate
+                        ? lectureDetail.bookBuyPrice
+                        : lectureDetail.bookPrice
+                      : 0,
+                },
+              });
+            }
+          }
+        );
+      }
     },
-    [isBuyType, lectureDetail, isBuyBook]
+    [isBuyType, lectureDetail, isBuyBook, overAddress]
   );
 
   ////// DATAVIEW //////
@@ -436,6 +592,7 @@ const Home = ({}) => {
                   </Text>
                   <Text fontSize={width < 700 ? `28px` : `32px`}>
                     {lectureDetail && lectureDetail.subTitle}
+                    {isBuyBook === 1 ? ` + 교재 7권` : ``}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -448,7 +605,10 @@ const Home = ({}) => {
                     color={Theme.basicTheme_C}
                     margin={`0 4px 0 0`}
                   >
-                    {lectureDetail && lectureDetail.viewLecturePrice}
+                    {lectureDetail &&
+                      (lectureDetail.discountPrice
+                        ? lectureDetail.viewDiscountPrice
+                        : lectureDetail.viewPrice)}
                   </SpanText>
                   원
                 </Wrapper>
@@ -512,14 +672,21 @@ const Home = ({}) => {
                 {isOverseas ? (
                   <Form.Item
                     label="배송지"
-                    name="address"
+                    name="overAddress"
                     colon={false}
                     style={{ display: "flex", justifyContent: "flex-end" }}
                     rules={[
-                      { required: true, message: "수령인은 필수 입니다." },
+                      {
+                        required: isBuyBook === 1,
+                        message: "배송지는 필수 입니다.",
+                      },
                     ]}
                   >
-                    <CustomSelect>
+                    <CustomSelect
+                      onChange={overAddressChange}
+                      placeholder="해외 배송지를 선택해주세요."
+                      disabled={isBuyBook === 2}
+                    >
                       {dataArr.map((data, idx) => {
                         return (
                           <Select.Option key={idx} value={data.id}>
@@ -536,7 +703,7 @@ const Home = ({}) => {
                         label="배송지"
                         name="zoneCode"
                         rules={[
-                          { required: true, message: "수령인은 필수 입니다." },
+                          { required: true, message: "배송지는 필수 입니다." },
                         ]}
                         colon={false}
                         style={{
@@ -589,26 +756,50 @@ const Home = ({}) => {
                   </>
                 )}
 
-                <Form.Item
-                  name="detailAddress"
-                  colon={false}
-                  style={{ display: "flex", justifyContent: "flex-end" }}
-                >
-                  <TextInput
-                    width={`100%`}
-                    height={`54px`}
-                    radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
-                    fontSize={`18px`}
-                    placeholder={
-                      isOverseas
-                        ? "주소지를  입력해주세요"
-                        : "상세주소를 입력해주세요."
-                    }
-                    margin={`0 0 10px`}
-                  />
-                </Form.Item>
-                {isOverseas && (
+                {isOverseas ? (
+                  isBuyBook === 1 && (
+                    <Form.Item
+                      name="detailAddress"
+                      colon={false}
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                      <TextInput
+                        width={`100%`}
+                        height={`54px`}
+                        radius={`5px`}
+                        border={`1px solid ${Theme.lightGrey4_C}`}
+                        fontSize={`18px`}
+                        placeholder={
+                          isOverseas
+                            ? "주소지를  입력해주세요"
+                            : "상세주소를 입력해주세요."
+                        }
+                        margin={`0 0 10px`}
+                      />
+                    </Form.Item>
+                  )
+                ) : (
+                  <Form.Item
+                    name="detailAddress"
+                    colon={false}
+                    style={{ display: "flex", justifyContent: "flex-end" }}
+                  >
+                    <TextInput
+                      width={`100%`}
+                      height={`54px`}
+                      radius={`5px`}
+                      border={`1px solid ${Theme.lightGrey4_C}`}
+                      fontSize={`18px`}
+                      placeholder={
+                        isOverseas
+                          ? "주소지를  입력해주세요"
+                          : "상세주소를 입력해주세요."
+                      }
+                      margin={`0 0 10px`}
+                    />
+                  </Form.Item>
+                )}
+                {isOverseas && isBuyBook === 1 && (
                   <>
                     <Form.Item
                       name="detailAddress2"
@@ -703,11 +894,21 @@ const Home = ({}) => {
                     </CustomRadio>
                   </Radio.Group>
                 </Wrapper>
-                {console.log(lectureDetail && lectureDetail.bookEndDate)}
 
                 {isBuyBook === 1 ? (
                   lectureDetail &&
-                  (lectureDetail.bookEndDate ? (
+                  (!lectureDetail.bookEndDate ||
+                  !lectureDetail.viewBookDiscountPrice ? (
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `16px` : `22px`}
+                        color={Theme.grey3_C}
+                        margin={`0 10px 0 0`}
+                      >
+                        {lectureDetail && lectureDetail.viewBookPrice}원
+                      </Text>
+                    </Wrapper>
+                  ) : (
                     <Wrapper dr={`row`} ju={`flex-start`}>
                       <Text
                         textDecoration={"line-through"}
@@ -721,23 +922,13 @@ const Home = ({}) => {
                         fontSize={width < 700 ? `16px` : `22px`}
                         margin={`0 10px 0 0`}
                       >
-                        {lectureDetail && lectureDetail.viewBookBuyPrice}원
+                        {lectureDetail && lectureDetail.viewBookDiscountPrice}원
                       </Text>
                       <Text
                         fontSize={width < 700 ? `16px` : `22px`}
                         color={Theme.grey3_C}
                       >
                         ( {lectureDetail && lectureDetail.bookEndDate} )
-                      </Text>
-                    </Wrapper>
-                  ) : (
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text
-                        fontSize={width < 700 ? `16px` : `22px`}
-                        color={Theme.grey3_C}
-                        margin={`0 10px 0 0`}
-                      >
-                        {lectureDetail && lectureDetail.viewBookPrice}원
                       </Text>
                     </Wrapper>
                   ))
@@ -785,9 +976,17 @@ const Home = ({}) => {
                     >
                       카드결제
                     </CustomRadio>
-                    <CustomRadio value={"nobank"}>
+                    <CustomRadio
+                      value={"nobank"}
+                      style={{
+                        margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
+                      }}
+                    >
                       무통장입금(계좌이체)
                     </CustomRadio>
+                    {isOverseas && (
+                      <CustomRadio value={"paypal"}>PayPal(페이팔)</CustomRadio>
+                    )}
                   </Radio.Group>
                 </Wrapper>
                 <Wrapper
@@ -839,7 +1038,15 @@ const Home = ({}) => {
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
-                    {lectureDetail && lectureDetail.viewLecturePrice}원
+                    {lectureDetail &&
+                      numberWithCommas(
+                        lectureDetail.discountPrice +
+                          (isBuyBook === 1 && overAddress
+                            ? dataArr.find((data) => data.id === overAddress)
+                                .price
+                            : 0)
+                      )}
+                    원
                   </Wrapper>
                   <CustomPlusCircleOutlined />
                   <Wrapper
@@ -854,7 +1061,7 @@ const Home = ({}) => {
                     {isBuyBook === 1
                       ? lectureDetail &&
                         (lectureDetail.bookEndDate
-                          ? lectureDetail.viewBookBuyPrice
+                          ? lectureDetail.viewBookDiscountPrice
                           : lectureDetail.viewBookPrice)
                       : 0}
                     원
@@ -871,10 +1078,14 @@ const Home = ({}) => {
                   >
                     {lectureDetail &&
                       numberWithCommas(
-                        lectureDetail.lecturePrice +
+                        lectureDetail.discountPrice +
+                          (isBuyBook === 1 && overAddress
+                            ? dataArr.find((data) => data.id === overAddress)
+                                .price
+                            : 0) +
                           (isBuyBook === 1
                             ? lectureDetail.bookEndDate
-                              ? lectureDetail.bookBuyPrice
+                              ? lectureDetail.bookDiscountPrice
                               : lectureDetail.bookPrice
                             : 0)
                       )}

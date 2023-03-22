@@ -24,6 +24,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           CASE
               WHEN A.payType = "card" THEN "카드"
               WHEN A.payType = "nobank" THEN "무통장입금"
+              WHEN A.payType = "paypal" THEN "페이팔"
               WHEN A.payType = "admin" THEN "관리자제어"
           END                                             AS viewPayType,
           A.pay,
@@ -105,7 +106,7 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 
   try {
-    if (payType === "card") {
+    if (payType === "card" || payType === "paypal") {
       // 신용카드 결제
 
       const insertQ = `

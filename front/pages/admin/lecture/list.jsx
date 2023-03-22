@@ -312,7 +312,9 @@ const List = ({}) => {
           discountPrice: data.discountPrice,
           bookPrice: data.bookPrice,
           bookDiscountPrice: data.bookDiscountPrice,
-          bookEndDate: data.bookEndDate,
+          bookEndDate: data.bookEndDate
+            ? data.bookEndDate.format("YYYY-MM-DD")
+            : null,
           isHidden: isHidden,
         },
       });

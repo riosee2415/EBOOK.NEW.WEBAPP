@@ -81,7 +81,7 @@ const Fourleaf = ({ Component }) => {
 
         <script
           type="text/javascript"
-          src="https://cdn.iamport.kr/v1/iamport.js"
+          src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
         ></script>
 
         <script type="text/javascript" src="../customScript.js"></script>

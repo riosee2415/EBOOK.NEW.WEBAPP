@@ -185,20 +185,10 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           FORMAT(price, ',')                            AS viewPrice,
           discountPrice,
           FORMAT(discountPrice, ',')                    AS viewDiscountPrice,
-          price - discountPrice                         AS lecturePrice,
-          FORMAT(price - discountPrice, ',')            AS viewLecturePrice,
           bookPrice,
           FORMAT(bookPrice, ',')                        AS viewBookPrice,
           bookDiscountPrice,
           FORMAT(bookDiscountPrice, ',')                AS viewBookDiscountPrice,
-          CASE 
-              WHEN bookDiscountPrice IS NULL THEN  bookPrice - 0
-              ELSE bookPrice - bookDiscountPrice
-          END											                      AS bookBuyPrice,
-          CASE 
-              WHEN bookDiscountPrice IS NULL THEN  FORMAT(bookPrice - 0, ',')
-              ELSE FORMAT(bookPrice - bookDiscountPrice, ',')
-          END										                        AS viewBookBuyPrice,
           CASE
               WHEN bookEndDate IS NOT NULL THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
               WHEN DATE_FORMAT(bookEndDate, '%Y%m%d') <= DATE_FORMAT(NOW(), '%Y%m%d') THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
