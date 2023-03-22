@@ -26,6 +26,9 @@ const snsRouter = require("./routers/snsRouter");
 const faqRouter = require("./routers/faqRouter");
 const lectureRouter = require("./routers/lectureRouter");
 const mediaRouter = require("./routers/mediaRouter");
+const reviewRouter = require("./routers/reviewRouter");
+const referenceRouter = require("./routers/reference");
+const boughtLectureRouter = require("./routers/boughtLectureRouter");
 
 // Config Settings
 db.sequelize
@@ -107,6 +110,9 @@ app.use("/api/sns", snsRouter);
 app.use("/api/faq", faqRouter);
 app.use("/api/lecture", lectureRouter);
 app.use("/api/media", mediaRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api/reference", referenceRouter);
+app.use("/api/bought", boughtLectureRouter);
 
 // second minute hour day-of-month month day-of-week
 const task = cron.schedule(

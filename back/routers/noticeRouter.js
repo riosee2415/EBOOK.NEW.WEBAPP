@@ -102,6 +102,82 @@ router.post(
   }
 );
 
+router.post("/page/list", async (req, res, next) => {
+  const { page } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const lengthQ = `
+  SELECT	ROW_NUMBER() OVER(ORDER BY A.createdAt ASC)		AS num, 
+          A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.file,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+          B.username 										AS updator 
+    FROM	notices		A
+   INNER
+    JOIN	users		B
+      ON	A.updator = B.id
+   WHERE	A.isDelete = 0
+     AND  A.isUpdate = 1
+   ORDER	BY	A.createdAt DESC
+  `;
+
+  const selectQ = `
+  SELECT	ROW_NUMBER() OVER(ORDER BY A.createdAt ASC)		AS num, 
+          A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.file,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+          B.username 										AS updator 
+    FROM	notices		A
+   INNER
+    JOIN	users		B
+      ON	A.updator = B.id
+   WHERE	A.isDelete = 0
+     AND  A.isUpdate = 1
+   ORDER	BY	A.createdAt DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
+  `;
+
+  try {
+    const lengths = await models.sequelize.query(lengthQ);
+    const list = await models.sequelize.query(selectQ);
+
+    const listLen = lengths[0].length;
+
+    const lastPage =
+      listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;
+
+    return res
+      .status(200)
+      .json({ list: list[0], lastPage: parseInt(lastPage) });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("공지사항 데이터를 불러올 수 없습니다.");
+  }
+});
+
 router.post("/list", async (req, res, next) => {
   const { title, type } = req.body;
 
@@ -116,7 +192,6 @@ router.post("/list", async (req, res, next) => {
           A.content,
           A.author,
           A.hit,
-          A.isTop,
           A.file,
           A.createdAt,
           A.updatedAt,
@@ -191,7 +266,8 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
             content = "${content}",
             type = "${type}",
             updatedAt = now(),
-            updator = ${req.user.id}
+            updator = ${req.user.id},
+            isUpdate = TRUE
      WHERE  id = ${id}
   `;
 
@@ -199,39 +275,6 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   INSERT INTO noticeHistory (content, title, updator, createdAt, updatedAt) VALUES 
   (
     "데이터 수정",
-    "${title}",
-    ${req.user.id},
-    now(),
-    now()
-  )
-  `;
-
-  try {
-    await models.sequelize.query(updateQ);
-    await models.sequelize.query(insertQuery2);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("공지사항을 수정할 수 없습니다. [CODE 087]");
-  }
-});
-
-router.post("/update/top", isAdminCheck, async (req, res, next) => {
-  const { id, flag, title } = req.body;
-
-  const updateQ = `
-    UPDATE  notices
-      SET   isTop = ${flag},
-            updatedAt = now(),
-            updator = ${req.user.id}
-     WHERE  id = ${id}
-  `;
-
-  const insertQuery2 = `
-  INSERT INTO noticeHistory (content, title, updator, createdAt, updatedAt) VALUES 
-  (
-    "${flag === 0 ? "상단고정 해제" : "상단고정 적용"}",
     "${title}",
     ${req.user.id},
     now(),
@@ -283,54 +326,37 @@ router.delete("/delete/:noticeId", isAdminCheck, async (req, res, next) => {
   }
 });
 
-router.get("/list/:noticeId", async (req, res, next) => {
-  const { noticeId } = req.params;
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQ = `
+  SELECT  A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.file,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d") 		AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y.%m.%d") 		AS viewUpdatedAt
+    FROM  notices     A
+   WHERE  A.isDelete = 0
+     AND  A.isUpdate = 1
+     AND  A.id = ${id}
+  `;
 
   try {
-    const exNotice = await Notice.findOne({
-      where: { id: parseInt(noticeId) },
-    });
+    const detail = await models.sequelize.query(selectQ);
 
-    const nextHit = exNotice.dataValues.hit + 1;
-
-    const commentQuery = `
-    SELECT	A.id,
-            A.content,
-            A.isDelete,
-            A.deletedAt,
-            A.parent,
-            A.parentId,
-            DATE_FORMAT(A.createdAt, '%Y-%m-%d')  AS createdAt,
-            DATE_FORMAT(A.updatedAt, '%Y-%m-%d')  AS updatedAt,
-            A.NoticeId,
-            A.UserId,
-            B.email,
-            B.username
-      FROM	noticeComments		A
-     INNER
-      JOIN	users 					  B
-        ON	A.UserId = B.id
-     WHERE	A.isDelete = FALSE
-       AND	A.parentId  IS NULL
-       AND  A.NoticeId = ${noticeId}
+    const updateQ = `
+    UPDATE  notices
+       SET  hit = ${detail[0][0].hit + 1}
+     WHERE  id = ${id}
     `;
 
-    const comments = await models.sequelize.query(commentQuery);
+    await models.sequelize.query(updateQ);
 
-    await Notice.update(
-      {
-        hit: nextHit,
-      },
-      {
-        where: { id: parseInt(noticeId) },
-      }
-    );
-
-    if (!exNotice) {
-      return res.status(401).send("존재하지 않는 게시글 입니다.");
-    }
-
-    return res.status(200).json({ exNotice, comments: comments[0] });
+    return res.status(200).json(detail[0][0]);
   } catch (error) {
     console.error(error);
     return res.status(401).send("게시글 정보를 불러올 수 없습니다. [CODE 107]");

@@ -8,55 +8,46 @@ module.exports = class BoughtLecture extends Model {
       {
         mobile: {
           type: DataTypes.STRING(30),
-          defaultValue: "-",
           allowNull: false,
         },
         receiver: {
           type: DataTypes.STRING(200),
-          defaultValue: "-",
           allowNull: false,
         },
         zoneCode: {
           type: DataTypes.STRING(300),
-          defaultValue: "-",
           allowNull: false,
         },
         address: {
           type: DataTypes.STRING(300),
-          defaultValue: "-",
           allowNull: false,
         },
         detailAddress: {
           type: DataTypes.STRING(300),
-          defaultValue: "-",
           allowNull: false,
         },
         payType: {
-          type: DataTypes.STRING(200),
-          defaultValue: "-",
+          type: DataTypes.STRING(200), // 구매유형
           allowNull: false,
         },
         pay: {
-          type: DataTypes.STRING(200),
-          defaultValue: "-",
+          type: DataTypes.INTEGER, // 수강권 금액
           allowNull: false,
         },
         lectureType: {
-          type: DataTypes.STRING(200),
-          defaultValue: "-",
+          type: DataTypes.INTEGER, // 수강권 유형
           allowNull: false,
         },
         name: {
-          type: DataTypes.STRING(200),
-          defaultValue: "-",
+          type: DataTypes.STRING(200), // 입금자명
           allowNull: false,
         },
         recentlyTurn: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
+          type: DataTypes.INTEGER, // 마지막으로 본영상
+          allowNull: true,
         },
         recentlyTime: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATE, // 마지막으로 본영상의 시간
           allowNull: true,
         },
         boughtDate: {
@@ -71,20 +62,15 @@ module.exports = class BoughtLecture extends Model {
           type: DataTypes.DATE,
           allowNull: true,
         },
-        completeFilePath: {
-          type: DataTypes.STRING(600),
+        impUid: {
+          type: DataTypes.STRING(200),
           allowNull: true,
         },
-        importKey: {
+        merchantUid: {
           type: DataTypes.STRING(200),
           allowNull: true,
         },
         isPay: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false,
-          allowNull: false,
-        },
-        isComplate: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,
           allowNull: false,
@@ -94,13 +80,17 @@ module.exports = class BoughtLecture extends Model {
           defaultValue: false,
           allowNull: false,
         },
+        deletedAt: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
         isBuyBook: {
-          type: DataTypes.BOOLEAN,
+          type: DataTypes.BOOLEAN, // 교재 구매
           defaultValue: false,
           allowNull: false,
         },
         bookPrice: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.INTEGER, // 교재가격
           defaultValue: 0,
           allowNull: false,
         },

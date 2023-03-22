@@ -1,0 +1,263 @@
+const express = require("express");
+const isAdminCheck = require("../middlewares/isAdminCheck");
+const isLoggedIn = require("../middlewares/isLoggedIn");
+const models = require("../models");
+
+const router = express.Router();
+
+router.post("/admin/list", isAdminCheck, async (req, res, next) => {
+  const { searchDate, searchType, searchPayType } = req.body;
+
+  const _searchType = searchType ? parseInt(searchType) : null;
+  const _searchPayType = searchPayType ? searchPayType : null;
+  const _searchData = searchDate ? searchDate : null;
+
+  const selectQ = `
+  SELECT  ROW_NUMBER() OVER(ORDER  BY  A.createdAt  DESC)		AS num,
+          A.id,
+          A.mobile,
+          A.receiver,
+          A.zoneCode,
+          A.address,
+          A.detailAddress,
+          A.payType,
+          CASE
+              WHEN A.payType = "card" THEN "카드"
+              WHEN A.payType = "nobank" THEN "무통장입금"
+              WHEN A.payType = "admin" THEN "관리자제어"
+          END                                             AS viewPayType,
+          A.pay,
+          A.lectureType,
+          CASE
+              WHEN A.lectureType = 1 THEN  "1년"
+              WHEN A.lectureType = 2 THEN  "2년"
+              WHEN A.lectureType = 3 THEN  "3년"
+              WHEN A.lectureType = 4 THEN  "평생"
+              WHEN A.lectureType = 5 THEN  "3달"
+              WHEN A.lectureType = 6 THEN  "상품"
+          END                                           	AS viewLectureType,
+          A.name,
+          A.boughtDate,
+          A.startDate,
+          A.endDate,
+          A.impUid,
+          A.merchantUid,
+          A.boughtDate,
+          A.startDate,
+          A.endDate,
+          A.isPay,
+          A.isBuyBook,
+          A.bookPrice,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, '%Y년 %m월 %d일')		AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, '%Y년 %m월 %d일')		AS viewUpdatedAt,
+          A.userId,
+          B.username,
+          B.userId                                    AS userLoginId,
+          B.birth,
+          B.gender         
+    FROM  boughtLecture			A
+   INNER
+    JOIN  users					B
+      ON  A.userId = B.id
+   WHERE  A.isDelete = FALSE
+     ${_searchType ? `AND  A.lectureType = ${searchType}` : ``}
+     ${_searchPayType ? `AND  A.payType = "${searchPayType}"` : ``}
+     ${
+       _searchData
+         ? `AND  DATE_FORMAT(A.createdAt, "%Y-%m") = DATE_FORMAT("${searchDate}-01", "%Y-%m")`
+         : ``
+     }
+   ORDER  BY  A.createdAt  DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("결제 내역을 불러올 수 없습니다.");
+  }
+});
+
+router.post("/create", isLoggedIn, async (req, res, next) => {
+  const {
+    mobile,
+    receiver,
+    zoneCode,
+    address,
+    detailAddress,
+    payType,
+    pay,
+    lectureType,
+    name,
+    impUid,
+    merchantUid,
+    isBuyBook,
+    bookPrice,
+  } = req.body;
+
+  const YEAR =
+    lectureType === 4
+      ? `"9999-12-31"`
+      : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
+
+  try {
+    if (payType === "card") {
+      // 신용카드 결제
+
+      const insertQ = `
+      INSERT INTO boughtLecture (
+        mobile,
+        receiver,
+        zoneCode,
+        address,
+        detailAddress,
+        payType,
+        pay,
+        lectureType,
+        name,
+        boughtDate,
+        startDate,
+        endDate,
+        impUid,
+        merchantUid,
+        isPay,
+        isBuyBook,
+        bookPrice,
+        createdAt,
+        updatedAt,
+        userId
+      )
+      VALUES
+      (
+        "${mobile}",
+        "${receiver}",
+        "${zoneCode}",
+        "${address}",
+        "${detailAddress}",
+        "${payType}",
+        ${pay},
+        ${lectureType},
+        "-",
+        NOW(),
+        NOW(),
+        ${YEAR},
+        "${impUid}",
+        "${merchantUid}",
+        TRUE,
+        ${isBuyBook},
+        ${bookPrice},
+        NOW(),
+        NOW(),
+        ${req.user.id}
+      ) 
+      `;
+      await models.sequelize.query(insertQ);
+    } else {
+      // 무통장입금 결제
+
+      const insertQ = `
+      INSERT INTO boughtLecture (
+        mobile,
+        receiver,
+        zoneCode,
+        address,
+        detailAddress,
+        payType,
+        pay,
+        lectureType,
+        name,
+        impUid,
+        merchantUid,
+        isPay,
+        isBuyBook,
+        bookPrice,
+        createdAt,
+        updatedAt,
+        userId
+      )
+      VALUES
+      (
+        "${mobile}",
+        "${receiver}",
+        "${zoneCode}",
+        "${address}",
+        "${detailAddress}",
+        "${payType}",
+        ${pay},
+        ${lectureType},
+        "${name}",
+        "-",
+        "-",
+        FALSE,
+        ${isBuyBook},
+        ${bookPrice},
+        NOW(),
+        NOW(),
+        ${req.user.id}
+      ) 
+      `;
+      await models.sequelize.query(insertQ);
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("구매할 수 없습니다.");
+  }
+});
+
+router.post("/isPay/update", isAdminCheck, async (req, res, next) => {
+  const { id, lectureType } = req.body;
+
+  const YEAR =
+    lectureType === 4
+      ? `"9999-12-31"`
+      : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
+
+  const updateQ = `
+  UPDATE  boughtLecture
+     SET  isPay = TRUE,
+          startDate = NOW(),
+          endDate = ${YEAR},
+          updatedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("승인할 수 없습니다.");
+  }
+});
+
+router.post("/address/update", isAdminCheck, async (req, res, next) => {
+  const { id, payType, receiver, address, detailAddress } = req.body;
+
+  const updateQ = `
+  UPDATE  boughtLecture
+     SET  payType = "${payType}",
+          receiver = "${receiver}",
+          address = "${address}",
+          detailAddress = "${detailAddress}",
+          updatedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("주소를 수정할 수 없습니다.");
+  }
+});
+
+module.exports = router;

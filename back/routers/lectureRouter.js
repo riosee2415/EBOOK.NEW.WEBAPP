@@ -6,6 +6,7 @@ const path = require("path");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const models = require("../models");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 
 const router = express.Router();
 
@@ -48,6 +49,61 @@ router.post(
     return res.json({ path: req.file.location });
   }
 );
+
+router.post("/list", async (req, res, next) => {
+  const { searchType } = req.body;
+
+  if (!Array.isArray(searchType)) {
+    return res.status(401).send("잘못된 요청입니다.");
+  }
+
+  const selectQ = `
+  SELECT  ROW_NUMBER() OVER(ORDER	BY createdAt ASC)		AS num,
+          id,
+          type,
+          CASE
+              WHEN type = 1 THEN  "1년"
+              WHEN type = 2 THEN  "2년"
+              WHEN type = 3 THEN  "3년"
+              WHEN type = 4 THEN  "평생"
+              WHEN type = 5 THEN  "3달"
+              WHEN type = 6 THEN  "상품"
+          END                                           AS viewType,
+          thumbnail,
+          title,
+          subTitle,
+          price,
+          FORMAT(price, ',')                            AS viewPrice,
+          discountPrice,
+          FORMAT(discountPrice, ',')                    AS viewDiscountPrice,
+          price - discountPrice                         AS lecturePrice,
+          FORMAT(price - discountPrice, ',')            AS viewLecturePrice,
+          bookPrice,
+          FORMAT(bookPrice, ',')                        AS viewBookPrice,
+          bookDiscountPrice,
+          FORMAT(bookDiscountPrice, ',')                AS viewBookDiscountPrice,
+          bookEndDate,
+          isHidden,
+          createdAt,
+          DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+          updatedAt,
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+    FROM  lecture
+   WHERE  1 = 1
+     AND  isDelete = FALSE
+     AND  isHidden = FALSE
+     AND  type IN (${searchType.map((data) => data)})
+`;
+
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("상품 리스트를 불러올 수 없습니다.");
+  }
+});
 
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   const { searchType } = req.body;
@@ -96,6 +152,83 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   } catch (e) {
     console.error(e);
     return res.status(400).send("상품 리스트를 불러올 수 없습니다.");
+  }
+});
+
+router.post("/detail", isLoggedIn, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQ = `
+  SELECT  id
+    FROM  boughtLecture
+   WHERE  userId = ${req.user.id}
+     AND  isDelete = FALSE
+     AND  endDate >= NOW()
+  `;
+
+  const selectQ = `
+  SELECT  ROW_NUMBER() OVER(ORDER	BY createdAt ASC)		AS num,
+          id,
+          type,
+          CASE
+              WHEN type = 1 THEN  "1년"
+              WHEN type = 2 THEN  "2년"
+              WHEN type = 3 THEN  "3년"
+              WHEN type = 4 THEN  "평생"
+              WHEN type = 5 THEN  "3달"
+              WHEN type = 6 THEN  "상품"
+          END                                           AS viewType,
+          thumbnail,
+          title,
+          subTitle,
+          price,
+          FORMAT(price, ',')                            AS viewPrice,
+          discountPrice,
+          FORMAT(discountPrice, ',')                    AS viewDiscountPrice,
+          price - discountPrice                         AS lecturePrice,
+          FORMAT(price - discountPrice, ',')            AS viewLecturePrice,
+          bookPrice,
+          FORMAT(bookPrice, ',')                        AS viewBookPrice,
+          bookDiscountPrice,
+          FORMAT(bookDiscountPrice, ',')                AS viewBookDiscountPrice,
+          CASE 
+              WHEN bookDiscountPrice IS NULL THEN  bookPrice - 0
+              ELSE bookPrice - bookDiscountPrice
+          END											                      AS bookBuyPrice,
+          CASE 
+              WHEN bookDiscountPrice IS NULL THEN  FORMAT(bookPrice - 0, ',')
+              ELSE FORMAT(bookPrice - bookDiscountPrice, ',')
+          END										                        AS viewBookBuyPrice,
+          CASE
+              WHEN bookEndDate IS NOT NULL THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
+              WHEN DATE_FORMAT(bookEndDate, '%Y%m%d') <= DATE_FORMAT(NOW(), '%Y%m%d') THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
+              ELSE NULL
+          END                                           AS bookEndDate,
+          isHidden,
+          createdAt,
+          DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+          updatedAt,
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+    FROM  lecture
+   WHERE  1 = 1
+     AND  isDelete = FALSE
+     AND  isHidden = FALSE
+     AND  id = ${id}
+  `;
+
+  try {
+    const find = await models.sequelize.query(findQ);
+
+    if (find[0].length > 0) {
+      return res.status(400).send("이미 수강권이 있습니다.");
+    }
+
+    const select = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(select[0][0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("수강권을 불러올 수 없습니다.");
   }
 });
 

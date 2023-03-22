@@ -71,7 +71,7 @@ const Home = ({}) => {
 
             {lectureList &&
               (lectureList.length === 0 ? (
-                <Wrapper margin={`40px 0`}>
+                <Wrapper height={`50vh`}>
                   <Empty description="수강신청목록이 없습니다." />
                 </Wrapper>
               ) : (

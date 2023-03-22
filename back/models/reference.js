@@ -1,7 +1,7 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class Notice extends Model {
+module.exports = class Reference extends Model {
   static init(sequelize) {
     return super.init(
       {
@@ -10,25 +10,9 @@ module.exports = class Notice extends Model {
           type: DataTypes.STRING(300), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: false, // 필수
         },
-        type: {
-          // ["공지사항", "새소식"]
-          type: DataTypes.STRING(30), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
-          allowNull: false, // 필수
-          defaultValue: "공지사항",
-        },
-        content: {
-          type: DataTypes.TEXT,
-          allowNull: false, // 필수
-        },
-        author: {
-          type: DataTypes.STRING(30),
+        filename: {
+          type: DataTypes.STRING(300),
           allowNull: false,
-          defaultValue: "관리자",
-        },
-        hit: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          defaultValue: 0,
         },
         file: {
           type: DataTypes.STRING(2000), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
@@ -47,15 +31,10 @@ module.exports = class Notice extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        isUpdate: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false,
-          allowNull: false,
-        },
       },
       {
-        modelName: "Notice",
-        tableName: "notices",
+        modelName: "Reference",
+        tableName: "reference",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,

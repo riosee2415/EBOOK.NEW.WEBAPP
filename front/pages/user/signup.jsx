@@ -9,10 +9,8 @@ import {
   DatePicker,
   Modal,
 } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import useInput from "../../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
-import { SIGNUP_REQUEST, USER_FIND_USERID_REQUEST } from "../../reducers/user";
+import { SIGNUP_REQUEST, USER_CHECK_USERID_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -165,7 +163,7 @@ const SignUp = () => {
     }
 
     dispatch({
-      type: USER_FIND_USERID_REQUEST,
+      type: USER_CHECK_USERID_REQUEST,
       data: {
         userId: formData.userId,
       },

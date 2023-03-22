@@ -24,10 +24,15 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           id,
           email,
           username,
-          
           mobile,
           level,
           isExit,
+          birth,
+          gender,
+          zoneCode,
+          address,
+          detailAddress,
+          tel,
           CASE
             WHEN	level = 1	THEN "일반회원"
             WHEN	level = 2	THEN "비어있음"
@@ -41,7 +46,7 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           exitedAt,
           DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
-		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		AS viewExitedAt
+		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
     FROM	users
    WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
           ${
@@ -313,23 +318,6 @@ router.get("/signin", async (req, res, next) => {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
         where: { id: req.user.id },
-        attributes: [
-          "id",
-          "email",
-          "level",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
       });
 
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
@@ -365,24 +353,6 @@ router.post("/signin", (req, res, next) => {
 
       const fullUserWithoutPassword = await User.findOne({
         where: { id: user.id },
-        attributes: [
-          "id",
-          "email",
-          "level",
-          "username",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
       });
 
       return res.status(200).json(fullUserWithoutPassword);
@@ -415,24 +385,6 @@ router.post("/signin/admin", (req, res, next) => {
 
       const fullUserWithoutPassword = await User.findOne({
         where: { id: user.id },
-        attributes: [
-          "id",
-          "email",
-          "level",
-          "username",
-          "menuRight1",
-          "menuRight2",
-          "menuRight3",
-          "menuRight4",
-          "menuRight5",
-          "menuRight6",
-          "menuRight7",
-          "menuRight8",
-          "menuRight9",
-          "menuRight10",
-          "menuRight11",
-          "menuRight12",
-        ],
       });
 
       return res.status(200).json(fullUserWithoutPassword);
@@ -514,7 +466,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post("/find/userid", async (req, res, next) => {
+router.post("/check/userid", async (req, res, next) => {
   const { userId } = req.body;
 
   const selectQ = `
@@ -570,20 +522,21 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.post("/findemail", async (req, res, next) => {
-  const { mobile } = req.body;
+router.post("/find/userId", async (req, res, next) => {
+  const { username, mobile } = req.body;
 
   try {
     const exUser = await User.findOne({
       where: {
+        username,
         mobile,
       },
     });
 
     if (exUser) {
-      return res.status(200).json({ email: exUser.email });
+      return res.status(200).json({ userId: exUser.userId });
     } else {
-      return res.status(200).json({ email: false });
+      return res.status(200).json({ userId: false });
     }
   } catch (error) {
     console.error(error);
@@ -591,41 +544,43 @@ router.post("/findemail", async (req, res, next) => {
   }
 });
 
-router.post("/modifypass", isLoggedIn, async (req, res, next) => {
+router.post("/modifypass", async (req, res, next) => {
   const { email, mobile } = req.body;
 
+  const findQ = `
+  SELECT  id
+    FROM  users
+   WHERE  email = "${email}"
+     AND  mobile = "${mobile}"
+  `;
+
   try {
-    const cookieEmail = req.user.dataValues.email;
-    const cookieNickname = req.user.dataValues.nickname;
-    const cookieMobile = req.user.dataValues.mobile;
+    const find = await models.sequelize.query(findQ);
 
-    if (
-      email === cookieEmail &&
-      nickname === cookieNickname &&
-      mobile === cookieMobile
-    ) {
-      const currentUserId = req.user.dataValues.id;
+    if (find[0].length === 0) {
+      return res.status(401).send("일치하는 이메일 또는 연락처가 없습니다.");
+    }
 
-      const UUID = generateUUID();
+    const UUID = generateUUID();
 
-      const updateResult = await User.update(
-        { secret: UUID },
-        {
-          where: { id: parseInt(currentUserId) },
-        }
-      );
+    const updateResult = await User.update(
+      { secret: UUID },
+      {
+        where: { mobile: mobile, email },
+      }
+    );
 
-      if (updateResult[0] > 0) {
-        // 이메일 전송
+    if (updateResult[0] > 0) {
+      // 이메일 전송
 
-        await sendSecretMail(
-          cookieEmail,
-          `🔐 [보안 인증코드 입니다.] ㅁㅁㅁㅁ 에서 비밀번호 변경을 위한 보안인증 코드를 발송했습니다.`,
-          `
+      await sendSecretMail(
+        email,
+        `🔐 [보안 인증코드 입니다.] 친절한 영어교실 에서 비밀번호 변경을 위한 보안인증 코드를 발송했습니다.`,
+        `
           <div>
-            <h3>ㅁㅁㅁㅁ</h3>
+            <h3>친절한 영어교실</h3>
             <hr />
-            <p>보안 인증코드를 발송해드립니다. ㅁㅁㅁㅁ 홈페이지의 인증코드 입력란에 정확히 입력해주시기 바랍니다.</p>
+            <p>보안 인증코드를 발송해드립니다. 친절한 영어교실 홈페이지의 인증코드 입력란에 정확히 입력해주시기 바랍니다.</p>
             <p>인증코드는 [<strong>${UUID}</strong>] 입니다. </p>
 
             <br /><hr />
@@ -634,18 +589,13 @@ router.post("/modifypass", isLoggedIn, async (req, res, next) => {
             </article>
           </div>
           `
-        );
+      );
 
-        return res.status(200).json({ result: true });
-      } else {
-        return res
-          .status(401)
-          .send("요청이 올바르지 않습니다. 다시 시도해주세요.");
-      }
+      return res.status(200).json({ result: true });
     } else {
       return res
         .status(401)
-        .send("입력하신 정보가 잘못되었습니다. 다시 확인해주세요.");
+        .send("요청이 올바르지 않습니다. 다시 시도해주세요.");
     }
   } catch (error) {
     console.error(error);
@@ -653,18 +603,44 @@ router.post("/modifypass", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.patch("/modifypass/update", isLoggedIn, async (req, res, next) => {
-  const { secret, password } = req.body;
+router.post("/modifypass/checked", async (req, res, next) => {
+  const { email, mobile, secret } = req.body;
+
+  const findQ = `
+SELECT  id,
+        secret
+  FROM  users
+ WHERE  email = "${email}"
+   AND  mobile = "${mobile}"
+`;
+
+  try {
+    const find = await models.sequelize.query(findQ);
+
+    if (find[0].find((data) => data.secret === secret)) {
+      return res.status(200).json({ result: true });
+    } else {
+      return res.status(400).send("인증번호가 일치하지 않습니다.");
+    }
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("인증번호를 검사할 수 없습니다.");
+  }
+});
+
+router.post("/modifypass/update", async (req, res, next) => {
+  const { email, mobile, secret, password } = req.body;
 
   try {
     const exUser = await User.findOne({
-      where: { id: req.user.dataValues.id },
+      where: {
+        email: email,
+        mobile: mobile,
+      },
     });
 
-    if (!exUser) {
-      return res
-        .status(401)
-        .send("잘못된 요청 입니다. 다시 로그인 후 이용해주세요.");
+    if (!exUser || exUser.secret !== secret) {
+      return res.status(401).send("인증번호가 일치하지 않습니다.");
     }
 
     const hashPassord = await bcrypt.hash(password, 12);
@@ -672,7 +648,7 @@ router.patch("/modifypass/update", isLoggedIn, async (req, res, next) => {
     const updateResult = await User.update(
       { password: hashPassord },
       {
-        where: { id: req.user.dataValues.id },
+        where: { email: email, mobile: mobile },
       }
     );
 
