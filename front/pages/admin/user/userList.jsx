@@ -28,6 +28,7 @@ import {
   SearchForm,
   SearchFormItem,
   SettingBtn,
+  ModalBtn,
 } from "../../../components/commonComponents";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -40,7 +41,11 @@ import {
   PopWrapper,
 } from "../../../components/commonComponents";
 import Theme from "../../../components/Theme";
-import { HomeOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  HomeOutlined,
+  RightOutlined,
+  SnippetsOutlined,
+} from "@ant-design/icons";
 
 const TypeButton = styled(Button)`
   margin-right: 5px;
@@ -56,6 +61,14 @@ const PointText = styled.div`
   color: ${(props) => props.theme.adminTheme_4};
 `;
 
+const CustomForm = styled(Form)`
+  width: 100%;
+
+  & .ant-form-item {
+    width: 100%;
+  }
+`;
+
 const LoadNotification = (msg, content) => {
   notification.open({
     message: msg,
@@ -64,6 +77,17 @@ const LoadNotification = (msg, content) => {
   });
 };
 
+export const SnippetsBtn = styled(SnippetsOutlined)`
+  font-size: 20px;
+  color: ${(props) => props.theme.adminTheme_1};
+  cursor: pointer;
+  transition: 0.4s;
+
+  &:hover {
+    transform: scale(1.3);
+    color: ${(props) => props.theme.adminTheme_4};
+  }
+`;
 const UserList = ({}) => {
   // LOAD CURRENT INFO AREA /////////////////////////////////////////////
   const { me, st_loadMyInfoDone } = useSelector((state) => state.user);
@@ -99,6 +123,8 @@ const UserList = ({}) => {
     st_userListUpdateError,
   } = useSelector((state) => state.user);
 
+  console.log(users);
+
   const [sameDepth, setSameDepth] = useState([]);
 
   const [updateData, setUpdateData] = useState(null);
@@ -112,6 +138,9 @@ const UserList = ({}) => {
 
   const [level1, setLevel1] = useState("회원관리");
   const [level2, setLevel2] = useState("");
+
+  const [dModal, setDModal] = useState(false);
+  const [dData, setDData] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -185,6 +214,19 @@ const UserList = ({}) => {
     });
   }, [updateModal]);
 
+  // 상세 모달
+  const dModalToggle = useCallback(
+    (data) => {
+      if (data) {
+        setDData(data);
+      } else {
+        setDData(null);
+      }
+
+      setDModal((prev) => !prev);
+    },
+    [dModal, dData]
+  );
   ////// HANDLER //////
 
   const tabClickHandler = useCallback(
@@ -277,27 +319,23 @@ const UserList = ({}) => {
     },
     {
       title: "회원이름",
-      render: (data) => <div>{data.username}</div>,
-    },
-    {
-      title: "닉네임",
-      render: (data) => <div>{data.nickname}</div>,
+      dataIndex: "username",
     },
     {
       title: "이메일",
-      render: (data) => <div>{data.email}</div>,
+      dataIndex: "email",
     },
     {
       title: "전화번호",
-      render: (data) => <div>{data.mobile}</div>,
+      dataIndex: "mobile",
     },
     {
       title: "가입일",
-      render: (data) => <div>{data.viewCreatedAt}</div>,
+      dataIndex: "viewCreatedAt",
     },
     {
       title: "권한",
-      render: (data) => <div>{data.viewLevel}</div>,
+      dataIndex: "viewLevel",
     },
     {
       title: "권한수정",
@@ -310,6 +348,97 @@ const UserList = ({}) => {
           수정
         </SettingBtn>
       ),
+    },
+    {
+      title: "상세정보",
+      render: (data) => <SnippetsBtn onClick={() => dModalToggle(data)} />,
+    },
+  ];
+
+  const columns2 = [
+    {
+      width: `15%`,
+      align: "center",
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      width: `55%`,
+      title: "영상이름",
+      dataIndex: "title",
+    },
+    {
+      width: `30%`,
+      title: "날짜",
+      dataIndex: "createdAt",
+    },
+  ];
+
+  const testData = [
+    {
+      num: 1,
+      title: "영상 테스트 01",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 2,
+      title: "영상 테스트 02",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 3,
+      title: "영상 테스트 03",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 4,
+      title: "영상 테스트 04",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 5,
+      title: "영상 테스트 05",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 6,
+      title: "영상 테스트 06",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 7,
+      title: "영상 테스트 07",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 8,
+      title: "영상 테스트 08",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 9,
+      title: "영상 테스트 09",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 10,
+      title: "영상 테스트 10",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 11,
+      title: "영상 테스트 11",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 12,
+      title: "영상 테스트 12",
+      createdAt: "YYYY-MM-DD",
+    },
+    {
+      num: 13,
+      title: "영상 테스트 13'",
+      createdAt: "YYYY-MM-DD",
     },
   ];
 
@@ -463,6 +592,102 @@ const UserList = ({}) => {
             </Select>
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* DMODAL TOGGLE */}
+      <Modal
+        width={`1300px`}
+        title="상세정보"
+        visible={dModal}
+        onCancel={() => dModalToggle(null)}
+        footer={null}
+      >
+        <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
+          <Wrapper width={`calc(50% - 20px)`}>
+            <CustomForm labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+                <Text fontSize={`20px`}>회원 정보</Text>
+              </Wrapper>
+              <Form.Item name="userId" label="아이디">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="사용자명">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="연락처">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="모바일">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="이메일">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="가입일">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="권한">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="키워드">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="우편번호">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="기본주소">
+                <Input size="small" readOnly />
+              </Form.Item>
+              <Form.Item name="username" label="상세주소">
+                <Input size="small" readOnly />
+              </Form.Item>
+
+              <Wrapper dr={`row`} ju={`flex-end`}>
+                {/* <ModalBtn size="small" type="danger">
+                  삭제
+                </ModalBtn> */}
+                <ModalBtn size="small" type="primary">
+                  수정
+                </ModalBtn>
+              </Wrapper>
+            </CustomForm>
+          </Wrapper>
+          <Wrapper width={`1px`} height={`800px`} bgColor={Theme.lightGrey_C} />
+          <Wrapper width={`calc(50% - 20px)`}>
+            <Wrapper margin={`0 0 30px`}>
+              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+                <Text fontSize={`20px`}>이용권정보</Text>
+              </Wrapper>
+
+              <CustomForm>
+                <Form.Item name="username" label="이용권">
+                  <Input size="small" />
+                </Form.Item>
+
+                <Wrapper dr={`row`} ju={`flex-end`}>
+                  <ModalBtn size="small" type="danger">
+                    삭제
+                  </ModalBtn>
+                  <ModalBtn size="small" type="primary">
+                    추가
+                  </ModalBtn>
+                </Wrapper>
+              </CustomForm>
+            </Wrapper>
+            <Wrapper>
+              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+                <Text fontSize={`20px`}>수강 기록</Text>
+              </Wrapper>
+
+              <Table
+                style={{ width: `100%` }}
+                size="small"
+                columns={columns2}
+                dataSource={testData}
+              />
+            </Wrapper>
+          </Wrapper>
+        </Wrapper>
       </Modal>
     </AdminLayout>
   );

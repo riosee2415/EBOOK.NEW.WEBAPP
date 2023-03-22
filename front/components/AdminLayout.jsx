@@ -75,6 +75,11 @@ export const items = {
       link: "/admin/lecture/media",
       useYn: true,
     },
+    {
+      name: "구매강의관리",
+      link: "/admin/lecture/buyLecture",
+      useYn: true,
+    },
   ],
   게시판관리: [
     {

@@ -72,6 +72,19 @@ const Fourleaf = ({ Component }) => {
           href="https://webfontworld.github.io/pretendard/Pretendard.css"
           rel="stylesheet"
         />
+
+        {/* 아임포트 */}
+        <script
+          type="text/javascript"
+          src="https://code.jquery.com/jquery-1.12.4.min.js"
+        ></script>
+
+        <script
+          type="text/javascript"
+          src="https://cdn.iamport.kr/v1/iamport.js"
+        ></script>
+
+        <script type="text/javascript" src="../customScript.js"></script>
       </Head>
       <Component />
     </ThemeProvider>

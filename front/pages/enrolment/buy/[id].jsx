@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import useInput from "../../../hooks/useInput";
@@ -21,9 +21,18 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../../../components/popup/popup";
-import { Empty, Form, Radio } from "antd";
+import { Empty, Form, message, Radio, Modal, Select } from "antd";
+import {
+  PlusCircleOutlined,
+  PauseCircleOutlined,
+  ArrowRightOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { LECTURE_DETAIL_REQUEST } from "../../../reducers/lecture";
+import DaumPostcode from "react-daum-postcode";
+import { numberWithCommas } from "../../../components/commonUtils";
+import moment from "moment";
+import { BOUGHT_CREATE_REQUEST } from "../../../reducers/boughtLecture";
 
 const BuyForm = styled(Form)`
   width: 100%;
@@ -46,21 +55,132 @@ const BuyForm = styled(Form)`
   }
 `;
 
-const CustomRadioGroup = styled(Radio.Group)`
-  & .ant-radio-wrapper {
-    font-size: 24px !important;
+const CustomPlusCircleOutlined = styled(PlusCircleOutlined)`
+  font-size: 30px;
+  color: ${(porps) => porps.theme.basicTheme_C};
+  @media (max-width: 700px) {
+    font-size: 14px;
+    margin: 0 1px;
+  }
+`;
+const CustomPauseCircleOutlined = styled(PauseCircleOutlined)`
+  font-size: 30px;
+  color: ${(porps) => porps.theme.basicTheme_C};
+  transform: rotate(90deg);
+
+  @media (max-width: 700px) {
+    font-size: 14px;
+    margin: 0 1px;
+  }
+`;
+
+const CustomArrowRightOutlined = styled(ArrowRightOutlined)`
+  font-size: 20px;
+  color: ${(porps) => porps.theme.basicTheme_C};
+  margin: 0 10px;
+  @media (max-width: 700px) {
+    font-size: 14px;
+    margin: 0 5px;
+  }
+`;
+
+const CustomSelect = styled(Select)`
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid ${(props) => props.theme.lightGrey4_C};
+  font-size: 18px;
+  margin: 0 0 10px;
+
+  &:not(.ant-select-customize-input) .ant-select-selector {
+    height: 54px !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    align-items: center;
+  }
+`;
+
+const CustomRadio = styled(Radio)`
+  & span {
+    font-size: 24px;
+  }
+
+  & .ant-radio {
+    top: 0.1em;
+  }
+
+  & .ant-radio-checked,
+  & .ant-radio-inner {
+    width: 20.5px;
+    height: 20.5px;
+  }
+
+  & .ant-radio-inner::after {
+    display: none;
+  }
+  & .ant-radio-checked .ant-radio-inner,
+  &:hover .ant-radio-inner {
+    border: 6px solid ${(props) => props.theme.basicTheme_C};
+  }
+
+  @media (max-width: 700px) {
+    & span {
+      font-size: 20px;
+    }
+
+    & .ant-radio-checked,
+    & .ant-radio-inner {
+      width: 18.5px;
+      height: 18.5px;
+    }
   }
 `;
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
-
-  const { lectureDetail } = useSelector((state) => state.lecture);
+  const { me } = useSelector((state) => state.user);
+  const { lectureDetail, st_lectureDetailError } = useSelector(
+    (state) => state.lecture
+  );
+  const { st_boughtCreateLoading, st_boughtCreateDone, st_boughtCreateError } =
+    useSelector((state) => state.boughtLecture);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [infoForm] = Form.useForm();
+
+  const [addressData, setAddressData] = useState(null);
+  const [aModal, setAModal] = useState(false);
+
+  const [isBuyBook, setIsBuyBook] = useState(1);
+  const [isBuyType, setIsBuyType] = useState(null);
+  const [isOverseas, setIsOverseas] = useState(false);
+
+  const dataArr = [
+    {
+      id: 1,
+      title: "미국 캐나다 북미 남미 아프리카",
+      price: 100000,
+      viewPrice: "100,000원",
+    },
+    {
+      id: 2,
+      title: "일본 베트남 아시아",
+      price: 40000,
+      viewPrice: "40,000원",
+    },
+    {
+      id: 3,
+      title: "유럽 오세아니아",
+      price: 80000,
+      viewPrice: "80,000원",
+    },
+  ];
+
   ////// REDUX //////
   ////// USEEFFECT //////
   useEffect(() => {
@@ -73,8 +193,165 @@ const Home = ({}) => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (!me) {
+      router.push("/user/login");
+      return message.error("로그인 후 이용해주세요.");
+    } else {
+      infoForm.setFieldsValue({
+        username: me.username,
+        receiver: me.username,
+        zoneCode: me.zoneCode,
+        address: me.address,
+        detailAddress: me.detailAddress,
+        mobile: me.mobile,
+      });
+
+      setAddressData({
+        zonecode: me.zoneCode,
+      });
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (st_lectureDetailError === "이미 수강권이 있습니다.") {
+      message.error(st_lectureDetailError);
+      return router.push("/enrolment");
+    }
+  }, [st_lectureDetailError]);
+
+  // 결제 후처리
+  useEffect(() => {
+    if (st_boughtCreateDone) {
+      message.success("결제되었습니다.");
+      return router.push("/mypage");
+    }
+
+    if (st_boughtCreateError) {
+      return message.error(st_boughtCreateError);
+    }
+  }, [st_boughtCreateDone, st_boughtCreateError]);
   ////// TOGGLE //////
+
+  // 주소 모달
+  const aModalToggle = useCallback(() => {
+    setAModal((prev) => !prev);
+  }, [aModal]);
+
   ////// HANDLER //////
+
+  // 해외 여부
+  const isOverseasChangeHandler = useCallback(
+    (data) => {
+      setIsOverseas(data);
+
+      if (!data) {
+        infoForm.setFieldsValue({
+          username: me.username,
+          receiver: me.username,
+          zoneCode: me.zoneCode,
+          address: me.address,
+          detailAddress: me.detailAddress,
+          mobile: me.mobile,
+        });
+
+        setAddressData({
+          zonecode: me.zoneCode,
+        });
+      }
+    },
+    [isOverseas]
+  );
+
+  // 교재 구매
+  const isBuyBookChangeHandler = useCallback(
+    (data) => {
+      setIsBuyBook(data.target.value);
+    },
+    [isBuyBook]
+  );
+
+  // 결제 방법
+  const isBuyTypeChangeHandler = useCallback(
+    (data) => {
+      setIsBuyType(data.target.value);
+    },
+    [isBuyType]
+  );
+
+  // 결제
+  const buyHandler = useCallback(
+    (data) => {
+      const IMP = window.IMP;
+
+      const address = isOverseas
+        ? dataArr[data.address] +
+          " / " +
+          data.detailAddress +
+          " " +
+          data.detailAddress2 +
+          " " +
+          data.detailAddress3
+        : data.address;
+
+      const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
+
+      IMP.request_pay(
+        {
+          pg: "danal_tpay.A010052124",
+          pay_method: isBuyType,
+          buyer_name: lectureDetail.subTitle,
+          merchant_uid: orderPK,
+          name: me.username,
+          biz_num: me.mobile,
+          amount: 150,
+          // amount:
+          //   lectureDetail.lecturePrice +
+          //   (isBuyBook === 1
+          //     ? lectureDetail.bookEndDate
+          //       ? lectureDetail.bookBuyPrice
+          //       : lectureDetail.bookPrice
+          //     : 0),
+        },
+        async (rsp) => {
+          if (rsp.success) {
+            dispatch({
+              type: BOUGHT_CREATE_REQUEST,
+              data: {
+                mobile: data.mobile,
+                receiver: data.receiver,
+                zoneCode: data.zoneCode,
+                address: address,
+                detailAddress: isOverseas ? "-" : data.detailAddress,
+                payType: isBuyType,
+                pay:
+                  lectureDetail.lecturePrice +
+                  (isBuyBook === 1
+                    ? lectureDetail.bookEndDate
+                      ? lectureDetail.bookBuyPrice
+                      : lectureDetail.bookPrice
+                    : 0),
+                lectureType: lectureDetail.type,
+                name: data.username,
+                impUid: rsp.imp_uid,
+                merchantUid: rsp.merchant_uid,
+                isBuyBook: isBuyBook === 1 ? 1 : 0,
+                bookPrice:
+                  isBuyBook === 1
+                    ? lectureDetail.bookEndDate
+                      ? lectureDetail.bookBuyPrice
+                      : lectureDetail.bookPrice
+                    : 0,
+              },
+            });
+          }
+        }
+      );
+    },
+    [isBuyType, lectureDetail, isBuyBook]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -100,20 +377,23 @@ const Home = ({}) => {
                 </Text>
                 <Wrapper width={`auto`} dr={`row`}>
                   <CommonButton
-                    width={`110px`}
-                    height={`44px`}
+                    width={width < 700 ? `90px` : `110px`}
+                    height={width < 700 ? `38px` : `44px`}
                     fontSize={`20px`}
                     fontWeight={`600`}
-                    kindOf={`basic`}
+                    kindOf={!isOverseas && `basic`}
                     margin={`0 8px 0 0`}
+                    onClick={() => isOverseasChangeHandler(false)}
                   >
                     국내
                   </CommonButton>
                   <CommonButton
-                    width={`110px`}
-                    height={`44px`}
+                    width={width < 700 ? `90px` : `110px`}
+                    height={width < 700 ? `38px` : `44px`}
                     fontSize={`20px`}
                     fontWeight={`600`}
+                    kindOf={isOverseas && `basic`}
+                    onClick={() => isOverseasChangeHandler(true)}
                   >
                     해외
                   </CommonButton>
@@ -137,12 +417,13 @@ const Home = ({}) => {
               </Wrapper>
 
               <Wrapper
-                padding={`40px`}
+                padding={width < 700 ? `20px` : `40px`}
                 radius={`10px`}
                 border={`1px solid ${Theme.lightGrey4_C}`}
                 margin={`25px 0 80px`}
-                dr={`row`}
+                dr={width < 700 ? `column` : `row`}
                 ju={`space-between`}
+                al={width < 700 && `flex-start`}
               >
                 <Wrapper width={`auto`} al={`flex-start`}>
                   <Text
@@ -153,11 +434,15 @@ const Home = ({}) => {
                   >
                     상품명
                   </Text>
-                  <Text fontSize={`32px`}>
+                  <Text fontSize={width < 700 ? `28px` : `32px`}>
                     {lectureDetail && lectureDetail.subTitle}
                   </Text>
                 </Wrapper>
-                <Wrapper width={`auto`} dr={`row`} fontSize={`32px`}>
+                <Wrapper
+                  width={`auto`}
+                  dr={`row`}
+                  fontSize={width < 700 ? `28px` : `32px`}
+                >
                   <SpanText
                     fontWeight={`700`}
                     color={Theme.basicTheme_C}
@@ -185,7 +470,12 @@ const Home = ({}) => {
                 bgColor={Theme.lightGrey4_C}
               />
 
-              <BuyForm labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+              <BuyForm
+                form={infoForm}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
+                onFinish={buyHandler}
+              >
                 <Form.Item
                   label="회원명"
                   name="username"
@@ -218,43 +508,89 @@ const Home = ({}) => {
                     margin={`0 0 10px`}
                   />
                 </Form.Item>
-                <Wrapper dr={`row`}>
+
+                {isOverseas ? (
                   <Form.Item
                     label="배송지"
-                    name="receiver"
+                    name="address"
+                    colon={false}
+                    style={{ display: "flex", justifyContent: "flex-end" }}
                     rules={[
                       { required: true, message: "수령인은 필수 입니다." },
                     ]}
-                    colon={false}
-                    style={{
-                      width: "100%",
-                    }}
                   >
-                    <TextInput
-                      width={
-                        width < 700
-                          ? `calc(100% - 140px)`
-                          : `calc(420px - 140px)`
-                      }
-                      height={`54px`}
-                      radius={`5px`}
-                      border={`1px solid ${Theme.lightGrey4_C}`}
-                      fontSize={`18px`}
-                      placeholder="우편번호를 검색해주세요."
-                      margin={`0 0 10px`}
-                    />
-                    <CommonButton
-                      width={`140px`}
-                      height={`54px`}
-                      fontSize={`21px`}
-                      padding={`0`}
-                    >
-                      우편번호 검색
-                    </CommonButton>
+                    <CustomSelect>
+                      {dataArr.map((data, idx) => {
+                        return (
+                          <Select.Option key={idx} value={data.id}>
+                            {data.title} - {data.viewPrice}
+                          </Select.Option>
+                        );
+                      })}
+                    </CustomSelect>
                   </Form.Item>
-                </Wrapper>
+                ) : (
+                  <>
+                    <Wrapper dr={`row`}>
+                      <Form.Item
+                        label="배송지"
+                        name="zoneCode"
+                        rules={[
+                          { required: true, message: "수령인은 필수 입니다." },
+                        ]}
+                        colon={false}
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        <TextInput
+                          width={
+                            width < 700
+                              ? `calc(100% - 140px)`
+                              : `calc(420px - 140px)`
+                          }
+                          height={`54px`}
+                          radius={`5px`}
+                          border={`1px solid ${Theme.lightGrey4_C}`}
+                          fontSize={`18px`}
+                          placeholder="우편번호를 검색해주세요."
+                          margin={`0 0 10px`}
+                          value={addressData && addressData.zonecode}
+                          readOnly={!isOverseas}
+                        />
+                        <CommonButton
+                          width={`140px`}
+                          height={`54px`}
+                          fontSize={`21px`}
+                          padding={`0`}
+                          onClick={aModalToggle}
+                        >
+                          우편번호 검색
+                        </CommonButton>
+                      </Form.Item>
+                    </Wrapper>
+
+                    <Form.Item
+                      name="address"
+                      colon={false}
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                      <TextInput
+                        readOnly={!isOverseas}
+                        width={`100%`}
+                        height={`54px`}
+                        radius={`5px`}
+                        border={`1px solid ${Theme.lightGrey4_C}`}
+                        fontSize={`18px`}
+                        placeholder="-"
+                        margin={`0 0 10px`}
+                      />
+                    </Form.Item>
+                  </>
+                )}
+
                 <Form.Item
-                  name="receiver"
+                  name="detailAddress"
                   colon={false}
                   style={{ display: "flex", justifyContent: "flex-end" }}
                 >
@@ -264,25 +600,48 @@ const Home = ({}) => {
                     radius={`5px`}
                     border={`1px solid ${Theme.lightGrey4_C}`}
                     fontSize={`18px`}
-                    placeholder="-"
+                    placeholder={
+                      isOverseas
+                        ? "주소지를  입력해주세요"
+                        : "상세주소를 입력해주세요."
+                    }
                     margin={`0 0 10px`}
                   />
                 </Form.Item>
-                <Form.Item
-                  name="receiver"
-                  colon={false}
-                  style={{ display: "flex", justifyContent: "flex-end" }}
-                >
-                  <TextInput
-                    width={`100%`}
-                    height={`54px`}
-                    radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
-                    fontSize={`18px`}
-                    placeholder="상세주소를 입력해주세요."
-                    margin={`0 0 10px`}
-                  />
-                </Form.Item>
+                {isOverseas && (
+                  <>
+                    <Form.Item
+                      name="detailAddress2"
+                      colon={false}
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                      <TextInput
+                        width={`100%`}
+                        height={`54px`}
+                        radius={`5px`}
+                        border={`1px solid ${Theme.lightGrey4_C}`}
+                        fontSize={`18px`}
+                        placeholder="주소지를 입력해주세요."
+                        margin={`0 0 10px`}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="detailAddress3"
+                      colon={false}
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                    >
+                      <TextInput
+                        width={`100%`}
+                        height={`54px`}
+                        radius={`5px`}
+                        border={`1px solid ${Theme.lightGrey4_C}`}
+                        fontSize={`18px`}
+                        placeholder="주소지를 입력해주세요."
+                        margin={`0 0 10px`}
+                      />
+                    </Form.Item>
+                  </>
+                )}
                 <Form.Item
                   label="연락처"
                   name="mobile"
@@ -299,13 +658,11 @@ const Home = ({}) => {
                     margin={`0 0 10px`}
                   />
                 </Form.Item>
-
                 <Wrapper
                   margin={`30px 0 80px`}
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-
                 {/* 교제구매 */}
                 <Wrapper al={`flex-start`}>
                   <Text
@@ -316,55 +673,90 @@ const Home = ({}) => {
                     교재 구매
                   </Text>
                 </Wrapper>
-
                 <Wrapper
-                  margin={`25px 0 44px`}
+                  margin={width < 700 ? `25px 0` : `25px 0 44px`}
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-
                 <Wrapper al={`flex-start`} margin={`0 0 20px`}>
-                  <CustomRadioGroup onChange={console.log} size="large">
-                    <Radio
+                  <Radio.Group
+                    value={isBuyBook}
+                    onChange={isBuyBookChangeHandler}
+                    size="large"
+                  >
+                    <CustomRadio
                       value={1}
                       style={{
                         width: width < 700 ? `100%` : `auto`,
-                        margin: `0 90px 0 0`,
+                        margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
                       }}
                     >
                       구매
-                    </Radio>
-                    <Radio
+                    </CustomRadio>
+
+                    {/* isBuyTypeChangeHandler */}
+                    <CustomRadio
                       value={2}
                       style={{ width: width < 700 ? `100%` : `auto` }}
                     >
                       구매 안 함
-                    </Radio>
-                  </CustomRadioGroup>
+                    </CustomRadio>
+                  </Radio.Group>
                 </Wrapper>
-                <Wrapper dr={`row`} ju={`flex-start`}>
-                  <Text
-                    textDecoration={"line-through"}
-                    fontSize={`22px`}
-                    color={Theme.grey3_C}
-                    margin={`0 10px 0 0`}
-                  >
-                    122,500원
-                  </Text>
-                  <Text fontSize={`22px`} margin={`0 10px 0 0`}>
-                    49,900원
-                  </Text>
-                  <Text fontSize={`22px`} color={Theme.grey3_C}>
-                    ( 23년 01월 31일까지 )
-                  </Text>
-                </Wrapper>
+                {console.log(lectureDetail && lectureDetail.bookEndDate)}
 
+                {isBuyBook === 1 ? (
+                  lectureDetail &&
+                  (lectureDetail.bookEndDate ? (
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        textDecoration={"line-through"}
+                        fontSize={width < 700 ? `16px` : `22px`}
+                        color={Theme.grey3_C}
+                      >
+                        {lectureDetail && lectureDetail.viewBookPrice}원
+                      </Text>
+                      <CustomArrowRightOutlined />
+                      <Text
+                        fontSize={width < 700 ? `16px` : `22px`}
+                        margin={`0 10px 0 0`}
+                      >
+                        {lectureDetail && lectureDetail.viewBookBuyPrice}원
+                      </Text>
+                      <Text
+                        fontSize={width < 700 ? `16px` : `22px`}
+                        color={Theme.grey3_C}
+                      >
+                        ( {lectureDetail && lectureDetail.bookEndDate} )
+                      </Text>
+                    </Wrapper>
+                  ) : (
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `16px` : `22px`}
+                        color={Theme.grey3_C}
+                        margin={`0 10px 0 0`}
+                      >
+                        {lectureDetail && lectureDetail.viewBookPrice}원
+                      </Text>
+                    </Wrapper>
+                  ))
+                ) : (
+                  <>
+                    <Text
+                      fontSize={width < 700 ? `16px` : `22px`}
+                      color={Theme.grey_C}
+                    >
+                      수강권 구매 후 교재 재 주문시 할인된 가격이 아닌 정가 구매
+                      가능
+                    </Text>
+                  </>
+                )}
                 <Wrapper
-                  margin={`30px 0 80px`}
+                  margin={width < 700 ? `25px 0 80px` : `30px 0 80px`}
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-
                 {/* 결제방법 */}
                 <Wrapper al={`flex-start`}>
                   <Text
@@ -375,28 +767,34 @@ const Home = ({}) => {
                     결제 방법
                   </Text>
                 </Wrapper>
-
                 <Wrapper
                   margin={`25px 0 44px`}
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-
                 <Wrapper al={`flex-start`}>
-                  <CustomRadioGroup onChange={console.log}>
-                    <Radio value={"card"} style={{ margin: `0 90px 0 0` }}>
+                  <Radio.Group
+                    value={isBuyType}
+                    onChange={isBuyTypeChangeHandler}
+                  >
+                    <CustomRadio
+                      value={"card"}
+                      style={{
+                        margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
+                      }}
+                    >
                       카드결제
-                    </Radio>
-                    <Radio value={"nobank"}>무통장입금(계좌이체)</Radio>
-                  </CustomRadioGroup>
+                    </CustomRadio>
+                    <CustomRadio value={"nobank"}>
+                      무통장입금(계좌이체)
+                    </CustomRadio>
+                  </Radio.Group>
                 </Wrapper>
-
                 <Wrapper
                   margin={`30px 0 80px`}
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-
                 <Wrapper
                   dr={`row`}
                   bgColor={Theme.lightGrey2_C}
@@ -425,7 +823,6 @@ const Home = ({}) => {
                     최종결제금액
                   </Wrapper>
                 </Wrapper>
-
                 <Wrapper
                   dr={`row`}
                   bgColor={Theme.lightGrey2_C}
@@ -434,37 +831,88 @@ const Home = ({}) => {
                   margin={`0 0 20px`}
                 >
                   <Wrapper
-                    width={`calc(100% / 3)`}
+                    width={
+                      width < 700
+                        ? `calc(100% / 3 - 12px)`
+                        : `calc(100% / 3 - 30px)`
+                    }
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
-                    588,900원
+                    {lectureDetail && lectureDetail.viewLecturePrice}원
                   </Wrapper>
+                  <CustomPlusCircleOutlined />
                   <Wrapper
-                    width={`calc(100% / 3)`}
+                    width={
+                      width < 700
+                        ? `calc(100% / 3 - 12px)`
+                        : `calc(100% / 3 - 30px)`
+                    }
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
-                    588,900원
+                    {isBuyBook === 1
+                      ? lectureDetail &&
+                        (lectureDetail.bookEndDate
+                          ? lectureDetail.viewBookBuyPrice
+                          : lectureDetail.viewBookPrice)
+                      : 0}
+                    원
                   </Wrapper>
+                  <CustomPauseCircleOutlined />
                   <Wrapper
-                    width={`calc(100% / 3)`}
+                    width={
+                      width < 700
+                        ? `calc(100% / 3 - 12px)`
+                        : `calc(100% / 3 - 30px)`
+                    }
                     fontWeight={`600`}
                     color={Theme.grey4_C}
                   >
-                    588,900원
+                    {lectureDetail &&
+                      numberWithCommas(
+                        lectureDetail.lecturePrice +
+                          (isBuyBook === 1
+                            ? lectureDetail.bookEndDate
+                              ? lectureDetail.bookBuyPrice
+                              : lectureDetail.bookPrice
+                            : 0)
+                      )}
+                    원
                   </Wrapper>
                 </Wrapper>
-
                 <CommonButton
                   width={`100%`}
                   height={`54px`}
                   fontSize={`20px`}
                   kindOf={`basic`}
+                  htmlType="submit"
+                  loading={st_boughtCreateLoading}
                 >
                   결제하기
                 </CommonButton>
               </BuyForm>
+
+              {/* ADDRESS MODAL */}
+              <Modal
+                title="주소 검색"
+                visible={aModal}
+                onCancel={aModalToggle}
+                footer={null}
+              >
+                <DaumPostcode
+                  onComplete={(data) => {
+                    setAddressData(data);
+                    setAModal(false);
+                    infoForm.setFieldsValue({
+                      address: data.address,
+                    });
+                  }}
+                  width={`100%`}
+                  height={`450px`}
+                  animation
+                />
+              </Modal>
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>

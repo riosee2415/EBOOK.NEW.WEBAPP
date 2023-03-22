@@ -14,6 +14,7 @@ import lectureSaga from "./lecture";
 import mediaSaga from "./media";
 import reviewSaga from "./review";
 import referenceSaga from "./reference";
+import boughtLectureSaga from "./boughtLecture";
 //
 import axios from "axios";
 import backURL from "../config/config";
@@ -38,6 +39,7 @@ export default function* rootSaga() {
     fork(mediaSaga),
     fork(reviewSaga),
     fork(referenceSaga),
+    fork(boughtLectureSaga),
     //
   ]);
 }
