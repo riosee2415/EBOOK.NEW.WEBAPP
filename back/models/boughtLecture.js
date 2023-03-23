@@ -106,6 +106,6 @@ module.exports = class BoughtLecture extends Model {
   }
   static associate(db) {
     db.BoughtLecture.belongsTo(db.User, { as: "user" });
-    db.BoughtLecture.belongsTo(db.Lecture, { as: "lectureId" });
+    db.BoughtLecture.belongsTo(db.Lecture, { as: "lecture" });
   }
 };

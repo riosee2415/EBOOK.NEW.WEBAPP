@@ -16,6 +16,7 @@ import media from "./media";
 import review from "./review";
 import reference from "./reference";
 import boughtLecture from "./boughtLecture";
+import enjoy from "./enjoy";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -40,6 +41,7 @@ const rootReducer = (state, action) => {
         review,
         reference,
         boughtLecture,
+        enjoy,
       });
       return combinedReducer(state, action);
     }

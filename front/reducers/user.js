@@ -80,6 +80,10 @@ export const initailState = {
   st_modifyPassUpdateLoading: false, // 비밀번호 찾기
   st_modifyPassUpdateDone: false,
   st_modifyPassUpdateError: null,
+  //
+  st_adminUpdateLoading: false, // 관리자 수정
+  st_adminUpdateDone: false,
+  st_adminUpdateError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -157,6 +161,10 @@ export const MODIFYPASS_CHECKED_FAILURE = "MODIFYPASS_CHECKED_FAILURE";
 export const MODIFYPASS_UPDATE_REQUEST = "MODIFYPASS_UPDATE_REQUEST";
 export const MODIFYPASS_UPDATE_SUCCESS = "MODIFYPASS_UPDATE_SUCCESS";
 export const MODIFYPASS_UPDATE_FAILURE = "MODIFYPASS_UPDATE_FAILURE";
+//
+export const ADMIN_UPDATE_REQUEST = "ADMIN_UPDATE_REQUEST";
+export const ADMIN_UPDATE_SUCCESS = "ADMIN_UPDATE_SUCCESS";
+export const ADMIN_UPDATE_FAILURE = "ADMIN_UPDATE_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -555,6 +563,26 @@ const reducer = (state = initailState, action) =>
         draft.st_modifyPassUpdateLoading = false;
         draft.st_modifyPassUpdateDone = false;
         draft.st_modifyPassUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ADMIN_UPDATE_REQUEST: {
+        draft.st_adminUpdateLoading = true;
+        draft.st_adminUpdateDone = false;
+        draft.st_adminUpdateError = null;
+        break;
+      }
+      case ADMIN_UPDATE_SUCCESS: {
+        draft.st_adminUpdateLoading = false;
+        draft.st_adminUpdateDone = true;
+        draft.st_adminUpdateError = null;
+        break;
+      }
+      case ADMIN_UPDATE_FAILURE: {
+        draft.st_adminUpdateLoading = false;
+        draft.st_adminUpdateDone = false;
+        draft.st_adminUpdateError = action.error;
         break;
       }
       //////////////////////////////////////////////

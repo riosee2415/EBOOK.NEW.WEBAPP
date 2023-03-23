@@ -29,6 +29,7 @@ const mediaRouter = require("./routers/mediaRouter");
 const reviewRouter = require("./routers/reviewRouter");
 const referenceRouter = require("./routers/reference");
 const boughtLectureRouter = require("./routers/boughtLectureRouter");
+const enjoyRotuer = require("./routers/enjoyRouter");
 
 // Config Settings
 db.sequelize
@@ -113,6 +114,7 @@ app.use("/api/media", mediaRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/reference", referenceRouter);
 app.use("/api/bought", boughtLectureRouter);
+app.use("/api/enjoy", enjoyRotuer);
 
 // second minute hour day-of-month month day-of-week
 const task = cron.schedule(

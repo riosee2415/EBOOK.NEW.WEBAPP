@@ -3,6 +3,7 @@ import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  ADMIN_UPDATE_REQUEST,
   LOAD_MY_INFO_REQUEST,
   UPDATE_MODAL_CLOSE_REQUEST,
   UPDATE_MODAL_OPEN_REQUEST,
@@ -19,6 +20,10 @@ import {
   notification,
   Input,
   Form,
+  DatePicker,
+  Empty,
+  Popconfirm,
+  Checkbox,
 } from "antd";
 import {
   HomeText,
@@ -42,10 +47,21 @@ import {
 } from "../../../components/commonComponents";
 import Theme from "../../../components/Theme";
 import {
+  CheckOutlined,
+  CloseOutlined,
   HomeOutlined,
   RightOutlined,
   SnippetsOutlined,
 } from "@ant-design/icons";
+import {
+  BOUGHT_ADMIN_CREATE_REQUEST,
+  BOUGHT_ADMIN_DELETE_REQUEST,
+  BOUGHT_ADMIN_ID_REQUEST,
+  BOUGHT_ADMIN_UPDATE_REQUEST,
+} from "../../../reducers/boughtLecture";
+import moment from "moment";
+import { LECTURE_LIST_REQUEST } from "../../../reducers/lecture";
+import { ADMIN_USER_ENJOY_REQUEST } from "../../../reducers/enjoy";
 
 const TypeButton = styled(Button)`
   margin-right: 5px;
@@ -118,12 +134,36 @@ const UserList = ({}) => {
   const {
     users,
     updateModal,
+    //
     st_userListError,
+    //
     st_userListUpdateDone,
     st_userListUpdateError,
+    //
+    st_adminUpdateLoading,
+    st_adminUpdateDone,
+    st_adminUpdateError,
   } = useSelector((state) => state.user);
 
-  console.log(users);
+  const {
+    boughtAdminId,
+    //
+    st_boughtAdminCreateLoading,
+    st_boughtAdminCreateDone,
+    st_boughtAdminCreateError,
+    //
+    st_boughtAdminUpdateLoading,
+    st_boughtAdminUpdateDone,
+    st_boughtAdminUpdateError,
+    //
+    st_boughtAdminDeleteLoading,
+    st_boughtAdminDeleteDone,
+    st_boughtAdminDeleteError,
+  } = useSelector((state) => state.boughtLecture);
+
+  const { lectureList } = useSelector((state) => state.lecture);
+
+  const { adminUserEnjoyList } = useSelector((state) => state.enjoy);
 
   const [sameDepth, setSameDepth] = useState([]);
 
@@ -133,6 +173,8 @@ const UserList = ({}) => {
 
   const [levelForm] = Form.useForm();
   const [sForm] = Form.useForm();
+  const [dForm] = Form.useForm();
+  const [bForm] = Form.useForm();
 
   const [currentTab, setCurrentTab] = useState(0);
 
@@ -141,6 +183,60 @@ const UserList = ({}) => {
 
   const [dModal, setDModal] = useState(false);
   const [dData, setDData] = useState(null);
+
+  const levelArr = [
+    {
+      id: 1,
+      name: "일반회원",
+      disabled: false,
+    },
+    // {
+    //   id: 2,
+    //   name: "비어있음",
+    //   disabled: true,
+    // },
+    {
+      id: 3,
+      name: "운영자",
+      disabled: false,
+    },
+    {
+      id: 4,
+      name: "최고관리자",
+      disabled: false,
+    },
+    {
+      id: 5,
+      name: "개발사",
+      disabled: true,
+    },
+  ];
+
+  const keywordArr = [
+    "수강권변경(1년->2년)",
+    "수강권변경(1년->3년)",
+    "수강권변경(1년->평생)",
+    "수강권연장(1년)",
+    "수강권연장(평생)",
+    "교재900원",
+    "네이버스토어구매",
+    "블로그체험단",
+    "평생교육바우처",
+    "마케팅제공",
+    "교재무료증정",
+    "무통장환불",
+    "카드취소",
+    "기타(상담참고)",
+    "수강권변경(2년->3년)",
+    "수강권변경(2년->1년)",
+    "수강권변경(2년->평생)",
+    "수강권변경(3년->1년)",
+    "수강권변경(3년->2년)",
+    "수강권변경(3년->평생)",
+    "수강권변경(3달->1년)",
+    "수강권변경(3달->2년)",
+    "수강권변경(3달->3년)",
+  ];
 
   ////// USEEFFECT //////
 
@@ -195,6 +291,94 @@ const UserList = ({}) => {
     });
   }, [currentTab, sData]);
 
+  // 회원정보 수정
+  useEffect(() => {
+    if (st_adminUpdateDone) {
+      dispatch({
+        type: USERLIST_REQUEST,
+        data: {
+          searchData: sData,
+          searchLevel: currentTab,
+        },
+      });
+
+      return message.success("회원 정보가 수정되었습니다.");
+    }
+
+    if (st_adminUpdateError) {
+      return message.error(st_adminUpdateError);
+    }
+  }, [st_adminUpdateDone, st_adminUpdateError]);
+
+  useEffect(() => {
+    if (boughtAdminId) {
+      bForm.setFieldsValue({
+        lectureType: boughtAdminId.lectureType,
+        startDate: moment(boughtAdminId.startDate),
+        endDate: moment(boughtAdminId.endDate),
+        boughtDate: moment(boughtAdminId.boughtDate),
+      });
+    }
+  }, [boughtAdminId]);
+
+  // 수강권 생성
+  useEffect(() => {
+    if (st_boughtAdminCreateDone) {
+      if (dData) {
+        dispatch({
+          type: BOUGHT_ADMIN_ID_REQUEST,
+          data: {
+            id: dData.id,
+          },
+        });
+      }
+
+      return message.success("수강권이 생성되었습니다.");
+    }
+
+    if (st_boughtAdminCreateError) {
+      return message.error(st_boughtAdminCreateError);
+    }
+  }, [st_boughtAdminCreateDone, st_boughtAdminCreateError]);
+  // 수강권 수정
+  useEffect(() => {
+    if (st_boughtAdminUpdateDone) {
+      if (dData) {
+        dispatch({
+          type: BOUGHT_ADMIN_ID_REQUEST,
+          data: {
+            id: dData.id,
+          },
+        });
+      }
+
+      return message.success("수강권이 수정되었습니다.");
+    }
+
+    if (st_boughtAdminUpdateError) {
+      return message.error(st_boughtAdminUpdateError);
+    }
+  }, [st_boughtAdminUpdateDone, st_boughtAdminUpdateError]);
+  // 수강권 삭제
+  useEffect(() => {
+    if (st_boughtAdminDeleteDone) {
+      if (dData) {
+        dispatch({
+          type: BOUGHT_ADMIN_ID_REQUEST,
+          data: {
+            id: dData.id,
+          },
+        });
+      }
+
+      return message.success("수강권이 삭제되었습니다.");
+    }
+
+    if (st_boughtAdminDeleteError) {
+      return message.error(st_boughtAdminDeleteError);
+    }
+  }, [st_boughtAdminDeleteDone, st_boughtAdminDeleteError]);
+
   ////// TOGGLE //////
   const updateModalOpen = useCallback(
     (data) => {
@@ -219,13 +403,43 @@ const UserList = ({}) => {
     (data) => {
       if (data) {
         setDData(data);
+
+        dForm.setFieldsValue({
+          userId: data.userId,
+          username: data.username,
+          mobile: data.mobile,
+          email: data.email,
+          viewCreatedAt: data.viewCreatedAt,
+          level: levelArr.find((value) => value.id === data.level).name,
+          gender: data.gender,
+          birth: data.birth,
+          keyword: data.keyword,
+          consulting: data.consulting,
+          zoneCode: data.zoneCode,
+          address: data.address,
+          detailAddress: data.detailAddress,
+        });
+
+        dispatch({
+          type: BOUGHT_ADMIN_ID_REQUEST,
+          data: {
+            id: data.id,
+          },
+        });
+
+        dispatch({
+          type: ADMIN_USER_ENJOY_REQUEST,
+          data: {
+            id: data.id,
+          },
+        });
       } else {
         setDData(null);
       }
 
       setDModal((prev) => !prev);
     },
-    [dModal, dData]
+    [dModal, dData, levelArr]
   );
   ////// HANDLER //////
 
@@ -267,6 +481,72 @@ const UserList = ({}) => {
     [updateData]
   );
 
+  // 관리자 회원 정보 수정
+  const adminUpdateHandler = useCallback(
+    (type) => {
+      const detailData = dForm.getFieldsValue();
+
+      dispatch({
+        type: ADMIN_UPDATE_REQUEST,
+        data: {
+          id: dData.id,
+          type: type,
+          userId: detailData.userId,
+          username: detailData.username,
+          password: detailData.password,
+          mobile: detailData.mobile,
+          keyword: detailData.keyword,
+          consulting: detailData.consulting,
+        },
+      });
+    },
+    [dData]
+  );
+
+  // 수강권 수정
+  const boughtUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: BOUGHT_ADMIN_UPDATE_REQUEST,
+        data: {
+          id: boughtAdminId.id,
+          startDate: data.startDate.format("YYYY-MM-DD"),
+          endDate: data.endDate.format("YYYY-MM-DD"),
+          lectureType: data.lectureType,
+        },
+      });
+    },
+    [boughtAdminId]
+  );
+
+  // 수강권 생성
+  const boughtCreateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: BOUGHT_ADMIN_CREATE_REQUEST,
+        data: {
+          id: dData.id,
+          lectureId: data.lectureId,
+          mobile: me.mobile,
+          username: me.username,
+          lectureType: lectureList.find((value) => value.id === data.lectureId)
+            .type,
+        },
+      });
+    },
+    [dData]
+  );
+
+  // 수강권 삭제
+  const boughtDeleteHandler = useCallback(() => {
+    dispatch({
+      type: BOUGHT_ADMIN_DELETE_REQUEST,
+      data: {
+        id: boughtAdminId.id,
+      },
+    });
+  }, [boughtAdminId]);
+
   const content = (
     <PopWrapper>
       {sameDepth.map((data) => {
@@ -283,34 +563,6 @@ const UserList = ({}) => {
   );
 
   ////// DATAVIEW //////
-
-  const levelArr = [
-    {
-      id: 1,
-      name: "일반회원",
-      disabled: false,
-    },
-    // {
-    //   id: 2,
-    //   name: "비어있음",
-    //   disabled: true,
-    // },
-    {
-      id: 3,
-      name: "운영자",
-      disabled: false,
-    },
-    {
-      id: 4,
-      name: "최고관리자",
-      disabled: false,
-    },
-    {
-      id: 5,
-      name: "개발사",
-      disabled: true,
-    },
-  ];
 
   const columns = [
     {
@@ -370,75 +622,7 @@ const UserList = ({}) => {
     {
       width: `30%`,
       title: "날짜",
-      dataIndex: "createdAt",
-    },
-  ];
-
-  const testData = [
-    {
-      num: 1,
-      title: "영상 테스트 01",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 2,
-      title: "영상 테스트 02",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 3,
-      title: "영상 테스트 03",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 4,
-      title: "영상 테스트 04",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 5,
-      title: "영상 테스트 05",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 6,
-      title: "영상 테스트 06",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 7,
-      title: "영상 테스트 07",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 8,
-      title: "영상 테스트 08",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 9,
-      title: "영상 테스트 09",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 10,
-      title: "영상 테스트 10",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 11,
-      title: "영상 테스트 11",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 12,
-      title: "영상 테스트 12",
-      createdAt: "YYYY-MM-DD",
-    },
-    {
-      num: 13,
-      title: "영상 테스트 13'",
-      createdAt: "YYYY-MM-DD",
+      dataIndex: "viewCreatedAt",
     },
   ];
 
@@ -603,73 +787,265 @@ const UserList = ({}) => {
         footer={null}
       >
         <Wrapper dr={`row`} ju={`space-between`} al={`flex-start`}>
+          {/* LIFT AREA */}
           <Wrapper width={`calc(50% - 20px)`}>
-            <CustomForm labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+            <CustomForm
+              form={dForm}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+            >
               <Wrapper al={`flex-start`} margin={`0 0 20px`}>
                 <Text fontSize={`20px`}>회원 정보</Text>
               </Wrapper>
-              <Form.Item name="userId" label="아이디">
-                <Input size="small" readOnly />
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="userId"
+                  label="아이디"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(1)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="username"
+                  label="사용자명"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(2)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="mobile"
+                  label="연락처"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(3)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="password"
+                  label="비밀번호"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" type="password" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(4)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+              <Form.Item name="email" label="이메일">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="사용자명">
-                <Input size="small" readOnly />
+              <Form.Item name="viewCreatedAt" label="가입일">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="연락처">
-                <Input size="small" readOnly />
+              <Form.Item name="level" label="권한">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="모바일">
-                <Input size="small" readOnly />
+              <Form.Item name="gender" label="성별">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="이메일">
-                <Input size="small" readOnly />
+              <Form.Item name="birth" label="생년">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="가입일">
-                <Input size="small" readOnly />
+              <Form.Item name="zoneCode" label="우편번호">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="권한">
-                <Input size="small" readOnly />
+              <Form.Item name="address" label="기본주소">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="키워드">
-                <Input size="small" readOnly />
+              <Form.Item name="detailAddress" label="상세주소">
+                <Input size="small" disabled />
               </Form.Item>
-              <Form.Item name="username" label="우편번호">
-                <Input size="small" readOnly />
+              <Form.Item label="후기작성여부">
+                {dData &&
+                  (dData.isWriteReview ? (
+                    <CheckOutlined style={{ color: Theme.naver_C }} />
+                  ) : (
+                    <CloseOutlined style={{ color: Theme.red_C }} />
+                  ))}
               </Form.Item>
-              <Form.Item name="username" label="기본주소">
-                <Input size="small" readOnly />
+
+              <Form.Item name="keyword" label="키워드">
+                <Select size="small">
+                  {keywordArr.map((data, idx) => {
+                    return (
+                      <Select.Option key={idx} value={data}>
+                        {data}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
               </Form.Item>
-              <Form.Item name="username" label="상세주소">
-                <Input size="small" readOnly />
+
+              <Form.Item name="consulting" label="상담">
+                <Input.TextArea
+                  size="small"
+                  autoSize={{ minRows: 5, maxRows: 15 }}
+                />
               </Form.Item>
 
               <Wrapper dr={`row`} ju={`flex-end`}>
                 {/* <ModalBtn size="small" type="danger">
                   삭제
                 </ModalBtn> */}
-                <ModalBtn size="small" type="primary">
-                  수정
+                <ModalBtn
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(5)}
+                >
+                  키워드 & 상담 저장
                 </ModalBtn>
               </Wrapper>
             </CustomForm>
           </Wrapper>
           <Wrapper width={`1px`} height={`800px`} bgColor={Theme.lightGrey_C} />
+
+          {/* RIGHT AREA */}
           <Wrapper width={`calc(50% - 20px)`}>
             <Wrapper margin={`0 0 30px`}>
               <Wrapper al={`flex-start`} margin={`0 0 20px`}>
-                <Text fontSize={`20px`}>이용권정보</Text>
+                <Text fontSize={`20px`}>수강권정보</Text>
               </Wrapper>
 
-              <CustomForm>
-                <Form.Item name="username" label="이용권">
-                  <Input size="small" />
-                </Form.Item>
+              <CustomForm
+                form={bForm}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
+                onFinish={
+                  boughtAdminId ? boughtUpdateHandler : boughtCreateHandler
+                }
+              >
+                {boughtAdminId ? (
+                  <>
+                    <Form.Item
+                      name="lectureType"
+                      label="수강권유형"
+                      rules={[
+                        { required: true, message: "수강권유형은 필수입니다." },
+                      ]}
+                    >
+                      <Select size="small" style={{ width: `100%` }}>
+                        <Select.Option value={1}>1년</Select.Option>
+                        <Select.Option value={2}>2년</Select.Option>
+                        <Select.Option value={3}>3년</Select.Option>
+                        <Select.Option value={4}>평생</Select.Option>
+                        <Select.Option value={5}>3달</Select.Option>
+                        <Select.Option value={6}>상품</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      name="startDate"
+                      label="시작일"
+                      rules={[
+                        { required: true, message: "시작일은 필수입니다." },
+                      ]}
+                    >
+                      <DatePicker size="small" style={{ width: `100%` }} />
+                    </Form.Item>
+                    <Form.Item
+                      name="endDate"
+                      label="종료일"
+                      rules={[
+                        { required: true, message: "종료일은 필수입니다." },
+                      ]}
+                    >
+                      <DatePicker size="small" style={{ width: `100%` }} />
+                    </Form.Item>
+                    <Form.Item name="boughtDate" label="구매일">
+                      <DatePicker
+                        size="small"
+                        style={{ width: `100%` }}
+                        disabled
+                      />
+                    </Form.Item>
+                  </>
+                ) : (
+                  <Form.Item
+                    name="lectureId"
+                    label="이용권 선택"
+                    rules={[
+                      { required: true, message: "종료일은 필수입니다." },
+                    ]}
+                  >
+                    <Select size="small">
+                      {lectureList &&
+                        lectureList.map((data, idx) => {
+                          return (
+                            <Select.Option key={idx} value={data.id}>
+                              {data.title}
+                            </Select.Option>
+                          );
+                        })}
+                    </Select>
+                  </Form.Item>
+                )}
 
                 <Wrapper dr={`row`} ju={`flex-end`}>
-                  <ModalBtn size="small" type="danger">
-                    삭제
-                  </ModalBtn>
-                  <ModalBtn size="small" type="primary">
-                    추가
+                  {boughtAdminId && (
+                    <Popconfirm
+                      title="정말로 삭제하시겠습니까?"
+                      okText="삭제"
+                      cancelText="취소"
+                      onConfirm={boughtDeleteHandler}
+                    >
+                      <ModalBtn
+                        size="small"
+                        type="danger"
+                        loading={st_boughtAdminDeleteLoading}
+                      >
+                        삭제
+                      </ModalBtn>
+                    </Popconfirm>
+                  )}
+
+                  <ModalBtn
+                    size="small"
+                    type="primary"
+                    htmlType="submit"
+                    loading={
+                      st_boughtAdminCreateLoading || st_boughtAdminUpdateLoading
+                    }
+                  >
+                    {boughtAdminId ? "수정" : "추가"}
                   </ModalBtn>
                 </Wrapper>
               </CustomForm>
@@ -683,7 +1059,7 @@ const UserList = ({}) => {
                 style={{ width: `100%` }}
                 size="small"
                 columns={columns2}
-                dataSource={testData}
+                dataSource={adminUserEnjoyList}
               />
             </Wrapper>
           </Wrapper>
@@ -710,6 +1086,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: USERLIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LECTURE_LIST_REQUEST,
+      data: {
+        searchType: [1, 2, 3, 4],
+      },
     });
 
     // 구현부 종료

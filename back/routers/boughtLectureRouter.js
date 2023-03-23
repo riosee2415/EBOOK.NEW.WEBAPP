@@ -98,6 +98,7 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
     merchantUid,
     isBuyBook,
     bookPrice,
+    lectureId,
   } = req.body;
 
   const YEAR =
@@ -130,7 +131,8 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         bookPrice,
         createdAt,
         updatedAt,
-        userId
+        userId,
+        lectureId
       )
       VALUES
       (
@@ -153,7 +155,8 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         ${bookPrice},
         NOW(),
         NOW(),
-        ${req.user.id}
+        ${req.user.id},
+        ${lectureId}
       ) 
       `;
       await models.sequelize.query(insertQ);
@@ -178,7 +181,8 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         bookPrice,
         createdAt,
         updatedAt,
-        userId
+        userId,
+        lectureId
       )
       VALUES
       (
@@ -198,7 +202,8 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         ${bookPrice},
         NOW(),
         NOW(),
-        ${req.user.id}
+        ${req.user.id},
+        ${lectureId}
       ) 
       `;
       await models.sequelize.query(insertQ);
@@ -258,6 +263,158 @@ router.post("/address/update", isAdminCheck, async (req, res, next) => {
   } catch (e) {
     console.error(e);
     return res.status(400).send("주소를 수정할 수 없습니다.");
+  }
+});
+
+router.post("/admin/create", isAdminCheck, async (req, res, next) => {
+  const { id, lectureId, mobile, username, lectureType } = req.body;
+
+  const YEAR =
+    lectureType === 4
+      ? `"9999-12-31"`
+      : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
+
+  const insertQ = `
+  INSERT INTO boughtLecture (
+    mobile,
+    receiver,
+    zoneCode,
+    address,
+    detailAddress,
+    payType,
+    pay,
+    lectureType,
+    name,
+    boughtDate,
+    startDate,
+    endDate,
+    isPay,
+    createdAt,
+    updatedAt,
+    userId,
+    lectureId
+  )
+  VALUES
+  (
+    "${mobile}",
+    "${username}",
+    "-",
+    "-",
+    "-",
+    "admin",
+    0,
+    ${lectureType},
+    "-",
+    NOW(),
+    NOW(),
+    ${YEAR},
+    TRUE,
+    NOW(),
+    NOW(),
+    ${id},
+    ${lectureId}
+  ) 
+  `;
+  try {
+    await models.sequelize.query(insertQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("회원에게 수강권을 부여할 수 없습니다.");
+  }
+});
+
+router.post("/admin/update", isAdminCheck, async (req, res, next) => {
+  const { id, startDate, endDate, lectureType } = req.body;
+
+  const updateQ = `
+  UPDATE  boughtLecture
+     SET  startDate = "${startDate}",
+          endDate = "${endDate}",
+          lectureType = ${lectureType}
+   WHERE  id = ${id}
+  `;
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("회원의 수강권을 수정할 수 없습니다.");
+  }
+});
+
+router.post("/admin/delete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const updateQ = `
+  UPDATE  boughtLecture
+     SET  isDelete = TRUE,
+          deletedAt = NOW()
+   WHERE  id = ${id}
+  `;
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("회원의 수강권을 수정할 수 없습니다.");
+  }
+});
+
+router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQ = `
+  SELECT  ROW_NUMBER() OVER()						AS num,
+          A.id,
+          A.receiver,
+          A.mobile,
+          A.zoneCode,
+          A.address,
+          A.detailAddress,
+          A.payType,
+          A.pay,
+          A.lectureType,
+          CASE
+            WHEN A.lectureType = 1 THEN "1년"
+            WHEN A.lectureType = 2 THEN "2년"
+            WHEN A.lectureType = 3 THEN "3년"
+            WHEN A.lectureType = 4 THEN "평생"
+            WHEN A.lectureType = 5 THEN "3달"
+            WHEN A.lectureType = 6 THEN "상품"
+          END										AS viewLectureType,
+          A.name,
+          A.recentlyTurn,
+          A.recentlyTime,
+          A.boughtDate,
+          A.startDate,
+          A.endDate,
+          A.impUid,
+          A.merchantUid,
+          A.isPay,
+          A.isDelete,
+          A.userId,
+          A.lectureId
+    FROM  boughtLecture							A
+   WHERE  A.isDelete = FALSE
+     AND  A.isPay = TRUE
+     AND  A.endDate IS NOT NULL
+     AND  DATE_FORMAT(A.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+     AND  A.userId = ${id}
+   ORDER  BY  A.createdAt DESC
+   LIMIT  1
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0][0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("회원이 구매 목록을 불러올 수 없습니다.");
   }
 });
 

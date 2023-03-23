@@ -25,6 +25,11 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(50),
           allowNull: false, // 필수
         },
+        keyword: {
+          type: DataTypes.STRING(300),
+          allowNull: true, // 필수
+        },
+
         gender: {
           type: DataTypes.STRING(20),
           defaultValue: "-",
@@ -77,11 +82,19 @@ module.exports = class User extends Model {
           allowNull: true,
           defaultValue: null,
         },
+
         terms: {
           // 이용약관동의
           type: DataTypes.BOOLEAN,
           allowNull: false,
         },
+
+        consulting: {
+          type: DataTypes.TEXT, // 삼담
+          defaultValue: null,
+          allowNull: true,
+        },
+
         // 관리자 메뉴 권환 제어
         menuRight1: {
           type: DataTypes.BOOLEAN,

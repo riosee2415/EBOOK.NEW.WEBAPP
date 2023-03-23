@@ -180,7 +180,7 @@ const AppHeader = ({}) => {
           </Wrapper>
           {me ? (
             <Wrapper width={`auto`} dr={`row`}>
-              <Link href={`/user/login`}>
+              <Link href={`/mypage`}>
                 <a>
                   <HoverText>마이페이지</HoverText>
                 </a>
@@ -230,18 +230,31 @@ const AppHeader = ({}) => {
             visible={drawarToggle}
             getContainer={false}
           >
-            <Wrapper width={`auto`} dr={`row`} margin={`20px 0 0`}>
-              <Link href={`/info`}>
-                <a>
-                  <HoverText>로그인</HoverText>
-                </a>
-              </Link>
-              <Link href={`/info`}>
-                <a>
-                  <HoverText>회원가입</HoverText>
-                </a>
-              </Link>
-            </Wrapper>
+            {me ? (
+              <Wrapper width={`auto`} dr={`row`} margin={`20px 0 0`}>
+                <Link href={`/mypage`}>
+                  <a>
+                    <HoverText>마이페이지</HoverText>
+                  </a>
+                </Link>
+
+                <HoverText onClick={logoutHandler}>로그아웃</HoverText>
+              </Wrapper>
+            ) : (
+              <Wrapper width={`auto`} dr={`row`} margin={`20px 0 0`}>
+                <Link href={`/user/login`}>
+                  <a>
+                    <HoverText>로그인</HoverText>
+                  </a>
+                </Link>
+                <Link href={`/user/signup`}>
+                  <a>
+                    <HoverText>회원가입</HoverText>
+                  </a>
+                </Link>
+              </Wrapper>
+            )}
+
             <Link href={`/enrolment`}>
               <a>
                 <Menu isActive={router.pathname === `/enrolment`}>

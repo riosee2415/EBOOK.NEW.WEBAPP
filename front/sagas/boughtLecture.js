@@ -5,6 +5,22 @@ import {
   BOUGHT_ADMIN_LIST_SUCCESS,
   BOUGHT_ADMIN_LIST_FAILURE,
   //
+  BOUGHT_ADMIN_ID_REQUEST,
+  BOUGHT_ADMIN_ID_SUCCESS,
+  BOUGHT_ADMIN_ID_FAILURE,
+  //
+  BOUGHT_ADMIN_CREATE_REQUEST,
+  BOUGHT_ADMIN_CREATE_SUCCESS,
+  BOUGHT_ADMIN_CREATE_FAILURE,
+  //
+  BOUGHT_ADMIN_UPDATE_REQUEST,
+  BOUGHT_ADMIN_UPDATE_SUCCESS,
+  BOUGHT_ADMIN_UPDATE_FAILURE,
+  //
+  BOUGHT_ADMIN_DELETE_REQUEST,
+  BOUGHT_ADMIN_DELETE_SUCCESS,
+  BOUGHT_ADMIN_DELETE_FAILURE,
+  //
   BOUGHT_CREATE_REQUEST,
   BOUGHT_CREATE_SUCCESS,
   BOUGHT_CREATE_FAILURE,
@@ -16,6 +32,7 @@ import {
   BOUGHT_ADDRESS_UPDATE_REQUEST,
   BOUGHT_ADDRESS_UPDATE_SUCCESS,
   BOUGHT_ADDRESS_UPDATE_FAILURE,
+  //
 } from "../reducers/boughtLecture";
 
 // SAGA AREA ********************************************************************************************************
@@ -36,6 +53,114 @@ function* boughtAdminList(action) {
     console.error(err);
     yield put({
       type: BOUGHT_ADMIN_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtAdminIdAPI(data) {
+  return await axios.post(`/api/bought/admin/bought`, data);
+}
+
+function* boughtAdminId(action) {
+  try {
+    const result = yield call(boughtAdminIdAPI, action.data);
+
+    yield put({
+      type: BOUGHT_ADMIN_ID_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_ADMIN_ID_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtAdminCreateAPI(data) {
+  return await axios.post(`/api/bought/admin/create`, data);
+}
+
+function* boughtAdminCreate(action) {
+  try {
+    const result = yield call(boughtAdminCreateAPI, action.data);
+
+    yield put({
+      type: BOUGHT_ADMIN_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_ADMIN_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtAdminUpdateAPI(data) {
+  return await axios.post(`/api/bought/admin/update`, data);
+}
+
+function* boughtAdminUpdate(action) {
+  try {
+    const result = yield call(boughtAdminUpdateAPI, action.data);
+
+    yield put({
+      type: BOUGHT_ADMIN_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_ADMIN_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtAdminDeleteAPI(data) {
+  return await axios.post(`/api/bought/admin/delete`, data);
+}
+
+function* boughtAdminDelete(action) {
+  try {
+    const result = yield call(boughtAdminDeleteAPI, action.data);
+
+    yield put({
+      type: BOUGHT_ADMIN_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_ADMIN_DELETE_FAILURE,
       error: err.response.data,
     });
   }
@@ -140,6 +265,22 @@ function* watchBoughtAddressUpdate() {
   yield takeLatest(BOUGHT_ADDRESS_UPDATE_REQUEST, boughtAddressUpdate);
 }
 
+function* watchBoughtAdminId() {
+  yield takeLatest(BOUGHT_ADMIN_ID_REQUEST, boughtAdminId);
+}
+
+function* watchBoughtAdminCreate() {
+  yield takeLatest(BOUGHT_ADMIN_CREATE_REQUEST, boughtAdminCreate);
+}
+
+function* watchBoughtAdminUpdate() {
+  yield takeLatest(BOUGHT_ADMIN_UPDATE_REQUEST, boughtAdminUpdate);
+}
+
+function* watchBoughtAdminDelete() {
+  yield takeLatest(BOUGHT_ADMIN_DELETE_REQUEST, boughtAdminDelete);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* boughtLectureSaga() {
   yield all([
@@ -147,6 +288,10 @@ export default function* boughtLectureSaga() {
     fork(watchBoughtCreate),
     fork(watchBoughtIsPayUpdate),
     fork(watchBoughtAddressUpdate),
+    fork(watchBoughtAdminId),
+    fork(watchBoughtAdminCreate),
+    fork(watchBoughtAdminUpdate),
+    fork(watchBoughtAdminDelete),
     //
   ]);
 }

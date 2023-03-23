@@ -77,6 +77,10 @@ import {
   MODIFYPASS_UPDATE_SUCCESS,
   MODIFYPASS_UPDATE_FAILURE,
   /////////////////////////////
+  ADMIN_UPDATE_REQUEST,
+  ADMIN_UPDATE_SUCCESS,
+  ADMIN_UPDATE_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -585,6 +589,33 @@ function* modifyPassUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function adminUpdateAPI(data) {
+  return await axios.post(`/api/user/admin/update`, data);
+}
+
+function* adminUpdate(action) {
+  try {
+    const result = yield call(adminUpdateAPI, action.data);
+
+    yield put({
+      type: ADMIN_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ADMIN_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -663,6 +694,10 @@ function* watchModifyPassUpdate() {
   yield takeLatest(MODIFYPASS_UPDATE_REQUEST, modifyPassUpdate);
 }
 
+function* watchAdminUpdate() {
+  yield takeLatest(ADMIN_UPDATE_REQUEST, adminUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -685,6 +720,7 @@ export default function* userSaga() {
     fork(watchModifyPassSend),
     fork(watchModifyPassChecked),
     fork(watchModifyPassUpdate),
+    fork(watchAdminUpdate),
     //
   ]);
 }

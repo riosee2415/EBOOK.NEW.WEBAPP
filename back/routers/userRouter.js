@@ -22,6 +22,7 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const selectQuery = `
   SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
           id,
+          userId,
           email,
           username,
           mobile,
@@ -29,6 +30,8 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           isExit,
           birth,
           gender,
+          keyword,
+          consulting,
           zoneCode,
           address,
           detailAddress,
@@ -44,6 +47,14 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           createdAt,
           updatedAt,
           exitedAt,
+          CASE
+            WHEN (
+                  SELECT  COUNT(id)
+                    FROM  review        B
+                   WHERE  id = B.id
+                 ) > 0 THEN 1
+            ELSE 0
+          END                                       AS isWriteReview,
           DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
@@ -473,6 +484,7 @@ router.post("/check/userid", async (req, res, next) => {
   SELECT  id
     FROM  users
    WHERE  userId = "${userId}"
+     AND  isExit = FALSE
   `;
 
   try {
@@ -804,6 +816,115 @@ router.get("/logout", function (req, res) {
     res.clearCookie("connect.sid");
     res.redirect("/");
   });
+});
+
+router.post("/admin/update", isAdminCheck, async (req, res, next) => {
+  const { id, type, userId, username, password, mobile, keyword, consulting } =
+    req.body;
+  // type
+  // 1 아이디수정
+  // 2 사용자명수정
+  // 3 연락처수정
+  // 4 비밀번호수정
+  // 5 키워드 & 상담 수정
+
+  try {
+    if (parseInt(type) === 1) {
+      const findQ = `
+        SELECT  userId
+          FROM  users
+         WHERE  id = ${id}
+      `;
+
+      const find = await models.sequelize.query(findQ);
+
+      if (find[0][0].userId === userId) {
+        return res.status(401).send("중복된 아이디가 있습니다.");
+      }
+
+      const updateQ = `
+        UPDATE  users
+           SET  userId = "${userId}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 2) {
+      const updateQ = `
+        UPDATE  users
+           SET  username = "${username}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 3) {
+      const updateQ = `
+        UPDATE  users
+           SET  mobile = "${mobile}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 4) {
+      const hashPassord = await bcrypt.hash(password, 12);
+
+      const updateQ = `
+        UPDATE  users
+           SET  password = "${hashPassord}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) == 5) {
+      const updateQ = `
+        UPDATE  users
+           SET  keyword = "${keyword}",
+                consulting = "${consulting}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else {
+      return res.status(401).send("수정할 수 없습니다.");
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("수정할 수 없습니다.");
+  }
+});
+
+router.post("/admin/enjoyList", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQ = `
+    SELECT  ROW_NUMBER() OVER(ORDER  BY  A.createdAt  DESC)		AS num,
+            A.id,
+            B.title,
+            A.createdAt,
+            DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")          AS viewCreatedAt
+      FROM  enjoyMedia      A
+     INNER
+      JOIN  media           B
+        ON  A.MediaId = B.id
+     WHERE  A.UserId = ${id}
+     ORDER  BY  A.createdAt = DESC
+    `;
+
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("수강 기록을 불러올 수 없습니다.");
+  }
 });
 
 module.exports = router;
