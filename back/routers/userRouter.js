@@ -327,14 +327,57 @@ router.get("/signin", async (req, res, next) => {
   console.log("❌❌❌❌❌❌❌❌❌❌❌❌❌❌");
   try {
     if (req.user) {
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: req.user.id },
-      });
+      const findQ = `
+      SELECT  A.id,
+              A.userId,
+              A.username,
+              A.birth,
+              A.gender,
+              A.zoneCode,
+              A.address,
+              A.detailAddress,
+              A.tel,
+              A.mobile,
+              A.email
+        FROM  users			A
+       WHERE  A.id = ${req.user.id}
+      `;
+
+      const boughtQ = `
+      SELECT  C.id,
+              C.userId,
+                  C.lectureType,
+              CASE
+                  WHEN C.lectureType = 1 THEN "1년"
+                  WHEN C.lectureType = 2 THEN "2년"
+                  WHEN C.lectureType = 3 THEN "3년"
+                  WHEN C.lectureType = 4 THEN "평생"
+                  WHEN C.lectureType = 5 THEN "3달"
+                  WHEN C.lectureType = 6 THEN "상품"
+              END										AS viewLectureType,
+              C.recentlyTurn,
+              C.recentlyTime,
+              C.startDate,
+              C.endDate,
+              DATE_FORMAT(C.startDate, '%Y년 %m월 %d일') 	AS viewStartDate,
+              DATE_FORMAT(C.endDate, '%Y년 %m월 %d일') 		AS viewEndDate
+        FROM	boughtLecture		C
+       WHERE  C.isDelete = FALSE
+         AND  C.isPay = TRUE
+         AND  C.endDate IS NOT NULL
+         AND  DATE_FORMAT(C.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+         AND  ${req.user.id} = C.userId
+       ORDER  BY  C.createdAt DESC
+       LIMIT  1
+    `;
+
+      const find = await models.sequelize.query(findQ);
+      const bought = await models.sequelize.query(boughtQ);
 
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      console.log(fullUserWithoutPassword);
+      console.log({ ...find[0][0], ...bought[0][0] });
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      return res.status(200).json(fullUserWithoutPassword);
+      return res.status(200).json({ ...find[0][0], ...bought[0][0] });
     } else {
       res.status(200).json(null);
     }
@@ -362,11 +405,58 @@ router.post("/signin", (req, res, next) => {
         return next(loginErr);
       }
 
-      const fullUserWithoutPassword = await User.findOne({
-        where: { id: user.id },
-      });
+      // const fullUserWithoutPassword = await User.findOne({
+      //   where: { id: user.id },
+      // });
 
-      return res.status(200).json(fullUserWithoutPassword);
+      const findQ = `
+      SELECT  A.id,
+              A.userId,
+              A.username,
+              A.birth,
+              A.gender,
+              A.zoneCode,
+              A.address,
+              A.detailAddress,
+              A.tel,
+              A.mobile,
+              A.email
+        FROM  users			A
+       WHERE  A.id = ${user.id}
+      `;
+
+      const boughtQ = `
+      SELECT  C.id,
+              C.userId,
+                  C.lectureType,
+              CASE
+                  WHEN C.lectureType = 1 THEN "1년"
+                  WHEN C.lectureType = 2 THEN "2년"
+                  WHEN C.lectureType = 3 THEN "3년"
+                  WHEN C.lectureType = 4 THEN "평생"
+                  WHEN C.lectureType = 5 THEN "3달"
+                  WHEN C.lectureType = 6 THEN "상품"
+              END										AS viewLectureType,
+              C.recentlyTurn,
+              C.recentlyTime,
+              C.startDate,
+              C.endDate,
+              DATE_FORMAT(C.startDate, '%Y년 %m월 %d일') 	AS viewStartDate,
+              DATE_FORMAT(C.endDate, '%Y년 %m월 %d일') 		AS viewEndDate
+        FROM	boughtLecture		C
+       WHERE  C.isDelete = FALSE
+         AND  C.isPay = TRUE
+         AND  C.endDate IS NOT NULL
+         AND  DATE_FORMAT(C.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+         AND  ${user.id} = C.userId
+       ORDER  BY  C.createdAt DESC
+       LIMIT  1
+    `;
+
+      const find = await models.sequelize.query(findQ);
+      const bought = await models.sequelize.query(boughtQ);
+
+      return res.status(200).json({ ...find[0][0], ...bought[0][0] });
     });
   })(req, res, next);
 });
