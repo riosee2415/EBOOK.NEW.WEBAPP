@@ -511,7 +511,8 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/me/update", isLoggedIn, async (req, res, next) => {
-  const { id, mobile } = req.body;
+  const { id, password, mobile, username, address, zoneCode, detailAddress } =
+    req.body;
 
   try {
     const exUser = await User.findOne({ where: { id: parseInt(id) } });
@@ -520,12 +521,24 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
       return res.status(401).send("존재하지 않는 사용자 입니다.");
     }
 
-    const updateUser = await User.update(
-      { mobile },
-      {
-        where: { id: parseInt(id) },
-      }
-    );
+    const result = await bcrypt.compare(password, exUser.password);
+
+    if (!result) {
+      return res.status(401).send("비밀번호가 일치하지 않습니다.");
+    }
+
+    const updateQ = `
+    UPDATE  users
+       SET  mobile = "${mobile}",
+            username = "${username}",
+            address = "${address}",
+            zoneCode = "${zoneCode}",
+            detailAddress = "${detailAddress}",
+            updatedAt = NOW()
+     WHERE  id = ${id}
+    `;
+
+    await models.sequelize.query(updateQ);
 
     return res.status(200).json({ result: true });
   } catch (error) {

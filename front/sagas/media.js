@@ -5,6 +5,18 @@ import {
   MEDIA_ADMIN_LIST_SUCCESS,
   MEDIA_ADMIN_LIST_FAILURE,
   //
+  MEDIA_LIST_REQUEST,
+  MEDIA_LIST_SUCCESS,
+  MEDIA_LIST_FAILURE,
+  //
+  MEDIA_ALL_LIST_REQUEST,
+  MEDIA_ALL_LIST_SUCCESS,
+  MEDIA_ALL_LIST_FAILURE,
+  //
+  MEDIA_DETAIL_REQUEST,
+  MEDIA_DETAIL_SUCCESS,
+  MEDIA_DETAIL_FAILURE,
+  //
   MEDIA_FILE_UPLOAD_REQUEST,
   MEDIA_FILE_UPLOAD_SUCCESS,
   MEDIA_FILE_UPLOAD_FAILURE,
@@ -40,6 +52,87 @@ function* mediaAdminList(action) {
     console.error(err);
     yield put({
       type: MEDIA_ADMIN_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mediaListAPI(data) {
+  return await axios.post(`/api/media/list`, data);
+}
+
+function* mediaList(action) {
+  try {
+    const result = yield call(mediaListAPI, action.data);
+
+    yield put({
+      type: MEDIA_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MEDIA_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mediaAllListAPI(data) {
+  return await axios.post(`/api/media/all/list`, data);
+}
+
+function* mediaAllList(action) {
+  try {
+    const result = yield call(mediaAllListAPI, action.data);
+
+    yield put({
+      type: MEDIA_ALL_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MEDIA_ALL_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mediaDetailAPI(data) {
+  return await axios.post(`/api/media/detail`, data);
+}
+
+function* mediaDetail(action) {
+  try {
+    const result = yield call(mediaDetailAPI, action.data);
+
+    yield put({
+      type: MEDIA_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MEDIA_DETAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -162,6 +255,18 @@ function* watchMediaAdminList() {
   yield takeLatest(MEDIA_ADMIN_LIST_REQUEST, mediaAdminList);
 }
 
+function* watchMediaAllList() {
+  yield takeLatest(MEDIA_ALL_LIST_REQUEST, mediaAllList);
+}
+
+function* watchMediaList() {
+  yield takeLatest(MEDIA_LIST_REQUEST, mediaList);
+}
+
+function* watchMediaDetail() {
+  yield takeLatest(MEDIA_DETAIL_REQUEST, mediaDetail);
+}
+
 function* watchMediaFileUpload() {
   yield takeLatest(MEDIA_FILE_UPLOAD_REQUEST, mediaFileUpload);
 }
@@ -182,6 +287,9 @@ function* watchMediaDelete() {
 export default function* mediaSaga() {
   yield all([
     fork(watchMediaAdminList),
+    fork(watchMediaAllList),
+    fork(watchMediaList),
+    fork(watchMediaDetail),
     fork(watchMediaFileUpload),
     fork(watchMediaCreate),
     fork(watchMediaUpdate),

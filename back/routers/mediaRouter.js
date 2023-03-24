@@ -70,13 +70,139 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
      WHERE  1 = 1
        AND  title LIKE "%${_title}%"
        AND  isDelete = FALSE
-     ORDER  BY  sort DESC
+     ORDER  BY  sort ASC
     `;
 
   try {
     const list = await models.sequelize.query(selectQ);
 
     return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("생성 할 수 없습니다.");
+  }
+});
+
+router.post("/list", async (req, res, next) => {
+  const { page } = req.body;
+
+  const LIMIT = 30;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 30;
+
+  const lengthQ = `
+    SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            id,
+            title,
+            mediaOriginName,
+            mediaPath,
+            duration,
+            sort,
+            createdAt,
+            DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+            updatedAt,
+            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+      FROM  media
+     WHERE  1 = 1
+       AND  isDelete = FALSE
+     ORDER  BY  sort ASC
+    `;
+
+  const selectQ = `
+    SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            id,
+            title,
+            mediaOriginName,
+            mediaPath,
+            duration,
+            sort,
+            createdAt,
+            DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+            updatedAt,
+            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+      FROM  media
+     WHERE  1 = 1
+       AND  isDelete = FALSE
+     ORDER  BY  sort ASC
+     LIMIT  ${LIMIT}
+    OFFSET  ${OFFSET}
+    `;
+
+  try {
+    const lengths = await models.sequelize.query(lengthQ);
+    const list = await models.sequelize.query(selectQ);
+
+    const listLen = lengths[0].length;
+
+    const lastPage =
+      listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;
+
+    return res
+      .status(200)
+      .json({ list: list[0], lastPage: parseInt(lastPage) });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("생성 할 수 없습니다.");
+  }
+});
+
+router.post("/all/list", async (req, res, next) => {
+  const selectQ = `
+    SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            id,
+            title,
+            mediaOriginName,
+            mediaPath,
+            duration,
+            sort,
+            createdAt,
+            DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+            updatedAt,
+            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+      FROM  media
+     WHERE  1 = 1
+       AND  isDelete = FALSE
+     ORDER  BY  sort ASC
+    `;
+
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("생성 할 수 없습니다.");
+  }
+});
+
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQ = `
+    SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
+            id,
+            title,
+            mediaOriginName,
+            mediaPath,
+            duration,
+            sort,
+            createdAt,
+            DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+            updatedAt,
+            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+      FROM  media
+     WHERE  1 = 1
+       AND  isDelete = FALSE
+       AND  id = ${id}
+    `;
+
+  try {
+    const detail = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(detail[0][0]);
   } catch (e) {
     console.error(e);
     return res.status(400).send("생성 할 수 없습니다.");

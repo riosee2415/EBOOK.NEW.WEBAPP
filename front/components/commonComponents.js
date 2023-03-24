@@ -237,11 +237,12 @@ export const CommonButton = styled(Button)`
   ${(props) => props.kindOf === `black` && `color : ${props.theme.white_C};`}
   
   ${(props) =>
-    props.kindOf === `subTheme` && `background : ${props.theme.subTheme_C};`}
-  ${(props) => props.kindOf === `subTheme` && `color : ${props.theme.white_C};`}
+    props.kindOf === `subTheme` && `background : ${props.theme.subTheme5_C};`}
+  ${(props) =>
+    props.kindOf === `subTheme` && `color : ${props.theme.basicTheme_C};`}
   ${(props) =>
     props.kindOf === `subTheme` &&
-    `border : 1px solid ${props.theme.subTheme_C};`}
+    `border : 1px solid ${props.theme.subTheme5_C};`}
   ${(props) =>
     props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
   ${(props) =>
@@ -288,9 +289,9 @@ export const CommonButton = styled(Button)`
     ${(props) =>
       props.kindOf === `black` && `border : 1px solid ${props.theme.black_C};`}
     ${(props) =>
-      props.kindOf === `subTheme` && `color ${props.theme.subTheme_C};`}
+      props.kindOf === `subTheme` && `color ${props.theme.subTheme5_C};`}
     ${(props) =>
-      props.kindOf === `subTheme` && `background ${props.theme.white_C};`}
+      props.kindOf === `subTheme` && `background ${props.theme.basicTheme_C};`}
     ${(props) =>
       props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
     ${(props) =>
@@ -553,6 +554,10 @@ export const CustomPage = styled(Pagination)`
       line-height: 25px;
       font-size: 14px;
     }
+  }
+
+  & .ant-pagination-options {
+    display: none;
   }
 `;
 

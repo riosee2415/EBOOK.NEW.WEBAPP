@@ -84,6 +84,10 @@ export const initailState = {
   st_adminUpdateLoading: false, // 관리자 수정
   st_adminUpdateDone: false,
   st_adminUpdateError: null,
+  //
+  st_meUpdateLoading: false, // 회원 수정
+  st_meUpdateDone: false,
+  st_meUpdateError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -165,6 +169,10 @@ export const MODIFYPASS_UPDATE_FAILURE = "MODIFYPASS_UPDATE_FAILURE";
 export const ADMIN_UPDATE_REQUEST = "ADMIN_UPDATE_REQUEST";
 export const ADMIN_UPDATE_SUCCESS = "ADMIN_UPDATE_SUCCESS";
 export const ADMIN_UPDATE_FAILURE = "ADMIN_UPDATE_FAILURE";
+//
+export const ME_UPDATE_REQUEST = "ME_UPDATE_REQUEST";
+export const ME_UPDATE_SUCCESS = "ME_UPDATE_SUCCESS";
+export const ME_UPDATE_FAILURE = "ME_UPDATE_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -583,6 +591,26 @@ const reducer = (state = initailState, action) =>
         draft.st_adminUpdateLoading = false;
         draft.st_adminUpdateDone = false;
         draft.st_adminUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ME_UPDATE_REQUEST: {
+        draft.st_meUpdateLoading = true;
+        draft.st_meUpdateDone = false;
+        draft.st_meUpdateError = null;
+        break;
+      }
+      case ME_UPDATE_SUCCESS: {
+        draft.st_meUpdateLoading = false;
+        draft.st_meUpdateDone = true;
+        draft.st_meUpdateError = null;
+        break;
+      }
+      case ME_UPDATE_FAILURE: {
+        draft.st_meUpdateLoading = false;
+        draft.st_meUpdateDone = false;
+        draft.st_meUpdateError = action.error;
         break;
       }
       //////////////////////////////////////////////
