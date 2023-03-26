@@ -154,7 +154,7 @@ const MypageIndex = ({}) => {
               padding={width < 700 ? `20px` : `40px`}
               radius={`10px`}
               border={`1px solid ${Theme.lightGrey4_C}`}
-              margin={width < 700 ? `35px 0` : `35px 0 90px`}
+              margin={width < 700 ? `35px 0 0` : `35px 0 0`}
               al={`flex-start`}
             >
               <Text
@@ -245,6 +245,28 @@ const MypageIndex = ({}) => {
                   수강 중인 강의가 없습니다.
                 </Text>
               )}
+            </Wrapper>
+            <Wrapper
+              al={`flex-end`}
+              margin={width < 700 ? `0 0 35px` : `0 0 90px`}
+            >
+              {boughtMeDetail &&
+                boughtMeDetail &&
+                boughtMeDetail.recentlyTurn && (
+                  <CommonButton
+                    kindOf={`basic`}
+                    width={`154px`}
+                    height={`40px`}
+                    fontSize={`18px`}
+                    onClick={() =>
+                      moveLinkHandler(
+                        `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0`
+                      )
+                    }
+                  >
+                    강의 이어보기
+                  </CommonButton>
+                )}
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 34px`}>
