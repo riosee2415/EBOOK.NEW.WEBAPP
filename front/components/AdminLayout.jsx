@@ -27,7 +27,7 @@ export const items = {
     {
       name: "페이지접속통계",
       link: "/",
-      useYn: true,
+      useYn: false,
     },
   ],
   기초정보관리: [
@@ -44,12 +44,12 @@ export const items = {
     {
       name: "SNS정보관리",
       link: "/admin/info/snsInfo",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "카카오톡채널관리",
       link: "/admin/info/kakaoch",
-      useYn: true,
+      useYn: false,
     },
   ],
   배너관리: [
@@ -90,7 +90,7 @@ export const items = {
     {
       name: "겔러리관리",
       link: "/admin/boards/gallery",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "강의후기",
@@ -112,12 +112,12 @@ export const items = {
     {
       name: "관리자관리[최고관리자전용]",
       link: "/admin/user/userRight",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "탈퇴회원관리",
       link: "/admin/user/userExitList",
-      useYn: true,
+      useYn: false,
     },
   ],
   고객지원관리: [
@@ -205,7 +205,7 @@ const AdminLayout = ({ children }) => {
               padding={`2px 15px`}
               radius={`6px`}
             >
-              ㅇㅇㅇ 최고관리자님, 환영합니다.
+              {me && me.username} 최고관리자님, 환영합니다.
             </Text>
           </Wrapper>
         </Wrapper>
@@ -292,16 +292,16 @@ const AdminLayout = ({ children }) => {
             title={`회원관리`}
             menus={items["회원관리"]}
           />
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight6}
             title={`고객지원관리`}
             menus={items["고객지원관리"]}
-          />
-          <AdminMenuBox
+          /> */}
+          {/* <AdminMenuBox
             right={me && me.menuRight7}
             title={`기록관리`}
             menus={items["기록관리"]}
-          />
+          /> */}
           <AdminMenuBox
             right={me && me.menuRight8}
             title={`강의관리`}
