@@ -35,6 +35,7 @@ const Paypal = () => {
         merchantUid: router.query.merchant_uid,
         isBuyBook: router.query.isBuyBook === "1" ? 1 : 0,
         bookPrice: router.query.bookPrice,
+        lectureId: router.query.lectureId,
       },
     });
   }, [router.query]);

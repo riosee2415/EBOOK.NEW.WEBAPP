@@ -6,25 +6,46 @@ module.exports = class Media extends Model {
   static init(sequelize) {
     return super.init(
       {
+        type: {
+          type: DataTypes.STRING(200),
+          allowNull: false,
+        },
         title: {
           type: DataTypes.STRING(300),
           allowNull: false,
         },
         mediaOriginName: {
           type: DataTypes.STRING(300),
-          allowNull: false,
+          allowNull: true,
         },
         mediaPath: {
           type: DataTypes.STRING(700),
-          allowNull: false,
+          allowNull: true,
         },
         duration: {
           type: DataTypes.STRING(300),
           defaultValue: "0",
-          allowNull: false,
+          allowNull: true,
+        },
+        sampleMediaOriginName: {
+          type: DataTypes.STRING(300),
+          allowNull: true,
+        },
+        sampleMediaPath: {
+          type: DataTypes.STRING(700),
+          allowNull: true,
+        },
+        sampleDuration: {
+          type: DataTypes.STRING(300),
+          allowNull: true,
         },
         sort: {
           type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        isSample: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
           allowNull: false,
         },
         isDelete: {

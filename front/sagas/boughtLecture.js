@@ -33,6 +33,13 @@ import {
   BOUGHT_ADDRESS_UPDATE_SUCCESS,
   BOUGHT_ADDRESS_UPDATE_FAILURE,
   //
+  BOUGHT_ME_DETAIL_REQUEST,
+  BOUGHT_ME_DETAIL_SUCCESS,
+  BOUGHT_ME_DETAIL_FAILURE,
+  //
+  BOUGHT_RECENTLY_UPDATE_REQUEST,
+  BOUGHT_RECENTLY_UPDATE_SUCCESS,
+  BOUGHT_RECENTLY_UPDATE_FAILURE,
 } from "../reducers/boughtLecture";
 
 // SAGA AREA ********************************************************************************************************
@@ -248,6 +255,60 @@ function* boughtAddressUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtMeDetailAPI(data) {
+  return await axios.post(`/api/bought/me/detail`, data);
+}
+
+function* boughtMeDetail(action) {
+  try {
+    const result = yield call(boughtMeDetailAPI, action.data);
+
+    yield put({
+      type: BOUGHT_ME_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_ME_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtRecentlyUpdateAPI(data) {
+  return await axios.post(`/api/bought/recently/update`, data);
+}
+
+function* boughtRecentlyUpdate(action) {
+  try {
+    const result = yield call(boughtRecentlyUpdateAPI, action.data);
+
+    yield put({
+      type: BOUGHT_RECENTLY_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_RECENTLY_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchBoughtAdminList() {
   yield takeLatest(BOUGHT_ADMIN_LIST_REQUEST, boughtAdminList);
@@ -281,6 +342,14 @@ function* watchBoughtAdminDelete() {
   yield takeLatest(BOUGHT_ADMIN_DELETE_REQUEST, boughtAdminDelete);
 }
 
+function* watchBoughtMeDetail() {
+  yield takeLatest(BOUGHT_ME_DETAIL_REQUEST, boughtMeDetail);
+}
+
+function* watchBoughtRecentlyUpdate() {
+  yield takeLatest(BOUGHT_RECENTLY_UPDATE_REQUEST, boughtRecentlyUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* boughtLectureSaga() {
   yield all([
@@ -292,6 +361,8 @@ export default function* boughtLectureSaga() {
     fork(watchBoughtAdminCreate),
     fork(watchBoughtAdminUpdate),
     fork(watchBoughtAdminDelete),
+    fork(watchBoughtMeDetail),
+    fork(watchBoughtRecentlyUpdate),
     //
   ]);
 }

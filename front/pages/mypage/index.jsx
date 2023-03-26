@@ -19,17 +19,23 @@ import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import { Empty, Form, Input } from "antd";
+import { Empty, Form, Input, message, Slider } from "antd";
 import { SearchOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { MEDIA_LIST_REQUEST } from "../../reducers/media";
 import { useRouter } from "next/router";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../reducers/boughtLecture";
+import { ENJOY_ME_LIST_REQUEST } from "../../reducers/enjoy";
 
 const MypageIndex = ({}) => {
   ////// GLOBAL STATE //////
 
   const { me } = useSelector((state) => state.user);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
   const { mediaList, lastPage } = useSelector((state) => state.media);
+  const { enjoyMeList } = useSelector((state) => state.enjoy);
+
+  console.log(enjoyMeList);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -37,6 +43,27 @@ const MypageIndex = ({}) => {
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  const CustomSlider = styled(Slider)`
+    width: 200px;
+
+    & .ant-slider-handle {
+      display: none;
+      width: 13px;
+      height: 13px;
+      margin-top: -1px;
+    }
+
+    & .ant-slider-step,
+    & .ant-slider-track,
+    & .ant-slider-rail {
+      height: 10px;
+    }
+
+    @media (max-width: 700px) {
+      width: 100%;
+    }
+  `;
 
   ////// REDUX //////
   ////// USEEFFECT //////
@@ -48,17 +75,16 @@ const MypageIndex = ({}) => {
     }
   }, [me]);
 
-  useEffect(
-    () => [
-      dispatch({
-        type: MEDIA_LIST_REQUEST,
-        data: {
-          page: currentPage,
-        },
-      }),
-    ],
-    [currentPage]
-  );
+  useEffect(() => {
+    dispatch({
+      type: MEDIA_LIST_REQUEST,
+      data: {
+        page: currentPage,
+      },
+    });
+
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -138,9 +164,87 @@ const MypageIndex = ({}) => {
               >
                 나의 이용권
               </Text>
-              <Text fontSize={width < 700 ? `24px` : `32px`}>
-                수강 중인 강의가 없습니다.
-              </Text>
+
+              {boughtMeDetail ? (
+                boughtMeDetail.payType === "nobank" && !boughtMeDetail.isPay ? (
+                  <>
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`120px`}
+                        fontWeight={`600`}
+                      >
+                        금액
+                      </Text>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`calc(100% - 120px)`}
+                      >
+                        {boughtMeDetail.viewPay}원
+                      </Text>
+                    </Wrapper>
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`120px`}
+                        fontWeight={`600`}
+                      >
+                        은행명
+                      </Text>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`calc(100% - 120px)`}
+                      >
+                        국민은행
+                      </Text>
+                    </Wrapper>
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`120px`}
+                        fontWeight={`600`}
+                      >
+                        계좌번호
+                      </Text>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`calc(100% - 120px)`}
+                      >
+                        054901-04-229757
+                      </Text>
+                    </Wrapper>
+                    <Wrapper dr={`row`} ju={`flex-start`}>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`120px`}
+                        fontWeight={`600`}
+                      >
+                        예금주명
+                      </Text>
+                      <Text
+                        fontSize={width < 700 ? `20px` : `28px`}
+                        width={`calc(100% - 120px)`}
+                      >
+                        친절한대학 주식회사
+                      </Text>
+                    </Wrapper>
+                    <Wrapper>
+                      <Text fontSize={width < 700 ? `20px` : `28px`}>
+                        위 계좌로 금액 입금해주시기 바랍니다.
+                      </Text>
+                    </Wrapper>
+                  </>
+                ) : (
+                  <Text fontSize={width < 700 ? `20px` : `28px`}>
+                    {boughtMeDetail.viewStateDate}부터&nbsp;~&nbsp;
+                    {boughtMeDetail.viewEndDate}까지 이용할 수 있습니다.
+                  </Text>
+                )
+              ) : (
+                <Text fontSize={width < 700 ? `24px` : `32px`}>
+                  수강 중인 강의가 없습니다.
+                </Text>
+              )}
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 34px`}>
@@ -168,7 +272,33 @@ const MypageIndex = ({}) => {
                 </Form.Item>
               </Form>
             </Wrapper>
+            {boughtMeDetail && enjoyMeList && (
+              <Wrapper dr={`row`} ju={`flex-end`}>
+                <CustomSlider
+                  disabled
+                  min={0}
+                  max={
+                    boughtMeDetail.lectureType === "5"
+                      ? 118
+                      : enjoyMeList.length
+                  }
+                  value={
+                    boughtMeDetail.lectureType === "5"
+                      ? enjoyMeList.length > 118
+                        ? 118
+                        : enjoyMeList.length
+                      : enjoyMeList.length
+                  }
+                />
 
+                <Wrapper fontSize={`14px`} width={`auto`}>
+                  {boughtMeDetail.lectureType === "5"
+                    ? 118
+                    : enjoyMeList.length}
+                  강
+                </Wrapper>
+              </Wrapper>
+            )}
             <Wrapper borderTop={`1px solid ${Theme.lightGrey4_C}`}>
               {mediaList &&
                 (mediaList.length === 0 ? (
@@ -211,7 +341,7 @@ const MypageIndex = ({}) => {
                               fontWeight={`500`}
                               color={Theme.basicTheme_C}
                             >
-                              읽기/발음
+                              {data.type}
                             </Text>
                           </Wrapper>
                           <Wrapper dr={`row`} ju={`flex-start`}>
@@ -231,28 +361,58 @@ const MypageIndex = ({}) => {
                           al={`flex-end`}
                         >
                           <Wrapper dr={`row`} ju={`flex-end`}>
-                            <CommonButton
-                              kindOf={`subTheme`}
-                              width={width < 700 ? `100%` : `186px`}
-                              height={`52px`}
-                              fontSize={`20px`}
-                              onClick={() =>
-                                moveLinkHandler(`/mypage/${data.id}`)
-                              }
-                            >
-                              <Wrapper dr={`row`} ju={`space-between`}>
-                                <Text fontWeight={`600`}>샘플강의 보기</Text>
+                            {(!boughtMeDetail || !boughtMeDetail.isPay) &&
+                            data.isSample ? (
+                              <CommonButton
+                                kindOf={`subTheme`}
+                                width={width < 700 ? `100%` : `186px`}
+                                height={`52px`}
+                                fontSize={`20px`}
+                                onClick={() =>
+                                  moveLinkHandler(
+                                    `/mypage/${data.id}?isSample=1`
+                                  )
+                                }
+                              >
+                                <Wrapper dr={`row`} ju={`space-between`}>
+                                  <Text fontWeight={`600`}>샘플강의 보기</Text>
 
-                                <Wrapper
-                                  width={`auto`}
-                                  padding={`6px`}
-                                  bgColor={Theme.white_C}
-                                  radius={`100%`}
-                                >
-                                  <CaretRightOutlined />
+                                  <Wrapper
+                                    width={`auto`}
+                                    padding={`6px`}
+                                    bgColor={Theme.white_C}
+                                    radius={`100%`}
+                                  >
+                                    <CaretRightOutlined />
+                                  </Wrapper>
                                 </Wrapper>
-                              </Wrapper>
-                            </CommonButton>
+                              </CommonButton>
+                            ) : (
+                              <CommonButton
+                                kindOf={`subTheme`}
+                                width={width < 700 ? `100%` : `186px`}
+                                height={`52px`}
+                                fontSize={`20px`}
+                                onClick={() =>
+                                  moveLinkHandler(
+                                    `/mypage/${data.id}?isSample=0`
+                                  )
+                                }
+                              >
+                                <Wrapper dr={`row`} ju={`space-between`}>
+                                  <Text fontWeight={`600`}>강의 보기</Text>
+
+                                  <Wrapper
+                                    width={`auto`}
+                                    padding={`6px`}
+                                    bgColor={Theme.white_C}
+                                    radius={`100%`}
+                                  >
+                                    <CaretRightOutlined />
+                                  </Wrapper>
+                                </Wrapper>
+                              </CommonButton>
+                            )}
                           </Wrapper>
                         </Wrapper>
                       </Wrapper>
@@ -294,6 +454,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         page: 1,
       },
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ENJOY_ME_LIST_REQUEST,
     });
 
     // 구현부 종료

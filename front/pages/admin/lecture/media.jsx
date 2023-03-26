@@ -10,6 +10,8 @@ import {
   Modal,
   Popconfirm,
   Popover,
+  Select,
+  Switch,
   Table,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
@@ -25,6 +27,9 @@ import {
   GuideUl,
   GuideLi,
   ModalBtn,
+  UpBtn,
+  DownBtn,
+  SortView,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -42,6 +47,8 @@ import {
   MEDIA_FILE_UPLOAD_REQUEST,
   MEDIA_ADMIN_LIST_REQUEST,
   MEDIA_UPDATE_REQUEST,
+  MEDIA_FILE2_UPLOAD_REQUEST,
+  MEDIA_SORT_UPDATE_REQUEST,
 } from "../../../reducers/media";
 
 const InfoTitle = styled.div`
@@ -106,9 +113,13 @@ const Media = ({}) => {
     mediaAdminList,
 
     mediaPath,
+    media2Path,
     //
     st_mediaFileUploadLoading,
     st_mediaFileUploadError,
+    //
+    st_mediaFile2UploadLoading,
+    st_mediaFile2UploadError,
     //
     st_mediaCreateLoading,
     st_mediaCreateDone,
@@ -121,16 +132,21 @@ const Media = ({}) => {
     st_mediaDeleteLoading,
     st_mediaDeleteDone,
     st_mediaDeleteError,
+    //
+    st_mediaSortUpdateDone,
+    st_mediaSortUpdateError,
   } = useSelector((state) => state.media);
 
   const [cForm] = Form.useForm();
   const [infoForm] = Form.useForm();
 
   const fileRef = useRef();
+  const file2Ref = useRef();
 
   const [cModal, setCModal] = useState(false);
 
   const [mediaDuration, setMediaDuration] = useState(null);
+  const [media2Duration, setMedia2Duration] = useState(null);
 
   const [serachTitle, setSearchTitle] = useState(null);
 
@@ -168,18 +184,35 @@ const Media = ({}) => {
       const video = document.getElementById("video-js");
 
       if (video) {
-        video.addEventListener("loadedmetadata", () => {
-          setMediaDuration(String(video.duration));
-        });
+        video.addEventListener("loadedmetadata", () => {});
+        setMediaDuration(String(video.duration));
       }
     }
   }, [mediaPath, mediaDuration]);
+
+  // 업로드
+  useEffect(() => {
+    if (media2Path) {
+      const video = document.getElementById("video2-js");
+
+      if (video) {
+        video.addEventListener("loadedmetadata", () => {});
+        setMedia2Duration(String(video.duration));
+      }
+    }
+  }, [media2Path, media2Duration]);
 
   useEffect(() => {
     if (st_mediaFileUploadError) {
       return message.error(st_mediaFileUploadError);
     }
   }, [st_mediaFileUploadError]);
+
+  useEffect(() => {
+    if (st_mediaFile2UploadError) {
+      return message.error(st_mediaFile2UploadError);
+    }
+  }, [st_mediaFile2UploadError]);
 
   // 검색
   useEffect(() => {
@@ -228,18 +261,59 @@ const Media = ({}) => {
     }
   }, [st_mediaUpdateDone, st_mediaUpdateError]);
 
+  // 영상 삭제
+  useEffect(() => {
+    if (st_mediaDeleteDone) {
+      dispatch({
+        type: MEDIA_ADMIN_LIST_REQUEST,
+        data: {
+          title: serachTitle,
+        },
+      });
+
+      setCurrentData(null);
+
+      return message.success("영상을 삭제했습니다.");
+    }
+
+    if (st_mediaDeleteError) {
+      return message.error(st_mediaDeleteError);
+    }
+  }, [st_mediaDeleteDone, st_mediaDeleteError]);
+
+  // 영상 수정
+  useEffect(() => {
+    if (st_mediaSortUpdateDone) {
+      dispatch({
+        type: MEDIA_ADMIN_LIST_REQUEST,
+        data: {
+          title: serachTitle,
+        },
+      });
+
+      return;
+    }
+
+    if (st_mediaSortUpdateError) {
+      return message.error(st_mediaSortUpdateError);
+    }
+  }, [st_mediaSortUpdateDone, st_mediaSortUpdateError]);
+
   ////// TOGGLE //////
   const cModalToggle = useCallback(() => {
     setCModal((prev) => !prev);
 
     cForm.resetFields();
 
+    setMedia2Duration(null);
     setMediaDuration(null);
     setCurrentData(null);
+
     dispatch({
       type: MEDIA_FILE_RESET,
       data: {
         mediaPath: null,
+        media2Path: null,
       },
     });
   }, [cModal]);
@@ -257,7 +331,7 @@ const Media = ({}) => {
   // 파일 업로드
   const fileRefClickHandler = useCallback(() => {
     fileRef.current.click();
-  }, []);
+  }, [fileRef.current]);
 
   const fileUploadHandler = useCallback(
     (e) => {
@@ -285,6 +359,37 @@ const Media = ({}) => {
     [currentData]
   );
 
+  // 샘플 파일 업로드
+  const file2RefClickHandler = useCallback(() => {
+    file2Ref.current.click();
+  }, [file2Ref.current]);
+
+  const file2UploadHandler = useCallback(
+    (e) => {
+      const formData = new FormData();
+
+      [].forEach.call(e.target.files, (file) => {
+        setMediaDuration(null);
+        if (currentData) {
+          infoForm.setFieldsValue({
+            sampleMediaOriginName: file.name,
+          });
+        } else {
+          cForm.setFieldsValue({
+            sampleMediaOriginName: file.name,
+          });
+        }
+        formData.append("file", file);
+      });
+
+      dispatch({
+        type: MEDIA_FILE2_UPLOAD_REQUEST,
+        data: formData,
+      });
+    },
+    [currentData]
+  );
+
   // 선택
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -295,14 +400,18 @@ const Media = ({}) => {
         type: MEDIA_FILE_RESET,
         data: {
           mediaPath: record.mediaPath,
+          media2Path: record.sampleMediaPath,
         },
       });
-
+      console.log(record);
       infoForm.setFieldsValue({
+        type: record.type,
         title: record.title,
         mediaOriginName: record.mediaOriginName,
+        sampleMediaOriginName: record.sampleMediaOriginName,
         viewCreatedAt: record.viewCreatedAt,
         viewUpdatedAt: record.viewUpdatedAt,
+        isSample: record.isSample ? 1 : 0,
       });
     },
     [currentData]
@@ -311,49 +420,59 @@ const Media = ({}) => {
   // 상품 등록
   const mediaCreateHandler = useCallback(
     (data) => {
-      if (!mediaPath) {
-        return message.info("잠시 후 다시 시도해주세요.");
-      }
-      if (!mediaDuration) {
-        return message.info("잠시 후 다시 시도해주세요.");
-      }
-
       dispatch({
         type: MEDIA_CREATE_REQUEST,
         data: {
+          type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
           duration: mediaDuration,
+          sampleMediaOriginName: data.sampleMediaOriginName,
+          sampleMediaPath: media2Path,
+          sampleDuration: media2Duration,
+          isSample: data.isSample ? 1 : 0,
         },
       });
     },
-    [mediaPath, mediaDuration]
+    [mediaPath, mediaDuration, media2Path, media2Duration]
   );
 
   // 상품 업로드
   const mediaUpdateHandler = useCallback(
     (data) => {
-      if (!mediaPath) {
-        return message.info("잠시 후 다시 시도해주세요.");
-      }
-      if (!mediaDuration) {
-        return message.info("잠시 후 다시 시도해주세요.");
-      }
-
       dispatch({
         type: MEDIA_UPDATE_REQUEST,
         data: {
           id: currentData.id,
+          type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
           duration: mediaDuration,
+          sampleMediaOriginName: data.sampleMediaOriginName,
+          sampleMediaPath: media2Path,
+          sampleDuration: media2Duration,
+          isSample: data.isSample ? 1 : 0,
         },
       });
     },
-    [currentData, mediaPath, mediaDuration]
+    [currentData, mediaPath, mediaDuration, media2Path, media2Duration]
   );
+
+  // 순서 변경
+  const sortUpdateHandler = useCallback((data, sort) => {
+    if (sort <= 0) {
+      return message.error("더이상 내릴 수 없습니다.");
+    }
+    dispatch({
+      type: MEDIA_SORT_UPDATE_REQUEST,
+      data: {
+        id: data.id,
+        sort: sort,
+      },
+    });
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -369,8 +488,16 @@ const Media = ({}) => {
       dataIndex: "title",
     },
     {
-      title: "강의파일이름",
-      dataIndex: "mediaOriginName",
+      title: "우선순위",
+      render: (data) => {
+        return (
+          <Wrapper dr="row" ju="flex-start" al="center">
+            <UpBtn onClick={() => sortUpdateHandler(data, data.sort + 1)} />
+            <SortView>{data.sort}</SortView>
+            <DownBtn onClick={() => sortUpdateHandler(data, data.sort - 1)} />
+          </Wrapper>
+        );
+      },
     },
     {
       title: "생성일",
@@ -488,11 +615,24 @@ const Media = ({}) => {
 
               <Form
                 form={infoForm}
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 21 }}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
                 style={{ width: "100%", paddingRight: "20px" }}
                 onFinish={mediaUpdateHandler}
               >
+                <Form.Item
+                  label="유형"
+                  name="type"
+                  rules={[{ required: true, message: "유형은 필수 입니다." }]}
+                >
+                  <Select size="small" placeholder="유형을 선택해주세요.">
+                    <Select.Option value={"기초문법"}>기초문법</Select.Option>
+                    <Select.Option value={"기초어휘"}>기초어휘</Select.Option>
+                    <Select.Option value={"기초회화"}>기초회화</Select.Option>
+                    <Select.Option value={"생활표현"}>생활표현</Select.Option>
+                  </Select>
+                </Form.Item>
+
                 <Form.Item
                   label="강의이름"
                   name="title"
@@ -515,9 +655,6 @@ const Media = ({}) => {
                   <Form.Item
                     label="영상 파일"
                     name="mediaOriginName"
-                    rules={[
-                      { required: true, message: "영상 파일은 필수 입니다." },
-                    ]}
                     style={{ width: `calc(100% - 100px)` }}
                   >
                     <Input
@@ -538,14 +675,67 @@ const Media = ({}) => {
                   </Button>
                 </Wrapper>
 
-                <Wrapper margin={`0 0 40px`}>
-                  <video
-                    id={`video-js`}
-                    controls={true}
-                    width={`700px`}
-                    src={mediaPath}
-                  />
+                {mediaPath && (
+                  <Wrapper margin={`0 0 40px`}>
+                    <video
+                      id={`video-js`}
+                      controls={true}
+                      width={`700px`}
+                      src={mediaPath}
+                    />
+                  </Wrapper>
+                )}
+
+                <input
+                  type="file"
+                  hidden
+                  accept=".mp4"
+                  ref={file2Ref}
+                  onChange={file2UploadHandler}
+                />
+
+                <Wrapper width={`auto`} dr={`row`}>
+                  <Form.Item
+                    label="샘플 영상 파일"
+                    name="sampleMediaOriginName"
+                    style={{ width: `calc(100% - 100px)` }}
+                  >
+                    <Input
+                      size="small"
+                      width={`100%`}
+                      readOnly
+                      placeholder="샘플 영상을 업로드해주세요."
+                    />
+                  </Form.Item>
+                  <Button
+                    style={{ width: `100px`, margin: `0 0 23px` }}
+                    size="small"
+                    type="primary"
+                    onClick={file2RefClickHandler}
+                    loading={st_mediaFile2UploadLoading}
+                  >
+                    업로드
+                  </Button>
                 </Wrapper>
+
+                {media2Path && (
+                  <Wrapper margin={`0 0 40px`}>
+                    <video
+                      id={`video2-js`}
+                      controls={true}
+                      width={`700px`}
+                      src={media2Path}
+                    />
+                  </Wrapper>
+                )}
+
+                <Form.Item
+                  label="샘플 영상 여부"
+                  name="isSample"
+                  valuePropName="checked"
+                >
+                  <Switch size="small" />
+                </Form.Item>
 
                 <Wrapper dr={`row`} ju="flex-end">
                   <Popconfirm
@@ -603,7 +793,24 @@ const Media = ({}) => {
         onCancel={cModalToggle}
         footer={null}
       >
-        <Form form={cForm} onFinish={mediaCreateHandler}>
+        <Form
+          form={cForm}
+          onFinish={mediaCreateHandler}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+        >
+          <Form.Item
+            label="유형"
+            name="type"
+            rules={[{ required: true, message: "유형은 필수 입니다." }]}
+          >
+            <Select size="small" placeholder="유형을 선택해주세요.">
+              <Select.Option value={"기초문법"}>기초문법</Select.Option>
+              <Select.Option value={"기초어휘"}>기초어휘</Select.Option>
+              <Select.Option value={"기초회화"}>기초회화</Select.Option>
+              <Select.Option value={"생활표현"}>생활표현</Select.Option>
+            </Select>
+          </Form.Item>
           <Form.Item
             label="영상 제목"
             name="title"
@@ -622,7 +829,6 @@ const Media = ({}) => {
             <Form.Item
               label="영상 파일"
               name="mediaOriginName"
-              rules={[{ required: true, message: "영상 파일은 필수 입니다." }]}
               style={{ width: `calc(100% - 100px)` }}
             >
               <Input
@@ -643,7 +849,46 @@ const Media = ({}) => {
             </Button>
           </Wrapper>
 
+          <input
+            type="file"
+            hidden
+            accept=".mp4"
+            ref={file2Ref}
+            onChange={file2UploadHandler}
+          />
+          <Wrapper width={`auto`} dr={`row`}>
+            <Form.Item
+              label="샘플 영상 파일"
+              name="sampleMediaOriginName"
+              style={{ width: `calc(100% - 100px)` }}
+            >
+              <Input
+                size="small"
+                width={`100%`}
+                readOnly
+                placeholder="샘플 영상을 업로드해주세요."
+              />
+            </Form.Item>
+            <Button
+              style={{ width: `100px`, margin: `0 0 23px` }}
+              size="small"
+              type="primary"
+              onClick={file2RefClickHandler}
+              loading={st_mediaFile2UploadLoading}
+            >
+              업로드
+            </Button>
+          </Wrapper>
+          <Form.Item
+            label="샘플 영상 여부"
+            name="isSample"
+            valuePropName="checked"
+          >
+            <Switch size="small" />
+          </Form.Item>
+
           <Video id={`video-js`} src={mediaPath} />
+          <Video id={`video2-js`} src={media2Path} />
 
           <Wrapper dr={`row`} ju={`flex-end`}>
             <ModalBtn size="small" onClick={cModalToggle}>

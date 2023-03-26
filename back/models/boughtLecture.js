@@ -47,7 +47,7 @@ module.exports = class BoughtLecture extends Model {
           allowNull: true,
         },
         recentlyTime: {
-          type: DataTypes.DATE, // 마지막으로 본영상의 시간
+          type: DataTypes.STRING(300), // 마지막으로 본영상의 시간
           allowNull: true,
         },
         boughtDate: {

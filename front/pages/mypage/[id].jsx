@@ -32,6 +32,11 @@ import {
   MEDIA_DETAIL_REQUEST,
 } from "../../reducers/media";
 import { useRouter } from "next/router";
+import {
+  BOUGHT_ME_DETAIL_REQUEST,
+  BOUGHT_RECENTLY_UPDATE_REQUEST,
+} from "../../reducers/boughtLecture";
+import { ENJOY_CREATE_REQUEST } from "../../reducers/enjoy";
 
 const Video = styled.video`
   width: 100%;
@@ -41,6 +46,8 @@ const Video = styled.video`
 
 const MediaDetail = () => {
   const { me } = useSelector((state) => state.user);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
+
   const { mediaAllList, mediaDetail } = useSelector((state) => state.media);
 
   ////// HOOKS //////
@@ -96,6 +103,30 @@ const MediaDetail = () => {
     setVideoSpeed(data);
   }, []);
 
+  // 수강 기록 생성
+  const enjoyMediaCreateHandler = useCallback(() => {
+    dispatch({
+      type: ENJOY_CREATE_REQUEST,
+      data: {
+        id: router.query.id,
+      },
+    });
+  }, [router.query]);
+  // 일시정지
+  const recentlySaveHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: BOUGHT_RECENTLY_UPDATE_REQUEST,
+        data: {
+          id: boughtMeDetail.id,
+          recentlyTurn: router.query.id,
+          recentlyTime: data.timeStamp,
+        },
+      });
+    },
+    [boughtMeDetail, router.query]
+  );
+
   return (
     <>
       <Head>
@@ -112,7 +143,12 @@ const MediaDetail = () => {
               fontWeight={`700`}
               color={Theme.basicTheme_C}
             >
-              <Text>샘플강의 보기</Text>
+              {router.query &&
+                (router.query.isSample === "1" ? (
+                  <Text>샘플강의 보기</Text>
+                ) : (
+                  <Text>강의 보기</Text>
+                ))}
             </Wrapper>
 
             <Wrapper
@@ -168,7 +204,14 @@ const MediaDetail = () => {
                     fontWeight={`500`}
                     color={Theme.basicTheme_C}
                   >
-                    읽기/발음
+                    {router.query &&
+                      mediaAllList &&
+                      mediaAllList.find(
+                        (data) => data.id === parseInt(router.query.id)
+                      ) &&
+                      mediaAllList.find(
+                        (data) => data.id === parseInt(router.query.id)
+                      ).type}
                   </Text>
                 </Wrapper>
                 <Wrapper dr={`row`} ju={`flex-start`}>
@@ -191,10 +234,18 @@ const MediaDetail = () => {
                   </Text>
                 </Wrapper>
 
-                {mediaDetail && (
+                {mediaDetail && router.query && (
                   <Video
                     ref={videoRef}
-                    src={mediaDetail.mediaPath}
+                    src={
+                      router.query.isSample === "1"
+                        ? mediaDetail.sampleMediaPath
+                        : mediaDetail.mediaPath
+                    }
+                    onPlay={
+                      router.query.isSample === "0" && enjoyMediaCreateHandler
+                    }
+                    onPause={recentlySaveHandler}
                     playbackRate
                     playsInline
                     controls
@@ -314,28 +365,58 @@ const MediaDetail = () => {
                           al={`flex-end`}
                         >
                           <Wrapper dr={`row`} ju={`flex-end`}>
-                            <CommonButton
-                              kindOf={`subTheme`}
-                              width={width < 700 ? `100%` : `186px`}
-                              height={`52px`}
-                              fontSize={`20px`}
-                              onClick={() =>
-                                moveLinkHandler(`/mypage/${data.id}`)
-                              }
-                            >
-                              <Wrapper dr={`row`} ju={`space-between`}>
-                                <Text fontWeight={`600`}>샘플 강의 보기</Text>
+                            {(!boughtMeDetail || !boughtMeDetail.isPay) &&
+                            data.isSample ? (
+                              <CommonButton
+                                kindOf={`subTheme`}
+                                width={width < 700 ? `100%` : `186px`}
+                                height={`52px`}
+                                fontSize={`20px`}
+                                onClick={() =>
+                                  moveLinkHandler(
+                                    `/mypage/${data.id}?isSample=1`
+                                  )
+                                }
+                              >
+                                <Wrapper dr={`row`} ju={`space-between`}>
+                                  <Text fontWeight={`600`}>샘플강의 보기</Text>
 
-                                <Wrapper
-                                  width={`auto`}
-                                  padding={`6px`}
-                                  bgColor={Theme.white_C}
-                                  radius={`100%`}
-                                >
-                                  <CaretRightOutlined />
+                                  <Wrapper
+                                    width={`auto`}
+                                    padding={`6px`}
+                                    bgColor={Theme.white_C}
+                                    radius={`100%`}
+                                  >
+                                    <CaretRightOutlined />
+                                  </Wrapper>
                                 </Wrapper>
-                              </Wrapper>
-                            </CommonButton>
+                              </CommonButton>
+                            ) : (
+                              <CommonButton
+                                kindOf={`subTheme`}
+                                width={width < 700 ? `100%` : `186px`}
+                                height={`52px`}
+                                fontSize={`20px`}
+                                onClick={() =>
+                                  moveLinkHandler(
+                                    `/mypage/${data.id}?isSample=0`
+                                  )
+                                }
+                              >
+                                <Wrapper dr={`row`} ju={`space-between`}>
+                                  <Text fontWeight={`600`}>강의 보기</Text>
+
+                                  <Wrapper
+                                    width={`auto`}
+                                    padding={`6px`}
+                                    bgColor={Theme.white_C}
+                                    radius={`100%`}
+                                  >
+                                    <CaretRightOutlined />
+                                  </Wrapper>
+                                </Wrapper>
+                              </CommonButton>
+                            )}
                           </Wrapper>
                         </Wrapper>
                       </Wrapper>
@@ -367,6 +448,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: MEDIA_ALL_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
     });
 
     // 구현부 종료

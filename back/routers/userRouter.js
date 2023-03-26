@@ -338,46 +338,25 @@ router.get("/signin", async (req, res, next) => {
               A.detailAddress,
               A.tel,
               A.mobile,
-              A.email
+              A.email,
+              A.menuRight1,
+              A.menuRight2,
+              A.menuRight3,
+              A.menuRight4,
+              A.menuRight5,
+              A.menuRight6,
+              A.menuRight7,
+              A.menuRight8
         FROM  users			A
        WHERE  A.id = ${req.user.id}
       `;
 
-      const boughtQ = `
-      SELECT  C.id,
-              C.userId,
-                  C.lectureType,
-              CASE
-                  WHEN C.lectureType = 1 THEN "1년"
-                  WHEN C.lectureType = 2 THEN "2년"
-                  WHEN C.lectureType = 3 THEN "3년"
-                  WHEN C.lectureType = 4 THEN "평생"
-                  WHEN C.lectureType = 5 THEN "3달"
-                  WHEN C.lectureType = 6 THEN "상품"
-              END										AS viewLectureType,
-              C.recentlyTurn,
-              C.recentlyTime,
-              C.startDate,
-              C.endDate,
-              DATE_FORMAT(C.startDate, '%Y년 %m월 %d일') 	AS viewStartDate,
-              DATE_FORMAT(C.endDate, '%Y년 %m월 %d일') 		AS viewEndDate
-        FROM	boughtLecture		C
-       WHERE  C.isDelete = FALSE
-         AND  C.isPay = TRUE
-         AND  C.endDate IS NOT NULL
-         AND  DATE_FORMAT(C.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
-         AND  ${req.user.id} = C.userId
-       ORDER  BY  C.createdAt DESC
-       LIMIT  1
-    `;
-
       const find = await models.sequelize.query(findQ);
-      const bought = await models.sequelize.query(boughtQ);
 
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      console.log({ ...find[0][0], ...bought[0][0] });
+      console.log({ ...find[0][0] });
       console.log("🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀🍀");
-      return res.status(200).json({ ...find[0][0], ...bought[0][0] });
+      return res.status(200).json({ ...find[0][0] });
     } else {
       res.status(200).json(null);
     }
@@ -420,43 +399,22 @@ router.post("/signin", (req, res, next) => {
               A.detailAddress,
               A.tel,
               A.mobile,
-              A.email
+              A.email,
+              A.menuRight1,
+              A.menuRight2,
+              A.menuRight3,
+              A.menuRight4,
+              A.menuRight5,
+              A.menuRight6,
+              A.menuRight7,
+              A.menuRight8
         FROM  users			A
        WHERE  A.id = ${user.id}
       `;
 
-      const boughtQ = `
-      SELECT  C.id,
-              C.userId,
-                  C.lectureType,
-              CASE
-                  WHEN C.lectureType = 1 THEN "1년"
-                  WHEN C.lectureType = 2 THEN "2년"
-                  WHEN C.lectureType = 3 THEN "3년"
-                  WHEN C.lectureType = 4 THEN "평생"
-                  WHEN C.lectureType = 5 THEN "3달"
-                  WHEN C.lectureType = 6 THEN "상품"
-              END										AS viewLectureType,
-              C.recentlyTurn,
-              C.recentlyTime,
-              C.startDate,
-              C.endDate,
-              DATE_FORMAT(C.startDate, '%Y년 %m월 %d일') 	AS viewStartDate,
-              DATE_FORMAT(C.endDate, '%Y년 %m월 %d일') 		AS viewEndDate
-        FROM	boughtLecture		C
-       WHERE  C.isDelete = FALSE
-         AND  C.isPay = TRUE
-         AND  C.endDate IS NOT NULL
-         AND  DATE_FORMAT(C.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
-         AND  ${user.id} = C.userId
-       ORDER  BY  C.createdAt DESC
-       LIMIT  1
-    `;
-
       const find = await models.sequelize.query(findQ);
-      const bought = await models.sequelize.query(boughtQ);
 
-      return res.status(200).json({ ...find[0][0], ...bought[0][0] });
+      return res.status(200).json({ ...find[0][0] });
     });
   })(req, res, next);
 });

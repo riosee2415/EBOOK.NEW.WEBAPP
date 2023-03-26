@@ -53,6 +53,12 @@ const BuyForm = styled(Form)`
     font-size: 24px;
     font-weight: 400;
   }
+
+  @media (max-width: 700px) {
+    & .ant-form-item-label label {
+      font-size: 20px;
+    }
+  }
 `;
 
 const CustomPlusCircleOutlined = styled(PlusCircleOutlined)`
@@ -216,7 +222,7 @@ const Home = ({}) => {
   }, [me]);
 
   useEffect(() => {
-    if (st_lectureDetailError === "이미 수강권이 있습니다.") {
+    if (st_lectureDetailError) {
       message.error(st_lectureDetailError);
       return router.push("/enrolment");
     }
@@ -322,54 +328,75 @@ const Home = ({}) => {
           (data.detailAddress3 ? data.detailAddress3 : "")
         : data.address;
 
-      // console.log(address);
-      // console.log({
-      //   mobile: data.mobile,
-      //   receiver: data.receiver,
-      //   zoneCode: data.zoneCode,
-      //   address: address,
-      //   detailAddress: isOverseas ? "-" : data.detailAddress,
-      //   payType: isBuyType,
-      //   pay:
-      //     lectureDetail.lecturePrice +
-      //     (isBuyBook === 1
-      //       ? lectureDetail.bookEndDate
-      //         ? lectureDetail.bookBuyPrice
-      //         : lectureDetail.bookPrice
-      //       : 0),
-      //   lectureType: lectureDetail.type,
-      //   name: data.username,
-      //   // impUid: rsp.imp_uid,
-      //   // merchantUid: rsp.merchant_uid,
-      //   isBuyBook: isBuyBook === 1 ? 1 : 0,
-      //   bookPrice:
-      //     isBuyBook === 1
-      //       ? lectureDetail.bookEndDate
-      //         ? lectureDetail.bookBuyPrice
-      //         : lectureDetail.bookPrice
-      //       : 0,
-      // });
-
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
       let paypalPay = null;
 
-      await dollarChange(
-        lectureDetail.discountPrice +
-          (isBuyBook === 1 && overAddress
-            ? dataArr.find((data) => data.id === overAddress).price
-            : 0) +
-          (isBuyBook === 1
-            ? lectureDetail.bookEndDate
+      // 금액 계산 순선
+      // 할인 가격 :
+      //  ⭕️ 할인 가격 +
+      //  ❌ 정상 가격 +
+      // 해외 + 책 구매시
+      //  ⭕️ 해외 추가금액
+      //  ❌ 0원
+      // 책 구매시
+      //  ⭕️ 책 할인 날짜 지났거나 null이 아닐때
+      //        ⭕️ 할인 가격 :
+      //                    ⭕️ 할인 가격 +
+      //                    ❌ 정상 가격 +
+      //        ❌ 정상 가격
+      //  ❌ 0
+      const buyPay =
+        (lectureDetail.discountPrice
+          ? lectureDetail.discountPrice
+          : lectureDetail.price) +
+        (isBuyBook === 1 && overAddress
+          ? dataArr.find((data) => data.id === overAddress).price
+          : 0) +
+        (isBuyBook === 1
+          ? lectureDetail.bookEndDate
+            ? lectureDetail.bookDiscountPrice
               ? lectureDetail.bookDiscountPrice
               : lectureDetail.bookPrice
-            : 0)
-      ).then((data) => {
+            : lectureDetail.bookPrice
+          : 0);
+
+      await dollarChange(buyPay).then((data) => {
         paypalPay = data;
       });
 
       if (isBuyType === "nobank") {
+        // 무통장입금
+        // 무통장입금
+        // 무통장입금
+        dispatch({
+          type: BOUGHT_CREATE_REQUEST,
+          data: {
+            mobile: data.mobile,
+            receiver: data.receiver,
+            zoneCode: data.zoneCode,
+            address: address,
+            detailAddress: isOverseas ? "-" : data.detailAddress,
+            payType: isBuyType,
+            pay: buyPay,
+            lectureType: lectureDetail.type,
+            name: "-",
+            impUid: "-",
+            merchantUid: "-",
+            isBuyBook: isBuyBook === 1 ? 1 : 0,
+            bookPrice:
+              isBuyBook === 1
+                ? lectureDetail.bookEndDate
+                  ? lectureDetail.bookDiscountPrice
+                  : lectureDetail.bookPrice
+                : 0,
+            lectureId: router.query.id,
+          },
+        });
       } else if (isBuyType === "paypal") {
+        // 해외 결제
+        // 해외 결제
+        // 해외 결제
         IMP.request_pay(
           {
             pg: `${isBuyType}.sb-otnjs25340282_api1.business.example.com`,
@@ -424,18 +451,19 @@ const Home = ({}) => {
                   address: address,
                   detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
-                  pay: paypalPay,
+                  pay: buyPay,
                   lectureType: lectureDetail.type,
-                  name: data.username,
+                  name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
                   isBuyBook: isBuyBook === 1 ? 1 : 0,
                   bookPrice:
                     isBuyBook === 1
                       ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookBuyPrice
+                        ? lectureDetail.bookDiscountPrice
                         : lectureDetail.bookPrice
                       : 0,
+                  lectureId: router.query.id,
                 },
               });
             } else {
@@ -449,6 +477,9 @@ const Home = ({}) => {
           }
         );
       } else {
+        // 신용카드 결제
+        // 신용카드 결제
+        // 신용카드 결제
         IMP.request_pay(
           {
             pg: "danal_tpay.A010052124",
@@ -459,7 +490,9 @@ const Home = ({}) => {
             biz_num: me.mobile,
             // amount: 150,
             amount:
-              lectureDetail.discountPrice +
+              (lectureDetail.discountPrice
+                ? lectureDetail.discountPrice
+                : lectureDetail.price) +
               (isBuyBook === 1 && overAddress
                 ? dataArr.find((data) => data.id === overAddress).price
                 : 0) +
@@ -480,24 +513,19 @@ const Home = ({}) => {
                   address: address,
                   detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
-                  pay:
-                    lectureDetail.lecturePrice +
-                    (isBuyBook === 1
-                      ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookBuyPrice
-                        : lectureDetail.bookPrice
-                      : 0),
+                  pay: buyPay,
                   lectureType: lectureDetail.type,
-                  name: data.username,
+                  name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
                   isBuyBook: isBuyBook === 1 ? 1 : 0,
                   bookPrice:
                     isBuyBook === 1
                       ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookBuyPrice
+                        ? lectureDetail.bookDiscountPrice
                         : lectureDetail.bookPrice
                       : 0,
+                  lectureId: router.query.id,
                 },
               });
             }
@@ -905,7 +933,8 @@ const Home = ({}) => {
                         color={Theme.grey3_C}
                         margin={`0 10px 0 0`}
                       >
-                        {lectureDetail && lectureDetail.viewBookPrice}원
+                        {lectureDetail && lectureDetail.viewBookPrice}원이 추가
+                        결제됩니다.
                       </Text>
                     </Wrapper>
                   ) : (
@@ -963,7 +992,10 @@ const Home = ({}) => {
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-                <Wrapper al={`flex-start`}>
+                <Wrapper
+                  al={`flex-start`}
+                  margin={isBuyType === "nobank" && "0 0 20px"}
+                >
                   <Radio.Group
                     value={isBuyType}
                     onChange={isBuyTypeChangeHandler}
@@ -989,6 +1021,26 @@ const Home = ({}) => {
                     )}
                   </Radio.Group>
                 </Wrapper>
+
+                {isBuyType === "nobank" && (
+                  <Form.Item
+                    name="name"
+                    colon={false}
+                    label="입금자명"
+                    rules={[
+                      { required: true, message: "입금자명은 필수 입니다." },
+                    ]}
+                  >
+                    <TextInput
+                      width={`100%`}
+                      height={`54px`}
+                      radius={`5px`}
+                      border={`1px solid ${Theme.lightGrey4_C}`}
+                      fontSize={`18px`}
+                      placeholder="입금자명을 입력해주세요."
+                    />
+                  </Form.Item>
+                )}
                 <Wrapper
                   margin={`30px 0 80px`}
                   height={`1px`}
@@ -1039,13 +1091,23 @@ const Home = ({}) => {
                     color={Theme.grey2_C}
                   >
                     {lectureDetail &&
-                      numberWithCommas(
-                        lectureDetail.discountPrice +
-                          (isBuyBook === 1 && overAddress
-                            ? dataArr.find((data) => data.id === overAddress)
-                                .price
-                            : 0)
-                      )}
+                      (lectureDetail.discountPrice
+                        ? numberWithCommas(
+                            lectureDetail.discountPrice +
+                              (isBuyBook === 1 && overAddress
+                                ? dataArr.find(
+                                    (data) => data.id === overAddress
+                                  ).price
+                                : 0)
+                          )
+                        : numberWithCommas(
+                            lectureDetail.price +
+                              (isBuyBook === 1 && overAddress
+                                ? dataArr.find(
+                                    (data) => data.id === overAddress
+                                  ).price
+                                : 0)
+                          ))}
                     원
                   </Wrapper>
                   <CustomPlusCircleOutlined />
@@ -1078,7 +1140,9 @@ const Home = ({}) => {
                   >
                     {lectureDetail &&
                       numberWithCommas(
-                        lectureDetail.discountPrice +
+                        (lectureDetail.discountPrice
+                          ? lectureDetail.discountPrice
+                          : lectureDetail.price) +
                           (isBuyBook === 1 && overAddress
                             ? dataArr.find((data) => data.id === overAddress)
                                 .price
@@ -1086,6 +1150,8 @@ const Home = ({}) => {
                           (isBuyBook === 1
                             ? lectureDetail.bookEndDate
                               ? lectureDetail.bookDiscountPrice
+                                ? lectureDetail.bookDiscountPrice
+                                : lectureDetail.bookPrice
                               : lectureDetail.bookPrice
                             : 0)
                       )}

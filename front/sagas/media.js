@@ -21,6 +21,10 @@ import {
   MEDIA_FILE_UPLOAD_SUCCESS,
   MEDIA_FILE_UPLOAD_FAILURE,
   //
+  MEDIA_FILE2_UPLOAD_REQUEST,
+  MEDIA_FILE2_UPLOAD_SUCCESS,
+  MEDIA_FILE2_UPLOAD_FAILURE,
+  //
   MEDIA_CREATE_REQUEST,
   MEDIA_CREATE_SUCCESS,
   MEDIA_CREATE_FAILURE,
@@ -32,6 +36,10 @@ import {
   MEDIA_DELETE_REQUEST,
   MEDIA_DELETE_SUCCESS,
   MEDIA_DELETE_FAILURE,
+  //
+  MEDIA_SORT_UPDATE_REQUEST,
+  MEDIA_SORT_UPDATE_SUCCESS,
+  MEDIA_SORT_UPDATE_FAILURE,
 } from "../reducers/media";
 
 // SAGA AREA ********************************************************************************************************
@@ -171,6 +179,33 @@ function* mediaFileUpload(action) {
 
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function mediaFile2UploadAPI(data) {
+  return await axios.post(`/api/media/file`, data);
+}
+
+function* mediaFile2Upload(action) {
+  try {
+    const result = yield call(mediaFile2UploadAPI, action.data);
+
+    yield put({
+      type: MEDIA_FILE2_UPLOAD_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MEDIA_FILE2_UPLOAD_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function mediaCreateAPI(data) {
   return await axios.post(`/api/media/create`, data);
 }
@@ -250,6 +285,33 @@ function* mediaDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mediaSortUpdateAPI(data) {
+  return await axios.post(`/api/media/sort/update`, data);
+}
+
+function* mediaSortUpdate(action) {
+  try {
+    const result = yield call(mediaSortUpdateAPI, action.data);
+
+    yield put({
+      type: MEDIA_SORT_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MEDIA_SORT_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchMediaAdminList() {
   yield takeLatest(MEDIA_ADMIN_LIST_REQUEST, mediaAdminList);
@@ -271,6 +333,10 @@ function* watchMediaFileUpload() {
   yield takeLatest(MEDIA_FILE_UPLOAD_REQUEST, mediaFileUpload);
 }
 
+function* watchMediaFile2Upload() {
+  yield takeLatest(MEDIA_FILE2_UPLOAD_REQUEST, mediaFile2Upload);
+}
+
 function* watchMediaCreate() {
   yield takeLatest(MEDIA_CREATE_REQUEST, mediaCreate);
 }
@@ -283,6 +349,10 @@ function* watchMediaDelete() {
   yield takeLatest(MEDIA_DELETE_REQUEST, mediaDelete);
 }
 
+function* watchMediaSortUpdate() {
+  yield takeLatest(MEDIA_SORT_UPDATE_REQUEST, mediaSortUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* mediaSaga() {
   yield all([
@@ -291,9 +361,11 @@ export default function* mediaSaga() {
     fork(watchMediaList),
     fork(watchMediaDetail),
     fork(watchMediaFileUpload),
+    fork(watchMediaFile2Upload),
     fork(watchMediaCreate),
     fork(watchMediaUpdate),
     fork(watchMediaDelete),
+    fork(watchMediaSortUpdate),
     //
   ]);
 }

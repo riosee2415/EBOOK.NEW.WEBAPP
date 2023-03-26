@@ -10,6 +10,8 @@ export const initailState = {
   mediaPath: null,
   mediaDetail: null,
 
+  media2Path: null,
+
   st_mediaListLoading: false,
   st_mediaListDone: false,
   st_mediaListError: null,
@@ -30,6 +32,10 @@ export const initailState = {
   st_mediaFileUploadDone: false,
   st_mediaFileUploadError: null,
 
+  st_mediaFile2UploadLoading: false,
+  st_mediaFile2UploadDone: false,
+  st_mediaFile2UploadError: null,
+
   st_mediaCreateLoading: false,
   st_mediaCreateDone: false,
   st_mediaCreateError: null,
@@ -41,6 +47,10 @@ export const initailState = {
   st_mediaDeleteLoading: false,
   st_mediaDeleteDone: false,
   st_mediaDeleteError: null,
+
+  st_mediaSortUpdateLoading: false,
+  st_mediaSortUpdateDone: false,
+  st_mediaSortUpdateError: null,
 };
 
 export const MEDIA_ADMIN_LIST_REQUEST = "MEDIA_ADMIN_LIST_REQUEST";
@@ -63,6 +73,10 @@ export const MEDIA_FILE_UPLOAD_REQUEST = "MEDIA_FILE_UPLOAD_REQUEST";
 export const MEDIA_FILE_UPLOAD_SUCCESS = "MEDIA_FILE_UPLOAD_SUCCESS";
 export const MEDIA_FILE_UPLOAD_FAILURE = "MEDIA_FILE_UPLOAD_FAILURE";
 
+export const MEDIA_FILE2_UPLOAD_REQUEST = "MEDIA_FILE2_UPLOAD_REQUEST";
+export const MEDIA_FILE2_UPLOAD_SUCCESS = "MEDIA_FILE2_UPLOAD_SUCCESS";
+export const MEDIA_FILE2_UPLOAD_FAILURE = "MEDIA_FILE2_UPLOAD_FAILURE";
+
 export const MEDIA_CREATE_REQUEST = "MEDIA_CREATE_REQUEST";
 export const MEDIA_CREATE_SUCCESS = "MEDIA_CREATE_SUCCESS";
 export const MEDIA_CREATE_FAILURE = "MEDIA_CREATE_FAILURE";
@@ -74,6 +88,10 @@ export const MEDIA_UPDATE_FAILURE = "MEDIA_UPDATE_FAILURE";
 export const MEDIA_DELETE_REQUEST = "MEDIA_DELETE_REQUEST";
 export const MEDIA_DELETE_SUCCESS = "MEDIA_DELETE_SUCCESS";
 export const MEDIA_DELETE_FAILURE = "MEDIA_DELETE_FAILURE";
+
+export const MEDIA_SORT_UPDATE_REQUEST = "MEDIA_SORT_UPDATE_REQUEST";
+export const MEDIA_SORT_UPDATE_SUCCESS = "MEDIA_SORT_UPDATE_SUCCESS";
+export const MEDIA_SORT_UPDATE_FAILURE = "MEDIA_SORT_UPDATE_FAILURE";
 
 export const MEDIA_FILE_RESET = "MEDIA_FILE_RESET";
 
@@ -184,6 +202,26 @@ const reducer = (state = initailState, action) =>
         break;
       }
       ///////////////////////////////////////////////////////
+      case MEDIA_FILE2_UPLOAD_REQUEST: {
+        draft.st_mediaFile2UploadLoading = true;
+        draft.st_mediaFile2UploadDone = false;
+        draft.st_mediaFile2UploadError = null;
+        break;
+      }
+      case MEDIA_FILE2_UPLOAD_SUCCESS: {
+        draft.st_mediaFile2UploadLoading = false;
+        draft.st_mediaFile2UploadDone = true;
+        draft.st_mediaFile2UploadError = null;
+        draft.media2Path = action.data.path;
+        break;
+      }
+      case MEDIA_FILE2_UPLOAD_FAILURE: {
+        draft.st_mediaFile2UploadLoading = false;
+        draft.st_mediaFile2UploadDone = false;
+        draft.st_mediaFile2UploadError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
       case MEDIA_CREATE_REQUEST: {
         draft.st_mediaCreateLoading = true;
         draft.st_mediaCreateDone = false;
@@ -241,8 +279,28 @@ const reducer = (state = initailState, action) =>
         break;
       }
       ///////////////////////////////////////////////////////
+      case MEDIA_SORT_UPDATE_REQUEST: {
+        draft.st_mediaSortUpdateLoading = true;
+        draft.st_mediaSortUpdateDone = false;
+        draft.st_mediaSortUpdateError = null;
+        break;
+      }
+      case MEDIA_SORT_UPDATE_SUCCESS: {
+        draft.st_mediaSortUpdateLoading = false;
+        draft.st_mediaSortUpdateDone = true;
+        draft.st_mediaSortUpdateError = null;
+        break;
+      }
+      case MEDIA_SORT_UPDATE_FAILURE: {
+        draft.st_mediaSortUpdateLoading = false;
+        draft.st_mediaSortUpdateDone = false;
+        draft.st_mediaSortUpdateError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
       case MEDIA_FILE_RESET: {
         draft.mediaPath = action.data.mediaPath;
+        draft.media2Path = action.data.media2Path;
         break;
       }
       ///////////////////////////////////////////////////////

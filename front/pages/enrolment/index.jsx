@@ -151,24 +151,27 @@ const Home = ({}) => {
                         >
                           {data.title}
                         </Text>
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            textDecoration={"line-through"}
-                            fontSize={`24px`}
-                            color={Theme.lightGrey4_C}
-                            margin={`0 10px 0 0`}
-                          >
-                            {data.viewPrice}
-                          </Text>
-                          <Text
-                            bgColor={Theme.red2_C}
-                            padding={`4px 10px`}
-                            radius={`5px`}
-                            color={Theme.white_C}
-                          >
-                            {data.viewLecturePrice}원 즉시 할인
-                          </Text>
-                        </Wrapper>
+                        {console.log(data)}
+                        {data.discountPrice && (
+                          <Wrapper dr={`row`} ju={`flex-start`}>
+                            <Text
+                              textDecoration={"line-through"}
+                              fontSize={`24px`}
+                              color={Theme.lightGrey4_C}
+                              margin={`0 10px 0 0`}
+                            >
+                              {data.viewPrice}
+                            </Text>
+                            <Text
+                              bgColor={Theme.red2_C}
+                              padding={`4px 10px`}
+                              radius={`5px`}
+                              color={Theme.white_C}
+                            >
+                              {data.viewLecturePrice}원 즉시 할인
+                            </Text>
+                          </Wrapper>
+                        )}
 
                         <Wrapper
                           dr={`row`}
@@ -182,33 +185,48 @@ const Home = ({}) => {
                             lineHeight={`1`}
                             margin={`0 6px 0 0`}
                           >
-                            {data.viewDiscountPrice}
+                            {data.discountPrice
+                              ? data.viewDiscountPrice
+                              : data.viewPrice}
                           </Text>
                           <Text fontSize={`18px`} color={Theme.grey3_C}>
                             원/{data.viewType}
                           </Text>
                         </Wrapper>
-
+                        {console.log(data)}
                         <Wrapper
                           dr={`row`}
                           ju={`flex-start`}
                           al={`flex-end`}
-                          margin={width < 800 ? `3px 0 10px` : `3px 0 10px`}
+                          margin={width < 800 ? `3px 0 10px` : `13px 0 30px`}
                         >
-                          <Text
-                            fontSize={`38px`}
-                            fontWeight={`600`}
-                            lineHeight={`1`}
-                            margin={`0 6px 0 0`}
-                          >
-                            월&nbsp;
-                            {numberWithCommas(
-                              parseInt(data.discountPrice / 12)
+                          {data.type &&
+                            (data.type === 1 ||
+                              data.type === 2 ||
+                              data.type === 3) && (
+                              <>
+                                <Text
+                                  fontSize={`38px`}
+                                  fontWeight={`600`}
+                                  lineHeight={`1`}
+                                  margin={`0 6px 0 0`}
+                                >
+                                  월&nbsp;
+                                  {data.discountPrice
+                                    ? numberWithCommas(
+                                        parseInt(
+                                          data.discountPrice / (12 * data.type)
+                                        )
+                                      )
+                                    : numberWithCommas(
+                                        parseInt(data.price / (12 * data.type))
+                                      )}
+                                </Text>
+                                <Text fontSize={`18px`} color={Theme.grey3_C}>
+                                  원/{data.viewType} 무이자 시
+                                </Text>
+                              </>
                             )}
-                          </Text>
-                          <Text fontSize={`18px`} color={Theme.grey3_C}>
-                            원/{data.viewType} 무이자 시
-                          </Text>
                         </Wrapper>
 
                         <CommonButton

@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   boughtAdminList: [],
+  boughtMeDetail: null,
 
   boughtAdminId: null,
 
@@ -36,6 +37,14 @@ export const initailState = {
   st_boughtAddressUpdateLoading: false, // 주소변경
   st_boughtAddressUpdateDone: false,
   st_boughtAddressUpdateError: null,
+  //
+  st_boughtMeDetailLoading: false, // 자신의 수강권
+  st_boughtMeDetailDone: false,
+  st_boughtMeDetailError: null,
+  //
+  st_boughtRecentlyUpdateLoading: false, // 마지막으로 들은 수강ㄴ
+  st_boughtRecentlyUpdateDone: false,
+  st_boughtRecentlyUpdateError: null,
 };
 
 export const BOUGHT_ADMIN_LIST_REQUEST = "BOUGHT_ADMIN_LIST_REQUEST";
@@ -69,6 +78,14 @@ export const BOUGHT_ISPAY_UPDATE_FAILURE = "BOUGHT_ISPAY_UPDATE_FAILURE";
 export const BOUGHT_ADDRESS_UPDATE_REQUEST = "BOUGHT_ADDRESS_UPDATE_REQUEST";
 export const BOUGHT_ADDRESS_UPDATE_SUCCESS = "BOUGHT_ADDRESS_UPDATE_SUCCESS";
 export const BOUGHT_ADDRESS_UPDATE_FAILURE = "BOUGHT_ADDRESS_UPDATE_FAILURE";
+
+export const BOUGHT_ME_DETAIL_REQUEST = "BOUGHT_ME_DETAIL_REQUEST";
+export const BOUGHT_ME_DETAIL_SUCCESS = "BOUGHT_ME_DETAIL_SUCCESS";
+export const BOUGHT_ME_DETAIL_FAILURE = "BOUGHT_ME_DETAIL_FAILURE";
+
+export const BOUGHT_RECENTLY_UPDATE_REQUEST = "BOUGHT_RECENTLY_UPDATE_REQUEST";
+export const BOUGHT_RECENTLY_UPDATE_SUCCESS = "BOUGHT_RECENTLY_UPDATE_SUCCESS";
+export const BOUGHT_RECENTLY_UPDATE_FAILURE = "BOUGHT_RECENTLY_UPDATE_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -201,6 +218,39 @@ const reducer = (state = initailState, action) =>
         draft.st_boughtAddressUpdateLoading = false;
         draft.st_boughtAddressUpdateDone = false;
         draft.st_boughtAddressUpdateError = action.error;
+        break;
+      ///////////////////////////////////////////////////////
+      case BOUGHT_ME_DETAIL_REQUEST:
+        draft.st_boughtMeDetailLoading = true;
+        draft.st_boughtMeDetailDone = false;
+        draft.st_boughtMeDetailError = null;
+        break;
+      case BOUGHT_ME_DETAIL_SUCCESS:
+        draft.st_boughtMeDetailLoading = false;
+        draft.st_boughtMeDetailDone = true;
+        draft.st_boughtMeDetailError = null;
+        draft.boughtMeDetail = action.data;
+        break;
+      case BOUGHT_ME_DETAIL_FAILURE:
+        draft.st_boughtMeDetailLoading = false;
+        draft.st_boughtMeDetailDone = false;
+        draft.st_boughtMeDetailError = action.error;
+        break;
+      ///////////////////////////////////////////////////////
+      case BOUGHT_RECENTLY_UPDATE_REQUEST:
+        draft.st_boughtRecentlyUpdateLoading = true;
+        draft.st_boughtRecentlyUpdateDone = false;
+        draft.st_boughtRecentlyUpdateError = null;
+        break;
+      case BOUGHT_RECENTLY_UPDATE_SUCCESS:
+        draft.st_boughtRecentlyUpdateLoading = false;
+        draft.st_boughtRecentlyUpdateDone = true;
+        draft.st_boughtRecentlyUpdateError = null;
+        break;
+      case BOUGHT_RECENTLY_UPDATE_FAILURE:
+        draft.st_boughtRecentlyUpdateLoading = false;
+        draft.st_boughtRecentlyUpdateDone = false;
+        draft.st_boughtRecentlyUpdateError = action.error;
         break;
       ///////////////////////////////////////////////////////
       default:

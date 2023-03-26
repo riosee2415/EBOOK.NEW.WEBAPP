@@ -91,7 +91,7 @@ router.post("/list", async (req, res, next) => {
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
-     AND  isHidden = FALSE
+     AND  isHidden = TRUE
      AND  type IN (${searchType.map((data) => data)})
 `;
 
@@ -190,8 +190,7 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           bookDiscountPrice,
           FORMAT(bookDiscountPrice, ',')                AS viewBookDiscountPrice,
           CASE
-              WHEN bookEndDate IS NOT NULL THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
-              WHEN DATE_FORMAT(bookEndDate, '%Y%m%d') <= DATE_FORMAT(NOW(), '%Y%m%d') THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
+              WHEN bookEndDate IS NOT NULL AND DATE_FORMAT(bookEndDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d') THEN DATE_FORMAT(bookEndDate, '%y년 %m월 %d일')
               ELSE NULL
           END                                           AS bookEndDate,
           isHidden,
@@ -202,7 +201,7 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
-     AND  isHidden = FALSE
+     AND  isHidden = TRUE
      AND  id = ${id}
   `;
 
@@ -214,6 +213,10 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
     }
 
     const select = await models.sequelize.query(selectQ);
+
+    if (!select[0][0]) {
+      return res.status(400).send("현재 구매할 수 없는 상품입니다.");
+    }
 
     return res.status(200).json(select[0][0]);
   } catch (e) {

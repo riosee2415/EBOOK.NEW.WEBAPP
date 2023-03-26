@@ -44,7 +44,7 @@ const AppFooter = () => {
       return message.error(st_companyError);
     }
   }, [st_companyError]);
-  console.log(companys);
+
   return (
     <WholeWrapper bgColor={Theme.lightGrey2_C} padding={`55px 0`}>
       <RsWrapper dr={`row`} ju={`space-between`} al={`flex-end`}>
@@ -57,7 +57,6 @@ const AppFooter = () => {
                 ju={`flex-start`}
                 margin={`0 0 15px`}
               >
-                {console.log(logos)}
                 {logos &&
                   logos.length > 0 &&
                   logos.find((data) => data.typeOf === "F") && (

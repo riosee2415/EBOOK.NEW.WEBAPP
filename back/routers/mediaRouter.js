@@ -58,9 +58,14 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
             id,
             title,
+            type,
             mediaOriginName,
             mediaPath,
             duration,
+            sampleMediaOriginName,
+            sampleMediaPath,
+            sampleDuration,
+            isSample,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
@@ -97,9 +102,14 @@ router.post("/list", async (req, res, next) => {
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
             id,
             title,
+            type,
             mediaOriginName,
             mediaPath,
             duration,
+            sampleMediaOriginName,
+            sampleMediaPath,
+            sampleDuration,
+            isSample,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
@@ -115,9 +125,14 @@ router.post("/list", async (req, res, next) => {
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
             id,
             title,
+            type,
             mediaOriginName,
             mediaPath,
             duration,
+            sampleMediaOriginName,
+            sampleMediaPath,
+            sampleDuration,
+            isSample,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
@@ -154,9 +169,14 @@ router.post("/all/list", async (req, res, next) => {
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
             id,
             title,
+            type,
             mediaOriginName,
             mediaPath,
             duration,
+            sampleMediaOriginName,
+            sampleMediaPath,
+            sampleDuration,
+            isSample,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
@@ -185,9 +205,14 @@ router.post("/detail", async (req, res, next) => {
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
             id,
             title,
+            type,
             mediaOriginName,
             mediaPath,
             duration,
+            sampleMediaOriginName,
+            sampleMediaPath,
+            sampleDuration,
+            isSample,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
@@ -210,25 +235,45 @@ router.post("/detail", async (req, res, next) => {
 });
 
 router.post("/create", isAdminCheck, async (req, res, next) => {
-  const { title, mediaOriginName, mediaPath, duration } = req.body;
+  const {
+    type,
+    title,
+    mediaOriginName,
+    mediaPath,
+    duration,
+    sampleMediaOriginName,
+    sampleMediaPath,
+    sampleDuration,
+    isSample,
+  } = req.body;
 
   const insertQ = `
   INSERT INTO media
   (
+      type,
       title,
       mediaOriginName,
       mediaPath,
       duration,
+      sampleMediaOriginName,
+      sampleMediaPath,
+      sampleDuration,
+      isSample,
       sort,
       createdAt,
       updatedAt
   )
   VALUES
   (
+      "${type}",
       "${title}",
-      "${mediaOriginName}",
-      "${mediaPath}",
-      "${duration}",
+      ${mediaOriginName ? `"${mediaOriginName}"` : "NULL"},
+      ${mediaPath ? `"${mediaPath}"` : "NULL"},
+      ${duration ? `"${duration}"` : "NULL"},
+      ${sampleMediaOriginName ? `"${sampleMediaOriginName}"` : "NULL"},
+      ${sampleMediaPath ? `"${sampleMediaPath}"` : "NULL"},
+      ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
+      ${isSample},
       1,
       NOW(),
       NOW()
@@ -246,14 +291,36 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, title, mediaOriginName, mediaPath, duration } = req.body;
+  const {
+    id,
+    type,
+    title,
+    mediaOriginName,
+    mediaPath,
+    duration,
+    sampleMediaOriginName,
+    sampleMediaPath,
+    sampleDuration,
+    isSample,
+  } = req.body;
 
   const updateQ = `
   UPDATE  media
-     SET  title = "${title}",
-          mediaOriginName = "${mediaOriginName}",
-          mediaPath = "${mediaPath}",
-          duration = "${duration}",
+     SET  type = "${type}",
+          title = "${title}",
+          mediaOriginName = ${
+            mediaOriginName ? `"${mediaOriginName}"` : "NULL"
+          },
+          mediaPath = ${mediaPath ? `"${mediaPath}"` : "NULL"},
+          duration = ${duration ? `"${duration}"` : "NULL"},
+          sampleMediaOriginName = ${
+            sampleMediaOriginName ? `"${sampleMediaOriginName}"` : "NULL"
+          },
+          sampleMediaPath = ${
+            sampleMediaPath ? `"${sampleMediaPath}"` : "NULL"
+          },
+          sampleDuration = ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
+          isSample = ${isSample},
           updatedAt = NOW()
    WHERE  id = ${id}
   `;
@@ -285,6 +352,26 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
   } catch (e) {
     console.error(e);
     return res.status(400).send("삭제 할 수 없습니다.");
+  }
+});
+
+router.post("/sort/update", isAdminCheck, async (req, res, next) => {
+  const { id, sort } = req.body;
+
+  const updateQ = `
+  UPDATE  media
+     SET  sort = ${sort},
+          updatedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("수정 할 수 없습니다.");
   }
 });
 
