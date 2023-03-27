@@ -84,6 +84,7 @@ const Fourleaf = ({ Component }) => {
           src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
         ></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
         <script type="text/javascript" src="../customScript.js"></script>
       </Head>
       <Component />

@@ -85,6 +85,10 @@ import {
   ME_UPDATE_SUCCESS,
   ME_UPDATE_FAILURE,
   /////////////////////////////
+  INSERT_XLSX_REQUEST,
+  INSERT_XLSX_SUCCESS,
+  INSERT_XLSX_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -647,6 +651,33 @@ function* meUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function insertXlsxAPI(data) {
+  return await axios.post(`/api/user/insert/xlsx`, data);
+}
+
+function* insertXlsx(action) {
+  try {
+    const result = yield call(insertXlsxAPI, action.data);
+
+    yield put({
+      type: INSERT_XLSX_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: INSERT_XLSX_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -733,6 +764,10 @@ function* watchMeUpdate() {
   yield takeLatest(ME_UPDATE_REQUEST, meUpdate);
 }
 
+function* watchXlsx() {
+  yield takeLatest(INSERT_XLSX_REQUEST, insertXlsx);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -757,6 +792,7 @@ export default function* userSaga() {
     fork(watchModifyPassUpdate),
     fork(watchAdminUpdate),
     fork(watchMeUpdate),
+    fork(watchXlsx),
     //
   ]);
 }

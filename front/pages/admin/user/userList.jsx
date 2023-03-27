@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ADMIN_UPDATE_REQUEST,
+  INSERT_XLSX_REQUEST,
   LOAD_MY_INFO_REQUEST,
   UPDATE_MODAL_CLOSE_REQUEST,
   UPDATE_MODAL_OPEN_REQUEST,
@@ -562,6 +563,103 @@ const UserList = ({}) => {
     </PopWrapper>
   );
 
+  const fileRef = useRef();
+  const [xlsxData, setXlsxData] = useState(null);
+  const [xlsxData2, setXlsxData2] = useState(null);
+  const fileUploadHandler = useCallback(() => {
+    fileRef.current.click();
+  }, []);
+  const csvFileUploadHandler = useCallback((event) => {
+    const daysBeforeUnixEpoch = 70 * 365 + 19;
+
+    const hour = 60 * 60 * 1000;
+
+    // setXlsxLoading(true);
+    let input = event.target;
+    let reader = new FileReader();
+    reader.onload = function () {
+      let data = reader.result;
+      let workBook = XLSX.read(data, { type: "binary" });
+      workBook.SheetNames.forEach(function (sheetName) {
+        let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+
+        console.log("1", rows);
+        setXlsxData(
+          rows.map((data, idx) => {
+            return {
+              ...data,
+            };
+          })
+        );
+      });
+    };
+    reader.readAsBinaryString(input.files[0]);
+  }, []);
+  const file2Ref = useRef();
+  const file2UploadHandler = useCallback(() => {
+    file2Ref.current.click();
+  }, []);
+  const csv2FileUploadHandler = useCallback(
+    (event) => {
+      const daysBeforeUnixEpoch = 70 * 365 + 19;
+
+      const hour = 60 * 60 * 1000;
+
+      // setXlsxLoading(true);
+      let input = event.target;
+      let reader = new FileReader();
+
+      let testXlsxData = xlsxData ? xlsxData.map((data) => data) : [];
+      reader.onload = function () {
+        let data = reader.result;
+        let workBook = XLSX.read(data, { type: "binary" });
+        workBook.SheetNames.forEach(function (sheetName) {
+          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+          console.log("2", rows);
+          setXlsxData2(rows.map((data) => data));
+        });
+      };
+      reader.readAsBinaryString(input.files[0]);
+    },
+    [xlsxData]
+  );
+
+  useEffect(() => {
+    if (xlsxData && xlsxData2) {
+      console.log("test");
+      for (let i = 0; i < xlsxData.length; i++) {
+        console.log({
+          ...xlsxData[i],
+          boughtLectureList: xlsxData2.filter(
+            (value) => xlsxData[i]._id === value.user
+          ),
+        });
+        // dispatch({
+        //   type: INSERT_XLSX_REQUEST,
+        //   data: {
+        //     ...xlsxData[i],
+        //     boughtLectureList: xlsxData2.filter(
+        //       (value) => xlsxData[i]._id === value.user
+        //     ),
+        //   },
+        // });
+      }
+      // dispatch({
+      //   type: INSERT_XLSX_REQUEST,
+      //   data: {
+      //     xlsxData: xlsxData.map((data) => ({
+      //       ...data,
+      //       boughtLectures: xlsxData2.filter(
+      //         (value) => data._id === value.user
+      //       ),
+      //     })),
+      //   },
+      // });
+    }
+  }, [xlsxData, xlsxData2]);
+
+  // console.log(xlsxData);
+
   ////// DATAVIEW //////
 
   const columns = [
@@ -669,6 +767,28 @@ const UserList = ({}) => {
             합니다.
           </GuideLi>
         </GuideUl>
+      </Wrapper>
+
+      <Wrapper dr={`row`} ju={`flex-end`} padding={`0 20px`}>
+        <input
+          type="file"
+          hidden
+          ref={fileRef}
+          onChange={csvFileUploadHandler}
+        />
+        <Button size="small" type="primary" onClick={fileUploadHandler}>
+          엑셀 파일 등록
+        </Button>
+
+        <input
+          type="file"
+          hidden
+          ref={file2Ref}
+          onChange={csv2FileUploadHandler}
+        />
+        <Button size="small" type="primary" onClick={file2UploadHandler}>
+          엑셀 파일 등록2
+        </Button>
       </Wrapper>
 
       <Wrapper padding="0px 20px">

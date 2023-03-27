@@ -88,6 +88,10 @@ export const initailState = {
   st_meUpdateLoading: false, // 회원 수정
   st_meUpdateDone: false,
   st_meUpdateError: null,
+  //
+  st_insertXlsxLoading: false, // 엑셀 데이터 넣기
+  st_insertXlsxDone: false,
+  st_insertXlsxError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -173,6 +177,10 @@ export const ADMIN_UPDATE_FAILURE = "ADMIN_UPDATE_FAILURE";
 export const ME_UPDATE_REQUEST = "ME_UPDATE_REQUEST";
 export const ME_UPDATE_SUCCESS = "ME_UPDATE_SUCCESS";
 export const ME_UPDATE_FAILURE = "ME_UPDATE_FAILURE";
+//
+export const INSERT_XLSX_REQUEST = "INSERT_XLSX_REQUEST";
+export const INSERT_XLSX_SUCCESS = "INSERT_XLSX_SUCCESS";
+export const INSERT_XLSX_FAILURE = "INSERT_XLSX_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -611,6 +619,26 @@ const reducer = (state = initailState, action) =>
         draft.st_meUpdateLoading = false;
         draft.st_meUpdateDone = false;
         draft.st_meUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case INSERT_XLSX_REQUEST: {
+        draft.st_insertXlsxLoading = true;
+        draft.st_insertXlsxDone = false;
+        draft.st_insertXlsxError = null;
+        break;
+      }
+      case INSERT_XLSX_SUCCESS: {
+        draft.st_insertXlsxLoading = false;
+        draft.st_insertXlsxDone = true;
+        draft.st_insertXlsxError = null;
+        break;
+      }
+      case INSERT_XLSX_FAILURE: {
+        draft.st_insertXlsxLoading = false;
+        draft.st_insertXlsxDone = false;
+        draft.st_insertXlsxError = action.error;
         break;
       }
       //////////////////////////////////////////////
