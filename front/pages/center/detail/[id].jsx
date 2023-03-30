@@ -43,6 +43,35 @@ const HoverWrapper = styled(Wrapper)`
   }
 `;
 
+export const CustomHtmlWrapper = styled(Wrapper)`
+  & img {
+    max-width: 100%;
+  }
+  & p {
+    margin: 0;
+  }
+  & h1 {
+    font-size: 28px;
+    font-weight: bold;
+  }
+  & h2 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  & h3 {
+    font-size: 20px;
+  }
+  & h4 {
+    font-size: 16px;
+  }
+  & h5 {
+    font-size: 12px;
+  }
+  & h6 {
+    font-size: 8px;
+  }
+`;
+
 const ReviewDetail = ({}) => {
   ////// GLOBAL STATE //////
   const {
@@ -144,15 +173,15 @@ const ReviewDetail = ({}) => {
             </Wrapper>
 
             {noticeDetail && (
-              <Wrapper
-                ju={`flex-start`}
-                al={`flex-start`}
+              <CustomHtmlWrapper
+                // ju={`flex-start`}
+                // al={`flex-start`}
                 minHeight={`300px`}
                 fontSize={width < 700 ? `18px` : `20px`}
                 dangerouslySetInnerHTML={{
                   __html: noticeDetail.content,
                 }}
-              ></Wrapper>
+              ></CustomHtmlWrapper>
             )}
 
             <Wrapper
