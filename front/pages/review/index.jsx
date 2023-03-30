@@ -242,6 +242,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: BANNER_LIST_REQUEST,
       data: {
         type: 3,
+        useYn: 1,
       },
     });
 

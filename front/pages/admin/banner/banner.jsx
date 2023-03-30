@@ -12,6 +12,7 @@ import {
   Popconfirm,
   Popover,
   Select,
+  Switch,
   Table,
 } from "antd";
 
@@ -143,6 +144,8 @@ const Banner = ({}) => {
 
   const [serachType, setSearchType] = useState(null);
 
+  const [isHidden, setIsHidden] = useState(false);
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -261,6 +264,11 @@ const Banner = ({}) => {
     setCModal((prev) => !prev);
   }, [cModal]);
 
+  // 사용 여부 수정
+  const isHiddenToggle = useCallback(() => {
+    setIsHidden((prev) => !prev);
+  }, [isHidden]);
+
   ////// HANDLER //////
 
   // 검색
@@ -321,6 +329,8 @@ const Banner = ({}) => {
         },
       });
 
+      setIsHidden(record.useYn);
+
       infoForm.setFieldsValue({
         sort: record.sort,
         type: record.type,
@@ -328,7 +338,7 @@ const Banner = ({}) => {
         updatedAt: record.viewUpdatedAt,
       });
     },
-    [currentData]
+    [currentData, isHidden]
   );
 
   // 파일 업로드
@@ -372,13 +382,14 @@ const Banner = ({}) => {
         type: BANNER_UPDATE_REQUEST,
         data: {
           id: currentData.id,
+          useYn: isHidden,
           type: data.type,
           imagePath: imagePath,
           mobileImagePath: mobileImagePath,
         },
       });
     },
-    [currentData, imagePath, mobileImagePath]
+    [currentData, imagePath, mobileImagePath, isHidden]
   );
 
   const bannerDeleteHandler = useCallback(() => {
@@ -661,6 +672,14 @@ const Banner = ({}) => {
                     size="small"
                     style={{ background: Theme.lightGrey_C, border: "none" }}
                     readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item label="사용여부">
+                  <Switch
+                    size="small"
+                    checked={isHidden}
+                    onChange={isHiddenToggle}
                   />
                 </Form.Item>
 

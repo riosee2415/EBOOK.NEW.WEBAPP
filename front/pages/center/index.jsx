@@ -411,6 +411,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: BANNER_LIST_REQUEST,
       data: {
         type: 4,
+        useYn: 1,
       },
     });
 

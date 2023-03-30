@@ -65,6 +65,31 @@ import { LECTURE_LIST_REQUEST } from "../../../reducers/lecture";
 import { ADMIN_USER_ENJOY_REQUEST } from "../../../reducers/enjoy";
 import { MEDIA_CREATE_REQUEST } from "../../../reducers/media";
 
+import { CSVLink } from "react-csv";
+
+const DownloadBtn = styled(CSVLink)`
+  width: 200px;
+  height: 25px;
+  margin: 0 0 0 10px;
+  border-radius: 3px;
+
+  background: ${(props) => props.theme.basicTheme_C};
+  color: ${(props) => props.theme.white_C};
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.4s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
+  }
+`;
+
 const TypeButton = styled(Button)`
   margin-right: 5px;
 `;
@@ -646,42 +671,55 @@ const UserList = ({}) => {
     },
   ];
 
-  // const fileRef = useRef();
-  // const fileRefClickHandler = useCallback(() => {
-  //   fileRef.current.click();
-  // }, []);
+  const fileRef = useRef();
+  const fileRefClickHandler = useCallback(() => {
+    fileRef.current.click();
+  }, []);
 
-  // const csvFileUploadHandler = useCallback((event) => {
-  //   const daysBeforeUnixEpoch = 70 * 365 + 19;
+  const [svcData, setSvcData] = useState(null);
 
-  //   const hour = 60 * 60 * 1000;
+  const csvFileUploadHandler = useCallback((event) => {
+    const daysBeforeUnixEpoch = 70 * 365 + 19;
 
-  //   // setXlsxLoading(true);
-  //   let input = event.target;
-  //   let reader = new FileReader();
+    const hour = 60 * 60 * 1000;
 
-  //   reader.onload = function () {
-  //     let data = reader.result;
-  //     let workBook = XLSX.read(data, { type: "binary" });
-  //     workBook.SheetNames.forEach(function (sheetName) {
-  //       let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+    // setXlsxLoading(true);
+    let input = event.target;
+    let reader = new FileReader();
 
-  //       dispatch({
-  //         type: INSERT_XLSX_REQUEST,
-  //         data: {
-  //           data: rows.map((data) => data),
-  //         },
-  //       });
-  //     });
-  //   };
-  //   reader.readAsBinaryString(input.files[0]);
-  // }, []);
+    reader.onload = function () {
+      let data = reader.result;
+      let workBook = XLSX.read(data, { type: "binary" });
+      workBook.SheetNames.forEach(function (sheetName) {
+        let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
 
-  // const xlsxButtonHandler = useCallback(() => {
-  //   dispatch({
-  //     type: INSERT_XLSX_REQUEST,
-  //   });
-  // }, []);
+        let testArr = [];
+
+        rows.map((data) => {
+          JSON.parse(data.enjoyMedia).map((value) => {
+            testArr.push({
+              UserId: data._id,
+              MediumId: value.$oid,
+            });
+          });
+        });
+
+        setSvcData(testArr);
+      });
+    };
+    reader.readAsBinaryString(input.files[0]);
+  }, []);
+
+  const headers = [
+    { label: "UserId", key: "UserId" },
+    { label: "MediaId", key: "MediumId" },
+  ];
+
+  const xlsxButtonHandler = useCallback(() => {
+    dispatch({
+      type: INSERT_XLSX_REQUEST,
+    });
+  }, []);
 
   return (
     <AdminLayout>
@@ -713,9 +751,15 @@ const UserList = ({}) => {
       </Wrapper>
 
       {/* <input type="file" hidden ref={fileRef} onChange={csvFileUploadHandler} />
-      <Button size="small" type="primary" onClick={xlsxButtonHandler}>
+      <Button size="small" type="primary" onClick={fileRefClickHandler}>
         엑셀 등록
-      </Button> */}
+      </Button>
+
+      {svcData && (
+        <DownloadBtn filename={`결제내역`} headers={headers} data={svcData}>
+          엑셀 다운로드{" "}
+        </DownloadBtn>
+      )} */}
 
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 10px`}>
