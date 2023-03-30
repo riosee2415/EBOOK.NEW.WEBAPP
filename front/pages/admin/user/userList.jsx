@@ -646,6 +646,43 @@ const UserList = ({}) => {
     },
   ];
 
+  // const fileRef = useRef();
+  // const fileRefClickHandler = useCallback(() => {
+  //   fileRef.current.click();
+  // }, []);
+
+  // const csvFileUploadHandler = useCallback((event) => {
+  //   const daysBeforeUnixEpoch = 70 * 365 + 19;
+
+  //   const hour = 60 * 60 * 1000;
+
+  //   // setXlsxLoading(true);
+  //   let input = event.target;
+  //   let reader = new FileReader();
+
+  //   reader.onload = function () {
+  //     let data = reader.result;
+  //     let workBook = XLSX.read(data, { type: "binary" });
+  //     workBook.SheetNames.forEach(function (sheetName) {
+  //       let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+
+  //       dispatch({
+  //         type: INSERT_XLSX_REQUEST,
+  //         data: {
+  //           data: rows.map((data) => data),
+  //         },
+  //       });
+  //     });
+  //   };
+  //   reader.readAsBinaryString(input.files[0]);
+  // }, []);
+
+  // const xlsxButtonHandler = useCallback(() => {
+  //   dispatch({
+  //     type: INSERT_XLSX_REQUEST,
+  //   });
+  // }, []);
+
   return (
     <AdminLayout>
       {/* MENU TAB */}
@@ -674,6 +711,11 @@ const UserList = ({}) => {
           </HomeText>
         </Popover>
       </Wrapper>
+
+      {/* <input type="file" hidden ref={fileRef} onChange={csvFileUploadHandler} />
+      <Button size="small" type="primary" onClick={xlsxButtonHandler}>
+        엑셀 등록
+      </Button> */}
 
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 10px`}>

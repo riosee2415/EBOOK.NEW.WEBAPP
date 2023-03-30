@@ -6,16 +6,12 @@ module.exports = class Media extends Model {
   static init(sequelize) {
     return super.init(
       {
-        type: {
-          type: DataTypes.STRING(200),
-          allowNull: false,
-        },
         title: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(2000),
           allowNull: false,
         },
         mediaOriginName: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(500),
           allowNull: true,
         },
         mediaPath: {
@@ -28,7 +24,7 @@ module.exports = class Media extends Model {
           allowNull: true,
         },
         sampleMediaOriginName: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(500),
           allowNull: true,
         },
         sampleMediaPath: {
@@ -43,7 +39,7 @@ module.exports = class Media extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        testId: {
+        previousId: {
           type: DataTypes.STRING(700),
           allowNull: false,
         },
