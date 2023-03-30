@@ -392,30 +392,33 @@ const MediaDetail = () => {
                                 </Wrapper>
                               </CommonButton>
                             ) : (
-                              <CommonButton
-                                kindOf={`subTheme`}
-                                width={width < 700 ? `100%` : `186px`}
-                                height={`52px`}
-                                fontSize={`20px`}
-                                onClick={() =>
-                                  moveLinkHandler(
-                                    `/mypage/${data.id}?isSample=0`
-                                  )
-                                }
-                              >
-                                <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>강의 보기</Text>
+                              boughtMeDetail &&
+                              boughtMeDetail.isPay && (
+                                <CommonButton
+                                  kindOf={`subTheme`}
+                                  width={width < 700 ? `100%` : `186px`}
+                                  height={`52px`}
+                                  fontSize={`20px`}
+                                  onClick={() =>
+                                    moveLinkHandler(
+                                      `/mypage/${data.id}?isSample=0`
+                                    )
+                                  }
+                                >
+                                  <Wrapper dr={`row`} ju={`space-between`}>
+                                    <Text fontWeight={`600`}>강의 보기</Text>
 
-                                  <Wrapper
-                                    width={`auto`}
-                                    padding={`6px`}
-                                    bgColor={Theme.white_C}
-                                    radius={`100%`}
-                                  >
-                                    <CaretRightOutlined />
+                                    <Wrapper
+                                      width={`auto`}
+                                      padding={`6px`}
+                                      bgColor={Theme.white_C}
+                                      radius={`100%`}
+                                    >
+                                      <CaretRightOutlined />
+                                    </Wrapper>
                                   </Wrapper>
-                                </Wrapper>
-                              </CommonButton>
+                                </CommonButton>
+                              )
                             )}
                           </Wrapper>
                         </Wrapper>
