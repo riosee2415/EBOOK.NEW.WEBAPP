@@ -43,6 +43,7 @@ import {
   BOUGHT_ISPAY_UPDATE_REQUEST,
 } from "../../../reducers/boughtLecture";
 import { CSVLink } from "react-csv";
+import moment from "moment";
 
 const DownloadBtn = styled(CSVLink)`
   width: 200px;
@@ -116,9 +117,10 @@ const BuyLecture = ({}) => {
   ////// HOOKS //////
   const [aForm] = Form.useForm();
 
-  const [searchDate, setSearchDate] = useState(null);
+  const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM"));
   const [searchPayType, setSearchPayType] = useState(null);
   const [searchType, setSearchType] = useState(null);
+  const [isPayType, setIsPayType] = useState(null);
 
   const [aModal, setAModal] = useState(false);
   const [aData, setAData] = useState(null);
@@ -161,9 +163,10 @@ const BuyLecture = ({}) => {
         searchDate: searchDate,
         searchType: searchType,
         searchPayType: searchPayType,
+        isPayType: searchPayType === "nobank" && isPayType,
       },
     });
-  }, [searchDate, searchType, searchPayType]);
+  }, [searchDate, searchType, searchPayType, isPayType]);
 
   // 엑셀
 
@@ -246,6 +249,7 @@ const BuyLecture = ({}) => {
           searchDate: searchDate,
           searchType: searchType,
           searchPayType: searchPayType,
+          isPayType: searchPayType === "nobank" && isPayType,
         },
       });
 
@@ -266,6 +270,7 @@ const BuyLecture = ({}) => {
           searchDate: searchDate,
           searchType: searchType,
           searchPayType: searchPayType,
+          isPayType: searchPayType === "nobank" && isPayType,
         },
       });
 
@@ -321,6 +326,13 @@ const BuyLecture = ({}) => {
       setSearchType(data);
     },
     [searchType]
+  );
+
+  const isPayTypeChangeHandler = useCallback(
+    (data) => {
+      setIsPayType(data);
+    },
+    [isPayType]
   );
 
   // 주소변경
@@ -416,14 +428,19 @@ const BuyLecture = ({}) => {
     {
       width: "10%",
       title: "강의 구매일",
-      dataIndex: "viewCreatedAt",
+      dataIndex: "viewBoughtDate",
     },
     {
       width: "5%",
       align: "center",
       title: "주소변경",
       render: (data) => (
-        <Button size="small" type="primary" onClick={() => aModalToggle(data)}>
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => aModalToggle(data)}
+          loading={st_boughtAddressUpdateLoading}
+        >
           주소변경
         </Button>
       ),
@@ -442,7 +459,11 @@ const BuyLecture = ({}) => {
             cancelText="취소"
             onConfirm={() => isPayUpdateHandler(data)}
           >
-            <Button size="small" type="primary">
+            <Button
+              size="small"
+              type="primary"
+              loading={st_boughtIsPayUpdateLoading}
+            >
               승인
             </Button>
           </Popconfirm>
@@ -585,6 +606,18 @@ const BuyLecture = ({}) => {
                     );
                   })}
               </Select>
+              {searchPayType === "nobank" && (
+                <Select
+                  style={{ width: `300px` }}
+                  size="small"
+                  placeholder="승인여부를 선택해주세요."
+                  onChange={isPayTypeChangeHandler}
+                >
+                  <Select.Option value={3}>전체</Select.Option>
+                  <Select.Option value={1}>승인</Select.Option>
+                  <Select.Option value={2}>미승인</Select.Option>
+                </Select>
+              )}
               <Select
                 style={{ width: `300px` }}
                 size="small"
@@ -687,7 +720,12 @@ const BuyLecture = ({}) => {
             <ModalBtn size="small" onClick={() => aModalToggle(null)}>
               취소
             </ModalBtn>
-            <ModalBtn size="small" type="primary" htmlType="submit">
+            <ModalBtn
+              size="small"
+              type="primary"
+              htmlType="submit"
+              loading={st_boughtAddressUpdateLoading}
+            >
               생성
             </ModalBtn>
           </Wrapper>
@@ -710,10 +748,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
-    });
-
-    context.store.dispatch({
-      type: BOUGHT_ADMIN_LIST_REQUEST,
     });
 
     // 구현부 종료

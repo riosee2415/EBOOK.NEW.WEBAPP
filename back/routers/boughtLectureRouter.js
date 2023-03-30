@@ -6,14 +6,15 @@ const models = require("../models");
 const router = express.Router();
 
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { searchDate, searchType, searchPayType } = req.body;
+  const { searchDate, searchType, searchPayType, isPayType } = req.body;
 
   const _searchType = searchType ? parseInt(searchType) : null;
   const _searchPayType = searchPayType ? searchPayType : null;
   const _searchData = searchDate ? searchDate : null;
+  const _isPayType = isPayType ? isPayType : 3;
 
   const selectQ = `
-  SELECT  ROW_NUMBER() OVER(ORDER  BY  A.createdAt  DESC)		AS num,
+  SELECT  ROW_NUMBER() OVER()		AS num,
           A.id,
           A.mobile,
           A.receiver,
@@ -52,6 +53,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, '%Y년 %m월 %d일')		AS viewCreatedAt,
+          DATE_FORMAT(A.boughtDate, '%Y년 %m월 %d일')		AS viewBoughtDate,
           DATE_FORMAT(A.updatedAt, '%Y년 %m월 %d일')		AS viewUpdatedAt,
           A.userId,
           B.username,
@@ -66,11 +68,18 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
      ${_searchType ? `AND  A.lectureType = ${searchType}` : ``}
      ${_searchPayType ? `AND  A.payType = "${searchPayType}"` : ``}
      ${
-       _searchData
-         ? `AND  DATE_FORMAT(A.createdAt, "%Y-%m") = DATE_FORMAT("${searchDate}-01", "%Y-%m")`
+       _isPayType === 1
+         ? `AND  A.isPay = TRUE`
+         : isPayType === 2
+         ? `AND  A.isPay = FALSE`
          : ``
      }
-   ORDER  BY  A.createdAt  DESC
+     ${
+       _searchData
+         ? `AND  DATE_FORMAT(A.boughtDate, "%Y-%m") = DATE_FORMAT("${searchDate}-01", "%Y-%m")`
+         : ``
+     }
+   ORDER  BY  A.boughtDate  DESC
   `;
 
   try {
@@ -178,6 +187,7 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         merchantUid,
         isPay,
         isBuyBook,
+        boughtDate,
         bookPrice,
         createdAt,
         updatedAt,
@@ -200,6 +210,7 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         FALSE,
         ${isBuyBook},
         ${bookPrice},
+        NOW(),
         NOW(),
         NOW(),
         ${req.user.id},
