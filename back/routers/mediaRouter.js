@@ -88,7 +88,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/list", async (req, res, next) => {
-  const { page } = req.body;
+  const { page, type } = req.body;
 
   const LIMIT = 30;
 
@@ -147,7 +147,12 @@ router.post("/list", async (req, res, next) => {
     const lengths = await models.sequelize.query(lengthQ);
     const list = await models.sequelize.query(selectQ);
 
-    const listLen = lengths[0].length;
+    const listLen =
+      type === 2
+        ? lengths[0].length > 118
+          ? 118
+          : lengths[0].length
+        : lengths[0].length;
 
     const lastPage =
       listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;

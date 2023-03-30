@@ -491,7 +491,7 @@ export const TextArea = styled.textarea`
 `;
 
 export const CustomPage = styled(Pagination)`
-  margin: 60px 0 100px;
+  margin: ${(props) => (props.margin ? props.margin : `60px 0 100px`)};
 
   & .ant-pagination-next > button,
   & .ant-pagination-item,

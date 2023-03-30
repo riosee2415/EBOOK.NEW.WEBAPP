@@ -66,6 +66,7 @@ const Home = ({}) => {
     }
   }, [st_meUpdateDone, st_meUpdateError]);
 
+  console.log(me);
   useEffect(() => {
     if (!me) {
       message.error("로그인 후 이용해주세요.");
@@ -96,7 +97,6 @@ const Home = ({}) => {
       dispatch({
         type: ME_UPDATE_REQUEST,
         data: {
-          id: me.id,
           password: data.password,
           mobile: data.mobile,
           username: data.username,
@@ -132,11 +132,8 @@ const Home = ({}) => {
             />
             <Wrapper padding={width < 1280 ? `0` : `0 210px`}>
               <CustomForm form={uForm} onFinish={meUpdateHandler}>
-                <Text fontSize={`20px`}>
-                  <SpanText color={Theme.basicTheme_C}>*</SpanText>
-                  아이디
-                </Text>
-                <Form.Item>
+                <Text fontSize={`20px`}>아이디</Text>
+                <Form.Item name="userId">
                   <TextInput
                     width={`100%`}
                     height={`54px`}
@@ -328,7 +325,6 @@ const Home = ({}) => {
                   }}
                   width={`100%`}
                   height={`450px`}
-                  autoClose
                   animation
                 />
               </Modal>

@@ -80,6 +80,7 @@ const MypageIndex = ({}) => {
       type: MEDIA_LIST_REQUEST,
       data: {
         page: currentPage,
+        type: boughtMeDetail && boughtMeDetail.lectureType === 5 ? 2 : 1,
       },
     });
 
@@ -279,7 +280,7 @@ const MypageIndex = ({}) => {
               <Text fontSize={width < 700 ? `30px` : `36px`} fontWeight={`700`}>
                 강의 목차
               </Text>
-              <Form onFinish={onSearchHandler}>
+              <Form onFinish={onSearchHandler} layout="inline">
                 <Form.Item name="search">
                   <Input
                     type="number"
@@ -327,6 +328,14 @@ const MypageIndex = ({}) => {
                 </Wrapper>
               </Wrapper>
             )}
+            <CustomPage
+              margin={`0 0 10px`}
+              defaultCurrent={1}
+              current={parseInt(currentPage)}
+              total={lastPage * 30}
+              pageSize={30}
+              onChange={(page) => otherPageCall(page)}
+            />
             <Wrapper borderTop={`1px solid ${Theme.lightGrey4_C}`}>
               {mediaList &&
                 (mediaList.length === 0 ? (
@@ -334,127 +343,126 @@ const MypageIndex = ({}) => {
                     <Empty description="강의가 없습니다." />
                   </Wrapper>
                 ) : (
-                  mediaList.map((data, idx) => {
-                    return (
-                      <Wrapper
-                        id={`lecture-${idx}`}
-                        key={idx}
-                        padding={`44px 0`}
-                        dr={`row`}
-                        borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                      >
+                  mediaList
+                    .filter((data) => data.sort <= 118)
+                    .map((data, idx) => {
+                      return (
                         <Wrapper
-                          width={width < 700 ? `100%` : `50%`}
-                          al={`flex-start`}
+                          id={`lecture-${idx}`}
+                          key={idx}
+                          padding={`44px 0`}
+                          dr={`row`}
+                          borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
-                          <Wrapper dr={`row`} ju={`flex-start`}>
-                            <Text
-                              fontSize={`20px`}
-                              fontWeight={`700`}
-                              color={Theme.grey3_C}
-                            >
-                              {data.num < 100 ? `0` : ``}
-                              {data.num < 10 ? `0` : ``}
-                              {data.num}
-                            </Text>
-                            <Wrapper
+                          <Wrapper
+                            width={width < 700 ? `100%` : `50%`}
+                            al={`flex-start`}
+                          >
+                            <Wrapper dr={`row`} ju={`flex-start`}>
+                              <Text
+                                fontSize={`20px`}
+                                fontWeight={`700`}
+                                color={Theme.grey3_C}
+                              >
+                                {data.num < 100 ? `0` : ``}
+                                {data.num < 10 ? `0` : ``}
+                                {data.num}
+                              </Text>
+                              {/* <Wrapper
                               width={`4px`}
                               height={`4px`}
                               margin={`0 10px`}
                               borderRadius={`100%`}
                               bgColor={Theme.lightGrey4_C}
-                            />
-                            <Text
-                              fontSize={`20px`}
-                              fontWeight={`500`}
-                              color={Theme.basicTheme_C}
-                            >
-                              {data.type}
-                            </Text>
+                            /> */}
+                            </Wrapper>
+                            <Wrapper dr={`row`} ju={`flex-start`}>
+                              <Wrapper
+                                width={`4px`}
+                                height={`4px`}
+                                borderRadius={`100%`}
+                                color={Theme.black2_C}
+                              />
+                              <Text fontSize={width < 700 ? `26px` : `30px`}>
+                                {data.title}
+                              </Text>
+                            </Wrapper>
                           </Wrapper>
-                          <Wrapper dr={`row`} ju={`flex-start`}>
-                            <Wrapper
-                              width={`4px`}
-                              height={`4px`}
-                              borderRadius={`100%`}
-                              color={Theme.black2_C}
-                            />
-                            <Text fontSize={width < 700 ? `26px` : `30px`}>
-                              {data.title}
-                            </Text>
+                          <Wrapper
+                            width={width < 700 ? `100%` : `50%`}
+                            al={`flex-end`}
+                          >
+                            <Wrapper dr={`row`} ju={`flex-end`}>
+                              {data.isSample ? (
+                                <CommonButton
+                                  kindOf={`subTheme`}
+                                  width={width < 700 ? `100%` : `186px`}
+                                  height={`52px`}
+                                  fontSize={`20px`}
+                                  onClick={() =>
+                                    moveLinkHandler(
+                                      `/mypage/${data.id}?isSample=1`
+                                    )
+                                  }
+                                >
+                                  <Wrapper dr={`row`} ju={`space-between`}>
+                                    <Text fontWeight={`600`}>
+                                      샘플강의 보기
+                                    </Text>
+
+                                    <Wrapper
+                                      width={`auto`}
+                                      padding={`6px`}
+                                      bgColor={Theme.white_C}
+                                      radius={`100%`}
+                                    >
+                                      <CaretRightOutlined />
+                                    </Wrapper>
+                                  </Wrapper>
+                                </CommonButton>
+                              ) : (
+                                boughtMeDetail &&
+                                boughtMeDetail.isPay && (
+                                  <CommonButton
+                                    kindOf={`subTheme`}
+                                    width={width < 700 ? `100%` : `186px`}
+                                    height={`52px`}
+                                    fontSize={`20px`}
+                                    onClick={() =>
+                                      moveLinkHandler(
+                                        `/mypage/${data.id}?isSample=0`
+                                      )
+                                    }
+                                  >
+                                    <Wrapper dr={`row`} ju={`space-between`}>
+                                      <Text fontWeight={`600`}>강의 보기</Text>
+
+                                      <Wrapper
+                                        width={`auto`}
+                                        padding={`6px`}
+                                        bgColor={Theme.white_C}
+                                        radius={`100%`}
+                                      >
+                                        <CaretRightOutlined />
+                                      </Wrapper>
+                                    </Wrapper>
+                                  </CommonButton>
+                                )
+                              )}
+                            </Wrapper>
                           </Wrapper>
                         </Wrapper>
-                        <Wrapper
-                          width={width < 700 ? `100%` : `50%`}
-                          al={`flex-end`}
-                        >
-                          <Wrapper dr={`row`} ju={`flex-end`}>
-                            {(!boughtMeDetail || !boughtMeDetail.isPay) &&
-                            data.isSample ? (
-                              <CommonButton
-                                kindOf={`subTheme`}
-                                width={width < 700 ? `100%` : `186px`}
-                                height={`52px`}
-                                fontSize={`20px`}
-                                onClick={() =>
-                                  moveLinkHandler(
-                                    `/mypage/${data.id}?isSample=1`
-                                  )
-                                }
-                              >
-                                <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>샘플강의 보기</Text>
-
-                                  <Wrapper
-                                    width={`auto`}
-                                    padding={`6px`}
-                                    bgColor={Theme.white_C}
-                                    radius={`100%`}
-                                  >
-                                    <CaretRightOutlined />
-                                  </Wrapper>
-                                </Wrapper>
-                              </CommonButton>
-                            ) : (
-                              <CommonButton
-                                kindOf={`subTheme`}
-                                width={width < 700 ? `100%` : `186px`}
-                                height={`52px`}
-                                fontSize={`20px`}
-                                onClick={() =>
-                                  moveLinkHandler(
-                                    `/mypage/${data.id}?isSample=0`
-                                  )
-                                }
-                              >
-                                <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>강의 보기</Text>
-
-                                  <Wrapper
-                                    width={`auto`}
-                                    padding={`6px`}
-                                    bgColor={Theme.white_C}
-                                    radius={`100%`}
-                                  >
-                                    <CaretRightOutlined />
-                                  </Wrapper>
-                                </Wrapper>
-                              </CommonButton>
-                            )}
-                          </Wrapper>
-                        </Wrapper>
-                      </Wrapper>
-                    );
-                  })
+                      );
+                    })
                 ))}
-              <CustomPage
-                defaultCurrent={1}
-                current={parseInt(currentPage)}
-                total={lastPage * 30}
-                pageSize={30}
-                onChange={(page) => otherPageCall(page)}
-              />
             </Wrapper>
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentPage)}
+              total={lastPage * 30}
+              pageSize={30}
+              onChange={(page) => otherPageCall(page)}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>

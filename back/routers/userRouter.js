@@ -8,6 +8,7 @@ const isAdminCheck = require("../middlewares/isAdminCheck");
 const isLoggedIn = require("../middlewares/isLoggedIn");
 const generateUUID = require("../utils/generateUUID");
 const sendSecretMail = require("../utils/mailSender");
+const crypto = require("crypto");
 
 const router = express.Router();
 
@@ -640,11 +641,11 @@ router.get("/me", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/me/update", isLoggedIn, async (req, res, next) => {
-  const { id, password, mobile, username, address, zoneCode, detailAddress } =
+  const { password, mobile, username, address, zoneCode, detailAddress } =
     req.body;
 
   try {
-    const exUser = await User.findOne({ where: { id: parseInt(id) } });
+    const exUser = await User.findOne({ where: { id: parseInt(req.user.id) } });
 
     if (!exUser) {
       return res.status(401).send("존재하지 않는 사용자 입니다.");
@@ -654,7 +655,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
     SELECT  id,
             password
       FROM  users
-     WHERE  id = ${id}
+     WHERE  id = ${req.user.id}
     `;
     const find = await models.sequelize.query(selectQ);
 
@@ -666,7 +667,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
     // const result = await bcrypt.compare(password, exUser.password);
 
     if (find[0][0]) {
-      if (find[0][0].password === hashedPassword) {
+      if (find[0][0].password !== hashedPassword) {
         return res.status(401).send("비밀번호가 일치하지 않습니다.");
       }
     }
@@ -679,7 +680,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
             zoneCode = "${zoneCode}",
             detailAddress = "${detailAddress}",
             updatedAt = NOW()
-     WHERE  id = ${id}
+     WHERE  id = ${req.user.id}
     `;
 
     await models.sequelize.query(updateQ);
