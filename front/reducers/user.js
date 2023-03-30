@@ -4,6 +4,7 @@ export const initailState = {
   me: null,
   currentAdminMenu: [],
   users: null,
+  lastPages: 1,
   updateModal: false,
   userHistory: [],
   adminUserRightHistory: [],
@@ -272,14 +273,16 @@ const reducer = (state = initailState, action) =>
 
       case USERLIST_REQUEST: {
         draft.st_userListLoading = true;
-        draft.st_userListDone = null;
-        draft.st_userListError = false;
+        draft.st_userListDone = false;
+        draft.st_userListError = null;
         break;
       }
       case USERLIST_SUCCESS: {
         draft.st_userListLoading = false;
         draft.st_userListDone = true;
-        draft.users = action.data;
+        draft.st_userListError = null;
+        draft.users = action.data.list;
+        draft.lastPages = action.data.lastPage;
         break;
       }
       case USERLIST_FAILURE: {

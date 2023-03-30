@@ -135,8 +135,10 @@ const UserList = ({}) => {
 
   const {
     users,
+    lastPages,
     updateModal,
     //
+    st_userListLoading,
     st_userListError,
     //
     st_userListUpdateDone,
@@ -185,6 +187,8 @@ const UserList = ({}) => {
 
   const [dModal, setDModal] = useState(false);
   const [dData, setDData] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const levelArr = [
     {
@@ -263,6 +267,9 @@ const UserList = ({}) => {
 
       dispatch({
         type: USERLIST_REQUEST,
+        data: {
+          page: currentPage,
+        },
       });
 
       return message.success("유저정보가 수정되었습니다.");
@@ -283,15 +290,16 @@ const UserList = ({}) => {
     }
   }, [st_userListUpdateError]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: USERLIST_REQUEST,
-  //     data: {
-  //       searchData: sData,
-  //       searchLevel: currentTab,
-  //     },
-  //   });
-  // }, [currentTab, sData]);
+  useEffect(() => {
+    dispatch({
+      type: USERLIST_REQUEST,
+      data: {
+        searchData: sData,
+        searchLevel: currentTab,
+        page: currentPage,
+      },
+    });
+  }, [currentTab, sData, currentPage]);
 
   // 회원정보 수정
   useEffect(() => {
@@ -445,6 +453,14 @@ const UserList = ({}) => {
   );
   ////// HANDLER //////
 
+  // 페이지 변경
+  const otherPageCall = useCallback(
+    (page) => {
+      setCurrentPage(page);
+    },
+    [currentPage]
+  );
+
   const tabClickHandler = useCallback(
     (tab) => {
       setCurrentTab(tab);
@@ -564,134 +580,6 @@ const UserList = ({}) => {
     </PopWrapper>
   );
 
-  const fileRef = useRef();
-  const [xlsxData, setXlsxData] = useState(null);
-  const [xlsxData2, setXlsxData2] = useState(null);
-  const [xlsxData3, setXlsxData3] = useState(null);
-  const fileUploadHandler = useCallback(() => {
-    fileRef.current.click();
-  }, []);
-  const csvFileUploadHandler = useCallback(
-    (event) => {
-      const daysBeforeUnixEpoch = 70 * 365 + 19;
-
-      const hour = 60 * 60 * 1000;
-
-      // setXlsxLoading(true);
-      let input = event.target;
-      let reader = new FileReader();
-      reader.onload = function () {
-        let data = reader.result;
-        let workBook = XLSX.read(data, { type: "binary" });
-        workBook.SheetNames.forEach(function (sheetName) {
-          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-          setXlsxData(rows.map((data) => data));
-        });
-      };
-      reader.readAsBinaryString(input.files[0]);
-    },
-    [xlsxData]
-  );
-  const file2Ref = useRef();
-  const file2UploadHandler = useCallback(() => {
-    file2Ref.current.click();
-  }, []);
-  const csv2FileUploadHandler = useCallback(
-    (event) => {
-      const daysBeforeUnixEpoch = 70 * 365 + 19;
-
-      const hour = 60 * 60 * 1000;
-
-      // setXlsxLoading(true);
-      let input = event.target;
-      let reader = new FileReader();
-
-      reader.onload = function () {
-        let data = reader.result;
-        let workBook = XLSX.read(data, { type: "binary" });
-        workBook.SheetNames.forEach(function (sheetName) {
-          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-          setXlsxData2(rows.map((data) => data));
-        });
-      };
-      reader.readAsBinaryString(input.files[0]);
-    },
-    [xlsxData2]
-  );
-  const file3Ref = useRef();
-  const file3UploadHandler = useCallback(() => {
-    file3Ref.current.click();
-  }, []);
-  const csv3FileUploadHandler = useCallback(
-    (event) => {
-      const daysBeforeUnixEpoch = 70 * 365 + 19;
-
-      const hour = 60 * 60 * 1000;
-
-      // setXlsxLoading(true);
-      let input = event.target;
-      let reader = new FileReader();
-
-      reader.onload = function () {
-        let data = reader.result;
-        let workBook = XLSX.read(data, { type: "binary" });
-        workBook.SheetNames.forEach(function (sheetName) {
-          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-          setXlsxData3(rows.map((data) => data));
-        });
-      };
-      reader.readAsBinaryString(input.files[0]);
-    },
-    [xlsxData3]
-  );
-
-  useEffect(() => {
-    if (xlsxData) {
-      // console.log([...new Set(xlsxData.map((data) => data.userId))]);
-      // console.log([...new Set(xlsxData.map((data) => data.userId))].length);
-      // for (let i = 0; i < xlsxData.length; i++) {
-      //   dispatch({
-      //     type: INSERT_XLSX_REQUEST,
-      //     data: {
-      //       ...xlsxData[i],
-      //     },
-      //   });
-      // }
-
-      const find1 = (data) =>
-        xlsxData.filter((item, index) => data.indexOf(item.userId) !== index);
-      const find2 = find1(xlsxData.map((data) => data.userId));
-      console.log(
-        "xlsxData",
-        xlsxData.filter((data) => data.userId === "wjk719")
-      );
-      console.log(
-        "find2",
-        find2.map((data) => data.userId)
-      );
-    }
-  }, [xlsxData]);
-
-  // console.log([...new Set(test)]);
-
-  // console.log(xlsxData3);
-  // useEffect(() => {
-  //   if (xlsxData3) {
-  //     for (let i = 0; i < xlsxData3.length; i++) {
-  //       dispatch({
-  //         type: MEDIA_CREATE_REQUEST,
-  //         data: {
-  //           type: "-",
-  //           title: xlsxData3[i].title,
-  //           testId: xlsxData3[i]._id,
-  //           sort: xlsxData3[i].sort,
-  //           isSample: false,
-  //         },
-  //       });
-  //     }
-  //   }
-  // }, [xlsxData3]);
-
   // console.log(xlsxData);
 
   ////// DATAVIEW //////
@@ -803,38 +691,6 @@ const UserList = ({}) => {
         </GuideUl>
       </Wrapper>
 
-      <Wrapper dr={`row`} ju={`flex-end`} padding={`0 20px`}>
-        <input
-          type="file"
-          hidden
-          ref={fileRef}
-          onChange={csvFileUploadHandler}
-        />
-        <Button size="small" type="primary" onClick={fileUploadHandler}>
-          엑셀 파일 등록
-        </Button>
-
-        <input
-          type="file"
-          hidden
-          ref={file2Ref}
-          onChange={csv2FileUploadHandler}
-        />
-        <Button size="small" type="primary" onClick={file2UploadHandler}>
-          엑셀 파일 등록2
-        </Button>
-
-        <input
-          type="file"
-          hidden
-          ref={file3Ref}
-          onChange={csv3FileUploadHandler}
-        />
-        <Button size="small" type="primary" onClick={file3UploadHandler}>
-          미디어 파일 등록2
-        </Button>
-      </Wrapper>
-
       <Wrapper padding="0px 20px">
         {/* SEARCH FORM */}
         <SearchForm
@@ -892,6 +748,14 @@ const UserList = ({}) => {
           columns={columns}
           dataSource={users ? users : []}
           size="small"
+          loading={st_userListLoading}
+          pagination={{
+            defaultCurrent: 1,
+            current: parseInt(currentPage),
+            onChange: (page) => otherPageCall(page),
+            pageSize: 50,
+            total: lastPages * 50,
+          }}
         />
       </Wrapper>
 
@@ -1248,9 +1112,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: LOAD_MY_INFO_REQUEST,
     });
 
-    // context.store.dispatch({
-    //   type: USERLIST_REQUEST,
-    // });
+    context.store.dispatch({
+      type: USERLIST_REQUEST,
+    });
 
     context.store.dispatch({
       type: LECTURE_LIST_REQUEST,

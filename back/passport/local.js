@@ -30,6 +30,9 @@ module.exports = () => {
           cipher.update(password);
           const hashedPassword = cipher.digest("hex");
 
+          console.log(user.password);
+          console.log(hashedPassword);
+
           if (user.password === hashedPassword) {
             return done(null, user);
           }

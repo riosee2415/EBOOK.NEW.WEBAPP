@@ -12,13 +12,78 @@ const sendSecretMail = require("../utils/mailSender");
 const router = express.Router();
 
 router.post("/list", isAdminCheck, async (req, res, next) => {
-  const { searchData, searchLevel, searchExit } = req.body;
+  const { page, searchData, searchLevel, searchExit } = req.body;
 
   const _searchData = searchData ? searchData : ``;
 
   const _searchLevel = parseInt(searchLevel) === 0 ? 0 : parseInt(searchLevel);
 
   const _searchExit = searchExit ? searchExit : false;
+
+  const LIMIT = 50;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 50;
+
+  const lengthQuery = `
+  SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
+          id,
+          userId,
+          email,
+          username,
+          mobile,
+          level,
+          isExit,
+          birth,
+          gender,
+          keyword,
+          consulting,
+          zoneCode,
+          address,
+          detailAddress,
+          tel,
+          CASE
+            WHEN	level = 1	THEN "일반회원"
+            WHEN	level = 2	THEN "비어있음"
+            WHEN	level = 3	THEN "운영자"
+            WHEN	level = 4	THEN "최고관리자"
+            WHEN	level = 5	THEN "개발사"
+          END											AS viewLevel,
+          terms,
+          createdAt,
+          updatedAt,
+          exitedAt,
+          CASE
+            WHEN (
+                  SELECT  COUNT(B.id)
+                    FROM  review        B
+                   WHERE  A.id = B.UserId
+                 ) > 0 THEN 1
+            ELSE 0
+          END                                       AS isWriteReview,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
+    FROM	users   A
+   WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
+          ${
+            _searchLevel === parseInt(0)
+              ? ``
+              : _searchLevel === 1
+              ? `AND level = 1`
+              : _searchLevel === 3
+              ? `AND level = 3`
+              : _searchLevel === 4
+              ? `AND level = 4`
+              : _searchLevel === 5
+              ? `AND level = 5`
+              : ``
+          } 
+          AND	isExit = ${_searchExit}
+   ORDER	BY num DESC
+  `;
 
   const selectQuery = `
   SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
@@ -50,16 +115,16 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           exitedAt,
           CASE
             WHEN (
-                  SELECT  COUNT(id)
+                  SELECT  COUNT(B.id)
                     FROM  review        B
-                   WHERE  id = B.id
+                   WHERE  A.id = B.UserId
                  ) > 0 THEN 1
             ELSE 0
           END                                       AS isWriteReview,
           DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
-    FROM	users
+    FROM	users         A
    WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
           ${
             _searchLevel === parseInt(0)
@@ -76,12 +141,22 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           } 
           AND	isExit = ${_searchExit}
    ORDER	BY num DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
   `;
 
   try {
+    const lengths = await models.sequelize.query(lengthQuery);
     const list = await models.sequelize.query(selectQuery);
 
-    return res.status(200).json(list[0]);
+    const listLen = lengths[0].length;
+
+    const lastPage =
+      listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;
+
+    return res
+      .status(200)
+      .json({ list: list[0], lastPage: parseInt(lastPage) });
   } catch (error) {
     console.error(error);
     return res.status(401).send("사용자 목록을 불러올 수 없습니다.");
