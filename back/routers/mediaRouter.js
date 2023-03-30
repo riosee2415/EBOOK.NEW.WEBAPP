@@ -159,7 +159,7 @@ router.post("/list", async (req, res, next) => {
 
     return res
       .status(200)
-      .json({ list: list[0], lastPage: parseInt(lastPage) });
+      .json({ list: list[0], lastPage: parseInt(lastPage), maxLen: listLen });
   } catch (e) {
     console.error(e);
     return res.status(400).send("생성 할 수 없습니다.");

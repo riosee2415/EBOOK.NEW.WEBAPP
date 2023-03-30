@@ -32,10 +32,8 @@ const MypageIndex = ({}) => {
   const { me } = useSelector((state) => state.user);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
-  const { mediaList, lastPage } = useSelector((state) => state.media);
+  const { mediaList, lastPage, maxLen } = useSelector((state) => state.media);
   const { enjoyMeList } = useSelector((state) => state.enjoy);
-
-  console.log(enjoyMeList);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -301,16 +299,13 @@ const MypageIndex = ({}) => {
                 </Form.Item>
               </Form>
             </Wrapper>
-            {boughtMeDetail && enjoyMeList && (
+            {console.log(enjoyMeList)}
+            {boughtMeDetail && maxLen && (
               <Wrapper dr={`row`} ju={`flex-end`}>
                 <CustomSlider
                   disabled
                   min={0}
-                  max={
-                    boughtMeDetail.lectureType === "5"
-                      ? 118
-                      : enjoyMeList.length
-                  }
+                  max={maxLen}
                   value={
                     boughtMeDetail.lectureType === "5"
                       ? enjoyMeList.length > 118
@@ -429,7 +424,13 @@ const MypageIndex = ({}) => {
                                 boughtMeDetail &&
                                 boughtMeDetail.isPay && (
                                   <CommonButton
-                                    kindOf={`subTheme`}
+                                    kindOf={
+                                      enjoyMeList.find(
+                                        (value) => value.MediumId === data.id
+                                      )
+                                        ? `checked`
+                                        : `subTheme`
+                                    }
                                     width={width < 700 ? `100%` : `186px`}
                                     height={`52px`}
                                     fontSize={`20px`}
@@ -440,12 +441,24 @@ const MypageIndex = ({}) => {
                                     }
                                   >
                                     <Wrapper dr={`row`} ju={`space-between`}>
-                                      <Text fontWeight={`600`}>강의 보기</Text>
+                                      <Text fontWeight={`600`}>
+                                        {enjoyMeList.find(
+                                          (value) => value.MediumId === data.id
+                                        )
+                                          ? `강의 다시 보기`
+                                          : `강의 보기`}
+                                      </Text>
 
                                       <Wrapper
                                         width={`auto`}
                                         padding={`6px`}
                                         bgColor={Theme.white_C}
+                                        color={
+                                          enjoyMeList.find(
+                                            (value) =>
+                                              value.MediumId === data.id
+                                          ) && Theme.subTheme6_C
+                                        }
                                         radius={`100%`}
                                       >
                                         <CaretRightOutlined />

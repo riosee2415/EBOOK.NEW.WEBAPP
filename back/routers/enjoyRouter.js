@@ -53,6 +53,13 @@ router.post("/me/list", isLoggedIn, async (req, res, next) => {
 router.post("/create", isLoggedIn, async (req, res, next) => {
   const { id } = req.body;
 
+  const findQ = `
+  SELECT  id
+    FROM  enjoyMedia
+   WHERE  UserId = ${req.user.id}
+     AND  MediumId = ${id}
+  `;
+
   const insertQ = `
   INSERT INTO enjoyMedia
   (
@@ -71,7 +78,11 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   `;
 
   try {
-    await models.sequelize.query(insertQ);
+    const find = await models.sequelize.query(findQ);
+
+    if (find[0].length === 0) {
+      await models.sequelize.query(insertQ);
+    }
 
     return res.status(200).json({ result: true });
   } catch (e) {

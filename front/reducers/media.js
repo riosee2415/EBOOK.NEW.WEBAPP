@@ -4,6 +4,7 @@ export const initailState = {
   mediaAdminList: [],
   mediaList: [],
   lastPage: 1,
+  maxLen: 0,
 
   mediaAllList: [],
 
@@ -131,6 +132,7 @@ const reducer = (state = initailState, action) =>
         draft.st_mediaListError = null;
         draft.mediaList = action.data.list;
         draft.lastPage = action.data.lastPage;
+        draft.maxLen = action.data.maxLen;
         break;
       }
       case MEDIA_LIST_FAILURE: {
