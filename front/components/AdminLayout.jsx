@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Wrapper, Image, Text } from "./commonComponents";
 import Theme from "./Theme";
 import AdminMenuBox from "./AdminMenuBox";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { ADMIN_BANNER_REQUEST } from "../reducers/user";
 
 const AdminHeader = styled(Wrapper)`
   transition: 0.6s;
@@ -172,8 +173,15 @@ export const items = {
 };
 
 const AdminLayout = ({ children }) => {
-  const { me } = useSelector((s) => s.user);
+  const { me, adminBanner } = useSelector((s) => s.user);
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({
+      type: ADMIN_BANNER_REQUEST,
+    });
+  }, [router.query]);
 
   return (
     <Wrapper className="whole__admin__wrapper">
@@ -226,7 +234,7 @@ const AdminLayout = ({ children }) => {
               margin={`0px 0px 5px 0px`}
             >
               <Text>오늘 가입한 회원</Text>
-              <Text>1건</Text>
+              <Text>{adminBanner && adminBanner.userCnt}건</Text>
             </Wrapper>
 
             <Wrapper
@@ -236,8 +244,8 @@ const AdminLayout = ({ children }) => {
               borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
               margin={`0px 0px 5px 0px`}
             >
-              <Text>오늘 접수된 문의사항</Text>
-              <Text>1건</Text>
+              <Text>오늘 구입한 강의</Text>
+              <Text>{adminBanner && adminBanner.boughtCnt}건</Text>
             </Wrapper>
 
             <Wrapper
@@ -248,7 +256,7 @@ const AdminLayout = ({ children }) => {
               margin={`0px 0px 5px 0px`}
             >
               <Text>오늘 새로 등록된 공지사항</Text>
-              <Text>1건</Text>
+              <Text>{adminBanner && adminBanner.noticeCnt}건</Text>
             </Wrapper>
 
             <Wrapper
@@ -258,8 +266,8 @@ const AdminLayout = ({ children }) => {
               borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
               margin={`0px 0px 5px 0px`}
             >
-              <Text>오늘 어쩌구 저쩌구 저쩌구 저쩌구</Text>
-              <Text>1건</Text>
+              <Text>오늘 새로 등록된 후기</Text>
+              <Text>{adminBanner && adminBanner.reviewCnt}건</Text>
             </Wrapper>
           </Wrapper>
         </Wrapper>

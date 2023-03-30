@@ -89,6 +89,10 @@ import {
   INSERT_XLSX_SUCCESS,
   INSERT_XLSX_FAILURE,
   /////////////////////////////
+  ADMIN_BANNER_REQUEST,
+  ADMIN_BANNER_SUCCESS,
+  ADMIN_BANNER_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -678,6 +682,33 @@ function* insertXlsx(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function adminBannerAPI(data) {
+  return await axios.post(`/api/user/admin/banner`, data);
+}
+
+function* adminBanner(action) {
+  try {
+    const result = yield call(adminBannerAPI, action.data);
+
+    yield put({
+      type: ADMIN_BANNER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ADMIN_BANNER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -768,6 +799,10 @@ function* watchXlsx() {
   yield takeLatest(INSERT_XLSX_REQUEST, insertXlsx);
 }
 
+function* watchAdminBanner() {
+  yield takeLatest(ADMIN_BANNER_REQUEST, adminBanner);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -793,6 +828,7 @@ export default function* userSaga() {
     fork(watchAdminUpdate),
     fork(watchMeUpdate),
     fork(watchXlsx),
+    fork(watchAdminBanner),
     //
   ]);
 }
