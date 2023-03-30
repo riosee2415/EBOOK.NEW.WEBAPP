@@ -110,7 +110,7 @@ const Home = ({}) => {
     const ext = data.file.split(".");
     const _ext = ext[ext.length - 1];
 
-    const finalFilename = `${data.filename}.${_ext}`;
+    const finalFilename = data.title + ".pdf";
 
     let blob = await fetch(data.file).then((r) => r.blob());
 
@@ -316,6 +316,8 @@ const Home = ({}) => {
                           width={width < 700 ? `150px` : `180px`}
                           color={Theme.grey3_C}
                         >
+                          {/* <ATag href={data.file}> */}
+                          {/* <a> */}
                           <CommonButton
                             width={`110px`}
                             height={`40px`}
@@ -326,6 +328,8 @@ const Home = ({}) => {
                             <DownloadOutlined />
                             다운로드
                           </CommonButton>
+                          {/* </a> */}
+                          {/* </ATag> */}
                         </Wrapper>
                       </HoverWrapper>
                     );

@@ -15,6 +15,10 @@ module.exports = class Review extends Model {
           type: DataTypes.TEXT,
           allowNull: false, // 필수
         },
+        hit: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         isDelete: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
@@ -22,6 +26,10 @@ module.exports = class Review extends Model {
         },
         deletedAt: {
           type: DataTypes.DATE,
+          allowNull: true,
+        },
+        previousUserId: {
+          type: DataTypes.STRING(700),
           allowNull: true,
         },
       },

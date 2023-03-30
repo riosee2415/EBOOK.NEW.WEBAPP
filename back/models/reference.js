@@ -10,10 +10,6 @@ module.exports = class Reference extends Model {
           type: DataTypes.STRING(300), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: false, // 필수
         },
-        filename: {
-          type: DataTypes.STRING(300),
-          allowNull: false,
-        },
         file: {
           type: DataTypes.STRING(2000), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: true,

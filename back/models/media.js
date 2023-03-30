@@ -43,6 +43,10 @@ module.exports = class Media extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        testId: {
+          type: DataTypes.STRING(700),
+          allowNull: false,
+        },
         isSample: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,

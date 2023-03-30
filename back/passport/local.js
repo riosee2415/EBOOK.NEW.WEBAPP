@@ -1,6 +1,7 @@
 const passport = require("passport");
 const { Strategy: LocalStrategy } = require("passport-local");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { User } = require("../models");
 
 module.exports = () => {
@@ -22,8 +23,14 @@ module.exports = () => {
             });
           }
 
-          const result = await bcrypt.compare(password, user.password);
-          if (result) {
+          // const result = await bcrypt.compare(password, user.password);
+
+          let cipher = crypto.createHash("sha512");
+
+          cipher.update(password);
+          const hashedPassword = cipher.digest("hex");
+
+          if (user.password === hashedPassword) {
             return done(null, user);
           }
 

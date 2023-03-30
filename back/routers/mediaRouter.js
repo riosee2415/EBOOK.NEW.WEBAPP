@@ -245,6 +245,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
     sampleMediaPath,
     sampleDuration,
     isSample,
+    testId,
   } = req.body;
 
   const insertQ = `
@@ -260,6 +261,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
       sampleDuration,
       isSample,
       sort,
+      testId,
       createdAt,
       updatedAt
   )
@@ -275,6 +277,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
       ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
       ${isSample},
       1,
+      "${testId}",
       NOW(),
       NOW()
   )

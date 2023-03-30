@@ -55,7 +55,6 @@ router.post("/list", async (req, res, next) => {
   SELECT  ROW_NUMBER() OVER(ORDER	BY createdAt ASC)		AS num,
           id,
           title,
-          filename,
           file,
           createdAt,
           DATE_FORMAT(createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
@@ -76,7 +75,7 @@ router.post("/list", async (req, res, next) => {
 });
 
 router.post("/create", isLoggedIn, async (req, res, next) => {
-  const { title, filename, file } = req.body;
+  const { title, file } = req.body;
 
   const selectQ = `
   SELECT  id
@@ -89,7 +88,6 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   INSERT  INTO  reference
   (
       title,
-      filename,
       file,
       updator,
       createdAt,
@@ -98,7 +96,6 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   VALUES
   (
       "${title}",
-      "${filename}",
       "${file}",
       ${req.user.id},
       NOW(),

@@ -63,6 +63,7 @@ import {
 import moment from "moment";
 import { LECTURE_LIST_REQUEST } from "../../../reducers/lecture";
 import { ADMIN_USER_ENJOY_REQUEST } from "../../../reducers/enjoy";
+import { MEDIA_CREATE_REQUEST } from "../../../reducers/media";
 
 const TypeButton = styled(Button)`
   margin-right: 5px;
@@ -282,15 +283,15 @@ const UserList = ({}) => {
     }
   }, [st_userListUpdateError]);
 
-  useEffect(() => {
-    dispatch({
-      type: USERLIST_REQUEST,
-      data: {
-        searchData: sData,
-        searchLevel: currentTab,
-      },
-    });
-  }, [currentTab, sData]);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: USERLIST_REQUEST,
+  //     data: {
+  //       searchData: sData,
+  //       searchLevel: currentTab,
+  //     },
+  //   });
+  // }, [currentTab, sData]);
 
   // 회원정보 수정
   useEffect(() => {
@@ -566,35 +567,31 @@ const UserList = ({}) => {
   const fileRef = useRef();
   const [xlsxData, setXlsxData] = useState(null);
   const [xlsxData2, setXlsxData2] = useState(null);
+  const [xlsxData3, setXlsxData3] = useState(null);
   const fileUploadHandler = useCallback(() => {
     fileRef.current.click();
   }, []);
-  const csvFileUploadHandler = useCallback((event) => {
-    const daysBeforeUnixEpoch = 70 * 365 + 19;
+  const csvFileUploadHandler = useCallback(
+    (event) => {
+      const daysBeforeUnixEpoch = 70 * 365 + 19;
 
-    const hour = 60 * 60 * 1000;
+      const hour = 60 * 60 * 1000;
 
-    // setXlsxLoading(true);
-    let input = event.target;
-    let reader = new FileReader();
-    reader.onload = function () {
-      let data = reader.result;
-      let workBook = XLSX.read(data, { type: "binary" });
-      workBook.SheetNames.forEach(function (sheetName) {
-        let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-
-        console.log("1", rows);
-        setXlsxData(
-          rows.map((data, idx) => {
-            return {
-              ...data,
-            };
-          })
-        );
-      });
-    };
-    reader.readAsBinaryString(input.files[0]);
-  }, []);
+      // setXlsxLoading(true);
+      let input = event.target;
+      let reader = new FileReader();
+      reader.onload = function () {
+        let data = reader.result;
+        let workBook = XLSX.read(data, { type: "binary" });
+        workBook.SheetNames.forEach(function (sheetName) {
+          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+          setXlsxData(rows.map((data) => data));
+        });
+      };
+      reader.readAsBinaryString(input.files[0]);
+    },
+    [xlsxData]
+  );
   const file2Ref = useRef();
   const file2UploadHandler = useCallback(() => {
     file2Ref.current.click();
@@ -609,54 +606,91 @@ const UserList = ({}) => {
       let input = event.target;
       let reader = new FileReader();
 
-      let testXlsxData = xlsxData ? xlsxData.map((data) => data) : [];
       reader.onload = function () {
         let data = reader.result;
         let workBook = XLSX.read(data, { type: "binary" });
         workBook.SheetNames.forEach(function (sheetName) {
           let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-          console.log("2", rows);
           setXlsxData2(rows.map((data) => data));
         });
       };
       reader.readAsBinaryString(input.files[0]);
     },
-    [xlsxData]
+    [xlsxData2]
+  );
+  const file3Ref = useRef();
+  const file3UploadHandler = useCallback(() => {
+    file3Ref.current.click();
+  }, []);
+  const csv3FileUploadHandler = useCallback(
+    (event) => {
+      const daysBeforeUnixEpoch = 70 * 365 + 19;
+
+      const hour = 60 * 60 * 1000;
+
+      // setXlsxLoading(true);
+      let input = event.target;
+      let reader = new FileReader();
+
+      reader.onload = function () {
+        let data = reader.result;
+        let workBook = XLSX.read(data, { type: "binary" });
+        workBook.SheetNames.forEach(function (sheetName) {
+          let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+          setXlsxData3(rows.map((data) => data));
+        });
+      };
+      reader.readAsBinaryString(input.files[0]);
+    },
+    [xlsxData3]
   );
 
   useEffect(() => {
-    if (xlsxData && xlsxData2) {
-      console.log("test");
-      for (let i = 0; i < xlsxData.length; i++) {
-        console.log({
-          ...xlsxData[i],
-          boughtLectureList: xlsxData2.filter(
-            (value) => xlsxData[i]._id === value.user
-          ),
-        });
-        // dispatch({
-        //   type: INSERT_XLSX_REQUEST,
-        //   data: {
-        //     ...xlsxData[i],
-        //     boughtLectureList: xlsxData2.filter(
-        //       (value) => xlsxData[i]._id === value.user
-        //     ),
-        //   },
-        // });
-      }
-      // dispatch({
-      //   type: INSERT_XLSX_REQUEST,
-      //   data: {
-      //     xlsxData: xlsxData.map((data) => ({
-      //       ...data,
-      //       boughtLectures: xlsxData2.filter(
-      //         (value) => data._id === value.user
-      //       ),
-      //     })),
-      //   },
-      // });
+    if (xlsxData) {
+      // console.log([...new Set(xlsxData.map((data) => data.userId))]);
+      // console.log([...new Set(xlsxData.map((data) => data.userId))].length);
+      // for (let i = 0; i < xlsxData.length; i++) {
+      //   dispatch({
+      //     type: INSERT_XLSX_REQUEST,
+      //     data: {
+      //       ...xlsxData[i],
+      //     },
+      //   });
+      // }
+
+      const find1 = (data) =>
+        xlsxData.filter((item, index) => data.indexOf(item.userId) !== index);
+      const find2 = find1(xlsxData.map((data) => data.userId));
+      console.log(
+        "xlsxData",
+        xlsxData.filter((data) => data.userId === "wjk719")
+      );
+      console.log(
+        "find2",
+        find2.map((data) => data.userId)
+      );
     }
-  }, [xlsxData, xlsxData2]);
+  }, [xlsxData]);
+
+  // console.log([...new Set(test)]);
+
+  // console.log(xlsxData3);
+  // useEffect(() => {
+  //   if (xlsxData3) {
+  //     for (let i = 0; i < xlsxData3.length; i++) {
+  //       dispatch({
+  //         type: MEDIA_CREATE_REQUEST,
+  //         data: {
+  //           type: "-",
+  //           title: xlsxData3[i].title,
+  //           testId: xlsxData3[i]._id,
+  //           sort: xlsxData3[i].sort,
+  //           isSample: false,
+  //         },
+  //       });
+  //     }
+  //   }
+  // }, [xlsxData3]);
 
   // console.log(xlsxData);
 
@@ -788,6 +822,16 @@ const UserList = ({}) => {
         />
         <Button size="small" type="primary" onClick={file2UploadHandler}>
           엑셀 파일 등록2
+        </Button>
+
+        <input
+          type="file"
+          hidden
+          ref={file3Ref}
+          onChange={csv3FileUploadHandler}
+        />
+        <Button size="small" type="primary" onClick={file3UploadHandler}>
+          미디어 파일 등록2
         </Button>
       </Wrapper>
 
@@ -1204,9 +1248,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: LOAD_MY_INFO_REQUEST,
     });
 
-    context.store.dispatch({
-      type: USERLIST_REQUEST,
-    });
+    // context.store.dispatch({
+    //   type: USERLIST_REQUEST,
+    // });
 
     context.store.dispatch({
       type: LECTURE_LIST_REQUEST,

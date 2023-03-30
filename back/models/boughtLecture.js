@@ -7,23 +7,23 @@ module.exports = class BoughtLecture extends Model {
     return super.init(
       {
         mobile: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(300),
           allowNull: false,
         },
         receiver: {
-          type: DataTypes.STRING(200),
+          type: DataTypes.STRING(300),
           allowNull: false,
         },
         zoneCode: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(500),
           allowNull: false,
         },
         address: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(500),
           allowNull: false,
         },
         detailAddress: {
-          type: DataTypes.STRING(300),
+          type: DataTypes.STRING(500),
           allowNull: false,
         },
         payType: {
@@ -93,6 +93,11 @@ module.exports = class BoughtLecture extends Model {
           type: DataTypes.INTEGER, // 교재가격
           defaultValue: 0,
           allowNull: false,
+        },
+
+        previousUserId: {
+          type: DataTypes.STRING(700),
+          allowNull: true,
         },
       },
       {

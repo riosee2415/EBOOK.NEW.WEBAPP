@@ -234,6 +234,10 @@ const MypageIndex = ({}) => {
                       </Text>
                     </Wrapper>
                   </>
+                ) : boughtMeDetail.lectureType === 4 ? (
+                  <Text fontSize={width < 700 ? `20px` : `28px`}>
+                    평생수강 가능합니다.
+                  </Text>
                 ) : (
                   <Text fontSize={width < 700 ? `20px` : `28px`}>
                     {boughtMeDetail.viewStateDate}부터&nbsp;~&nbsp;
@@ -251,22 +255,24 @@ const MypageIndex = ({}) => {
               margin={width < 700 ? `0 0 35px` : `0 0 90px`}
             >
               {boughtMeDetail &&
-                boughtMeDetail &&
-                boughtMeDetail.recentlyTurn && (
-                  <CommonButton
-                    kindOf={`basic`}
-                    width={`154px`}
-                    height={`40px`}
-                    fontSize={`18px`}
-                    onClick={() =>
-                      moveLinkHandler(
-                        `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0`
-                      )
-                    }
-                  >
-                    강의 이어보기
-                  </CommonButton>
-                )}
+              boughtMeDetail &&
+              boughtMeDetail.recentlyTurn ? (
+                <CommonButton
+                  kindOf={`basic`}
+                  width={`154px`}
+                  height={`40px`}
+                  fontSize={`18px`}
+                  onClick={() =>
+                    moveLinkHandler(
+                      `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0`
+                    )
+                  }
+                >
+                  강의 이어보기
+                </CommonButton>
+              ) : (
+                ""
+              )}
             </Wrapper>
 
             <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 34px`}>

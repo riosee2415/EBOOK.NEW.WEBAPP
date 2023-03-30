@@ -7,22 +7,22 @@ module.exports = class User extends Model {
       {
         // id가 기본적으로 들어있다.
         userId: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(300),
           allowNull: false, // 필수
-          unique: true, // 고유한 값
+          // unique: true, // 고유한 값
         },
         username: {
-          type: DataTypes.STRING(30), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+          type: DataTypes.STRING(300), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: false, // 필수
         },
 
         password: {
-          type: DataTypes.STRING(100),
+          type: DataTypes.STRING(600),
           allowNull: false, // 필수
         },
 
         birth: {
-          type: DataTypes.STRING(50),
+          type: DataTypes.STRING(300),
           allowNull: false, // 필수
         },
         keyword: {
@@ -31,7 +31,7 @@ module.exports = class User extends Model {
         },
 
         gender: {
-          type: DataTypes.STRING(20),
+          type: DataTypes.STRING(300),
           defaultValue: "-",
           allowNull: false, // 필수
         },
@@ -55,17 +55,17 @@ module.exports = class User extends Model {
         },
 
         tel: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(300),
           defaultValue: "-",
           allowNull: true, // 필수
         },
         mobile: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(500),
           defaultValue: "-",
           allowNull: true, // 필수
         },
         email: {
-          type: DataTypes.STRING(60), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+          type: DataTypes.STRING(300), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: false, // 필수
           defaultValue: "-",
         },
@@ -86,6 +86,7 @@ module.exports = class User extends Model {
         terms: {
           // 이용약관동의
           type: DataTypes.BOOLEAN,
+          defaultValue: false,
           allowNull: false,
         },
 
@@ -162,7 +163,7 @@ module.exports = class User extends Model {
           defaultValue: false,
         },
         exitedAt: {
-          type: DataTypes.DATE,
+          type: DataTypes.STRING(300),
           allowNull: true,
         },
 
@@ -200,6 +201,21 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(10),
           allowNull: false,
           defaultValue: "1",
+        },
+
+        previousId: {
+          type: DataTypes.STRING(700),
+          allowNull: true,
+        },
+
+        previousCreatedAt: {
+          type: DataTypes.STRING(300),
+          allowNull: true,
+        },
+
+        previousUpdatedAt: {
+          type: DataTypes.STRING(300),
+          allowNull: true,
         },
       },
       {
