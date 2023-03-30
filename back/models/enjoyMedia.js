@@ -9,6 +9,16 @@ module.exports = class EnjoyMedia extends Model {
           type: DataTypes.INTEGER,
           allowNull: true,
         },
+
+        previousUserId: {
+          type: DataTypes.STRING(700),
+          allowNull: true,
+        },
+
+        previousMediaId: {
+          type: DataTypes.STRING(700),
+          allowNull: true,
+        },
       },
       {
         modelName: "EnjoyMedia",

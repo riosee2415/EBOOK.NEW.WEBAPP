@@ -81,9 +81,10 @@ router.post(
 );
 
 router.post("/list", async (req, res, next) => {
-  const { type } = req.body;
+  const { type, useYn } = req.body;
 
   const _type = type ? parseInt(type) : null;
+  const _useYn = useYn ? parseInt(useYn) : 3;
 
   const selectQ = `
   SELECT  ROW_NUMBER() OVER(ORDER BY sort ASC)		AS num,
@@ -95,6 +96,7 @@ router.post("/list", async (req, res, next) => {
             WHEN type = 3 THEN '수강후기'
             WHEN type = 4 THEN '고객센터'
           END                                     AS viewType,
+          useYn,
           sort,
           imagePath,
           mobileImagePath,
@@ -104,6 +106,13 @@ router.post("/list", async (req, res, next) => {
           DATE_FORMAT(updatedAt, "%Y년 %m월 %d일") AS viewUpdatedAt
     FROM  banner
    WHERE  1 = 1
+          ${
+            _useYn === 1
+              ? `AND  useYn = TRUE`
+              : _useYn === 2
+              ? `AND  useYn = FALSE`
+              : ``
+          }
           ${_type ? `AND  type = ${_type}` : ``}
    ORDER  BY  sort ASC 
   `;
@@ -165,7 +174,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, type, imagePath, mobileImagePath } = req.body;
+  const { id, type, imagePath, mobileImagePath, useYn } = req.body;
 
   const typeArr = [
     { type: 1, name: "메인" },
@@ -178,7 +187,8 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   UPDATE  banner
      SET  type = ${type},
           imagePath = '${imagePath}',
-          mobileImagePath = '${mobileImagePath}'
+          mobileImagePath = '${mobileImagePath}',
+          useYn = ${useYn}
    WHERE  id = ${id}
   `;
 

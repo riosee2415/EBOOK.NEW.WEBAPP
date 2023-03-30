@@ -19,6 +19,11 @@ module.exports = class Banner extends Model {
           defaultValue: 1,
           allowNull: false,
         },
+        useYn: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
         imagePath: {
           type: DataTypes.STRING(700),
           allowNull: true,
