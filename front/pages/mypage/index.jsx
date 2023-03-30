@@ -328,15 +328,19 @@ const MypageIndex = ({}) => {
                 </Wrapper>
               </Wrapper>
             )}
-            <CustomPage
-              margin={`0 0 10px`}
-              defaultCurrent={1}
-              current={parseInt(currentPage)}
-              total={lastPage * 30}
-              pageSize={30}
-              onChange={(page) => otherPageCall(page)}
-            />
-            <Wrapper borderTop={`1px solid ${Theme.lightGrey4_C}`}>
+            <Wrapper position={`relative`}>
+              <Wrapper position={`sticky`} top={`50px`} left={`0`} zIndex={`5`}>
+                <CustomPage
+                  margin={`0 0 10px`}
+                  defaultCurrent={1}
+                  current={parseInt(currentPage)}
+                  total={lastPage * 30}
+                  pageSize={30}
+                  onChange={(page) => otherPageCall(page)}
+                />
+              </Wrapper>
+
+              <Wrapper height={`1px`} bgColor={Theme.lightGrey4_C}></Wrapper>
               {mediaList &&
                 (mediaList.length === 0 ? (
                   <Wrapper height={`50vh`}>
@@ -456,13 +460,13 @@ const MypageIndex = ({}) => {
                     })
                 ))}
             </Wrapper>
-            <CustomPage
+            {/* <CustomPage
               defaultCurrent={1}
               current={parseInt(currentPage)}
               total={lastPage * 30}
               pageSize={30}
               onChange={(page) => otherPageCall(page)}
-            />
+            /> */}
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
