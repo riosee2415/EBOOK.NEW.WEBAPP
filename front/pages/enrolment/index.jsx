@@ -33,9 +33,22 @@ const Home = ({}) => {
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: LECTURE_LIST_REQUEST,
+        data: {
+          searchType: router.query.isVoucher ? [5] : [1, 2, 3, 4],
+        },
+      });
+    }
+  }, [router.query]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   const moveLinkHandler = useCallback((link) => {
@@ -83,6 +96,7 @@ const Home = ({}) => {
                       dr={width < 800 ? `column` : `row`}
                       ju={`space-between`}
                       al={`flex-start`}
+                      margin={`0 0 30px`}
                     >
                       <Wrapper
                         width={width < 800 ? `100%` : `calc(100% / 2 - 25px)`}
@@ -151,7 +165,6 @@ const Home = ({}) => {
                         >
                           {data.title}
                         </Text>
-                        {console.log(data)}
                         {data.discountPrice && (
                           <Wrapper dr={`row`} ju={`flex-start`}>
                             <Text
@@ -193,7 +206,6 @@ const Home = ({}) => {
                             원/{data.viewType}
                           </Text>
                         </Wrapper>
-                        {console.log(data)}
                         <Wrapper
                           dr={`row`}
                           ju={`flex-start`}
@@ -265,13 +277,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
-    });
-
-    context.store.dispatch({
-      type: LECTURE_LIST_REQUEST,
-      data: {
-        searchType: [1, 2, 3, 4],
-      },
     });
 
     // 구현부 종료

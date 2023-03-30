@@ -397,7 +397,8 @@ const MypageIndex = ({}) => {
                             al={`flex-end`}
                           >
                             <Wrapper dr={`row`} ju={`flex-end`}>
-                              {data.isSample ? (
+                              {(!boughtMeDetail || !boughtMeDetail.isPay) &&
+                              data.isSample ? (
                                 <CommonButton
                                   kindOf={`subTheme`}
                                   width={width < 700 ? `100%` : `186px`}

@@ -371,7 +371,7 @@ const List = ({}) => {
     { type: 3, name: "3년" },
     { type: 4, name: "평생" },
     { type: 5, name: "3달" },
-    { type: 6, name: "상품" },
+    // { type: 6, name: "상품" },
   ];
 
   return (
