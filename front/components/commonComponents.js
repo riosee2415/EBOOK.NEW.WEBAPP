@@ -606,10 +606,10 @@ export const HomeText = styled(Text)`
   cursor: pointer;
   transition: 0.5s;
 
-  color: ${(props) => (props.cur ? props.theme.subTheme5_C : "")};
+  color: ${(props) => (props.cur ? props.theme.subTheme_C : "")};
 
   &:hover {
-    color: ${(props) => props.theme.subTheme5_C};
+    color: ${(props) => props.theme.subTheme_C};
   }
 `;
 

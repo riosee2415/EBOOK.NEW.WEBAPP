@@ -139,7 +139,7 @@ const PointText = styled.div`
 
 const NameView = styled.div`
   font-weight: 700;
-  color: ${(props) => props.theme.subTheme5_C};
+  color: ${(props) => props.theme.subTheme_C};
 
   cursor: pointer;
   transition: 0.4s;

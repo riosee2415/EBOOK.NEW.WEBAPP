@@ -77,13 +77,13 @@ const InfoTitle = styled.div`
   align-items: center;
 
   padding-left: 15px;
-  color: ${(props) => props.theme.subTheme5_C};
+  color: ${(props) => props.theme.subTheme_C};
 `;
 
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
+    props.active ? props.theme.subTheme_C : props.theme.lightGrey_C};
 `;
 
 const Notice = ({}) => {
@@ -660,15 +660,15 @@ const Notice = ({}) => {
                 bgColor={Theme.lightGrey_C}
                 margin={`30px 0px`}
               ></Wrapper>
-
+              {/* 
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
                   공지사항 파일정보
                 </InfoTitle>
-              </Wrapper>
+              </Wrapper> */}
 
-              <Wrapper padding="0px 20px">
+              {/* <Wrapper padding="0px 20px">
                 {currentData.file ? (
                   <Wrapper al="flex-start">
                     <Text>등록된 파일이 1개 있습니다.</Text>
@@ -745,7 +745,7 @@ const Notice = ({}) => {
                 height="1px"
                 bgColor={Theme.lightGrey_C}
                 margin={`30px 0px`}
-              ></Wrapper>
+              ></Wrapper> */}
             </>
           ) : (
             <Wrapper padding={`50px 0px`} dr="row">
