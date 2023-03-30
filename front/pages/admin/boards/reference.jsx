@@ -209,7 +209,6 @@ const Reference = ({}) => {
         type: REFERENCE_CREATE_REQUEST,
         data: {
           title: data.title,
-          filename: data.filename,
           file: filepath,
         },
       });
@@ -231,7 +230,7 @@ const Reference = ({}) => {
     const ext = data.file.split(".");
     const _ext = ext[ext.length - 1];
 
-    const finalFilename = `${data.filename}.${_ext}`;
+    const finalFilename = `${data.title}.pdf`;
 
     let blob = await fetch(data.file).then((r) => r.blob());
 
@@ -253,14 +252,9 @@ const Reference = ({}) => {
       dataIndex: "num",
     },
     {
-      width: "30%",
+      width: "55%",
       title: "제목",
       dataIndex: "title",
-    },
-    {
-      width: "25%",
-      title: "파일이름",
-      dataIndex: "filename",
     },
     {
       width: "10%",
@@ -383,7 +377,13 @@ const Reference = ({}) => {
             >
               <Input size="small" readOnly placeholder="파일을 등록해주세요." />
             </Form.Item>
-            <input type="file" hidden ref={fileRef} onChange={onChangeFiles} />
+            <input
+              type="file"
+              hidden
+              ref={fileRef}
+              onChange={onChangeFiles}
+              accept=".pdf"
+            />
             <Button
               style={{ width: `100px`, margin: `0 0 23px` }}
               size="small"

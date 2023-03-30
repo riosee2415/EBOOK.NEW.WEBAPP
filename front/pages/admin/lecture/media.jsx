@@ -403,9 +403,9 @@ const Media = ({}) => {
           media2Path: record.sampleMediaPath,
         },
       });
-      console.log(record);
+
       infoForm.setFieldsValue({
-        type: record.type,
+        // type: record.type,
         title: record.title,
         mediaOriginName: record.mediaOriginName,
         sampleMediaOriginName: record.sampleMediaOriginName,
@@ -423,7 +423,7 @@ const Media = ({}) => {
       dispatch({
         type: MEDIA_CREATE_REQUEST,
         data: {
-          type: data.type,
+          // type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
@@ -445,7 +445,7 @@ const Media = ({}) => {
         type: MEDIA_UPDATE_REQUEST,
         data: {
           id: currentData.id,
-          type: data.type,
+          // type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
@@ -583,7 +583,7 @@ const Media = ({}) => {
               </Form>
             </Wrapper>
             <Button size="small" type="primary" onClick={cModalToggle}>
-              상품 생성
+              강의 생성
             </Button>
           </Wrapper>
           <Table
@@ -620,7 +620,7 @@ const Media = ({}) => {
                 style={{ width: "100%", paddingRight: "20px" }}
                 onFinish={mediaUpdateHandler}
               >
-                <Form.Item
+                {/* <Form.Item
                   label="유형"
                   name="type"
                   rules={[{ required: true, message: "유형은 필수 입니다." }]}
@@ -631,7 +631,7 @@ const Media = ({}) => {
                     <Select.Option value={"기초회화"}>기초회화</Select.Option>
                     <Select.Option value={"생활표현"}>생활표현</Select.Option>
                   </Select>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item
                   label="강의이름"
@@ -799,7 +799,7 @@ const Media = ({}) => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 20 }}
         >
-          <Form.Item
+          {/* <Form.Item
             label="유형"
             name="type"
             rules={[{ required: true, message: "유형은 필수 입니다." }]}
@@ -810,7 +810,7 @@ const Media = ({}) => {
               <Select.Option value={"기초회화"}>기초회화</Select.Option>
               <Select.Option value={"생활표현"}>생활표현</Select.Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="영상 제목"
             name="title"
