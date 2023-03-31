@@ -299,7 +299,6 @@ const MypageIndex = ({}) => {
                 </Form.Item>
               </Form>
             </Wrapper>
-            {console.log(enjoyMeList)}
             {boughtMeDetail && maxLen && (
               <Wrapper dr={`row`} ju={`flex-end`}>
                 <CustomSlider
@@ -308,17 +307,21 @@ const MypageIndex = ({}) => {
                   max={maxLen}
                   value={
                     boughtMeDetail.lectureType === "5"
-                      ? enjoyMeList.length > 118
+                      ? [...new Set(enjoyMeList.map((data) => data.MediumId))]
+                          .length > 118
                         ? 118
-                        : enjoyMeList.length
-                      : enjoyMeList.length
+                        : [...new Set(enjoyMeList.map((data) => data.MediumId))]
+                            .length
+                      : [...new Set(enjoyMeList.map((data) => data.MediumId))]
+                          .length
                   }
                 />
 
                 <Wrapper fontSize={`14px`} width={`auto`}>
                   {boughtMeDetail.lectureType === "5"
                     ? 118
-                    : enjoyMeList.length}
+                    : [...new Set(enjoyMeList.map((data) => data.MediumId))]
+                        .length}
                   강
                 </Wrapper>
               </Wrapper>
