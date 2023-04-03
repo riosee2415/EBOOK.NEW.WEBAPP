@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   adminUserEnjoyList: [],
+  maxLen: 0,
   enjoyMeList: [],
 
   st_adminUserEnjoyLoading: false,
@@ -45,7 +46,8 @@ const reducer = (state = initailState, action) =>
         draft.st_adminUserEnjoyLoading = false;
         draft.st_adminUserEnjoyDone = true;
         draft.st_adminUserEnjoyError = null;
-        draft.adminUserEnjoyList = action.data;
+        draft.adminUserEnjoyList = action.data.list;
+        draft.maxLen = action.data.maxLen;
         break;
       }
 

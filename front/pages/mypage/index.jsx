@@ -304,9 +304,9 @@ const MypageIndex = ({}) => {
                 <CustomSlider
                   disabled
                   min={0}
-                  max={maxLen}
+                  max={boughtMeDetail.lectureType === 5 ? 118 : maxLen}
                   value={
-                    boughtMeDetail.lectureType === "5"
+                    boughtMeDetail.lectureType === 5
                       ? [...new Set(enjoyMeList.map((data) => data.MediumId))]
                           .length > 118
                         ? 118
@@ -318,7 +318,7 @@ const MypageIndex = ({}) => {
                 />
 
                 <Wrapper fontSize={`14px`} width={`auto`}>
-                  {boughtMeDetail.lectureType === "5"
+                  {boughtMeDetail.lectureType === 5
                     ? 118
                     : [...new Set(enjoyMeList.map((data) => data.MediumId))]
                         .length}

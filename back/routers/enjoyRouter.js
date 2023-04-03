@@ -8,10 +8,32 @@ const router = express.Router();
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   const { id } = req.body;
 
+  const lengthQ = `
+  SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+          id,
+          title,
+          mediaOriginName,
+          mediaPath,
+          duration,
+          sampleMediaOriginName,
+          sampleMediaPath,
+          sampleDuration,
+          isSample,
+          sort,
+          createdAt,
+          DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
+          updatedAt,
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+    FROM  media
+   WHERE  1 = 1
+     AND  isDelete = FALSE
+  `;
+
   const selectQ = `
       SELECT  ROW_NUMBER() OVER(ORDER  BY  A.createdAt  DESC)		AS num,
               A.id,
               B.title,
+              A.MediumId,
               A.createdAt,
               DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")          AS viewCreatedAt
         FROM  enjoyMedia      A
@@ -23,9 +45,10 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
       `;
 
   try {
+    const length = await models.sequelize.query(lengthQ);
     const list = await models.sequelize.query(selectQ);
 
-    return res.status(200).json(list[0]);
+    return res.status(200).json({ list: list[0], maxLen: length[0].length });
   } catch (e) {
     console.error(e);
     return res.status(400).send("수강 기록을 불러올 수 없습니다.");

@@ -26,6 +26,7 @@ import {
   Popconfirm,
   Checkbox,
   Switch,
+  Slider,
 } from "antd";
 import {
   HomeText,
@@ -112,6 +113,26 @@ const CustomForm = styled(Form)`
     width: 100%;
   }
 `;
+const CustomSlider = styled(Slider)`
+  width: 200px;
+
+  & .ant-slider-handle {
+    display: none;
+    width: 13px;
+    height: 13px;
+    margin-top: -1px;
+  }
+
+  & .ant-slider-step,
+  & .ant-slider-track,
+  & .ant-slider-rail {
+    height: 10px;
+  }
+
+  @media (max-width: 700px) {
+    width: 100%;
+  }
+`;
 
 const LoadNotification = (msg, content) => {
   notification.open({
@@ -193,7 +214,7 @@ const UserList = ({}) => {
 
   const { lectureList } = useSelector((state) => state.lecture);
 
-  const { adminUserEnjoyList } = useSelector((state) => state.enjoy);
+  const { adminUserEnjoyList, maxLen } = useSelector((state) => state.enjoy);
 
   const [sameDepth, setSameDepth] = useState([]);
 
@@ -629,6 +650,10 @@ const UserList = ({}) => {
       dataIndex: "num",
     },
     {
+      title: "아아디",
+      dataIndex: "userId",
+    },
+    {
       title: "회원이름",
       dataIndex: "username",
     },
@@ -645,10 +670,12 @@ const UserList = ({}) => {
       dataIndex: "viewCreatedAt",
     },
     {
+      align: `center`,
       title: "권한",
       dataIndex: "viewLevel",
     },
     {
+      align: `center`,
       title: "권한수정",
       render: (data) => (
         <SettingBtn
@@ -661,6 +688,7 @@ const UserList = ({}) => {
       ),
     },
     {
+      align: `center`,
       title: "상세정보",
       render: (data) => <SnippetsBtn onClick={() => dModalToggle(data)} />,
     },
@@ -1208,10 +1236,48 @@ const UserList = ({}) => {
               </CustomForm>
             </Wrapper>
             <Wrapper>
-              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+              <Wrapper al={`flex-start`}>
                 <Text fontSize={`20px`}>수강 기록</Text>
               </Wrapper>
 
+              {boughtAdminId && (
+                <Wrapper dr={`row`} ju={`flex-end`} margin={`10px 0`}>
+                  <CustomSlider
+                    disabled
+                    min={0}
+                    max={boughtAdminId.lectureType === 5 ? 118 : maxLen}
+                    value={
+                      boughtAdminId.lectureType === 5
+                        ? [
+                            ...new Set(
+                              adminUserEnjoyList.map((data) => data.MediumId)
+                            ),
+                          ].length > 118
+                          ? 118
+                          : [
+                              ...new Set(
+                                adminUserEnjoyList.map((data) => data.MediumId)
+                              ),
+                            ].length
+                        : [
+                            ...new Set(
+                              adminUserEnjoyList.map((data) => data.MediumId)
+                            ),
+                          ].length
+                    }
+                  />
+                  <Wrapper fontSize={`14px`} width={`auto`}>
+                    {boughtAdminId.lectureType === 5
+                      ? 118
+                      : [
+                          ...new Set(
+                            adminUserEnjoyList.map((data) => data.MediumId)
+                          ),
+                        ].length}
+                    강
+                  </Wrapper>
+                </Wrapper>
+              )}
               <Table
                 style={{ width: `100%` }}
                 size="small"
