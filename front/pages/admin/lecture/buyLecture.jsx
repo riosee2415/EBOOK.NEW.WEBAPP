@@ -117,7 +117,7 @@ const BuyLecture = ({}) => {
   ////// HOOKS //////
   const [aForm] = Form.useForm();
 
-  const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM"));
+  const [searchDate, setSearchDate] = useState(moment());
   const [searchPayType, setSearchPayType] = useState(null);
   const [searchType, setSearchType] = useState(null);
   const [isPayType, setIsPayType] = useState(null);
@@ -160,7 +160,7 @@ const BuyLecture = ({}) => {
     dispatch({
       type: BOUGHT_ADMIN_LIST_REQUEST,
       data: {
-        searchDate: searchDate,
+        searchDate: searchDate ? searchDate.format("YYYY-MM") : searchDate,
         searchType: searchType,
         searchPayType: searchPayType,
         isPayType: searchPayType === "nobank" && isPayType,
@@ -309,7 +309,7 @@ const BuyLecture = ({}) => {
   // 검색
   const searchDateHandler = useCallback(
     (data) => {
-      setSearchDate(data ? data.format("YYYY-MM") : null);
+      setSearchDate(data ? data : null);
     },
     [searchDate]
   );
@@ -590,6 +590,7 @@ const BuyLecture = ({}) => {
                 style={{ width: `300px` }}
                 placeholder="검색하실 결제일을 선택해주세요."
                 onChange={searchDateHandler}
+                value={searchDate}
               />
               <Select
                 style={{ width: `300px` }}
