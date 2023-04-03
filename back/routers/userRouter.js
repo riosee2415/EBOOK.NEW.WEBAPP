@@ -12,6 +12,60 @@ const crypto = require("crypto");
 
 const router = express.Router();
 
+router.post("/all/list", isAdminCheck, async (req, res, next) => {
+  const selectQuery = `
+  SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
+          id,
+          userId,
+          email,
+          username,
+          mobile,
+          level,
+          isExit,
+          birth,
+          gender,
+          keyword,
+          consulting,
+          zoneCode,
+          address,
+          detailAddress,
+          tel,
+          CASE
+            WHEN	level = 1	THEN "일반회원"
+            WHEN	level = 2	THEN "비어있음"
+            WHEN	level = 3	THEN "운영자"
+            WHEN	level = 4	THEN "최고관리자"
+            WHEN	level = 5	THEN "개발사"
+          END											AS viewLevel,
+          terms,
+          createdAt,
+          updatedAt,
+          exitedAt,
+          CASE
+            WHEN (
+                  SELECT  COUNT(B.id)
+                    FROM  review        B
+                   WHERE  A.id = B.UserId
+                 ) > 0 THEN 1
+            ELSE 0
+          END                                       AS isWriteReview,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
+    FROM	users         A
+   WHERE  isExit = FALSE
+   ORDER	BY num DESC
+  `;
+  try {
+    const allList = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(allList[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("데이터를 불러올 수 없습니다.");
+  }
+});
+
 router.post("/list", isAdminCheck, async (req, res, next) => {
   const {
     userId,

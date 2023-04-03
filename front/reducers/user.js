@@ -10,6 +10,7 @@ export const initailState = {
   adminUserRightHistory: [],
   findUserId: null,
   adminBanner: null,
+  userAllList: null,
   //
   st_loginLoading: false,
   st_loginDone: false,
@@ -98,6 +99,10 @@ export const initailState = {
   st_adminBannerLoading: false,
   st_adminBannerDone: false,
   st_adminBannerError: null,
+  //
+  st_userAllListLoading: false, // 회원 전체 데이터 (엑셀)
+  st_userAllListDone: false,
+  st_userAllListError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -191,6 +196,10 @@ export const INSERT_XLSX_FAILURE = "INSERT_XLSX_FAILURE";
 export const ADMIN_BANNER_REQUEST = "ADMIN_BANNER_REQUEST";
 export const ADMIN_BANNER_SUCCESS = "ADMIN_BANNER_SUCCESS";
 export const ADMIN_BANNER_FAILURE = "ADMIN_BANNER_FAILURE";
+//
+export const USER_ALL_LIST_REQUEST = "USER_ALL_LIST_REQUEST";
+export const USER_ALL_LIST_SUCCESS = "USER_ALL_LIST_SUCCESS";
+export const USER_ALL_LIST_FAILURE = "USER_ALL_LIST_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -672,6 +681,27 @@ const reducer = (state = initailState, action) =>
         draft.st_adminBannerLoading = false;
         draft.st_adminBannerDone = false;
         draft.st_adminBannerError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_ALL_LIST_REQUEST: {
+        draft.st_userAllListLoading = true;
+        draft.st_userAllListDone = false;
+        draft.st_userAllListError = null;
+        break;
+      }
+      case USER_ALL_LIST_SUCCESS: {
+        draft.st_userAllListLoading = false;
+        draft.st_userAllListDone = true;
+        draft.st_userAllListError = null;
+        draft.userAllList = action.data;
+        break;
+      }
+      case USER_ALL_LIST_FAILURE: {
+        draft.st_userAllListLoading = false;
+        draft.st_userAllListDone = false;
+        draft.st_userAllListError = action.error;
         break;
       }
       //////////////////////////////////////////////

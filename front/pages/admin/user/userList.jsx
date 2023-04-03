@@ -10,6 +10,7 @@ import {
   UPDATE_MODAL_OPEN_REQUEST,
   USERLIST_REQUEST,
   USERLIST_UPDATE_REQUEST,
+  USER_ALL_LIST_REQUEST,
 } from "../../../reducers/user";
 import {
   Table,
@@ -184,6 +185,8 @@ const UserList = ({}) => {
     users,
     lastPages,
     updateModal,
+    userAllList,
+    st_userAllListLoading,
     //
     st_userListLoading,
     st_userListError,
@@ -640,6 +643,19 @@ const UserList = ({}) => {
     </PopWrapper>
   );
 
+  const headers = [
+    { label: "이름", key: "name" },
+    { label: "아이디", key: "userId" },
+    { label: "일반전화", key: "tel" },
+    { label: "핸드폰번호", key: "mobile" },
+    { label: "주소", key: "address" },
+    { label: "상세주소", key: "detailAddress" },
+    { label: "우편변호", key: "zoneCode" },
+    { label: "결제여부", key: "boughtLecture" },
+    { label: "유입", key: "adType" },
+    { label: "가입일", key: "createdAt" },
+  ];
+
   // console.log(xlsxData);
 
   ////// DATAVIEW //////
@@ -713,53 +729,9 @@ const UserList = ({}) => {
     },
   ];
 
-  const fileRef = useRef();
-  const fileRefClickHandler = useCallback(() => {
-    fileRef.current.click();
-  }, []);
-
-  const [svcData, setSvcData] = useState(null);
-
-  const csvFileUploadHandler = useCallback((event) => {
-    const daysBeforeUnixEpoch = 70 * 365 + 19;
-
-    const hour = 60 * 60 * 1000;
-
-    // setXlsxLoading(true);
-    let input = event.target;
-    let reader = new FileReader();
-
-    reader.onload = function () {
-      let data = reader.result;
-      let workBook = XLSX.read(data, { type: "binary" });
-      workBook.SheetNames.forEach(function (sheetName) {
-        let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-
-        let testArr = [];
-
-        rows.map((data) => {
-          JSON.parse(data.enjoyMedia).map((value) => {
-            testArr.push({
-              UserId: data._id,
-              MediumId: value.$oid,
-            });
-          });
-        });
-
-        setSvcData(testArr);
-      });
-    };
-    reader.readAsBinaryString(input.files[0]);
-  }, []);
-
-  const headers = [
-    { label: "UserId", key: "UserId" },
-    { label: "MediaId", key: "MediumId" },
-  ];
-
-  const xlsxButtonHandler = useCallback(() => {
+  const userAllListHandler = useCallback(() => {
     dispatch({
-      type: INSERT_XLSX_REQUEST,
+      type: USER_ALL_LIST_REQUEST,
     });
   }, []);
 
@@ -791,17 +763,6 @@ const UserList = ({}) => {
           </HomeText>
         </Popover>
       </Wrapper>
-
-      {/* <input type="file" hidden ref={fileRef} onChange={csvFileUploadHandler} />
-      <Button size="small" type="primary" onClick={fileRefClickHandler}>
-        엑셀 등록
-      </Button>
-
-      {svcData && (
-        <DownloadBtn filename={`결제내역`} headers={headers} data={svcData}>
-          엑셀 다운로드{" "}
-        </DownloadBtn>
-      )} */}
 
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 10px`}>
@@ -870,32 +831,55 @@ const UserList = ({}) => {
       </Wrapper>
 
       <Wrapper
+        dr={`row`}
+        ju={`space-between`}
         padding="0px 20px"
-        dr="row"
-        ju="flex-start"
         margin="0px 0px 5px 0px"
       >
-        <TypeButton
-          size="small"
-          onClick={() => reviewWriteTypeChangeHandler(3)}
-          type={reviewWriteType === 3 && "primary"}
-        >
-          전체
-        </TypeButton>
-        <TypeButton
-          size="small"
-          onClick={() => reviewWriteTypeChangeHandler(1)}
-          type={reviewWriteType === 1 && "primary"}
-        >
-          후기 작성
-        </TypeButton>
-        <TypeButton
-          size="small"
-          onClick={() => reviewWriteTypeChangeHandler(2)}
-          type={reviewWriteType === 2 && "primary"}
-        >
-          후기 미작성
-        </TypeButton>
+        <Wrapper width={`auto`} dr="row" ju="flex-start">
+          <TypeButton
+            size="small"
+            onClick={() => reviewWriteTypeChangeHandler(3)}
+            type={reviewWriteType === 3 && "primary"}
+          >
+            전체
+          </TypeButton>
+          <TypeButton
+            size="small"
+            onClick={() => reviewWriteTypeChangeHandler(1)}
+            type={reviewWriteType === 1 && "primary"}
+          >
+            후기 작성
+          </TypeButton>
+          <TypeButton
+            size="small"
+            onClick={() => reviewWriteTypeChangeHandler(2)}
+            type={reviewWriteType === 2 && "primary"}
+          >
+            후기 미작성
+          </TypeButton>
+        </Wrapper>
+
+        <Wrapper width={`auto`}>
+          {userAllList ? (
+            <DownloadBtn
+              filename={`회원 정보`}
+              headers={headers}
+              data={userAllList}
+            >
+              회원정보출력
+            </DownloadBtn>
+          ) : (
+            <Button
+              size="small"
+              type="primary"
+              onClick={userAllListHandler}
+              loading={st_userAllListLoading}
+            >
+              엑셀 데이터 조회
+            </Button>
+          )}
+        </Wrapper>
       </Wrapper>
 
       <Wrapper padding={`0px 20px`}>
