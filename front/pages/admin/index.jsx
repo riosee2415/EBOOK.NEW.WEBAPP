@@ -43,8 +43,6 @@ const AdminHome = () => {
     }
   }, [st_loginAdminError]);
 
-  console.log(me);
-
   return (
     <>
       {me && me.level > 3 ? (
