@@ -100,7 +100,7 @@ const Home = ({}) => {
             </Wrapper>
             <Wrapper dr={`row`} ju={`space-between`}>
               <Text fontSize={`16px`} color={Theme.grey4_C}>
-                친절한 대학 구독자 분들의 생생후기
+                친절한 영어교실 회원분들의 생생후기
               </Text>
 
               <CommonButton

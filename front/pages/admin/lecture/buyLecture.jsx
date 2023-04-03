@@ -291,9 +291,11 @@ const BuyLecture = ({}) => {
         setAData(data);
         aForm.setFieldsValue({
           payType: data.payType,
+          mobile: data.mobile,
           receiver: data.receiver,
           address: data.address,
           detailAddress: data.detailAddress,
+          etc: data.etc,
         });
       } else {
         setAData(null);
@@ -343,9 +345,11 @@ const BuyLecture = ({}) => {
         data: {
           id: aData.id,
           payType: data.payType,
+          mobile: data.mobile,
           receiver: data.receiver,
           address: data.address,
           detailAddress: data.detailAddress,
+          etc: data.etc,
         },
       });
     },
@@ -696,9 +700,16 @@ const BuyLecture = ({}) => {
             </Select>
           </Form.Item>
           <Form.Item
+            name="mobile"
+            label="전화번호"
+            rules={[{ required: true, message: "전화번호를 입력해주세요." }]}
+          >
+            <Input size="small" />
+          </Form.Item>
+          <Form.Item
             name="receiver"
             label="수령인"
-            rules={[{ required: true, message: "수령인을 선택해주세요." }]}
+            rules={[{ required: true, message: "수령인을 입력해주세요." }]}
           >
             <Input size="small" />
           </Form.Item>
@@ -716,6 +727,12 @@ const BuyLecture = ({}) => {
           >
             <Input size="small" />
           </Form.Item>
+          <Form.Item name="etc" label="비고">
+            <Input.TextArea
+              size="small"
+              autoSize={{ minRows: 5, maxRows: 15 }}
+            />
+          </Form.Item>
 
           <Wrapper dr={`row`} ju={`flex-end`}>
             <ModalBtn size="small" onClick={() => aModalToggle(null)}>
@@ -727,7 +744,7 @@ const BuyLecture = ({}) => {
               htmlType="submit"
               loading={st_boughtAddressUpdateLoading}
             >
-              생성
+              수정
             </ModalBtn>
           </Wrapper>
         </Form>

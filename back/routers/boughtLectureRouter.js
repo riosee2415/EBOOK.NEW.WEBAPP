@@ -59,7 +59,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           B.username,
           B.userId                                    AS userLoginId,
           B.birth,
-          B.gender         
+          B.gender,
+          A.etc
     FROM  boughtLecture			A
    INNER
     JOIN  users					B
@@ -255,14 +256,17 @@ router.post("/isPay/update", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/address/update", isAdminCheck, async (req, res, next) => {
-  const { id, payType, receiver, address, detailAddress } = req.body;
+  const { id, payType, mobile, receiver, address, detailAddress, etc } =
+    req.body;
 
   const updateQ = `
   UPDATE  boughtLecture
      SET  payType = "${payType}",
+          mobile = "${mobile}",
           receiver = "${receiver}",
           address = "${address}",
           detailAddress = "${detailAddress}",
+          etc = "${etc}",
           updatedAt = NOW()
    WHERE  id = ${id}
   `;

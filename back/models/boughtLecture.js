@@ -99,6 +99,11 @@ module.exports = class BoughtLecture extends Model {
           type: DataTypes.STRING(700),
           allowNull: true,
         },
+
+        etc: {
+          type: DataTypes.TEXT, // 비고란
+          allowNull: true,
+        },
       },
       {
         modelName: "BoughtLecture",
