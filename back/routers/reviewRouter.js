@@ -34,6 +34,7 @@ router.post("/list", async (req, res, next) => {
       JOIN  users           B
         ON  A.UserId = B.id
      WHERE  A.isDelete = FALSE
+       AND  A.isOk = TRUE
      ORDER  BY  A.createdAt DESC
     `;
 
@@ -50,6 +51,7 @@ router.post("/list", async (req, res, next) => {
       JOIN  users           B
         ON  A.UserId = B.id
      WHERE  A.isDelete = FALSE
+       AND  A.isOk = TRUE
      ORDER  BY  A.createdAt DESC
      LIMIT  ${LIMIT}
     OFFSET  ${OFFSET}
@@ -82,7 +84,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
             A.content,
             B.username,
             DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 	AS	viewCreatedAt,
-            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 	AS	viewUpdatedAt
+            DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 	AS	viewUpdatedAt,
+            A.isOk
       FROM  review          A
      INNER
       JOIN  users           B
@@ -252,6 +255,25 @@ router.post("/delete", isLoggedIn, async (req, res, next) => {
   } catch (e) {
     console.error(e);
     return res.status(400).send("수강후기를 삭제할 수 없습니다.");
+  }
+});
+
+router.post("/admin/isOk", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const updateQ = `
+  UPDATE  review
+     SET  isOk = TRUE,
+          updatedAt = NOW()
+   WHERE  id = ${id}
+`;
+  try {
+    await models.sequelize.query(updateQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("승인할 수 없습니다.");
   }
 });
 

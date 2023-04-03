@@ -32,6 +32,11 @@ module.exports = class Review extends Model {
           type: DataTypes.STRING(700),
           allowNull: true,
         },
+        isOk: {
+          type: DataTypes.BOOLEAN, // 관리자 승인 여부 -> 승인시 리스트에서 보임
+          defaultValue: false,
+          allowNull: false,
+        },
       },
       {
         modelName: "Review",

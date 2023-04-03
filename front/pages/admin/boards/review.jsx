@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Input, message, Popconfirm, Popover, Table } from "antd";
+import { Button, Form, Input, message, Popconfirm, Popover, Table } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -30,6 +30,7 @@ import {
 import {
   REVIEW_ADMIN_LIST_REQUEST,
   REVIEW_ADMIN_DELETE_REQUEST,
+  REVIEW_ADMIN_ISOK_REQUEST,
 } from "../../../reducers/review";
 
 const InfoTitle = styled.div`
@@ -60,6 +61,10 @@ const Review = ({}) => {
     st_reviewAdminDeleteLoading,
     st_reviewAdminDeleteDone,
     st_reviewAdminDeleteError,
+
+    st_reviewAdminIsOkLoading,
+    st_reviewAdminIsOkDone,
+    st_reviewAdminIsOkError,
   } = useSelector((state) => state.review);
 
   const router = useRouter();
@@ -141,6 +146,21 @@ const Review = ({}) => {
     }
   }, [st_reviewAdminDeleteDone, st_reviewAdminDeleteError]);
 
+  // 삭제 후처리
+  useEffect(() => {
+    if (st_reviewAdminIsOkDone) {
+      dispatch({
+        type: REVIEW_ADMIN_LIST_REQUEST,
+      });
+
+      return message.success("해당 후기가 승인되었습니다.");
+    }
+
+    if (st_reviewAdminIsOkError) {
+      return message.error(st_reviewAdminIsOkError);
+    }
+  }, [st_reviewAdminIsOkDone, st_reviewAdminIsOkError]);
+
   ////// HANDLER //////
 
   // 리스트 선택
@@ -166,6 +186,16 @@ const Review = ({}) => {
     });
   }, [currentData]);
 
+  // 승인
+  const reviewIsOkHandler = useCallback((data) => {
+    dispatch({
+      type: REVIEW_ADMIN_ISOK_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -184,6 +214,30 @@ const Review = ({}) => {
       dataIndex: "viewCreatedAt",
     },
     {
+      align: "center",
+      title: "승인",
+      render: (data) =>
+        data.isOk ? (
+          <CheckOutlined style={{ color: Theme.naver_C }} />
+        ) : (
+          <Popconfirm
+            title="승인하시겠습니까?"
+            okText="승인"
+            cancelText="취소"
+            onConfirm={() => reviewIsOkHandler(data)}
+          >
+            <Button
+              size="small"
+              type="primary"
+              loading={st_reviewAdminIsOkLoading}
+            >
+              승인
+            </Button>
+          </Popconfirm>
+        ),
+    },
+    {
+      align: "center",
       title: "상태창",
       render: (data) => (
         <ViewStatusIcon

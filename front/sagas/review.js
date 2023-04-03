@@ -29,6 +29,10 @@ import {
   REVIEW_ADMIN_DELETE_SUCCESS,
   REVIEW_ADMIN_DELETE_FAILURE,
   /////////////////////////////
+  REVIEW_ADMIN_ISOK_REQUEST,
+  REVIEW_ADMIN_ISOK_SUCCESS,
+  REVIEW_ADMIN_ISOK_FAILURE,
+  /////////////////////////////
 } from "../reducers/review";
 
 // ******************************************************************************************************************
@@ -220,6 +224,33 @@ function* reviewAdminDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function reviewAdminIsOkAPI(data) {
+  return await axios.post(`/api/review/admin/isOk`, data);
+}
+
+function* reviewAdminIsOk(action) {
+  try {
+    const result = yield call(reviewAdminIsOkAPI, action.data);
+    yield put({
+      type: REVIEW_ADMIN_ISOK_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REVIEW_ADMIN_ISOK_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 function* watchReviewList() {
   yield takeLatest(REVIEW_LIST_REQUEST, reviewList);
 }
@@ -248,6 +279,10 @@ function* watchReviewAdminDelete() {
   yield takeLatest(REVIEW_ADMIN_DELETE_REQUEST, reviewAdminDelete);
 }
 
+function* watchReviewAdminOk() {
+  yield takeLatest(REVIEW_ADMIN_ISOK_REQUEST, reviewAdminIsOk);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* reviewSaga() {
   yield all([
@@ -258,7 +293,7 @@ export default function* reviewSaga() {
     fork(watchReviewUpdate),
     fork(watchReviewDelete),
     fork(watchReviewAdminDelete),
-
+    fork(watchReviewAdminOk),
     //
   ]);
 }

@@ -37,6 +37,10 @@ export const initailState = {
   st_reviewAdminDeleteLoading: false,
   st_reviewAdminDeleteDone: false,
   st_reviewAdminDeleteError: null,
+  //
+  st_reviewAdminIsOkLoading: false,
+  st_reviewAdminIsOkDone: false,
+  st_reviewAdminIsOkError: null,
 };
 
 export const REVIEW_LIST_REQUEST = "REVIEW_LIST_REQUEST";
@@ -66,6 +70,10 @@ export const REVIEW_DELETE_FAILURE = "REVIEW_DELETE_FAILURE";
 export const REVIEW_ADMIN_DELETE_REQUEST = "REVIEW_ADMIN_DELETE_REQUEST";
 export const REVIEW_ADMIN_DELETE_SUCCESS = "REVIEW_ADMIN_DELETE_SUCCESS";
 export const REVIEW_ADMIN_DELETE_FAILURE = "REVIEW_ADMIN_DELETE_FAILURE";
+
+export const REVIEW_ADMIN_ISOK_REQUEST = "REVIEW_ADMIN_ISOK_REQUEST";
+export const REVIEW_ADMIN_ISOK_SUCCESS = "REVIEW_ADMIN_ISOK_SUCCESS";
+export const REVIEW_ADMIN_ISOK_FAILURE = "REVIEW_ADMIN_ISOK_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -209,6 +217,26 @@ const reducer = (state = initailState, action) =>
         draft.st_reviewAdminDeleteError = action.error;
         break;
       }
+      ///////////////////////////////////////////////////////
+      case REVIEW_ADMIN_ISOK_REQUEST: {
+        draft.st_reviewAdminIsOkLoading = true;
+        draft.st_reviewAdminIsOkDone = false;
+        draft.st_reviewAdminIsOkError = null;
+        break;
+      }
+      case REVIEW_ADMIN_ISOK_SUCCESS: {
+        draft.st_reviewAdminIsOkLoading = false;
+        draft.st_reviewAdminIsOkDone = true;
+        draft.st_reviewAdminIsOkError = null;
+        break;
+      }
+      case REVIEW_ADMIN_ISOK_FAILURE: {
+        draft.st_reviewAdminIsOkLoading = false;
+        draft.st_reviewAdminIsOkDone = false;
+        draft.st_reviewAdminIsOkError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
 
       default:
         break;
