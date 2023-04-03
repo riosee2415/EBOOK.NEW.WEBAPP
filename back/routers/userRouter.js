@@ -38,7 +38,10 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
             WHEN	level = 5	THEN "개발사"
           END											AS viewLevel,
           terms,
-          createdAt,
+          CASE
+            WHEN A.previousCreatedAt IS NULL THEN createdAt
+            ELSE A.previousCreatedAt
+          END                     AS createdAt,
           updatedAt,
           exitedAt,
           CASE
@@ -49,7 +52,10 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
                  ) > 0 THEN 1
             ELSE 0
           END                                       AS isWriteReview,
-          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+          CASE
+            WHEN A.previousCreatedAt IS NULL THEN DATE_FORMAT(createdAt, "%Y년 %m월 %d일")
+            ELSE DATE_FORMAT(A.previousCreatedAt, "%Y년 %m월 %d일")
+          END                                       AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
     FROM	users         A
@@ -133,7 +139,12 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   `;
 
   const selectQuery = `
-  SELECT	ROW_NUMBER() OVER(ORDER	BY createdAt)		AS num,
+  SELECT	ROW_NUMBER() OVER(ORDER	BY (
+                                        CASE
+                                          WHEN A.previousCreatedAt IS NULL THEN createdAt
+                                          ELSE A.previousCreatedAt
+                                        END
+                                      ))		AS num,
           id,
           userId,
           email,
@@ -157,7 +168,10 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
             WHEN	level = 5	THEN "개발사"
           END											AS viewLevel,
           terms,
-          createdAt,
+          CASE
+            WHEN A.previousCreatedAt IS NULL THEN createdAt
+            ELSE A.previousCreatedAt
+          END                     AS createdAt,
           updatedAt,
           exitedAt,
           CASE
@@ -168,7 +182,10 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
                  ) > 0 THEN 1
             ELSE 0
           END                                       AS isWriteReview,
-          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")		AS viewCreatedAt,
+          CASE
+            WHEN A.previousCreatedAt IS NULL THEN DATE_FORMAT(createdAt, "%Y년 %m월 %d일")
+            ELSE DATE_FORMAT(A.previousCreatedAt, "%Y년 %m월 %d일")
+          END                                       AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
     FROM	users         A
