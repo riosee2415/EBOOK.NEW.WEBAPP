@@ -25,6 +25,7 @@ import {
   Empty,
   Popconfirm,
   Checkbox,
+  Switch,
 } from "antd";
 import {
   HomeText,
@@ -215,6 +216,8 @@ const UserList = ({}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [reviewWriteType, setReviewWriteType] = useState(3);
+
   const levelArr = [
     {
       id: 1,
@@ -321,10 +324,11 @@ const UserList = ({}) => {
       data: {
         searchData: sData,
         searchLevel: currentTab,
+        searchReviewType: reviewWriteType,
         page: currentPage,
       },
     });
-  }, [currentTab, sData, currentPage]);
+  }, [currentTab, sData, currentPage, reviewWriteType]);
 
   // 회원정보 수정
   useEffect(() => {
@@ -334,6 +338,8 @@ const UserList = ({}) => {
         data: {
           searchData: sData,
           searchLevel: currentTab,
+          searchReviewType: reviewWriteType,
+          page: currentPage,
         },
       });
 
@@ -522,6 +528,14 @@ const UserList = ({}) => {
       });
     },
     [updateData]
+  );
+
+  // 후기 작성 검색
+  const reviewWriteTypeChangeHandler = useCallback(
+    (type) => {
+      setReviewWriteType(type);
+    },
+    [reviewWriteType]
   );
 
   // 관리자 회원 정보 수정
@@ -827,6 +841,35 @@ const UserList = ({}) => {
         ))}
       </Wrapper>
 
+      <Wrapper
+        padding="0px 20px"
+        dr="row"
+        ju="flex-start"
+        margin="0px 0px 5px 0px"
+      >
+        <TypeButton
+          size="small"
+          onClick={() => reviewWriteTypeChangeHandler(3)}
+          type={reviewWriteType === 3 && "primary"}
+        >
+          전체
+        </TypeButton>
+        <TypeButton
+          size="small"
+          onClick={() => reviewWriteTypeChangeHandler(1)}
+          type={reviewWriteType === 1 && "primary"}
+        >
+          후기 작성
+        </TypeButton>
+        <TypeButton
+          size="small"
+          onClick={() => reviewWriteTypeChangeHandler(2)}
+          type={reviewWriteType === 2 && "primary"}
+        >
+          후기 미작성
+        </TypeButton>
+      </Wrapper>
+
       <Wrapper padding={`0px 20px`}>
         <Table
           style={{ width: "100%" }}
@@ -839,8 +882,8 @@ const UserList = ({}) => {
             defaultCurrent: 1,
             current: parseInt(currentPage),
             onChange: (page) => otherPageCall(page),
-            pageSize: 50,
-            total: lastPages * 50,
+            pageSize: 20,
+            total: lastPages * 20,
           }}
         />
       </Wrapper>
