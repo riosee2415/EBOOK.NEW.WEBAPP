@@ -24,11 +24,13 @@ import { Empty } from "antd";
 import { LECTURE_LIST_REQUEST } from "../../reducers/lecture";
 import { useRouter } from "next/router";
 import { numberWithCommas } from "../../components/commonUtils";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../reducers/boughtLecture";
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
-
+  const { me } = useSelector((state) => state.user);
   const { lectureList } = useSelector((state) => state.lecture);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -48,6 +50,16 @@ const Home = ({}) => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (me) {
+      dispatch({
+        type: BOUGHT_ME_DETAIL_REQUEST,
+      });
+    }
+  }, [me]);
+
+  console.log(boughtMeDetail);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -247,7 +259,13 @@ const Home = ({}) => {
                           fontSize={`25px`}
                           kindOf={`basic`}
                           onClick={() =>
-                            moveLinkHandler(`/enrolment/buy/${data.id}`)
+                            boughtMeDetail &&
+                            boughtMeDetail.payType === "nobank" &&
+                            !boughtMeDetail.isPay
+                              ? moveLinkHandler(
+                                  `/enrolment/buy/finish/${boughtMeDetail.id}`
+                                )
+                              : moveLinkHandler(`/enrolment/buy/${data.id}`)
                           }
                         >
                           구매하기
