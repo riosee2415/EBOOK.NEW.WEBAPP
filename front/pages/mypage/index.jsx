@@ -364,7 +364,7 @@ const MypageIndex = ({}) => {
                               <Text
                                 fontSize={`20px`}
                                 fontWeight={`700`}
-                                color={Theme.grey3_C}
+                                color={Theme.basicTheme_C}
                               >
                                 {data.num < 100 ? `0` : ``}
                                 {data.num < 10 ? `0` : ``}

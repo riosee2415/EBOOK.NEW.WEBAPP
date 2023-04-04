@@ -76,7 +76,7 @@ const HoverText2 = styled(Text)`
   border: 1px solid ${(props) => props.theme.basicTheme_C};
   padding: 3px 14px;
   color: ${(props) => props.theme.white_C};
-  border-radius: 10px;
+  border-radius: 5px;
   font-size: 20px;
   cursor: pointer;
   transition: 0.2s;
