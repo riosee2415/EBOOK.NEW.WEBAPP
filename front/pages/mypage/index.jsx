@@ -352,7 +352,7 @@ const MypageIndex = ({}) => {
                         <Wrapper
                           id={`lecture-${idx}`}
                           key={idx}
-                          padding={`44px 0`}
+                          padding={`30px 0`}
                           dr={`row`}
                           borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
@@ -370,13 +370,6 @@ const MypageIndex = ({}) => {
                                 {data.num < 10 ? `0` : ``}
                                 {data.num}
                               </Text>
-                              {/* <Wrapper
-                              width={`4px`}
-                              height={`4px`}
-                              margin={`0 10px`}
-                              borderRadius={`100%`}
-                              bgColor={Theme.lightGrey4_C}
-                            /> */}
                             </Wrapper>
                             <Wrapper dr={`row`} ju={`flex-start`}>
                               <Wrapper
@@ -385,7 +378,7 @@ const MypageIndex = ({}) => {
                                 borderRadius={`100%`}
                                 color={Theme.black2_C}
                               />
-                              <Text fontSize={width < 700 ? `26px` : `30px`}>
+                              <Text fontSize={width < 700 ? `24px` : `26px`}>
                                 {data.title}
                               </Text>
                             </Wrapper>

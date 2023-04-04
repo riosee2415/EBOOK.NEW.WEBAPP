@@ -315,7 +315,7 @@ const MediaDetail = () => {
                     return (
                       <Wrapper
                         key={idx}
-                        padding={`44px 0`}
+                        padding={`30px 0`}
                         dr={`row`}
                         borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                       >
@@ -327,13 +327,13 @@ const MediaDetail = () => {
                             <Text
                               fontSize={`20px`}
                               fontWeight={`700`}
-                              color={Theme.grey3_C}
+                              color={Theme.basicTheme_C}
                             >
                               {data.num < 100 ? `0` : ``}
                               {data.num < 10 ? `0` : ``}
                               {data.num}
                             </Text>
-                            <Wrapper
+                            {/* <Wrapper
                               width={`4px`}
                               height={`4px`}
                               margin={`0 10px`}
@@ -346,7 +346,7 @@ const MediaDetail = () => {
                               color={Theme.basicTheme_C}
                             >
                               읽기/발음
-                            </Text>
+                            </Text> */}
                           </Wrapper>
                           <Wrapper dr={`row`} ju={`flex-start`}>
                             <Wrapper
@@ -355,7 +355,7 @@ const MediaDetail = () => {
                               borderRadius={`100%`}
                               color={Theme.black2_C}
                             />
-                            <Text fontSize={width < 700 ? `26px` : `30px`}>
+                            <Text fontSize={width < 700 ? `24px` : `26px`}>
                               {data.title}
                             </Text>
                           </Wrapper>
@@ -391,34 +391,33 @@ const MediaDetail = () => {
                                   </Wrapper>
                                 </Wrapper>
                               </CommonButton>
-                            ) : (
-                              boughtMeDetail &&
-                              boughtMeDetail.isPay && (
-                                <CommonButton
-                                  kindOf={`subTheme`}
-                                  width={width < 700 ? `100%` : `186px`}
-                                  height={`52px`}
-                                  fontSize={`20px`}
-                                  onClick={() =>
-                                    moveLinkHandler(
-                                      `/mypage/${data.id}?isSample=0`
-                                    )
-                                  }
-                                >
-                                  <Wrapper dr={`row`} ju={`space-between`}>
-                                    <Text fontWeight={`600`}>강의 보기</Text>
+                            ) : boughtMeDetail && boughtMeDetail.isPay ? (
+                              <CommonButton
+                                kindOf={`subTheme`}
+                                width={width < 700 ? `100%` : `186px`}
+                                height={`52px`}
+                                fontSize={`20px`}
+                                onClick={() =>
+                                  moveLinkHandler(
+                                    `/mypage/${data.id}?isSample=0`
+                                  )
+                                }
+                              >
+                                <Wrapper dr={`row`} ju={`space-between`}>
+                                  <Text fontWeight={`600`}>강의 보기</Text>
 
-                                    <Wrapper
-                                      width={`auto`}
-                                      padding={`6px`}
-                                      bgColor={Theme.white_C}
-                                      radius={`100%`}
-                                    >
-                                      <CaretRightOutlined />
-                                    </Wrapper>
+                                  <Wrapper
+                                    width={`auto`}
+                                    padding={`6px`}
+                                    bgColor={Theme.white_C}
+                                    radius={`100%`}
+                                  >
+                                    <CaretRightOutlined />
                                   </Wrapper>
-                                </CommonButton>
-                              )
+                                </Wrapper>
+                              </CommonButton>
+                            ) : (
+                              ""
                             )}
                           </Wrapper>
                         </Wrapper>
