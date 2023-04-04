@@ -87,7 +87,8 @@ router.post("/list", async (req, res, next) => {
           createdAt,
           DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
           updatedAt,
-          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
+          bookNotEtc
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -138,7 +139,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           createdAt,
           DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
           updatedAt,
-          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
+          bookNotEtc
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -197,7 +199,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           createdAt,
           DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
           updatedAt,
-          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+          DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
+          bookNotEtc
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -270,6 +273,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     bookDiscountPrice,
     bookEndDate,
     isHidden,
+    bookNotEtc,
   } = req.body;
 
   const updateQ = `
@@ -284,6 +288,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
           bookDiscountPrice = ${bookDiscountPrice ? bookDiscountPrice : "NULL"},
           bookEndDate = ${bookEndDate ? `"${bookEndDate}"` : "NULL"},
           isHidden = ${isHidden},
+          bookNotEtc = ${bookNotEtc ? `"${bookNotEtc}"` : "NULL"},
           updatedAt = NOW()
    WHERE  id = ${id}
   `;

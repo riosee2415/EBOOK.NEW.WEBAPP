@@ -967,8 +967,7 @@ const Home = ({}) => {
                       fontSize={width < 700 ? `16px` : `22px`}
                       color={Theme.grey_C}
                     >
-                      수강권 구매 후 교재 재 주문시 할인된 가격이 아닌 정가 구매
-                      가능
+                      {lectureDetail && lectureDetail.bookNotEtc}
                     </Text>
                   </>
                 )}

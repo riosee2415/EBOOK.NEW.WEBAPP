@@ -274,6 +274,7 @@ const List = ({}) => {
         bookEndDate: record.bookEndDate ? moment(record.bookEndDate) : null,
         viewCreatedAt: record.viewCreatedAt,
         viewUpdatedAt: record.viewUpdatedAt,
+        bookNotEtc: record.bookNotEtc,
       });
     },
     [currentData]
@@ -316,6 +317,7 @@ const List = ({}) => {
             ? data.bookEndDate.format("YYYY-MM-DD")
             : null,
           isHidden: isHidden,
+          bookNotEtc: data.bookNotEtc,
         },
       });
     },
@@ -575,6 +577,9 @@ const List = ({}) => {
                     placeholder="마감일을 선택해주세요."
                     style={{ width: `100%` }}
                   />
+                </Form.Item>
+                <Form.Item label="교재 미구매 안내" name="bookNotEtc">
+                  <Input size="small" />
                 </Form.Item>
                 <Form.Item label="생성일" name="viewCreatedAt">
                   <Input size="small" readOnly />
