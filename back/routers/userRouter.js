@@ -642,6 +642,15 @@ router.post("/signup", async (req, res, next) => {
       return res.status(401).send("이미 가입된 회원 입니다.");
     }
 
+    if (email) {
+      const exEmail = await User.findOne({
+        where: { email: email },
+      });
+      if (exEmail) {
+        return res.status(401).send("이미 가입된 이메일 입니다.");
+      }
+    }
+
     let cipher = crypto.createHash("sha512");
 
     cipher.update(password);
@@ -676,7 +685,7 @@ router.post("/signup", async (req, res, next) => {
       ${zoneCode ? `"${zoneCode}"` : `"-"`},
       ${address ? `"${address}"` : `"-"`},
       ${detailAddress ? `"${detailAddress}"` : `"-"`},
-      "${email}",
+      ${email ? `"${email}"` : `"-"`},
       "${mobile}",
       ${terms},
       NOW(),
@@ -708,6 +717,30 @@ router.post("/check/userid", async (req, res, next) => {
 
     if (find[0].length > 0) {
       return res.status(400).send("중복된 아이디가 있습니다.");
+    }
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("중복확인을 할 수 없습니다.");
+  }
+});
+
+router.post("/check/email", async (req, res, next) => {
+  const { email } = req.body;
+
+  const selectQ = `
+  SELECT  id
+    FROM  users
+   WHERE  email = "${email}"
+     AND  isExit = FALSE
+  `;
+
+  try {
+    const find = await models.sequelize.query(selectQ);
+
+    if (find[0].length > 0) {
+      return res.status(400).send("중복된 이메일이 있습니다.");
     }
 
     return res.status(200).json({ result: true });

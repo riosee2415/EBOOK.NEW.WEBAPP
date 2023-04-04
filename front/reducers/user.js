@@ -28,6 +28,10 @@ export const initailState = {
   st_userListDone: false,
   st_userListError: null,
   //
+  st_userCheckUserEmailLoading: false, // 이메일 중복확인
+  st_userCheckUserEmailDone: false,
+  st_userCheckUserEmailError: null,
+  //
   st_userCheckUserIdLoading: false, // 아아디 중복확인
   st_userCheckUserIdDone: false,
   st_userCheckUserIdError: null,
@@ -120,6 +124,10 @@ export const SIGNUP_FAILURE = "SIGNUP_FAILURE";
 export const USERLIST_REQUEST = "USERLIST_REQUEST";
 export const USERLIST_SUCCESS = "USERLIST_SUCCESS";
 export const USERLIST_FAILURE = "USERLIST_FAILURE";
+
+export const USER_CHECK_EMAIL_REQUEST = "USER_CHECK_EMAIL_REQUEST";
+export const USER_CHECK_EMAIL_SUCCESS = "USER_CHECK_EMAIL_SUCCESS";
+export const USER_CHECK_EMAIL_FAILURE = "USER_CHECK_EMAIL_FAILURE";
 
 export const USER_CHECK_USERID_REQUEST = "USER_CHECK_USERID_REQUEST";
 export const USER_CHECK_USERID_SUCCESS = "USER_CHECK_USERID_SUCCESS";
@@ -327,6 +335,26 @@ const reducer = (state = initailState, action) =>
         draft.st_userCheckUserIdLoading = false;
         draft.st_userCheckUserIdDone = false;
         draft.st_userCheckUserIdError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_CHECK_EMAIL_REQUEST: {
+        draft.st_userCheckUserEmailLoading = true;
+        draft.st_userCheckUserEmailDone = false;
+        draft.st_userCheckUserEmailError = null;
+        break;
+      }
+      case USER_CHECK_EMAIL_SUCCESS: {
+        draft.st_userCheckUserEmailLoading = false;
+        draft.st_userCheckUserEmailDone = true;
+        draft.st_userCheckUserEmailError = null;
+        break;
+      }
+      case USER_CHECK_EMAIL_FAILURE: {
+        draft.st_userCheckUserEmailLoading = false;
+        draft.st_userCheckUserEmailDone = false;
+        draft.st_userCheckUserEmailError = action.error;
         break;
       }
       //////////////////////////////////////////////

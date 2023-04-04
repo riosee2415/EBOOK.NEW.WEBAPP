@@ -423,52 +423,50 @@ const MypageIndex = ({}) => {
                                     </Wrapper>
                                   </Wrapper>
                                 </CommonButton>
-                              ) : (
-                                boughtMeDetail &&
-                                boughtMeDetail.isPay && (
-                                  <CommonButton
-                                    kindOf={
-                                      enjoyMeList.find(
+                              ) : boughtMeDetail && boughtMeDetail.isPay ? (
+                                <CommonButton
+                                  kindOf={
+                                    enjoyMeList.find(
+                                      (value) => value.MediumId === data.id
+                                    )
+                                      ? `checked`
+                                      : `subTheme`
+                                  }
+                                  width={width < 700 ? `100%` : `186px`}
+                                  height={`52px`}
+                                  fontSize={`20px`}
+                                  onClick={() =>
+                                    moveLinkHandler(
+                                      `/mypage/${data.id}?isSample=0`
+                                    )
+                                  }
+                                >
+                                  <Wrapper dr={`row`} ju={`space-between`}>
+                                    <Text fontWeight={`600`}>
+                                      {enjoyMeList.find(
                                         (value) => value.MediumId === data.id
                                       )
-                                        ? `checked`
-                                        : `subTheme`
-                                    }
-                                    width={width < 700 ? `100%` : `186px`}
-                                    height={`52px`}
-                                    fontSize={`20px`}
-                                    onClick={() =>
-                                      moveLinkHandler(
-                                        `/mypage/${data.id}?isSample=0`
-                                      )
-                                    }
-                                  >
-                                    <Wrapper dr={`row`} ju={`space-between`}>
-                                      <Text fontWeight={`600`}>
-                                        {enjoyMeList.find(
-                                          (value) => value.MediumId === data.id
-                                        )
-                                          ? `강의 다시 보기`
-                                          : `강의 보기`}
-                                      </Text>
+                                        ? `강의 다시 보기`
+                                        : `강의 보기`}
+                                    </Text>
 
-                                      <Wrapper
-                                        width={`auto`}
-                                        padding={`6px`}
-                                        bgColor={Theme.white_C}
-                                        color={
-                                          enjoyMeList.find(
-                                            (value) =>
-                                              value.MediumId === data.id
-                                          ) && Theme.subTheme6_C
-                                        }
-                                        radius={`100%`}
-                                      >
-                                        <CaretRightOutlined />
-                                      </Wrapper>
+                                    <Wrapper
+                                      width={`auto`}
+                                      padding={`6px`}
+                                      bgColor={Theme.white_C}
+                                      color={
+                                        enjoyMeList.find(
+                                          (value) => value.MediumId === data.id
+                                        ) && Theme.subTheme6_C
+                                      }
+                                      radius={`100%`}
+                                    >
+                                      <CaretRightOutlined />
                                     </Wrapper>
-                                  </CommonButton>
-                                )
+                                  </Wrapper>
+                                </CommonButton>
+                              ) : (
+                                ""
                               )}
                             </Wrapper>
                           </Wrapper>

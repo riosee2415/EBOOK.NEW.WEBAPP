@@ -17,6 +17,10 @@ import {
   USERLIST_SUCCESS,
   USERLIST_FAILURE,
   /////////////////////////////
+  USER_CHECK_EMAIL_REQUEST,
+  USER_CHECK_EMAIL_SUCCESS,
+  USER_CHECK_EMAIL_FAILURE,
+  /////////////////////////////
   USER_CHECK_USERID_REQUEST,
   USER_CHECK_USERID_SUCCESS,
   USER_CHECK_USERID_FAILURE,
@@ -220,6 +224,32 @@ function* userList(action) {
     console.error(err);
     yield put({
       type: USERLIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function checkEmailAPI(data) {
+  return await axios.post(`/api/user/check/email`, data);
+}
+
+function* checkEmail(action) {
+  try {
+    const result = yield call(checkEmailAPI, action.data);
+    yield put({
+      type: USER_CHECK_EMAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_CHECK_EMAIL_FAILURE,
       error: err.response.data,
     });
   }
@@ -766,6 +796,10 @@ function* watchFindUserId() {
   yield takeLatest(USER_FIND_USERID_REQUEST, findUserId);
 }
 
+function* watchCheckEmail() {
+  yield takeLatest(USER_CHECK_EMAIL_REQUEST, checkEmail);
+}
+
 function* watchCheckUserId() {
   yield takeLatest(USER_CHECK_USERID_REQUEST, checkUserId);
 }
@@ -847,6 +881,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchUserList),
     fork(watchFindUserId),
+    fork(watchCheckEmail),
     fork(watchCheckUserId),
     fork(watchUserListUpdate),
     fork(watchKakaoLogin),

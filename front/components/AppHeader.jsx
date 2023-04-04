@@ -71,6 +71,22 @@ const HoverText = styled(Text)`
   }
 `;
 
+const HoverText2 = styled(Text)`
+  background: ${(props) => props.theme.basicTheme_C};
+  border: 1px solid ${(props) => props.theme.basicTheme_C};
+  padding: 3px 14px;
+  color: ${(props) => props.theme.white_C};
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+  }
+`;
+
 const AppHeader = ({}) => {
   ////////////// - USE STATE- ///////////////
   const router = useRouter();
@@ -182,7 +198,7 @@ const AppHeader = ({}) => {
             <Wrapper width={`auto`} dr={`row`}>
               <Link href={`/mypage`}>
                 <a>
-                  <HoverText>마이페이지</HoverText>
+                  <HoverText2>나의 강의실</HoverText2>
                 </a>
               </Link>
 
@@ -234,7 +250,7 @@ const AppHeader = ({}) => {
               <Wrapper width={`auto`} dr={`row`} margin={`20px 0 0`}>
                 <Link href={`/mypage`}>
                   <a>
-                    <HoverText>마이페이지</HoverText>
+                    <HoverText>나의 강의실</HoverText>
                   </a>
                 </Link>
 

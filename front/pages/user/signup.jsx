@@ -10,7 +10,11 @@ import {
   Modal,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { SIGNUP_REQUEST, USER_CHECK_USERID_REQUEST } from "../../reducers/user";
+import {
+  SIGNUP_REQUEST,
+  USER_CHECK_EMAIL_REQUEST,
+  USER_CHECK_USERID_REQUEST,
+} from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../store/configureStore";
@@ -96,6 +100,10 @@ const SignUp = () => {
     st_signUpLoading,
     st_signUpDone,
     //
+    st_userCheckUserEmailLoading,
+    st_userCheckUserEmailDone,
+    st_userCheckUserEmailError,
+    //
     st_userCheckUserIdLoading,
     st_userCheckUserIdDone,
     st_userCheckUserIdError,
@@ -115,6 +123,15 @@ const SignUp = () => {
       return message.error(st_userCheckUserIdError);
     }
   }, [st_userCheckUserIdDone, st_userCheckUserIdError]);
+
+  useEffect(() => {
+    if (st_userCheckUserEmailDone) {
+      return message.success("사용가능한 이메일입니다.");
+    }
+    if (st_userCheckUserEmailError) {
+      return message.error(st_userCheckUserEmailError);
+    }
+  }, [st_userCheckUserEmailDone, st_userCheckUserEmailError]);
   ////// TOGGLE //////
 
   const checkBox01Toggle = useCallback(() => {
@@ -170,6 +187,22 @@ const SignUp = () => {
     });
   }, []);
 
+  // 이메일 중복체크
+  const userEmailFindHandler = useCallback(() => {
+    const formData = cForm.getFieldsValue();
+
+    if (!formData.email) {
+      return message.info("이메일를 입력해주세요.");
+    }
+
+    dispatch({
+      type: USER_CHECK_EMAIL_REQUEST,
+      data: {
+        email: formData.email,
+      },
+    });
+  }, []);
+
   // 생성
   const signupHandler = useCallback(
     (data) => {
@@ -179,6 +212,22 @@ const SignUp = () => {
 
       if (data.password !== data.rePassword) {
         return message.info("비밀번호가 같지 않습니다.");
+      }
+
+      if (
+        data.email &&
+        data.email.trim().length > 0 &&
+        st_userCheckUserEmailDone
+      ) {
+        return message.info("이메일 중복확인 후 이용해주세요.");
+      }
+
+      if (data.userId.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?.]/gi) >= 0) {
+        return message.info("아이디에 특수 문자는 사용 불가능합니다.");
+      }
+
+      if (data.userId.indexOf(" ") >= 0) {
+        return message.info("아이디에 띄어쓰기는 사용 불가능합니다.");
       }
 
       dispatch({
@@ -902,30 +951,39 @@ const SignUp = () => {
                     </Wrapper>
 
                     <Text fontSize={`20px`} margin={`0 0 12px`}>
-                      <SpanText color={Theme.basicTheme_C}>*</SpanText>
                       이메일
                     </Text>
 
-                    <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 7px`}>
-                      <Form.Item
-                        name="email"
-                        rules={[
-                          {
-                            required: true,
-                            message: "이메일은 필수 입니다.",
-                          },
-                        ]}
+                    <Wrapper
+                      dr={`row`}
+                      ju={`space-between`}
+                      margin={`0 0 30px`}
+                    >
+                      <Wrapper width={`calc(100% - 146px)`}>
+                        <Form.Item name="email" style={{ margin: `0` }}>
+                          <TextInput
+                            width={`100%`}
+                            height={`54px`}
+                            radius={`5px`}
+                            border={`1px solid ${Theme.lightGrey4_C}`}
+                            fontSize={`18px`}
+                            placeholder="이메일를 입력해주세요."
+                          />
+                        </Form.Item>
+                      </Wrapper>
+                      <CommonButton
+                        onClick={userEmailFindHandler}
+                        fontSize={`18px`}
+                        width={`140px`}
+                        height={`54px`}
+                        loading={st_userCheckUserEmailLoading}
                       >
-                        <TextInput
-                          type="email"
-                          width={`100%`}
-                          height={`54px`}
-                          radius={`5px`}
-                          border={`1px solid ${Theme.lightGrey4_C}`}
-                          fontSize={`18px`}
-                          placeholder="이메일을 입력해주세요."
-                        />
-                      </Form.Item>
+                        중복확인
+                      </CommonButton>
+                      <Text>
+                        *이메일 미입력시 '아이디/비밀번호찾기' 이용이 불가능
+                        합니다.
+                      </Text>
                     </Wrapper>
 
                     <Text fontSize={`20px`} margin={`0 0 12px`}>
