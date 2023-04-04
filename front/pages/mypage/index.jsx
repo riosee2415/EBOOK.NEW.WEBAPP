@@ -173,7 +173,7 @@ const MypageIndex = ({}) => {
               {boughtMeDetail ? (
                 boughtMeDetail.payType === "nobank" && !boughtMeDetail.isPay ? (
                   <>
-                    <Wrapper dr={`row`} ju={`flex-start`}>
+                    {/* <Wrapper dr={`row`} ju={`flex-start`}>
                       <Text
                         fontSize={width < 700 ? `20px` : `28px`}
                         width={`120px`}
@@ -237,7 +237,11 @@ const MypageIndex = ({}) => {
                       <Text fontSize={width < 700 ? `20px` : `28px`}>
                         위 계좌로 금액 입금해주시기 바랍니다.
                       </Text>
-                    </Wrapper>
+                    </Wrapper> */}
+                    <Text fontSize={width < 700 ? `20px` : `28px`}>
+                      입금 확인중입니다 ( 입금확인 되면 강의를 시청 하실 수
+                      있습니다.)
+                    </Text>
                   </>
                 ) : boughtMeDetail.lectureType === 4 ? (
                   <Text fontSize={width < 700 ? `20px` : `28px`}>

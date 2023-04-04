@@ -433,6 +433,55 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
   }
 });
 
+router.post("/detail", isLoggedIn, async (req, res, next) => {
+  const { id } = req.body;
+  const selectQ = `
+  SELECT  A.id,
+          A.receiver,
+          A.mobile,
+          A.zoneCode,
+          A.address,
+          A.detailAddress,
+          A.payType,
+          FORMAT(A.pay, ',')  AS  viewPay,
+          A.pay,
+          A.lectureType,
+          CASE
+            WHEN A.lectureType = 1 THEN "1년"
+            WHEN A.lectureType = 2 THEN "2년"
+            WHEN A.lectureType = 3 THEN "3년"
+            WHEN A.lectureType = 4 THEN "평생"
+            WHEN A.lectureType = 5 THEN "3달"
+            WHEN A.lectureType = 6 THEN "상품"
+          END										AS viewLectureType,
+          A.name,
+          A.recentlyTurn,
+          A.recentlyTime,
+          A.boughtDate,
+          A.startDate,
+          DATE_FORMAT(A.startDate, '%Y년 %m월 %d일')    AS viewStateDate,
+          A.endDate,
+          DATE_FORMAT(A.endDate, '%Y년 %m월 %d일')      AS viewEndDate,
+          A.impUid,
+          A.merchantUid,
+          A.isPay,
+          A.isDelete,
+          A.userId,
+          A.lectureId
+    FROM  boughtLecture							A
+   WHERE  A.isDelete = FALSE
+     AND  A.id = ${id}
+  `;
+  try {
+    const detail = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(detail[0][0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("수강권을 불러올 수 없습니다.");
+  }
+});
+
 router.post("/me/detail", isLoggedIn, async (req, res, next) => {
   const selectQ = `
   SELECT  A.id,

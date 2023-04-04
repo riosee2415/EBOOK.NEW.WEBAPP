@@ -40,6 +40,10 @@ import {
   BOUGHT_RECENTLY_UPDATE_REQUEST,
   BOUGHT_RECENTLY_UPDATE_SUCCESS,
   BOUGHT_RECENTLY_UPDATE_FAILURE,
+  //
+  BOUGHT_DETAIL_REQUEST,
+  BOUGHT_DETAIL_SUCCESS,
+  BOUGHT_DETAIL_FAILURE,
 } from "../reducers/boughtLecture";
 
 // SAGA AREA ********************************************************************************************************
@@ -309,6 +313,33 @@ function* boughtRecentlyUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function boughtDetailAPI(data) {
+  return await axios.post(`/api/bought/detail`, data);
+}
+
+function* boughtDetail(action) {
+  try {
+    const result = yield call(boughtDetailAPI, action.data);
+
+    yield put({
+      type: BOUGHT_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: BOUGHT_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchBoughtAdminList() {
   yield takeLatest(BOUGHT_ADMIN_LIST_REQUEST, boughtAdminList);
@@ -350,6 +381,10 @@ function* watchBoughtRecentlyUpdate() {
   yield takeLatest(BOUGHT_RECENTLY_UPDATE_REQUEST, boughtRecentlyUpdate);
 }
 
+function* watchBoughtDetail() {
+  yield takeLatest(BOUGHT_DETAIL_REQUEST, boughtDetail);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* boughtLectureSaga() {
   yield all([
@@ -363,6 +398,7 @@ export default function* boughtLectureSaga() {
     fork(watchBoughtAdminDelete),
     fork(watchBoughtMeDetail),
     fork(watchBoughtRecentlyUpdate),
+    fork(watchBoughtDetail),
     //
   ]);
 }

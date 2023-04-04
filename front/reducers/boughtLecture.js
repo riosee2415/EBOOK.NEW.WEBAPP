@@ -6,6 +6,8 @@ export const initailState = {
 
   boughtAdminId: null,
 
+  boughtDetail: null,
+
   st_boughtAdminListLoading: false, // 리스트
   st_boughtAdminListDone: false,
   st_boughtAdminListError: null,
@@ -45,6 +47,10 @@ export const initailState = {
   st_boughtRecentlyUpdateLoading: false, // 마지막으로 들은 수강ㄴ
   st_boughtRecentlyUpdateDone: false,
   st_boughtRecentlyUpdateError: null,
+  //
+  st_boughtDetailLoading: false, // 수강권 상세
+  st_boughtDetailDone: false,
+  st_boughtDetailError: null,
 };
 
 export const BOUGHT_ADMIN_LIST_REQUEST = "BOUGHT_ADMIN_LIST_REQUEST";
@@ -86,6 +92,10 @@ export const BOUGHT_ME_DETAIL_FAILURE = "BOUGHT_ME_DETAIL_FAILURE";
 export const BOUGHT_RECENTLY_UPDATE_REQUEST = "BOUGHT_RECENTLY_UPDATE_REQUEST";
 export const BOUGHT_RECENTLY_UPDATE_SUCCESS = "BOUGHT_RECENTLY_UPDATE_SUCCESS";
 export const BOUGHT_RECENTLY_UPDATE_FAILURE = "BOUGHT_RECENTLY_UPDATE_FAILURE";
+
+export const BOUGHT_DETAIL_REQUEST = "BOUGHT_DETAIL_REQUEST";
+export const BOUGHT_DETAIL_SUCCESS = "BOUGHT_DETAIL_SUCCESS";
+export const BOUGHT_DETAIL_FAILURE = "BOUGHT_DETAIL_FAILURE";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -251,6 +261,23 @@ const reducer = (state = initailState, action) =>
         draft.st_boughtRecentlyUpdateLoading = false;
         draft.st_boughtRecentlyUpdateDone = false;
         draft.st_boughtRecentlyUpdateError = action.error;
+        break;
+      ///////////////////////////////////////////////////////
+      case BOUGHT_DETAIL_REQUEST:
+        draft.st_boughtDetailLoading = true;
+        draft.st_boughtDetailDone = false;
+        draft.st_boughtDetailError = null;
+        break;
+      case BOUGHT_DETAIL_SUCCESS:
+        draft.st_boughtDetailLoading = false;
+        draft.st_boughtDetailDone = true;
+        draft.st_boughtDetailError = null;
+        draft.boughtDetail = action.data;
+        break;
+      case BOUGHT_DETAIL_FAILURE:
+        draft.st_boughtDetailLoading = false;
+        draft.st_boughtDetailDone = false;
+        draft.st_boughtDetailError = action.error;
         break;
       ///////////////////////////////////////////////////////
       default:
