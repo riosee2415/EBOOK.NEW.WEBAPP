@@ -37,7 +37,7 @@ const upload = multer({
       );
     },
   }),
-  limits: { fileSize: 1000 * 1024 * 1024 }, // 1000MB
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
 });
 
 router.post(
