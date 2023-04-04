@@ -964,8 +964,8 @@ const Home = ({}) => {
                 ) : (
                   <>
                     <Text
-                      fontSize={width < 700 ? `16px` : `22px`}
-                      color={Theme.grey_C}
+                      fontSize={width < 700 ? `14px` : `16px`}
+                      color={Theme.grey2_C}
                     >
                       {lectureDetail && lectureDetail.bookNotEtc}
                     </Text>
