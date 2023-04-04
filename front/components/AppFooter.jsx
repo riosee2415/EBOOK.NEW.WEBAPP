@@ -82,7 +82,7 @@ const AppFooter = () => {
                 ju={`flex-start`}
                 margin={`0 0 15px`}
               >
-                {logos &&
+                {/* {logos &&
                   logos.length > 0 &&
                   logos.find((data) => data.typeOf === "F") && (
                     <Image
@@ -91,7 +91,15 @@ const AppFooter = () => {
                       alt="logo"
                       margin={`0 0 40px`}
                     />
-                  )}
+                  )} */}
+                <Text
+                  fontWeight={`600`}
+                  color={Theme.grey2_C}
+                  fontSize={`18px`}
+                  margin={`0 0 40px`}
+                >
+                  친절한대학 주식회사
+                </Text>
                 {companys.map((data) => {
                   return (
                     <Wrapper
@@ -106,7 +114,11 @@ const AppFooter = () => {
                       >
                         {data.name}
                       </Text>
-                      <Text color={Theme.grey3_C}>{data.value}</Text>
+                      <Text
+                      //  color={Theme.grey3_C}
+                      >
+                        {data.value}
+                      </Text>
                     </Wrapper>
                   );
                 })}
