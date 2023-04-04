@@ -21,10 +21,14 @@ import styled from "styled-components";
 import Head from "next/head";
 import { Empty, Form, Input, message, Slider } from "antd";
 import { SearchOutlined, CaretRightOutlined } from "@ant-design/icons";
-import { MEDIA_LIST_REQUEST } from "../../reducers/media";
+import {
+  MEDIA_ALL_LIST_REQUEST,
+  MEDIA_LIST_REQUEST,
+} from "../../reducers/media";
 import { useRouter } from "next/router";
 import { BOUGHT_ME_DETAIL_REQUEST } from "../../reducers/boughtLecture";
 import { ENJOY_ME_LIST_REQUEST } from "../../reducers/enjoy";
+import moment from "moment";
 
 const MypageIndex = ({}) => {
   ////// GLOBAL STATE //////
@@ -32,7 +36,9 @@ const MypageIndex = ({}) => {
   const { me } = useSelector((state) => state.user);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
-  const { mediaList, lastPage, maxLen } = useSelector((state) => state.media);
+  const { mediaList, mediaAllList, lastPage, maxLen } = useSelector(
+    (state) => state.media
+  );
   const { enjoyMeList } = useSelector((state) => state.enjoy);
 
   ////// HOOKS //////
@@ -258,16 +264,29 @@ const MypageIndex = ({}) => {
               boughtMeDetail.recentlyTurn ? (
                 <CommonButton
                   kindOf={`basic`}
-                  width={`154px`}
+                  width={`250px`}
                   height={`40px`}
                   fontSize={`18px`}
                   onClick={() =>
                     moveLinkHandler(
-                      `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0`
+                      `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0&recentlyTime=${boughtMeDetail.recentlyTime}`
                     )
                   }
                 >
-                  강의 이어보기
+                  {mediaAllList &&
+                    mediaAllList.length > 0 &&
+                    mediaAllList.find(
+                      (data) => data.id === boughtMeDetail.recentlyTurn
+                    ).num}
+                  번 강의&nbsp;
+                  {parseInt(parseInt(boughtMeDetail.recentlyTime) / 60) < 10
+                    ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`
+                    : parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}
+                  :
+                  {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)
+                    ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
+                    : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
+                  부터 이어보기
                 </CommonButton>
               ) : (
                 ""
@@ -510,6 +529,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: ENJOY_ME_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: MEDIA_ALL_LIST_REQUEST,
     });
 
     // 구현부 종료

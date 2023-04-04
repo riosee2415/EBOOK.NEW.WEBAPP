@@ -59,6 +59,8 @@ const MediaDetail = () => {
 
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
+  const [isTimeSet, setIsTimeSet] = useState(false);
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -76,6 +78,14 @@ const MediaDetail = () => {
           id: router.query.id,
         },
       });
+
+      setTimeout(() => {
+        const currentVideo = document.getElementById("videoTag");
+
+        if (currentVideo && router.query.recentlyTime) {
+          currentVideo.currentTime = router.query.recentlyTime;
+        }
+      }, 3000);
     }
   }, [router.query]);
 
@@ -115,12 +125,14 @@ const MediaDetail = () => {
   // 일시정지
   const recentlySaveHandler = useCallback(
     (data) => {
+      const currentVideo = document.getElementById("videoTag");
+
       dispatch({
         type: BOUGHT_RECENTLY_UPDATE_REQUEST,
         data: {
           id: boughtMeDetail.id,
           recentlyTurn: router.query.id,
-          recentlyTime: data.timeStamp,
+          recentlyTime: currentVideo.currentTime,
         },
       });
     },
@@ -167,7 +179,7 @@ const MediaDetail = () => {
                   <Text
                     fontSize={`20px`}
                     fontWeight={`700`}
-                    color={Theme.grey3_C}
+                    color={Theme.basicTheme_C}
                   >
                     {router.query &&
                       mediaAllList &&
@@ -192,13 +204,13 @@ const MediaDetail = () => {
                         ).num
                       }`}
                   </Text>
-                  <Wrapper
+                  {/* <Wrapper
                     width={`4px`}
                     height={`4px`}
                     margin={`0 10px`}
                     borderRadius={`100%`}
                     bgColor={Theme.lightGrey4_C}
-                  />
+                  /> */}
                   <Text
                     fontSize={`20px`}
                     fontWeight={`500`}
@@ -236,6 +248,7 @@ const MediaDetail = () => {
 
                 {mediaDetail && router.query && (
                   <Video
+                    id={"videoTag"}
                     ref={videoRef}
                     src={
                       router.query.isSample === "1"
