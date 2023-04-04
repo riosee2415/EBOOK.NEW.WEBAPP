@@ -1042,28 +1042,28 @@ const UserList = ({}) => {
                 </Button>
               </Wrapper>
               <Form.Item name="email" label="이메일">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="viewCreatedAt" label="가입일">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="level" label="권한">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="gender" label="성별">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="birth" label="생년">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="zoneCode" label="우편번호">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="address" label="기본주소">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item name="detailAddress" label="상세주소">
-                <Input size="small" disabled />
+                <Input size="small" readOnly />
               </Form.Item>
               <Form.Item label="후기작성여부">
                 {dData &&
