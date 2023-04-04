@@ -644,8 +644,9 @@ const UserList = ({}) => {
   );
 
   const headers = [
-    { label: "이름", key: "name" },
     { label: "아이디", key: "userId" },
+    { label: "이름", key: "username" },
+    { label: "이메일", key: "email" },
     { label: "일반전화", key: "tel" },
     { label: "핸드폰번호", key: "mobile" },
     { label: "주소", key: "address" },
@@ -653,6 +654,7 @@ const UserList = ({}) => {
     { label: "우편변호", key: "zoneCode" },
     { label: "결제여부", key: "boughtLecture" },
     { label: "유입", key: "adType" },
+    { label: "키워드", key: "keyword" },
     { label: "가입일", key: "createdAt" },
   ];
 
@@ -666,7 +668,7 @@ const UserList = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "아아디",
+      title: "아이디",
       dataIndex: "userId",
     },
     {
