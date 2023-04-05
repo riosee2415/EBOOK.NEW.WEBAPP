@@ -162,14 +162,38 @@ const MypageIndex = ({}) => {
               margin={width < 700 ? `35px 0 0` : `35px 0 0`}
               al={`flex-start`}
             >
-              <Text
-                fontSize={`18px`}
-                fontWeight={`700`}
-                color={Theme.basicTheme_C}
-              >
-                나의 이용권
-              </Text>
+              <Wrapper dr={`row`} ju={`flex-start`}>
+                <Text
+                  fontSize={`18px`}
+                  fontWeight={`700`}
+                  color={Theme.basicTheme_C}
+                >
+                  나의 이용권
+                </Text>
 
+                {boughtMeDetail ? (
+                  boughtMeDetail.payType === "nobank" &&
+                  !boughtMeDetail.isPay ? (
+                    <Text
+                      margin={`0 0 0 5px`}
+                      textDecoration={`underLine`}
+                      fontSize={`16px`}
+                      isHover
+                      onClick={() =>
+                        moveLinkHandler(
+                          `/enrolment/buy/finish/${boughtMeDetail.id}`
+                        )
+                      }
+                    >
+                      입금 정보 확인
+                    </Text>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
+              </Wrapper>
               {boughtMeDetail ? (
                 boughtMeDetail.payType === "nobank" && !boughtMeDetail.isPay ? (
                   <>
