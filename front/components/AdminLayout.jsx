@@ -287,8 +287,8 @@ const AdminLayout = ({ children }) => {
           />
           <AdminMenuBox
             right={me && me.menuRight3}
-            title={`배너관리`}
-            menus={items["배너관리"]}
+            title={`베너관리`}
+            menus={items["베너관리"]}
           />
           <AdminMenuBox
             right={me && me.menuRight4}
