@@ -75,6 +75,7 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
 router.post("/list", isAdminCheck, async (req, res, next) => {
   const {
     userId,
+    keyword,
     page,
     searchData,
     searchLevel,
@@ -89,6 +90,8 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const _searchReviewType = searchReviewType ? parseInt(searchReviewType) : 3;
 
   const _searchExit = searchExit ? searchExit : false;
+
+  const _keyword = keyword ? keyword : null;
 
   const LIMIT = 20;
 
@@ -189,7 +192,8 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
     FROM	users         A
-   WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
+   WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
+          ${_keyword ? `AND  keyword = "${_keyword}"` : ""}
           ${
             _searchLevel === parseInt(0)
               ? ``

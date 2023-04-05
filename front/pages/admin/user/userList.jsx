@@ -224,6 +224,7 @@ const UserList = ({}) => {
   const [updateData, setUpdateData] = useState(null);
 
   const [sData, setSData] = useState("");
+  const [sKeyword, setSKeyword] = useState(null);
 
   const [levelForm] = Form.useForm();
   const [sForm] = Form.useForm();
@@ -320,7 +321,11 @@ const UserList = ({}) => {
       dispatch({
         type: USERLIST_REQUEST,
         data: {
+          searchData: sData,
+          searchLevel: currentTab,
+          searchReviewType: reviewWriteType,
           page: currentPage,
+          keyword: sKeyword,
         },
       });
 
@@ -342,6 +347,7 @@ const UserList = ({}) => {
     }
   }, [st_userListUpdateError]);
 
+  // 리스트
   useEffect(() => {
     dispatch({
       type: USERLIST_REQUEST,
@@ -350,9 +356,10 @@ const UserList = ({}) => {
         searchLevel: currentTab,
         searchReviewType: reviewWriteType,
         page: currentPage,
+        keyword: sKeyword,
       },
     });
-  }, [currentTab, sData, currentPage, reviewWriteType]);
+  }, [currentTab, sData, currentPage, reviewWriteType, sKeyword]);
 
   // 회원정보 수정
   useEffect(() => {
@@ -364,6 +371,7 @@ const UserList = ({}) => {
           searchLevel: currentTab,
           searchReviewType: reviewWriteType,
           page: currentPage,
+          keyword: sKeyword,
         },
       });
 
@@ -528,6 +536,13 @@ const UserList = ({}) => {
       setSData(data.sData);
     },
     [sForm, sData]
+  );
+
+  const sKeywordHandlr = useCallback(
+    (data) => {
+      setSKeyword(data);
+    },
+    [sKeyword]
   );
 
   const levelFormClick = useCallback(() => {
@@ -802,6 +817,25 @@ const UserList = ({}) => {
             <Button size="small" type="primary" htmlType="submit">
               검색
             </Button>
+          </SearchFormItem>
+
+          <SearchFormItem>
+            <Select
+              size="small"
+              style={{ width: `250px` }}
+              placeholder="검색하실 키워드를 선택해주세요."
+              onChange={sKeywordHandlr}
+              allowClear
+            >
+              {keywordArr &&
+                keywordArr.map((data, idx) => {
+                  return (
+                    <Select.Option key={idx} value={data}>
+                      {data}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
           </SearchFormItem>
         </SearchForm>
       </Wrapper>
