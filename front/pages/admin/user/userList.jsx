@@ -1120,8 +1120,19 @@ const UserList = ({}) => {
                 </Select>
               </Form.Item>
 
-              <Form.Item name="consulting" label="상담">
+              <Form.Item
+                name="consulting"
+                label={
+                  <Text color={Theme.basicTheme_C} fontWeight={`700`}>
+                    상담
+                  </Text>
+                }
+              >
                 <Input.TextArea
+                  style={{
+                    backgroundColor: Theme.lightBasicTheme_c,
+                    border: `1px solid ${Theme.basicTheme_C}`,
+                  }}
                   size="small"
                   autoSize={{ minRows: 5, maxRows: 15 }}
                 />

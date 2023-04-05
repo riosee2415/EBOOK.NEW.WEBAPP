@@ -105,7 +105,7 @@ const Banner = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("배너관리");
+  const [level1, setLevel1] = useState("베너관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
 
@@ -452,7 +452,7 @@ const Banner = ({}) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];

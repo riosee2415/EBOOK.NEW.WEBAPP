@@ -53,7 +53,7 @@ export const items = {
       useYn: false,
     },
   ],
-  배너관리: [
+  베너관리: [
     {
       name: "팝업관리",
       link: "/admin/banner/popup",
