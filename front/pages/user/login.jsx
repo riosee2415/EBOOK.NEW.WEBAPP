@@ -147,7 +147,7 @@ const Login = () => {
                   >
                     회원가입
                   </CommonButton>
-                  <CommonButton
+                  {/* <CommonButton
                     width={`100%`}
                     height={`54px`}
                     fontSize={`20px`}
@@ -156,7 +156,7 @@ const Login = () => {
                     onClick={() => moveLinkHandler("/user/find")}
                   >
                     아이디 / 비밀번호 찾기
-                  </CommonButton>
+                  </CommonButton> */}
                 </Wrapper>
               </LoginForm>
             </Wrapper>

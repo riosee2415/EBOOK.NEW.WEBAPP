@@ -265,13 +265,13 @@ const SignUp = () => {
         return message.info("비밀번호가 같지 않습니다.");
       }
 
-      if (
-        data.email &&
-        data.email.trim().length > 0 &&
-        st_userCheckUserEmailDone
-      ) {
-        return message.info("이메일 중복확인 후 이용해주세요.");
-      }
+      // if (
+      //   data.email &&
+      //   data.email.trim().length > 0 &&
+      //   st_userCheckUserEmailDone
+      // ) {
+      //   return message.info("이메일 중복확인 후 이용해주세요.");
+      // }
 
       const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
 
@@ -1003,7 +1003,7 @@ const SignUp = () => {
                       </Form.Item>
                     </Wrapper>
 
-                    <Text fontSize={`20px`} margin={`0 0 12px`}>
+                    {/* <Text fontSize={`20px`} margin={`0 0 12px`}>
                       이메일
                     </Text>
 
@@ -1037,7 +1037,7 @@ const SignUp = () => {
                         *이메일 미입력시 '아이디/비밀번호찾기' 이용이 불가능
                         합니다.
                       </Text>
-                    </Wrapper>
+                    </Wrapper> */}
 
                     <Text fontSize={`20px`} margin={`0 0 12px`}>
                       <SpanText color={Theme.basicTheme_C}>*</SpanText>
