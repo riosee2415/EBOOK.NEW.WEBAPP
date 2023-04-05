@@ -8,6 +8,7 @@ import {
   message,
   DatePicker,
   Modal,
+  Select,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -35,6 +36,7 @@ import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import DaumPostcode from "react-daum-postcode";
+import moment from "moment";
 
 const PreText = styled.pre`
   width: 100%;
@@ -75,6 +77,23 @@ const CustomForm = styled(Form)`
   }
 `;
 
+const CustomSelect = styled(Select)`
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid ${(props) => props.theme.lightGrey4_C};
+  font-size: 18px;
+  margin: 0 0 10px;
+
+  &:not(.ant-select-customize-input) .ant-select-selector {
+    height: 54px !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border: none;
+    align-items: center;
+  }
+`;
+
 const SignUp = () => {
   ////// GLOBAL STATE //////
 
@@ -94,6 +113,11 @@ const SignUp = () => {
   const [aModal, setAModal] = useState(false);
 
   const [selectGender, setSelectGender] = useState(null);
+
+  const [checkedUserId, setCheckedUserId] = useState(null);
+
+  // 년도 배열
+  const [year, setYear] = useState(null);
 
   ////// REDUX //////
   const {
@@ -132,6 +156,21 @@ const SignUp = () => {
       return message.error(st_userCheckUserEmailError);
     }
   }, [st_userCheckUserEmailDone, st_userCheckUserEmailError]);
+
+  // 년도 배열
+  useEffect(() => {
+    const date = moment().format("YYYY");
+
+    const tempArr = [];
+
+    for (let i = 1900; i < parseInt(date); i++) {
+      tempArr.push(i);
+    }
+
+    tempArr.reverse();
+    setYear(tempArr);
+  }, []);
+
   ////// TOGGLE //////
 
   const checkBox01Toggle = useCallback(() => {
@@ -179,13 +218,21 @@ const SignUp = () => {
       return message.info("아이디를 입력해주세요.");
     }
 
+    const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+
+    if (!regex.test(formData.userId)) {
+      return message.info("아이디에 특수 문자는 사용 불가능합니다.");
+    }
+
+    setCheckedUserId(formData.userId);
+
     dispatch({
       type: USER_CHECK_USERID_REQUEST,
       data: {
         userId: formData.userId,
       },
     });
-  }, []);
+  }, [checkedUserId]);
 
   // 이메일 중복체크
   const userEmailFindHandler = useCallback(() => {
@@ -210,6 +257,10 @@ const SignUp = () => {
         return message.info("중복확인 후 이용해주세요.");
       }
 
+      if (data.userId !== checkedUserId) {
+        return message.info("중복확인 후 이용해주세요.");
+      }
+
       if (data.password !== data.rePassword) {
         return message.info("비밀번호가 같지 않습니다.");
       }
@@ -222,7 +273,9 @@ const SignUp = () => {
         return message.info("이메일 중복확인 후 이용해주세요.");
       }
 
-      if (data.userId.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?.]/gi) >= 0) {
+      const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+
+      if (!regex.test(data.userId)) {
         return message.info("아이디에 특수 문자는 사용 불가능합니다.");
       }
 
@@ -236,7 +289,7 @@ const SignUp = () => {
           userId: data.userId,
           username: data.username,
           password: data.password,
-          birth: data.birth ? data.birth.format("YYYY") : null,
+          birth: data.birth ? data.birth : null,
           gender: selectGender,
           zoneCode: data.zoneCode ? data.zoneCode : null,
           address: data.address ? data.address : null,
@@ -247,7 +300,7 @@ const SignUp = () => {
         },
       });
     },
-    [selectGender, st_userCheckUserIdDone]
+    [checkedUserId, selectGender, st_userCheckUserIdDone]
   );
 
   const moveLinkHandler = useCallback((link) => {
@@ -1054,16 +1107,16 @@ const SignUp = () => {
 
                     <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 7px`}>
                       <Form.Item name="birth">
-                        <DatePicker
-                          style={{
-                            width: `100%`,
-                            height: `54px`,
-                            fontSize: `18px`,
-                          }}
-                          format={"YYYY"}
-                          picker="year"
-                          placeholder="출생년도를 선택해주세요."
-                        />
+                        <CustomSelect placeholder="출생년도를 선택해주세요.">
+                          {year &&
+                            year.map((data, idx) => {
+                              return (
+                                <Select.Option value={data} key={idx}>
+                                  {data}
+                                </Select.Option>
+                              );
+                            })}
+                        </CustomSelect>
                       </Form.Item>
                     </Wrapper>
 
