@@ -208,7 +208,7 @@ const Home = ({}) => {
                           padding={`0 18px`}
                         >
                           <Text width={`100%`} isEllipsis>
-                            {data.title}
+                            [{data.type}]&nbsp;{data.title}
                           </Text>
                         </Wrapper>
                         <Wrapper
