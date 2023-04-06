@@ -136,7 +136,7 @@ const Home = ({}) => {
             <Wrapper al={`flex-start`}>
               <Text
                 color={Theme.grey5_C}
-                fontSize={`23px !important`}
+                fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
                 공지사항
@@ -239,7 +239,7 @@ const Home = ({}) => {
             <Wrapper al={`flex-start`}>
               <Text
                 color={Theme.grey5_C}
-                fontSize={`23px !important`}
+                fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
                 온라인 상담
@@ -305,7 +305,7 @@ const Home = ({}) => {
             <Wrapper al={`flex-start`}>
               <Text
                 color={Theme.grey5_C}
-                fontSize={`23px !important`}
+                fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
                 자료실

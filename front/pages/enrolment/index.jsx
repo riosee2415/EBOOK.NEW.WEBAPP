@@ -79,7 +79,7 @@ const Home = ({}) => {
             <Wrapper al={`flex-start`}>
               <Text
                 color={Theme.grey5_C}
-                fontSize={`23px !important`}
+                fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
                 원하시는 수강 기간을 선택해주세요

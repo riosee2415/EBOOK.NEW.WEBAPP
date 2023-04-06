@@ -96,7 +96,7 @@ const Home = ({}) => {
             <Wrapper al={`flex-start`}>
               <Text
                 color={Theme.grey5_C}
-                fontSize={`23px !important`}
+                fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
                 친절한 영어교실 수강생분들의 생생후기
