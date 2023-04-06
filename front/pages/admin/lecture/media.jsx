@@ -421,7 +421,7 @@ const Media = ({}) => {
       });
 
       infoForm.setFieldsValue({
-        // type: record.type,
+        type: record.type,
         title: record.title,
         mediaOriginName: record.mediaOriginName,
         sampleMediaOriginName: record.sampleMediaOriginName,
@@ -451,7 +451,7 @@ const Media = ({}) => {
       dispatch({
         type: MEDIA_CREATE_REQUEST,
         data: {
-          // type: data.type,
+          type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
@@ -473,7 +473,7 @@ const Media = ({}) => {
         type: MEDIA_UPDATE_REQUEST,
         data: {
           id: currentData.id,
-          // type: data.type,
+          type: data.type,
           title: data.title,
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
@@ -696,6 +696,16 @@ const Media = ({}) => {
                 </Form.Item> */}
 
                 <Form.Item
+                  label="강의유형"
+                  name="type"
+                  rules={[
+                    { required: true, message: "강의유형은 필수 입니다." },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
                   label="강의이름"
                   name="title"
                   rules={[
@@ -896,6 +906,13 @@ const Media = ({}) => {
               <Select.Option value={"생활표현"}>생활표현</Select.Option>
             </Select>
           </Form.Item> */}
+          <Form.Item
+            label="영상 유형"
+            name="type"
+            rules={[{ required: true, message: "영상 유형은 필수 입니다." }]}
+          >
+            <Input size="small" placeholder="영상 유형을 입력해주세요." />
+          </Form.Item>
           <Form.Item
             label="영상 제목"
             name="title"
