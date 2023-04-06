@@ -149,8 +149,13 @@ const Home = ({}) => {
   const { lectureDetail, st_lectureDetailError } = useSelector(
     (state) => state.lecture
   );
-  const { st_boughtCreateLoading, st_boughtCreateDone, st_boughtCreateError } =
-    useSelector((state) => state.boughtLecture);
+  const {
+    boughtCreateId,
+    //
+    st_boughtCreateLoading,
+    st_boughtCreateDone,
+    st_boughtCreateError,
+  } = useSelector((state) => state.boughtLecture);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -231,8 +236,13 @@ const Home = ({}) => {
   // 결제 후처리
   useEffect(() => {
     if (st_boughtCreateDone) {
-      message.success("결제되었습니다.");
-      return router.push("/mypage");
+      if (isBuyType === "nobank" && boughtCreateId) {
+        message.success("결제되었습니다.");
+        return router.push(`/enrolment/buy/finish/${boughtCreateId}`);
+      } else {
+        message.success("결제되었습니다.");
+        return router.push("/mypage");
+      }
     }
 
     if (st_boughtCreateError) {

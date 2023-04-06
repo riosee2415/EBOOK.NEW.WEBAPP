@@ -32,6 +32,7 @@ const NobankFinish = () => {
 
   useEffect(() => {
     if (router.query) {
+      window.scrollTo(0, 0);
       dispatch({
         type: BOUGHT_DETAIL_REQUEST,
         data: {

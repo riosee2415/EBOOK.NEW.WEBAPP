@@ -4,6 +4,8 @@ export const initailState = {
   boughtAdminList: [],
   boughtMeDetail: null,
 
+  boughtCreateId: null,
+
   boughtAdminId: null,
 
   boughtDetail: null,
@@ -191,6 +193,7 @@ const reducer = (state = initailState, action) =>
         draft.st_boughtCreateLoading = false;
         draft.st_boughtCreateDone = true;
         draft.st_boughtCreateError = null;
+        draft.boughtCreateId = action.data.createdId;
         break;
       case BOUGHT_CREATE_FAILURE:
         draft.st_boughtCreateLoading = false;

@@ -169,7 +169,9 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         ${lectureId}
       ) 
       `;
-      await models.sequelize.query(insertQ);
+      const insertResult = await models.sequelize.query(insertQ);
+
+      return res.status(200).json({ result: true, createdId: insertResult[0] });
     } else {
       // 무통장입금 결제
 
@@ -218,10 +220,9 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
         ${lectureId}
       ) 
       `;
-      await models.sequelize.query(insertQ);
+      const insertResult = await models.sequelize.query(insertQ);
+      return res.status(200).json({ result: true, createdId: insertResult[0] });
     }
-
-    return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
     return res.status(400).send("구매할 수 없습니다.");

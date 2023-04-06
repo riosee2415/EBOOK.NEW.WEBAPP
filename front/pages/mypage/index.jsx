@@ -262,23 +262,35 @@ const MypageIndex = ({}) => {
                         위 계좌로 금액 입금해주시기 바랍니다.
                       </Text>
                     </Wrapper> */}
-                    <Text fontSize={width < 700 ? `20px` : `28px`}>
+                    <Text
+                      fontSize={width < 700 ? `20px` : `28px`}
+                      fontWeight={`600`}
+                    >
                       입금 확인중입니다 ( 입금확인 되면 강의를 시청 하실 수
                       있습니다.)
                     </Text>
                   </>
                 ) : boughtMeDetail.lectureType === 4 ? (
-                  <Text fontSize={width < 700 ? `20px` : `28px`}>
+                  <Text
+                    fontSize={width < 700 ? `20px` : `28px`}
+                    fontWeight={`600`}
+                  >
                     평생수강 가능합니다.
                   </Text>
                 ) : (
-                  <Text fontSize={width < 700 ? `20px` : `28px`}>
+                  <Text
+                    fontSize={width < 700 ? `20px` : `28px`}
+                    fontWeight={`600`}
+                  >
                     {boughtMeDetail.viewStateDate}부터&nbsp;~&nbsp;
                     {boughtMeDetail.viewEndDate}까지 이용할 수 있습니다.
                   </Text>
                 )
               ) : (
-                <Text fontSize={width < 700 ? `24px` : `32px`}>
+                <Text
+                  fontSize={width < 700 ? `24px` : `32px`}
+                  fontWeight={`600`}
+                >
                   수강 중인 강의가 없습니다.
                 </Text>
               )}

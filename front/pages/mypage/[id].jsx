@@ -248,6 +248,9 @@ const MediaDetail = () => {
 
                 {mediaDetail && router.query && (
                   <Video
+                    onContextMenu={(e) => e.preventDefault()}
+                    onSelectCapture={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
                     id={"videoTag"}
                     ref={videoRef}
                     src={
@@ -256,7 +259,9 @@ const MediaDetail = () => {
                         : mediaDetail.mediaPath
                     }
                     onPlay={
-                      router.query.isSample === "0" && enjoyMediaCreateHandler
+                      router.query.isSample === "0"
+                        ? enjoyMediaCreateHandler
+                        : null
                     }
                     onPause={recentlySaveHandler}
                     playbackRate
