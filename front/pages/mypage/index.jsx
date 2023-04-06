@@ -326,7 +326,7 @@ const MypageIndex = ({}) => {
                   {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)
                     ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
                     : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
-                  부터 이어보기
+                  로부터 이어보기
                 </CommonButton>
               ) : (
                 ""
