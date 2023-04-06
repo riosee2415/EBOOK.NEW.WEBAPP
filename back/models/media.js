@@ -6,6 +6,10 @@ module.exports = class Media extends Model {
   static init(sequelize) {
     return super.init(
       {
+        type: {
+          type: DataTypes.STRING(500),
+          allowNull: false,
+        },
         title: {
           type: DataTypes.STRING(2000),
           allowNull: false,

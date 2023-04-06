@@ -429,6 +429,20 @@ const MypageIndex = ({}) => {
                                 {data.num < 10 ? `0` : ``}
                                 {data.num}
                               </Text>
+                              <Wrapper
+                                width={`4px`}
+                                height={`4px`}
+                                margin={`0 10px`}
+                                borderRadius={`100%`}
+                                bgColor={Theme.lightGrey4_C}
+                              />
+                              <Text
+                                fontSize={`20px`}
+                                fontWeight={`700`}
+                                color={Theme.grey_C}
+                              >
+                                {data.type}
+                              </Text>
                             </Wrapper>
                             <Wrapper dr={`row`} ju={`flex-start`}>
                               <Wrapper

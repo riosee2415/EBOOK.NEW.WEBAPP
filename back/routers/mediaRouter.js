@@ -61,6 +61,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
 
   const selectQ = `
     SELECT  ROW_NUMBER() OVER()		AS num,
+            type,
             id,
             title,
             mediaOriginName,
@@ -112,6 +113,7 @@ router.post("/list", async (req, res, next) => {
 
   const lengthQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            type,
             id,
             title,
             mediaOriginName,
@@ -134,6 +136,7 @@ router.post("/list", async (req, res, next) => {
 
   const selectQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            type,
             id,
             title,
             mediaOriginName,
@@ -182,6 +185,7 @@ router.post("/list", async (req, res, next) => {
 router.post("/all/list", async (req, res, next) => {
   const selectQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
+            type,
             id,
             title,
             mediaOriginName,
@@ -217,6 +221,7 @@ router.post("/detail", async (req, res, next) => {
 
   const selectQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
+            type,
             id,
             title,
             mediaOriginName,
@@ -249,6 +254,7 @@ router.post("/detail", async (req, res, next) => {
 
 router.post("/create", isAdminCheck, async (req, res, next) => {
   const {
+    type,
     title,
     mediaOriginName,
     mediaPath,
@@ -263,6 +269,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   const insertQ = `
   INSERT INTO media
   (
+      type,
       title,
       mediaOriginName,
       mediaPath,
@@ -278,6 +285,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   )
   VALUES
   (
+      "${type}",
       "${title}",
       ${mediaOriginName ? `"${mediaOriginName}"` : "NULL"},
       ${mediaPath ? `"${mediaPath}"` : "NULL"},
@@ -306,6 +314,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
 router.post("/update", isAdminCheck, async (req, res, next) => {
   const {
     id,
+    type,
     title,
     mediaOriginName,
     mediaPath,
@@ -319,7 +328,8 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
 
   const updateQ = `
   UPDATE  media
-     SET  title = "${title}",
+     SET  type = "${type}",
+          title = "${title}",
           mediaOriginName = ${
             mediaOriginName ? `"${mediaOriginName}"` : "NULL"
           },

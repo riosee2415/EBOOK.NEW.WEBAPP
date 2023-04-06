@@ -40,7 +40,8 @@ import { ENJOY_CREATE_REQUEST } from "../../reducers/enjoy";
 
 const Video = styled.video`
   width: 100%;
-  border-top: 1px solid ${(props) => props.theme.grey5_C};
+  border-top: 3px solid ${(props) => props.theme.basicTheme_C};
+  padding: 20px 0 0;
   border-bottom: 1px solid ${(props) => props.theme.grey5_C};
 `;
 
@@ -150,7 +151,7 @@ const MediaDetail = () => {
             margin={width < 700 ? `40px 0` : `100px 0`}
             padding={width < 1280 ? `0` : `0 210px`}
           >
-            <Wrapper
+            {/* <Wrapper
               fontSize={width < 700 ? `30px` : `36px`}
               fontWeight={`700`}
               color={Theme.basicTheme_C}
@@ -161,13 +162,13 @@ const MediaDetail = () => {
                 ) : (
                   <Text>강의 보기</Text>
                 ))}
-            </Wrapper>
+            </Wrapper> */}
 
-            <Wrapper
+            {/* <Wrapper
               height={`1px`}
               bgColor={Theme.lightGrey4_C}
               margin={width < 700 ? `15px 0 10px` : `40px 0 36px`}
-            />
+            /> */}
 
             <Wrapper
               padding={width < 700 ? `22px 0` : `44px 0`}
@@ -204,17 +205,17 @@ const MediaDetail = () => {
                         ).num
                       }`}
                   </Text>
-                  {/* <Wrapper
+                  <Wrapper
                     width={`4px`}
                     height={`4px`}
                     margin={`0 10px`}
                     borderRadius={`100%`}
                     bgColor={Theme.lightGrey4_C}
-                  /> */}
+                  />
                   <Text
                     fontSize={`20px`}
-                    fontWeight={`500`}
-                    color={Theme.basicTheme_C}
+                    fontWeight={`700`}
+                    color={Theme.grey_C}
                   >
                     {router.query &&
                       mediaAllList &&
@@ -234,7 +235,7 @@ const MediaDetail = () => {
                     color={Theme.black2_C}
                   />
 
-                  <Text fontSize={`30px`}>
+                  <Text fontSize={`30px`} fontWeight={`600`}>
                     {router.query &&
                       mediaAllList &&
                       mediaAllList.find(
@@ -351,7 +352,7 @@ const MediaDetail = () => {
                               {data.num < 10 ? `0` : ``}
                               {data.num}
                             </Text>
-                            {/* <Wrapper
+                            <Wrapper
                               width={`4px`}
                               height={`4px`}
                               margin={`0 10px`}
@@ -360,11 +361,11 @@ const MediaDetail = () => {
                             />
                             <Text
                               fontSize={`20px`}
-                              fontWeight={`500`}
-                              color={Theme.basicTheme_C}
+                              fontWeight={`700`}
+                              color={Theme.grey_C}
                             >
-                              읽기/발음
-                            </Text> */}
+                              {data.type}
+                            </Text>
                           </Wrapper>
                           <Wrapper dr={`row`} ju={`flex-start`}>
                             <Wrapper
