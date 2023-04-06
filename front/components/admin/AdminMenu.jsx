@@ -1,0 +1,215 @@
+import React, { useState, useCallback } from "react";
+import { Menu, Switch } from "antd";
+import {
+  InfoCircleOutlined,
+  AppstoreOutlined,
+  SettingOutlined,
+  BarChartOutlined,
+  UserOutlined,
+  BookOutlined,
+  PhoneOutlined,
+  EditOutlined,
+  ProfileOutlined,
+  CopyrightOutlined,
+  ApartmentOutlined,
+  FileTextOutlined,
+  ContainerOutlined,
+  InfoOutlined,
+} from "@ant-design/icons";
+import styled from "styled-components";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { CURRENT_ADMINMENU_STATUS } from "../../reducers/user";
+import { Wrapper, Image } from "../commonComponents";
+
+const { SubMenu } = Menu;
+
+const MenuName = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const AdminMenu = () => {
+  const { currentAdminMenu, me } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const router = useRouter();
+
+  const [mode, setMode] = useState(`dark`);
+
+  const [current, setCurrent] = useState(`1`);
+
+  const clickAction = useCallback((e) => {
+    // console.log("click", e);
+
+    router.replace(e.key);
+    setCurrent(e.key);
+  }, []);
+
+  const titleClickHandler = useCallback(
+    (key) => () => {
+      dispatch({
+        type: CURRENT_ADMINMENU_STATUS,
+        data: { key },
+      });
+    },
+    [currentAdminMenu]
+  );
+
+  const menus = [
+    {
+      title: "통계관리",
+      key: "sub1",
+
+      subMenu: [
+        {
+          name: "접속자통계",
+          link: "/admin/logs/acceptLogs",
+        },
+      ],
+    },
+    {
+      title: "기초정보관리",
+      key: "sub2",
+
+      subMenu: [
+        {
+          name: "사업자정보관리",
+          link: "/admin/info/businessInformation",
+        },
+        {
+          name: "로고관리",
+          link: "/admin/info/logo",
+        },
+      ],
+    },
+
+    {
+      title: "베너관리",
+      key: "sub3",
+      subMenu: [
+        {
+          name: "베너관리",
+          link: "/admin/banner/banner",
+        },
+      ],
+    },
+
+    {
+      title: "게시판관리",
+      key: "sub4",
+      subMenu: [
+        {
+          name: "공지사항관리",
+          link: "/admin/boards/notice",
+          useYn: true,
+        },
+        {
+          name: "강의후기",
+          link: "/admin/boards/review",
+          useYn: true,
+        },
+        {
+          name: "자료실",
+          link: "/admin/boards/reference",
+          useYn: true,
+        },
+      ],
+    },
+    {
+      title: "회원관리",
+      key: "sub5",
+      subMenu: [
+        {
+          name: "전체회원관리",
+          link: "/admin/user/userList",
+          useYn: true,
+        },
+      ],
+    },
+
+    {
+      title: "강의관리",
+      key: "sub6",
+      subMenu: [
+        {
+          name: "강의상품관리",
+          link: "/admin/lecture/list",
+        },
+        {
+          name: "강의영상관리",
+          link: "/admin/lecture/media",
+        },
+        {
+          name: "구매강의관리",
+          link: "/admin/lecture/buyLecture",
+        },
+      ],
+    },
+  ];
+
+  return (
+    <>
+      <Menu
+        theme={mode}
+        onClick={clickAction}
+        style={{ width: `100%`, height: `100%`, overflow: `auto` }}
+        defaultOpenKeys={currentAdminMenu}
+        mode="inline"
+        selectedKeys={router.pathname}
+        disabled={false}
+      >
+        <Wrapper margin={`20px 0 10px`}>
+          <Image
+            alt="logo"
+            src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/4leaf%2Flogo%2Ffavicon.ico?alt=media&token=22fe389b-44d2-45c2-8735-2baf77e55651`}
+            width={`50px`}
+            height={`50px`}
+            radius={`100%`}
+          />
+        </Wrapper>
+        <Wrapper height={`30px`} fontSize={`0.8rem`}>
+          {me && me.nickname}
+        </Wrapper>
+        <Wrapper height={`30px`} fontSize={`0.8rem`} margin={`0 0 20px`}>
+          {me &&
+            (parseInt(me.level) === 5
+              ? `개발사`
+              : parseInt(me.level) === 4
+              ? `최고관리자`
+              : parseInt(me.level) === 3
+              ? `운영자`
+              : ``)}
+        </Wrapper>
+        <Menu.Item key="/admin">
+          <MenuName>관리자 메인</MenuName>
+        </Menu.Item>
+
+        {menus.map((data) => {
+          return (
+            <SubMenu
+              key={data.key}
+              //   icon={data.icon}
+              title={data.title}
+              onTitleClick={titleClickHandler(data.key)}
+            >
+              {data.subMenu.map((value) => {
+                return (
+                  <Menu.Item key={value.link}>
+                    <MenuName>{value.name}</MenuName>
+                  </Menu.Item>
+                );
+              })}
+            </SubMenu>
+          );
+        })}
+      </Menu>
+    </>
+  );
+};
+
+export default AdminMenu;

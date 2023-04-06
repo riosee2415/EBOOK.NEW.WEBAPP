@@ -783,7 +783,7 @@ const UserList = ({}) => {
       </Wrapper>
 
       {/* GUIDE */}
-      <Wrapper margin={`10px 0px 0px 10px`}>
+      <Wrapper margin={`10px 0px 0px 0`}>
         <GuideUl>
           <GuideLi isImpo={true}>
             해당 메뉴에서 홈페이지에 가입된 회원의 정보를 확인할 수 있습니다.

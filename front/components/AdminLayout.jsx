@@ -7,6 +7,7 @@ import AdminMenuBox from "./AdminMenuBox";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { ADMIN_BANNER_REQUEST } from "../reducers/user";
+import AdminMenu from "./admin/AdminMenu";
 
 const AdminHeader = styled(Wrapper)`
   transition: 0.6s;
@@ -186,92 +187,94 @@ const AdminLayout = ({ children }) => {
   return (
     <Wrapper className="whole__admin__wrapper">
       {/* ADMIN HEADER */}
-      <AdminHeader
-        height={`200px`}
-        bgColor={Theme.adminTheme_1}
-        color={Theme.white_C}
-        dr={`row`}
-        ju={`space-around`}
-      >
-        <Wrapper width={`400px`} height={`100%`} position={`relative`}>
-          <Image
-            position={`absolute`}
-            top={`10px`}
-            left={`10px`}
-            width={`100px`}
-            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo2.png`}
-          />
+      {router.pathname === "/admin" && (
+        <AdminHeader
+          height={`200px`}
+          bgColor={Theme.adminTheme_1}
+          color={Theme.white_C}
+          dr={`row`}
+          ju={`space-around`}
+        >
+          <Wrapper width={`400px`} height={`100%`} position={`relative`}>
+            <Image
+              position={`absolute`}
+              top={`10px`}
+              left={`10px`}
+              width={`100px`}
+              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo2.png`}
+            />
 
-          <Image
-            width={`170px`}
-            src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo4.png`}
-          />
+            <Image
+              width={`170px`}
+              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo4.png`}
+            />
 
-          <Wrapper margin={`20px 0px 0px 0px`}>
-            <Text
+            <Wrapper margin={`20px 0px 0px 0px`}>
+              <Text
+                bgColor={Theme.adminTheme_2}
+                padding={`2px 15px`}
+                radius={`6px`}
+              >
+                {me && me.username} 최고관리자님, 환영합니다.
+              </Text>
+            </Wrapper>
+          </Wrapper>
+          <Wrapper width={`calc(100% - 400px)`} height={`100%`}>
+            <Wrapper
+              width={`70%`}
+              height={`80%`}
               bgColor={Theme.adminTheme_2}
-              padding={`2px 15px`}
+              padding={`15px`}
+              ju={`space-around`}
               radius={`6px`}
             >
-              {me && me.username} 최고관리자님, 환영합니다.
-            </Text>
-          </Wrapper>
-        </Wrapper>
-        <Wrapper width={`calc(100% - 400px)`} height={`100%`}>
-          <Wrapper
-            width={`70%`}
-            height={`80%`}
-            bgColor={Theme.adminTheme_2}
-            padding={`15px`}
-            ju={`space-around`}
-            radius={`6px`}
-          >
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              padding={`0px 5px`}
-              borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
-              margin={`0px 0px 5px 0px`}
-            >
-              <Text>오늘 가입한 회원</Text>
-              <Text>{adminBanner && adminBanner.userCnt}건</Text>
-            </Wrapper>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                padding={`0px 5px`}
+                borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                margin={`0px 0px 5px 0px`}
+              >
+                <Text>오늘 가입한 회원</Text>
+                <Text>{adminBanner && adminBanner.userCnt}건</Text>
+              </Wrapper>
 
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              padding={`0px 5px`}
-              borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
-              margin={`0px 0px 5px 0px`}
-            >
-              <Text>오늘 구입한 강의</Text>
-              <Text>{adminBanner && adminBanner.boughtCnt}건</Text>
-            </Wrapper>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                padding={`0px 5px`}
+                borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                margin={`0px 0px 5px 0px`}
+              >
+                <Text>오늘 구입한 강의</Text>
+                <Text>{adminBanner && adminBanner.boughtCnt}건</Text>
+              </Wrapper>
 
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              padding={`0px 5px`}
-              borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
-              margin={`0px 0px 5px 0px`}
-            >
-              <Text>오늘 새로 등록된 공지사항</Text>
-              <Text>{adminBanner && adminBanner.noticeCnt}건</Text>
-            </Wrapper>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                padding={`0px 5px`}
+                borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                margin={`0px 0px 5px 0px`}
+              >
+                <Text>오늘 새로 등록된 공지사항</Text>
+                <Text>{adminBanner && adminBanner.noticeCnt}건</Text>
+              </Wrapper>
 
-            <Wrapper
-              dr={`row`}
-              ju={`space-between`}
-              padding={`0px 5px`}
-              borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
-              margin={`0px 0px 5px 0px`}
-            >
-              <Text>오늘 새로 등록된 후기</Text>
-              <Text>{adminBanner && adminBanner.reviewCnt}건</Text>
+              <Wrapper
+                dr={`row`}
+                ju={`space-between`}
+                padding={`0px 5px`}
+                borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                margin={`0px 0px 5px 0px`}
+              >
+                <Text>오늘 새로 등록된 후기</Text>
+                <Text>{adminBanner && adminBanner.reviewCnt}건</Text>
+              </Wrapper>
             </Wrapper>
           </Wrapper>
-        </Wrapper>
-      </AdminHeader>
+        </AdminHeader>
+      )}
 
       {router.pathname === "/admin" ? (
         <Wrapper dr={`row`}>
@@ -317,7 +320,110 @@ const AdminLayout = ({ children }) => {
           />
         </Wrapper>
       ) : (
-        <Wrapper>{children}</Wrapper>
+        <Wrapper dr={`row`} position={`relative`} al={`flex-start`}>
+          <Wrapper
+            width={`10%`}
+            ju={`flex-start`}
+            al={`flex-start`}
+            height={`100vh`}
+            overflow={`auto`}
+            position={`sticky`}
+            top={`0`}
+            left={`0`}
+          >
+            <AdminMenu />
+          </Wrapper>
+          <Wrapper width={`90%`} padding={`0 0 50px`}>
+            <AdminHeader
+              height={`200px`}
+              bgColor={Theme.adminTheme_1}
+              color={Theme.white_C}
+              dr={`row`}
+              ju={`space-around`}
+            >
+              <Wrapper width={`400px`} height={`100%`} position={`relative`}>
+                <Image
+                  position={`absolute`}
+                  top={`10px`}
+                  left={`10px`}
+                  width={`100px`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo2.png`}
+                />
+
+                <Image
+                  width={`170px`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/connectValue/assets/images/logo/logo_w.png`}
+                />
+
+                <Wrapper margin={`20px 0px 0px 0px`}>
+                  <Text
+                    bgColor={Theme.adminTheme_2}
+                    padding={`2px 15px`}
+                    radius={`6px`}
+                  >
+                    {me && me.username} 최고관리자님, 환영합니다.
+                  </Text>
+                </Wrapper>
+              </Wrapper>
+              <Wrapper width={`calc(100% - 400px)`} height={`100%`}>
+                <Wrapper
+                  width={`70%`}
+                  height={`80%`}
+                  bgColor={Theme.adminTheme_2}
+                  padding={`15px`}
+                  ju={`space-around`}
+                  radius={`6px`}
+                >
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    padding={`0px 5px`}
+                    borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                    margin={`0px 0px 5px 0px`}
+                  >
+                    <Text>오늘 가입한 회원</Text>
+                    <Text>{adminBanner && adminBanner.userCnt}건</Text>
+                  </Wrapper>
+
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    padding={`0px 5px`}
+                    borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                    margin={`0px 0px 5px 0px`}
+                  >
+                    <Text>오늘 구입한 강의</Text>
+                    <Text>{adminBanner && adminBanner.boughtCnt}건</Text>
+                  </Wrapper>
+
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    padding={`0px 5px`}
+                    borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                    margin={`0px 0px 5px 0px`}
+                  >
+                    <Text>오늘 새로 등록된 공지사항</Text>
+                    <Text>{adminBanner && adminBanner.noticeCnt}건</Text>
+                  </Wrapper>
+
+                  <Wrapper
+                    dr={`row`}
+                    ju={`space-between`}
+                    padding={`0px 5px`}
+                    borderBottom={`0.5px solid ${Theme.adminTheme_3}`}
+                    margin={`0px 0px 5px 0px`}
+                  >
+                    <Text>오늘 새로 등록된 후기</Text>
+                    <Text>{adminBanner && adminBanner.reviewCnt}건</Text>
+                  </Wrapper>
+                </Wrapper>
+              </Wrapper>
+            </AdminHeader>
+
+            {children}
+          </Wrapper>
+        </Wrapper>
       )}
 
       {/* ADMIN FOOTER */}
