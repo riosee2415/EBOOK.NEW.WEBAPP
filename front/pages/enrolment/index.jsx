@@ -67,20 +67,37 @@ const Home = ({}) => {
             margin={width < 800 ? `40px 0` : `100px 0 `}
             padding={width < 1280 ? `0` : `0 210px`}
           >
-            <Wrapper al={`flex-start`}>
+            {/* <Wrapper al={`flex-start`}>
               <Text fontSize={width < 800 ? `26px` : `32px`} fontWeight={`800`}>
                 수강신청
               </Text>
               <Text fontSize={`16px`} color={Theme.grey4_C}>
                 원하시는 수강기간을 선택해주세요.
               </Text>
+            </Wrapper> */}
+            {/* PRODUCT WRAPPER */}
+            <Wrapper al={`flex-start`}>
+              <Text
+                color={Theme.grey5_C}
+                fontSize={`23px !important`}
+                margin={width < 700 ? `0 0 0 20px` : `0`}
+              >
+                원하시는 수강 기간을 선택해주세요
+              </Text>
+              <Wrapper
+                dr={`row`}
+                height={`2px`}
+                bgColor={Theme.lightSubTheme2_C}
+                ju={`flex-start`}
+                margin={`10px 0 50px`}
+              >
+                <Wrapper
+                  height={`100%`}
+                  bgColor={Theme.subTheme7_C}
+                  width={`30px`}
+                ></Wrapper>
+              </Wrapper>
             </Wrapper>
-
-            <Wrapper
-              margin={`34px 0 50px`}
-              height={`1px`}
-              bgColor={Theme.lightGrey4_C}
-            />
 
             {lectureList &&
               (lectureList.length === 0 ? (
@@ -109,36 +126,40 @@ const Home = ({}) => {
                         >
                           <Wrapper
                             width={`auto`}
-                            padding={width < 800 ? `8px 10px` : `8px 20px`}
+                            fontSize={`17px`}
+                            padding={width < 800 ? `8px 10px` : `8px 15px`}
                             border={`1px solid ${Theme.lightGrey4_C}`}
-                            color={Theme.grey2_C}
+                            color={Theme.subTheme7_C}
                             radius={`30px`}
                           >
                             #이지쌤
                           </Wrapper>
                           <Wrapper
                             width={`auto`}
-                            padding={width < 800 ? `8px 10px` : `8px 20px`}
+                            fontSize={`17px`}
+                            padding={width < 800 ? `8px 10px` : `8px 15px`}
                             border={`1px solid ${Theme.lightGrey4_C}`}
-                            color={Theme.grey2_C}
+                            color={Theme.subTheme7_C}
                             radius={`30px`}
                           >
                             #제이미쌤
                           </Wrapper>
                           <Wrapper
                             width={`auto`}
-                            padding={width < 800 ? `8px 10px` : `8px 20px`}
+                            fontSize={`17px`}
+                            padding={width < 800 ? `8px 10px` : `8px 15px`}
                             border={`1px solid ${Theme.lightGrey4_C}`}
-                            color={Theme.grey2_C}
+                            color={Theme.subTheme7_C}
                             radius={`30px`}
                           >
                             #무제한 수강
                           </Wrapper>
                           <Wrapper
                             width={`auto`}
-                            padding={width < 800 ? `8px 10px` : `8px 20px`}
+                            fontSize={`17px`}
+                            padding={width < 800 ? `8px 10px` : `8px 15px`}
                             border={`1px solid ${Theme.lightGrey4_C}`}
-                            color={Theme.grey2_C}
+                            color={Theme.subTheme7_C}
                             radius={`30px`}
                           >
                             #{data.viewType}
@@ -151,14 +172,14 @@ const Home = ({}) => {
                         margin={width < 800 && `20px 0`}
                       >
                         <Text
-                          fontSize={`16px`}
+                          fontSize={`20px`}
                           fontWeight={`600`}
                           color={Theme.grey2_C}
                         >
                           친절한 영어교실
                         </Text>
                         <Text
-                          fontSize={`20px`}
+                          fontSize={`26px`}
                           color={Theme.black2_C}
                           margin={`18px 0 10px`}
                         >
@@ -175,6 +196,7 @@ const Home = ({}) => {
                               {data.viewPrice}
                             </Text>
                             <Text
+                              fontSize={`17px`}
                               bgColor={Theme.red2_C}
                               padding={`4px 10px`}
                               radius={`5px`}
@@ -201,7 +223,7 @@ const Home = ({}) => {
                               ? data.viewDiscountPrice
                               : data.viewPrice}
                           </Text>
-                          <Text fontSize={`18px`} color={Theme.grey3_C}>
+                          <Text fontSize={`22px`} color={Theme.grey3_C}>
                             원/{data.viewType}
                           </Text>
                         </Wrapper>
@@ -233,7 +255,7 @@ const Home = ({}) => {
                                         parseInt(data.price / (12 * data.type))
                                       )}
                                 </Text>
-                                <Text fontSize={`18px`} color={Theme.grey3_C}>
+                                <Text fontSize={`22px`} color={Theme.grey3_C}>
                                   원/{data.viewType} 무이자 시
                                 </Text>
                               </>

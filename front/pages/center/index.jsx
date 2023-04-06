@@ -21,7 +21,6 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import { BANNER_LIST_REQUEST } from "../../reducers/banner";
-import { REVIEW_LIST_REQUEST } from "../../reducers/review";
 import { Empty } from "antd";
 import { useRouter } from "next/router";
 import { NOTICE_PAGE_LIST_REQUEST } from "../../reducers/notice";
@@ -32,7 +31,7 @@ import { saveAs } from "file-saver";
 const HoverWrapper = styled(Wrapper)`
   flex-direction: row;
   padding: 30px 0;
-  font-size: 18px;
+  font-size: 20px;
   border-bottom: 1px solid ${(props) => props.theme.lightGrey4_C};
 
   cursor: pointer;
@@ -41,7 +40,7 @@ const HoverWrapper = styled(Wrapper)`
   }
 
   @media (max-width: 700px) {
-    font-size: 14px;
+    font-size: 18px;
     padding: 10px 0;
   }
 `;
@@ -135,16 +134,33 @@ const Home = ({}) => {
           >
             {/* 공지사항 */}
             <Wrapper al={`flex-start`}>
-              <Text fontSize={width < 700 ? `26px` : `32px`} fontWeight={`700`}>
+              <Text
+                color={Theme.grey5_C}
+                fontSize={`23px !important`}
+                margin={width < 700 ? `0 0 0 20px` : `0`}
+              >
                 공지사항
               </Text>
+              <Wrapper
+                dr={`row`}
+                height={`2px`}
+                bgColor={Theme.lightSubTheme2_C}
+                ju={`flex-start`}
+                margin={`10px 0 50px`}
+              >
+                <Wrapper
+                  height={`100%`}
+                  bgColor={Theme.subTheme7_C}
+                  width={`30px`}
+                ></Wrapper>
+              </Wrapper>
             </Wrapper>
 
             <Wrapper
               dr={`row`}
               padding={width < 700 ? `10px 0` : `28px 0`}
-              margin={`34px 0 0`}
-              fontSize={width < 700 ? `16px` : `20px`}
+              margin={`20px 0 0`}
+              fontSize={width < 700 ? `20px` : `22px`}
               color={Theme.grey3_C}
               bgColor={Theme.lightGrey2_C}
               borderTop={`1px solid ${Theme.grey2_C}`}
@@ -221,16 +237,27 @@ const Home = ({}) => {
 
             {/* 카카오톡 문의 */}
             <Wrapper al={`flex-start`}>
-              <Text fontSize={width < 700 ? `26px` : `32px`} fontWeight={`700`}>
+              <Text
+                color={Theme.grey5_C}
+                fontSize={`23px !important`}
+                margin={width < 700 ? `0 0 0 20px` : `0`}
+              >
                 온라인 상담
               </Text>
+              <Wrapper
+                dr={`row`}
+                height={`2px`}
+                bgColor={Theme.lightSubTheme2_C}
+                ju={`flex-start`}
+                margin={`10px 0 50px`}
+              >
+                <Wrapper
+                  height={`100%`}
+                  bgColor={Theme.subTheme7_C}
+                  width={`30px`}
+                ></Wrapper>
+              </Wrapper>
             </Wrapper>
-
-            <Wrapper
-              margin={`34px 0 46px`}
-              height={`1px`}
-              bgColor={Theme.lightGrey4_C}
-            />
 
             <Wrapper
               padding={width < 700 ? `0 20px` : `0`}
@@ -276,15 +303,29 @@ const Home = ({}) => {
 
             {/* 자료실 */}
             <Wrapper al={`flex-start`}>
-              <Text fontSize={width < 700 ? `26px` : `32px`} fontWeight={`700`}>
+              <Text
+                color={Theme.grey5_C}
+                fontSize={`23px !important`}
+                margin={width < 700 ? `0 0 0 20px` : `0`}
+              >
                 자료실
               </Text>
+              <Wrapper
+                dr={`row`}
+                height={`2px`}
+                bgColor={Theme.lightSubTheme2_C}
+                ju={`flex-start`}
+                margin={`10px 0 0`}
+              >
+                <Wrapper
+                  height={`100%`}
+                  bgColor={Theme.subTheme7_C}
+                  width={`30px`}
+                ></Wrapper>
+              </Wrapper>
             </Wrapper>
 
-            <Wrapper
-              borderTop={`1px solid ${Theme.lightGrey4_C}`}
-              margin={`34px 0 0`}
-            >
+            <Wrapper margin={`10px 0 0`}>
               {referenceList &&
                 (referenceList.length === 0 ? (
                   <Wrapper margin={`0 0 40px`}>

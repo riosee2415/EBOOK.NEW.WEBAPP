@@ -7,7 +7,9 @@ export default {
   subTheme4_C: "#FFD321",
   subTheme5_C: "#FCF6FC",
   subTheme6_C: "#C5C5EE",
+  subTheme7_C: "#677294",
   lightBasicTheme_c: "#FFF2F3",
+  lightSubTheme2_C: "#D8DEE5",
 
   kakao_C: "#FAE100",
   naver_C: "#00C73C",

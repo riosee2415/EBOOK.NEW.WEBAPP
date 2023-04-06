@@ -10,7 +10,7 @@ import AppFooter from "./AppFooter";
 import FixedNav from "./FixedNav";
 
 const CustomRow = styled(Row)`
-  margin: 0 0 143px;
+  padding: 143px 0 0;
 
   @media (max-width: 700px) {
     margin: 0;

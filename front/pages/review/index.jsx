@@ -27,7 +27,7 @@ import { useRouter } from "next/router";
 const HoverWrapper = styled(Wrapper)`
   flex-direction: row;
   padding: 30px 0;
-  font-size: 18px;
+  font-size: 20px;
   border-bottom: 1px solid ${(props) => props.theme.lightGrey4_C};
 
   cursor: pointer;
@@ -36,7 +36,7 @@ const HoverWrapper = styled(Wrapper)`
   }
 
   @media (max-width: 700px) {
-    font-size: 14px;
+    font-size: 18px;
     padding: 10px 0;
   }
 `;
@@ -94,15 +94,29 @@ const Home = ({}) => {
             padding={width < 1280 ? `0` : `0 210px`}
           >
             <Wrapper al={`flex-start`}>
-              <Text fontSize={`32px`} fontWeight={`700`}>
-                수강후기
-              </Text>
-            </Wrapper>
-            <Wrapper dr={`row`} ju={`space-between`}>
-              <Text fontSize={`16px`} color={Theme.grey4_C}>
+              <Text
+                color={Theme.grey5_C}
+                fontSize={`23px !important`}
+                margin={width < 700 ? `0 0 0 20px` : `0`}
+              >
                 친절한 영어교실 수강생분들의 생생후기
               </Text>
+              <Wrapper
+                dr={`row`}
+                height={`2px`}
+                bgColor={Theme.lightSubTheme2_C}
+                ju={`flex-start`}
+                margin={`10px 0 50px`}
+              >
+                <Wrapper
+                  height={`100%`}
+                  bgColor={Theme.subTheme7_C}
+                  width={`30px`}
+                ></Wrapper>
+              </Wrapper>
+            </Wrapper>
 
+            <Wrapper dr={`row`} ju={`flex-end`}>
               <CommonButton
                 kindOf={`basic`}
                 width={`114px`}
@@ -118,7 +132,7 @@ const Home = ({}) => {
               dr={`row`}
               padding={width < 700 ? `10px 0` : `28px 0`}
               margin={`30px 0 0`}
-              fontSize={width < 700 ? `16px` : `20px`}
+              fontSize={width < 700 ? `20px` : `22px`}
               color={Theme.grey3_C}
               bgColor={Theme.lightGrey2_C}
               borderTop={`1px solid ${Theme.grey2_C}`}
