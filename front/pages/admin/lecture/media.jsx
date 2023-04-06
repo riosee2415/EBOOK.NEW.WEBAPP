@@ -40,6 +40,7 @@ import {
   EyeOutlined,
   AlertOutlined,
   CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import {
   MEDIA_CREATE_REQUEST,
@@ -151,6 +152,8 @@ const Media = ({}) => {
 
   const [serachTitle, setSearchTitle] = useState(null);
 
+  const [searchEtcType, setSearchEtcType] = useState(3);
+
   const [currentData, setCurrentData] = useState(null);
   ////// USEEFFECT //////
 
@@ -221,9 +224,10 @@ const Media = ({}) => {
       type: MEDIA_ADMIN_LIST_REQUEST,
       data: {
         title: serachTitle,
+        etcType: searchEtcType,
       },
     });
-  }, [serachTitle]);
+  }, [serachTitle, searchEtcType]);
 
   // 영상 생성
   useEffect(() => {
@@ -232,6 +236,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          etcType: searchEtcType,
         },
       });
 
@@ -251,6 +256,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          etcType: searchEtcType,
         },
       });
 
@@ -269,6 +275,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          etcType: searchEtcType,
         },
       });
 
@@ -327,6 +334,14 @@ const Media = ({}) => {
       setSearchTitle(data.title);
     },
     [serachTitle]
+  );
+
+  // 상담 검색
+  const etcTypeChangeHandler = useCallback(
+    (type) => {
+      setSearchEtcType(type);
+    },
+    [searchEtcType]
   );
 
   // 파일 업로드
@@ -467,6 +482,7 @@ const Media = ({}) => {
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
+          etc: data.etc,
         },
       });
     },
@@ -509,6 +525,16 @@ const Media = ({}) => {
             <SortView>{data.sort}</SortView>
             <DownBtn onClick={() => sortUpdateHandler(data, data.sort - 1)} />
           </Wrapper>
+        );
+      },
+    },
+    {
+      title: "상담여부",
+      render: (data) => {
+        return data.etc ? (
+          <CheckOutlined style={{ color: Theme.naver_C }} />
+        ) : (
+          <CloseOutlined style={{ color: Theme.red_C }} />
         );
       },
     },
@@ -594,6 +620,29 @@ const Media = ({}) => {
                   검색
                 </Button>
               </Form>
+              <Wrapper width={`auto`} dr={`row`} margin={`0 0 0 10px`}>
+                <Button
+                  size="small"
+                  type={searchEtcType === 3 && "primary"}
+                  onClick={() => etcTypeChangeHandler(3)}
+                >
+                  전체
+                </Button>
+                <Button
+                  size="small"
+                  type={searchEtcType === 1 && "primary"}
+                  onClick={() => etcTypeChangeHandler(1)}
+                >
+                  상담
+                </Button>
+                <Button
+                  size="small"
+                  type={searchEtcType === 2 && "primary"}
+                  onClick={() => etcTypeChangeHandler(2)}
+                >
+                  미상담
+                </Button>
+              </Wrapper>
             </Wrapper>
             <Button size="small" type="primary" onClick={cModalToggle}>
               강의 생성
