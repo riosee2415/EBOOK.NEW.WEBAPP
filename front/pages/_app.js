@@ -83,6 +83,10 @@ const Fourleaf = ({ Component }) => {
           type="text/javascript"
           src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
         ></script>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/react-quill@1.3.3/dist/quill.snow.css"
+        />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
         <script type="text/javascript" src="../customScript.js"></script>

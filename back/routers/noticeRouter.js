@@ -263,7 +263,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   const updateQ = `
     UPDATE  notices
       SET   title = "${title}",
-            content = "${content}",
+            content = '${content}',
             type = "${type}",
             updatedAt = now(),
             updator = ${req.user.id},

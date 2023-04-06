@@ -30,6 +30,7 @@ import {
   REVIEW_DETAIL_REQUEST,
 } from "../../../reducers/review";
 import { NOTICE_DETAIL_REQUEST } from "../../../reducers/notice";
+import "react-quill/dist/quill.core.css";
 
 const HoverWrapper = styled(Wrapper)`
   cursor: pointer;
@@ -173,16 +174,16 @@ const ReviewDetail = ({}) => {
             </Wrapper>
 
             {noticeDetail && (
-              <CustomHtmlWrapper
-                // ju={`flex-start`}
-                // al={`flex-start`}
-                minHeight={`300px`}
-                fontSize={width < 700 ? `18px` : `20px`}
+              <div
+                className="view ql-editor"
+                style={{ minHeight: `300px`, width: `100%` }}
                 dangerouslySetInnerHTML={{
                   __html: noticeDetail.content,
                 }}
-              ></CustomHtmlWrapper>
+              ></div>
             )}
+
+            {/* <Quill></ */}
 
             <Wrapper
               height={`1px`}
