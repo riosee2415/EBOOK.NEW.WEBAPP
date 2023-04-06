@@ -7,6 +7,7 @@ import { withResizeDetector } from "react-resize-detector";
 import { AlignRightOutlined } from "@ant-design/icons";
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
+import FixedNav from "./FixedNav";
 
 const ClientLayout = ({ children, width }) => {
   return (
@@ -37,6 +38,7 @@ const ClientLayout = ({ children, width }) => {
         <Col span={0}>RIGHT</Col>
       </Row>
 
+      <FixedNav />
       {/* Footer */}
 
       <AppFooter />
