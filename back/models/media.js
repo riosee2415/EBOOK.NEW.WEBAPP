@@ -57,6 +57,10 @@ module.exports = class Media extends Model {
           type: DataTypes.DATE,
           allowNull: true,
         },
+        etc: {
+          type: DataTypes.STRING(700), // 상담
+          allowNull: true,
+        },
       },
       {
         modelName: "Media",

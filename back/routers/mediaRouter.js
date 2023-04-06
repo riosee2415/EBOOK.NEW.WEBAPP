@@ -50,12 +50,17 @@ router.post(
 );
 
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { title } = req.body;
+  const { title, etcType } = req.body;
 
   const _title = title ? title : "";
 
+  const _etcType = etcType ? etcType : 3;
+  // 1 상담
+  // 2 미상담
+  // 3 전체
+
   const selectQ = `
-    SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
+    SELECT  ROW_NUMBER() OVER()		AS num,
             id,
             title,
             mediaOriginName,
@@ -69,11 +74,19 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
             updatedAt,
-            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt
+            DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
+            etc
       FROM  media
      WHERE  1 = 1
        AND  title LIKE "%${_title}%"
        AND  isDelete = FALSE
+            ${
+              _etcType === 1
+                ? `AND  etc IS NOT NULL`
+                : _etcType === 2
+                ? `AND  etc IS NULL`
+                : ``
+            }
      ORDER  BY  sort ASC
     `;
 
@@ -301,6 +314,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     sampleMediaPath,
     sampleDuration,
     isSample,
+    etc,
   } = req.body;
 
   const updateQ = `
@@ -319,6 +333,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
           },
           sampleDuration = ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
           isSample = ${isSample},
+          etc = ${etc ? `"${etc}"` : `NULL`},
           updatedAt = NOW()
    WHERE  id = ${id}
   `;

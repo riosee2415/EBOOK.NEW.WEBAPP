@@ -50,6 +50,7 @@ import {
   MEDIA_FILE2_UPLOAD_REQUEST,
   MEDIA_SORT_UPDATE_REQUEST,
 } from "../../../reducers/media";
+import moment from "moment";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -412,10 +413,22 @@ const Media = ({}) => {
         viewCreatedAt: record.viewCreatedAt,
         viewUpdatedAt: record.viewUpdatedAt,
         isSample: record.isSample ? 1 : 0,
+        etc: record.etc,
       });
     },
     [currentData]
   );
+
+  // 상담자 추가
+  const etcAddHandler = useCallback(() => {
+    const infoData = infoForm.getFieldsValue();
+
+    infoForm.setFieldsValue({
+      etc:
+        (infoData.etc ? infoData.etc + `\n\n` : "") +
+        `${moment().format("YYYY.MM.DD/HH:mm")}(${me.username})`,
+    });
+  }, [me]);
 
   // 상품 등록
   const mediaCreateHandler = useCallback(
@@ -736,6 +749,29 @@ const Media = ({}) => {
                 >
                   <Switch size="small" />
                 </Form.Item>
+
+                <Form.Item
+                  name="etc"
+                  label={
+                    <Text color={Theme.basicTheme_C} fontWeight={`700`}>
+                      상담
+                    </Text>
+                  }
+                >
+                  <Input.TextArea
+                    style={{
+                      backgroundColor: Theme.lightBasicTheme_c,
+                      border: `1px solid ${Theme.basicTheme_C}`,
+                    }}
+                    size="small"
+                    autoSize={{ minRows: 5, maxRows: 15 }}
+                  />
+                </Form.Item>
+                <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+                  <Button size="small" onClick={etcAddHandler}>
+                    상담자 추가
+                  </Button>
+                </Wrapper>
 
                 <Wrapper dr={`row`} ju="flex-end">
                   <Popconfirm

@@ -1278,7 +1278,23 @@ const UserList = ({}) => {
                     </Popconfirm>
                   )}
 
-                  {boughtAdminId.isPay ? (
+                  {boughtAdminId ? (
+                    boughtAdminId.isPay ? (
+                      <ModalBtn
+                        size="small"
+                        type="primary"
+                        htmlType="submit"
+                        loading={
+                          st_boughtAdminCreateLoading ||
+                          st_boughtAdminUpdateLoading
+                        }
+                      >
+                        {boughtAdminId ? "수정" : "추가"}
+                      </ModalBtn>
+                    ) : (
+                      ""
+                    )
+                  ) : (
                     <ModalBtn
                       size="small"
                       type="primary"
@@ -1290,8 +1306,6 @@ const UserList = ({}) => {
                     >
                       {boughtAdminId ? "수정" : "추가"}
                     </ModalBtn>
-                  ) : (
-                    ""
                   )}
                 </Wrapper>
               </CustomForm>
