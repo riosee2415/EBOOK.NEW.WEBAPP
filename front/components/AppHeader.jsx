@@ -41,10 +41,10 @@ const MobileRow = styled(RowWrapper)`
 `;
 
 const Menu = styled.h2`
-  height: 90px;
-  line-height: 90px;
+  height: 70px;
+  line-height: 70px;
   font-size: 23px;
-  font-weight: 600;
+  font-weight: 700;
   /* color: ${Theme.white_C}; */
   text-align: center;
   position: relative;
@@ -62,6 +62,7 @@ const Menu = styled.h2`
 
 const HoverText = styled(Text)`
   padding: 6px 14px;
+  font-weight: 700;
   color: ${(props) => props.theme.grey3_C};
   font-size: 20px;
   cursor: pointer;
@@ -154,23 +155,46 @@ const AppHeader = ({}) => {
     <>
       <WholeWrapper
         display={width < 1100 && "none"}
-        // position={`fixed`}
+        position={`fixed`}
         top={`0`}
         left={`0`}
         zIndex={`99`}
-        // bgColor={headerScroll === true && Theme.black_C}
+        bgColor={Theme.white_C}
       >
-        <RsWrapper dr={`row`} ju={`space-between`}>
-          <ATag href="/" width={`210px`}>
-            {logos && logos.find((data) => data.typeOf === "H") && (
-              <Image
-                width={`100%`}
-                src={logos.find((data) => data.typeOf === "H").imageURL}
-                alt="logo"
-              />
+        <RsWrapper>
+          <Wrapper dr={`row`} ju={`space-between`} padding={`10px 0`}>
+            <ATag href="/" width={`210px`}>
+              {logos && logos.find((data) => data.typeOf === "H") && (
+                <Image
+                  width={`100%`}
+                  src={logos.find((data) => data.typeOf === "H").imageURL}
+                  alt="logo"
+                />
+              )}
+            </ATag>
+            {me ? (
+              <Wrapper width={`auto`} dr={`row`}>
+                <HoverText onClick={logoutHandler}>로그아웃</HoverText>
+              </Wrapper>
+            ) : (
+              <Wrapper width={`auto`} dr={`row`}>
+                <Link href={`/user/login`}>
+                  <a>
+                    <HoverText>로그인</HoverText>
+                  </a>
+                </Link>
+                <Link href={`/user/signup`}>
+                  <a>
+                    <HoverText>회원가입</HoverText>
+                  </a>
+                </Link>
+              </Wrapper>
             )}
-          </ATag>
-          <Wrapper dr={`row`} width={`auto`}>
+          </Wrapper>
+        </RsWrapper>
+        <Wrapper height={`1px`} bgColor={Theme.lightGrey3_C} />
+        <RsWrapper>
+          <Wrapper dr={`row`} ju={`space-between`}>
             <Link href={`/enrolment`}>
               <a>
                 <Menu isActive={router.pathname === `/enrolment`}>
@@ -193,32 +217,19 @@ const AppHeader = ({}) => {
                 <Menu isActive={router.pathname === `/center`}>고객센터</Menu>
               </a>
             </Link>
-          </Wrapper>
-          {me ? (
-            <Wrapper width={`auto`} dr={`row`}>
+
+            {me ? (
               <Link href={`/mypage`}>
                 <a>
                   <HoverText2>나의 강의실</HoverText2>
                 </a>
               </Link>
-
-              <HoverText onClick={logoutHandler}>로그아웃</HoverText>
-            </Wrapper>
-          ) : (
-            <Wrapper width={`auto`} dr={`row`}>
-              <Link href={`/user/login`}>
-                <a>
-                  <HoverText>로그인</HoverText>
-                </a>
-              </Link>
-              <Link href={`/user/signup`}>
-                <a>
-                  <HoverText>회원가입</HoverText>
-                </a>
-              </Link>
-            </Wrapper>
-          )}
+            ) : (
+              ""
+            )}
+          </Wrapper>
         </RsWrapper>
+        <Wrapper height={`3px`} bgColor={Theme.lightGrey2_C} />
       </WholeWrapper>
 
       {/* mobile */}

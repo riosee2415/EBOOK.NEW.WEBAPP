@@ -9,6 +9,14 @@ import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
 import FixedNav from "./FixedNav";
 
+const CustomRow = styled(Row)`
+  margin: 0 0 143px;
+
+  @media (max-width: 700px) {
+    margin: 0;
+  }
+`;
+
 const ClientLayout = ({ children, width }) => {
   return (
     <section>
@@ -32,11 +40,11 @@ const ClientLayout = ({ children, width }) => {
       */}
 
       {/* content */}
-      <Row>
+      <CustomRow>
         <Col span={0}>LEFT</Col>
         <Col span={24}>{children}</Col>
         <Col span={0}>RIGHT</Col>
-      </Row>
+      </CustomRow>
 
       <FixedNav />
       {/* Footer */}
