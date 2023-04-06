@@ -415,9 +415,13 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
           A.lectureId
     FROM  boughtLecture							A
    WHERE  A.isDelete = FALSE
-     AND  A.isPay = TRUE
-     AND  A.endDate IS NOT NULL
-     AND  DATE_FORMAT(A.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+     AND  (
+                A.payType = "nobank" 
+            AND A.endDate IS NULL 
+             OR A.isPay = TRUE 
+            AND A.endDate IS NOT NULL 
+            AND DATE_FORMAT(A.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+          )
      AND  A.userId = ${id}
    ORDER  BY  A.createdAt DESC
    LIMIT  1

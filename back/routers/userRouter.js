@@ -637,32 +637,31 @@ router.post("/signup", async (req, res, next) => {
     return res.status(401).send("이용약관에 동의해주세요.");
   }
 
-  try {
-    const exUser = await User.findOne({
-      where: { userId: userId },
-    });
+  const exUser = await User.findOne({
+    where: { userId: userId },
+  });
 
-    if (exUser) {
-      return res.status(401).send("이미 가입된 회원 입니다.");
-    }
+  if (exUser) {
+    return res.status(401).send("이미 가입된 회원 입니다.");
+  }
 
-    if (email) {
-      const exEmail = await User.findOne({
-        where: { email: email },
-      });
-      if (exEmail) {
-        return res.status(401).send("이미 가입된 이메일 입니다.");
-      }
-    }
+  // if (email) {
+  //   const exEmail = await User.findOne({
+  //     where: { email: email },
+  //   });
+  //   if (exEmail) {
+  //     return res.status(401).send("이미 가입된 이메일 입니다.");
+  //   }
+  // }
 
-    let cipher = crypto.createHash("sha512");
+  let cipher = crypto.createHash("sha512");
 
-    cipher.update(password);
-    const hashedPassword = cipher.digest("hex");
+  cipher.update(password);
+  const hashedPassword = cipher.digest("hex");
 
-    // const hashedPassword = await bcrypt.hash(password, 12);
+  // const hashedPassword = await bcrypt.hash(password, 12);
 
-    const insertQ = `
+  const insertQ = `
     INSERT INTO users 
     (
       userId,
@@ -697,13 +696,61 @@ router.post("/signup", async (req, res, next) => {
     )
     `;
 
-    await models.sequelize.query(insertQ);
+  const insertResult = await models.sequelize.query(insertQ);
 
-    return res.status(201).send("SUCCESS");
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
+  passport.authenticate("local", async (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+
+    if (info) {
+      console.log(`❌ LOGIN FAILED : ${info.reason}`);
+      return res.status(401).send(info.reason);
+    }
+
+    // const fullUserWithoutPassword = await User.findOne({
+    //   where: { id: user.id },
+    // });
+
+    const findQ = `
+        SELECT  A.id,
+                A.userId,
+                A.username,
+                A.birth,
+                A.gender,
+                A.zoneCode,
+                A.address,
+                A.detailAddress,
+                A.tel,
+                A.mobile,
+                A.email,
+                A.level,
+                A.menuRight1,
+                A.menuRight2,
+                A.menuRight3,
+                A.menuRight4,
+                A.menuRight5,
+                A.menuRight6,
+                A.menuRight7,
+                A.menuRight8
+          FROM  users			A
+         WHERE  A.id = ${insertResult[0]}
+        `;
+
+    const find = await models.sequelize.query(findQ);
+
+    // return res.status(200).json({ ...find[0][0] });
+
+    return req.login(find[0][0], async (loginErr) => {
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+
+      return res.status(200).json(find[0][0]);
+    });
+  })(req, res, next);
 });
 
 router.post("/check/userid", async (req, res, next) => {

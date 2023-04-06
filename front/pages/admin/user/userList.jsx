@@ -386,6 +386,7 @@ const UserList = ({}) => {
   useEffect(() => {
     if (boughtAdminId) {
       bForm.setFieldsValue({
+        payWay: boughtAdminId.payType,
         lectureType: boughtAdminId.lectureType,
         startDate: moment(boughtAdminId.startDate),
         endDate: moment(boughtAdminId.endDate),
@@ -1173,6 +1174,22 @@ const UserList = ({}) => {
                 {boughtAdminId ? (
                   <>
                     <Form.Item
+                      name="payWay"
+                      label="구매유형"
+                      rules={[
+                        { required: true, message: "구매유형은 필수입니다." },
+                      ]}
+                    >
+                      <Select size="small" style={{ width: `100%` }} disabled>
+                        <Select.Option value={"admin"}>관리자</Select.Option>
+                        <Select.Option value={"card"}>카드</Select.Option>
+                        <Select.Option value={"nobank"}>
+                          무통장입금
+                        </Select.Option>
+                        <Select.Option value={"paypal"}>페이팔</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
                       name="lectureType"
                       label="수강권유형"
                       rules={[
@@ -1188,24 +1205,32 @@ const UserList = ({}) => {
                         <Select.Option value={6}>상품</Select.Option>
                       </Select>
                     </Form.Item>
-                    <Form.Item
-                      name="startDate"
-                      label="시작일"
-                      rules={[
-                        { required: true, message: "시작일은 필수입니다." },
-                      ]}
-                    >
-                      <DatePicker size="small" style={{ width: `100%` }} />
-                    </Form.Item>
-                    <Form.Item
-                      name="endDate"
-                      label="종료일"
-                      rules={[
-                        { required: true, message: "종료일은 필수입니다." },
-                      ]}
-                    >
-                      <DatePicker size="small" style={{ width: `100%` }} />
-                    </Form.Item>
+                    {boughtAdminId.isPay ? (
+                      <>
+                        <Form.Item
+                          name="startDate"
+                          label="시작일"
+                          rules={[
+                            { required: true, message: "시작일은 필수입니다." },
+                          ]}
+                        >
+                          <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                        <Form.Item
+                          name="endDate"
+                          label="종료일"
+                          rules={[
+                            { required: true, message: "종료일은 필수입니다." },
+                          ]}
+                        >
+                          <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                      </>
+                    ) : (
+                      <Wrapper margin={`0 0 23px`}>
+                        <Text>승인되지 않았습니다.</Text>
+                      </Wrapper>
+                    )}
                     <Form.Item name="boughtDate" label="구매일">
                       <DatePicker
                         size="small"
@@ -1253,16 +1278,21 @@ const UserList = ({}) => {
                     </Popconfirm>
                   )}
 
-                  <ModalBtn
-                    size="small"
-                    type="primary"
-                    htmlType="submit"
-                    loading={
-                      st_boughtAdminCreateLoading || st_boughtAdminUpdateLoading
-                    }
-                  >
-                    {boughtAdminId ? "수정" : "추가"}
-                  </ModalBtn>
+                  {boughtAdminId.isPay ? (
+                    <ModalBtn
+                      size="small"
+                      type="primary"
+                      htmlType="submit"
+                      loading={
+                        st_boughtAdminCreateLoading ||
+                        st_boughtAdminUpdateLoading
+                      }
+                    >
+                      {boughtAdminId ? "수정" : "추가"}
+                    </ModalBtn>
+                  ) : (
+                    ""
+                  )}
                 </Wrapper>
               </CustomForm>
             </Wrapper>
