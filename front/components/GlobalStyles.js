@@ -10,13 +10,21 @@ const fontStyle = css`
     font-style: normal;
   }
   /*  */
+  @font-face {
+    font-family: "twayair";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_tway@1.0/twayair.woff")
+      format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
 `;
 
 const GlobalStyles = createGlobalStyle`
   ${fontStyle}
 
+  
   body {
-    font-family: "pretendard", sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
   }
 
   .whole__admin__wrapper {

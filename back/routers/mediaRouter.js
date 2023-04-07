@@ -284,7 +284,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   VALUES
   (
       "${type}",
-      "${title}",
+      '${title}',
       ${mediaOriginName ? `"${mediaOriginName}"` : "NULL"},
       ${mediaPath ? `"${mediaPath}"` : "NULL"},
       ${duration ? `"${duration}"` : "NULL"},
@@ -326,7 +326,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   const updateQ = `
   UPDATE  media
      SET  type = "${type}",
-          title = "${title}",
+          title = '${title}',
           mediaOriginName = ${
             mediaOriginName ? `"${mediaOriginName}"` : "NULL"
           },
