@@ -298,6 +298,26 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   )
   `;
 
+  // await models.Media.update(
+  //   {
+  //     type: type,
+  //     title: title,
+  //     mediaOriginName: mediaOriginName ? `"${mediaOriginName}"` : null,
+  //     mediaPath: mediaPath ? `"${mediaPath}"` : null,
+  //     duration: duration ? `"${duration}"` : null,
+  //     sampleMediaOriginName: sampleMediaOriginName
+  //       ? `"${sampleMediaOriginName}"`
+  //       : null,
+  //     sampleMediaPath: sampleMediaPath ? `"${sampleMediaPath}"` : null,
+  //     sampleDuration: sampleDuration ? `"${sampleDuration}"` : null,
+  //     isSample: isSample,
+  //     etc: etc ? `"${etc}"` : null,
+  //   },
+  //   {
+  //     where: { id: id },
+  //   }
+  // );
+
   try {
     await models.sequelize.query(insertQ);
 
@@ -323,30 +343,26 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     etc,
   } = req.body;
 
-  const updateQ = `
-  UPDATE  media
-     SET  type = "${type}",
-          title = '${title}',
-          mediaOriginName = ${
-            mediaOriginName ? `"${mediaOriginName}"` : "NULL"
-          },
-          mediaPath = ${mediaPath ? `"${mediaPath}"` : "NULL"},
-          duration = ${duration ? `"${duration}"` : "NULL"},
-          sampleMediaOriginName = ${
-            sampleMediaOriginName ? `"${sampleMediaOriginName}"` : "NULL"
-          },
-          sampleMediaPath = ${
-            sampleMediaPath ? `"${sampleMediaPath}"` : "NULL"
-          },
-          sampleDuration = ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
-          isSample = ${isSample},
-          etc = ${etc ? `"${etc}"` : `NULL`},
-          updatedAt = NOW()
-   WHERE  id = ${id}
-  `;
-
   try {
-    await models.sequelize.query(updateQ);
+    await models.Media.update(
+      {
+        type: type,
+        title: title,
+        mediaOriginName: mediaOriginName ? `"${mediaOriginName}"` : null,
+        mediaPath: mediaPath ? `"${mediaPath}"` : null,
+        duration: duration ? `"${duration}"` : null,
+        sampleMediaOriginName: sampleMediaOriginName
+          ? `"${sampleMediaOriginName}"`
+          : null,
+        sampleMediaPath: sampleMediaPath ? `"${sampleMediaPath}"` : null,
+        sampleDuration: sampleDuration ? `"${sampleDuration}"` : null,
+        isSample: isSample,
+        etc: etc ? `"${etc}"` : null,
+      },
+      {
+        where: { id: id },
+      }
+    );
 
     return res.status(200).json({ result: true });
   } catch (e) {

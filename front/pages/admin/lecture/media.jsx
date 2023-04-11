@@ -474,7 +474,7 @@ const Media = ({}) => {
         data: {
           id: currentData.id,
           type: data.type,
-          title: data.title,
+          title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
           mediaOriginName: data.mediaOriginName,
           mediaPath: mediaPath,
           duration: mediaDuration,
