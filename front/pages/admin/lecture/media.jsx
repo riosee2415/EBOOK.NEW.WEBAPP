@@ -453,20 +453,14 @@ const Media = ({}) => {
         data: {
           type: data.type,
           title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
-          mediaOriginName: data.mediaOriginName.replace(
-            /\'/gi,
-            `\'`,
-            /\"/gi,
-            `\"`
-          ),
+          mediaOriginName: data.mediaOriginName
+            ? data.mediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
-          sampleMediaOriginName: data.sampleMediaOriginName.replace(
-            /\'/gi,
-            `\'`,
-            /\"/gi,
-            `\"`
-          ),
+          sampleMediaOriginName: data.sampleMediaOriginName
+            ? data.sampleMediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
@@ -485,20 +479,14 @@ const Media = ({}) => {
           id: currentData.id,
           type: data.type,
           title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
-          mediaOriginName: data.mediaOriginName.replace(
-            /\'/gi,
-            `\'`,
-            /\"/gi,
-            `\"`
-          ),
+          mediaOriginName: data.mediaOriginName
+            ? data.mediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
-          sampleMediaOriginName: data.sampleMediaOriginName.replace(
-            /\'/gi,
-            `\'`,
-            /\"/gi,
-            `\"`
-          ),
+          sampleMediaOriginName: data.sampleMediaOriginName
+            ? data.sampleMediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
