@@ -470,6 +470,8 @@ const Media = ({}) => {
     [mediaPath, mediaDuration, media2Path, media2Duration]
   );
 
+  console.log("'test'".addsa);
+
   // 상품 업로드
   const mediaUpdateHandler = useCallback(
     (data) => {
@@ -478,14 +480,14 @@ const Media = ({}) => {
         data: {
           id: currentData.id,
           type: data.type,
-          title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
+          title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
           mediaOriginName: data.mediaOriginName
-            ? data.mediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            ? data.mediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
             : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
           sampleMediaOriginName: data.sampleMediaOriginName
-            ? data.sampleMediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            ? data.sampleMediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
             : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
