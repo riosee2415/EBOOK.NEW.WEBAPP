@@ -121,6 +121,7 @@ const BuyLecture = ({}) => {
   const [searchPayType, setSearchPayType] = useState(null);
   const [searchType, setSearchType] = useState(null);
   const [isPayType, setIsPayType] = useState(null);
+  const [isEndDate, setIsEndDate] = useState(3);
 
   const [aModal, setAModal] = useState(false);
   const [aData, setAData] = useState(null);
@@ -164,9 +165,10 @@ const BuyLecture = ({}) => {
         searchType: searchType,
         searchPayType: searchPayType,
         isPayType: searchPayType === "nobank" && isPayType,
+        isEndDate: isEndDate,
       },
     });
-  }, [searchDate, searchType, searchPayType, isPayType]);
+  }, [searchDate, searchType, searchPayType, isPayType, isEndDate]);
 
   // 엑셀
 
@@ -174,8 +176,6 @@ const BuyLecture = ({}) => {
     if (boughtAdminList) {
       const scvData = [];
       const scvData2 = [];
-
-      console.log(boughtAdminList);
 
       boughtAdminList &&
         boughtAdminList.map((data, idx) => {
@@ -250,6 +250,7 @@ const BuyLecture = ({}) => {
           searchType: searchType,
           searchPayType: searchPayType,
           isPayType: searchPayType === "nobank" && isPayType,
+          isEndDate: isEndDate,
         },
       });
 
@@ -271,6 +272,7 @@ const BuyLecture = ({}) => {
           searchType: searchType,
           searchPayType: searchPayType,
           isPayType: searchPayType === "nobank" && isPayType,
+          isEndDate: isEndDate,
         },
       });
 
@@ -368,6 +370,13 @@ const BuyLecture = ({}) => {
       });
     },
     [aData]
+  );
+
+  const isEndDateChangeHandler = useCallback(
+    (data) => {
+      setIsEndDate(data);
+    },
+    [isEndDate]
   );
 
   ////// DATAVIEW //////
@@ -591,13 +600,13 @@ const BuyLecture = ({}) => {
                 size="small"
                 picker="month"
                 // locale={{ lang: { locale: "ko",  } }}
-                style={{ width: `300px` }}
+                style={{ width: `150px` }}
                 placeholder="검색하실 결제일을 선택해주세요."
                 onChange={searchDateHandler}
                 value={searchDate}
               />
               <Select
-                style={{ width: `300px` }}
+                style={{ width: `280px` }}
                 size="small"
                 placeholder="검색하실 결제 유형을 선택해주세요."
                 onChange={searchPayTypeChangeHandler}
@@ -613,7 +622,7 @@ const BuyLecture = ({}) => {
               </Select>
               {searchPayType === "nobank" && (
                 <Select
-                  style={{ width: `300px` }}
+                  style={{ width: `280px` }}
                   size="small"
                   placeholder="승인여부를 선택해주세요."
                   onChange={isPayTypeChangeHandler}
@@ -624,7 +633,7 @@ const BuyLecture = ({}) => {
                 </Select>
               )}
               <Select
-                style={{ width: `300px` }}
+                style={{ width: `280px` }}
                 size="small"
                 placeholder="검색하실 구매 유형을 선택해주세요."
                 onChange={searchTypeChangeHandler}
@@ -637,6 +646,16 @@ const BuyLecture = ({}) => {
                       </Select.Option>
                     );
                   })}
+              </Select>
+              <Select
+                style={{ width: `280px` }}
+                size="small"
+                placeholder="검색하실 진행 유형을 선택해주세요."
+                onChange={isEndDateChangeHandler}
+              >
+                <Select.Option value={3}>전체</Select.Option>
+                <Select.Option value={1}>진행</Select.Option>
+                <Select.Option value={2}>만료</Select.Option>
               </Select>
             </Wrapper>
             <Wrapper width={`auto`} dr={`row`}>

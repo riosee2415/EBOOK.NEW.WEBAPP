@@ -435,15 +435,15 @@ const Media = ({}) => {
   );
 
   // 상담자 추가
-  const etcAddHandler = useCallback(() => {
-    const infoData = infoForm.getFieldsValue();
+  // const etcAddHandler = useCallback(() => {
+  //   const infoData = infoForm.getFieldsValue();
 
-    infoForm.setFieldsValue({
-      etc:
-        (infoData.etc ? infoData.etc + `\n\n` : "") +
-        `${moment().format("YYYY.MM.DD/HH:mm")}(${me.username})`,
-    });
-  }, [me]);
+  //   infoForm.setFieldsValue({
+  //     etc:
+  //       (infoData.etc ? infoData.etc + `\n\n` : "") +
+  //       `${moment().format("YYYY.MM.DD/HH:mm")}(${me.username})`,
+  //   });
+  // }, [me]);
 
   // 상품 등록
   const mediaCreateHandler = useCallback(
@@ -813,7 +813,7 @@ const Media = ({}) => {
                   name="etc"
                   label={
                     <Text color={Theme.basicTheme_C} fontWeight={`700`}>
-                      상담
+                      특이사항
                     </Text>
                   }
                 >
@@ -826,11 +826,11 @@ const Media = ({}) => {
                     autoSize={{ minRows: 5, maxRows: 15 }}
                   />
                 </Form.Item>
-                <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+                {/* <Wrapper al={`flex-end`} margin={`0 0 10px`}>
                   <Button size="small" onClick={etcAddHandler}>
                     상담자 추가
                   </Button>
-                </Wrapper>
+                </Wrapper> */}
 
                 <Wrapper dr={`row`} ju="flex-end">
                   <Popconfirm

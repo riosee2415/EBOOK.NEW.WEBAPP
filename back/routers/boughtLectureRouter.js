@@ -6,12 +6,14 @@ const models = require("../models");
 const router = express.Router();
 
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { searchDate, searchType, searchPayType, isPayType } = req.body;
+  const { searchDate, searchType, searchPayType, isEndDate, isPayType } =
+    req.body;
 
   const _searchType = searchType ? parseInt(searchType) : null;
   const _searchPayType = searchPayType ? searchPayType : null;
   const _searchData = searchDate ? searchDate : null;
   const _isPayType = isPayType ? isPayType : 3;
+  const _isEndDate = isEndDate ? parseInt(isEndDate) : 3;
 
   const selectQ = `
   SELECT  ROW_NUMBER() OVER()		AS num,
@@ -66,18 +68,25 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
     JOIN  users					B
       ON  A.userId = B.id
    WHERE  A.isDelete = FALSE
-     ${_searchType ? `AND  A.lectureType = ${searchType}` : ``}
-     ${_searchPayType ? `AND  A.payType = "${searchPayType}"` : ``}
+     ${_searchType ? `AND  A.lectureType = ${_searchType}` : ``}
+     ${_searchPayType ? `AND  A.payType = "${_searchPayType}"` : ``}
      ${
        _isPayType === 1
          ? `AND  A.isPay = TRUE`
-         : isPayType === 2
+         : _isPayType === 2
          ? `AND  A.isPay = FALSE`
          : ``
      }
      ${
+       _isEndDate === 1
+         ? `AND  DATE_FORMAT(A.endDate, "%Y-%m-%d") > DATE_FORMAT(NOW(), "%Y-%m-%d")`
+         : _isEndDate === 2
+         ? `AND  DATE_FORMAT(A.endDate, "%Y-%m-%d") < DATE_FORMAT(NOW(), "%Y-%m-%d")`
+         : ``
+     }
+     ${
        _searchData
-         ? `AND  DATE_FORMAT(A.boughtDate, "%Y-%m") = DATE_FORMAT("${searchDate}-01", "%Y-%m")`
+         ? `AND  DATE_FORMAT(A.boughtDate, "%Y-%m") = DATE_FORMAT("${_searchData}-01", "%Y-%m")`
          : ``
      }
    ORDER  BY  A.boughtDate  DESC

@@ -644,6 +644,17 @@ const UserList = ({}) => {
     });
   }, [boughtAdminId]);
 
+  // 상담자 추가
+  const consultingAddHandler = useCallback(() => {
+    const infoData = dForm.getFieldsValue();
+
+    dForm.setFieldsValue({
+      consulting:
+        (infoData.consulting ? infoData.consulting + `\n\n` : "") +
+        `${moment().format("YYYY.MM.DD/HH:mm")}(${me.username})`,
+    });
+  }, [me]);
+
   const content = (
     <PopWrapper>
       {sameDepth.map((data) => {
@@ -1138,6 +1149,12 @@ const UserList = ({}) => {
                   autoSize={{ minRows: 5, maxRows: 15 }}
                 />
               </Form.Item>
+
+              <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+                <Button size="small" onClick={consultingAddHandler}>
+                  상담자 추가
+                </Button>
+              </Wrapper>
 
               <Wrapper dr={`row`} ju={`flex-end`}>
                 {/* <ModalBtn size="small" type="danger">
