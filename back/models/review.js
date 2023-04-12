@@ -17,6 +17,7 @@ module.exports = class Review extends Model {
         },
         hit: {
           type: DataTypes.INTEGER,
+          defaultValue: 0,
           allowNull: false,
         },
         isDelete: {

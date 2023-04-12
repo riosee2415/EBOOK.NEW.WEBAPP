@@ -24,11 +24,6 @@ import Head from "next/head";
 import { BANNER_LIST_REQUEST } from "../../../reducers/banner";
 import { Empty, Form, message, Modal } from "antd";
 import { useRouter } from "next/router";
-import {
-  REVIEW_CREATE_REQUEST,
-  REVIEW_DELETE_REQUEST,
-  REVIEW_DETAIL_REQUEST,
-} from "../../../reducers/review";
 import { NOTICE_DETAIL_REQUEST } from "../../../reducers/notice";
 import "react-quill/dist/quill.core.css";
 

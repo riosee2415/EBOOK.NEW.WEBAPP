@@ -386,7 +386,12 @@ const MypageIndex = ({}) => {
               </Wrapper>
             )}
             <Wrapper position={`relative`}>
-              <Wrapper position={`sticky`} top={`50px`} left={`0`} zIndex={`5`}>
+              <Wrapper
+                position={`sticky`}
+                top={`150px`}
+                left={`0`}
+                zIndex={`5`}
+              >
                 <CustomPage
                   margin={`0 0 10px`}
                   defaultCurrent={1}
@@ -451,7 +456,10 @@ const MypageIndex = ({}) => {
                                 borderRadius={`100%`}
                                 color={Theme.black2_C}
                               />
-                              <Text fontSize={width < 700 ? `24px` : `26px`}>
+                              <Text
+                                fontSize={width < 700 ? `24px` : `26px`}
+                                fontWeight={"700"}
+                              >
                                 {data.title}
                               </Text>
                             </Wrapper>

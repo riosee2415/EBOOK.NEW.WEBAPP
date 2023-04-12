@@ -19,7 +19,7 @@ import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import { Empty, Input, message } from "antd";
+import { Empty, Input, Modal, message } from "antd";
 import {
   SearchOutlined,
   CaretRightOutlined,
@@ -49,6 +49,8 @@ const MediaDetail = () => {
   const { me } = useSelector((state) => state.user);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
+  console.log(boughtMeDetail);
+
   const { mediaAllList, mediaDetail } = useSelector((state) => state.media);
 
   ////// HOOKS //////
@@ -60,7 +62,7 @@ const MediaDetail = () => {
 
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
-  const [isTimeSet, setIsTimeSet] = useState(false);
+  const [aModal, setAModal] = useState(false);
 
   ////// USEEFFECT //////
 
@@ -89,6 +91,16 @@ const MediaDetail = () => {
       }, 3000);
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (boughtMeDetail && router.query) {
+      if (boughtMeDetail.recentlyTurn) {
+        if (parseInt(router.query.id) !== boughtMeDetail.recentlyTurn) {
+          setAModal(true);
+        }
+      }
+    }
+  }, [boughtMeDetail, router.query]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -374,7 +386,10 @@ const MediaDetail = () => {
                               borderRadius={`100%`}
                               color={Theme.black2_C}
                             />
-                            <Text fontSize={width < 700 ? `24px` : `26px`}>
+                            <Text
+                              fontSize={width < 700 ? `24px` : `26px`}
+                              fontWeight={"700"}
+                            >
                               {data.title}
                             </Text>
                           </Wrapper>
@@ -447,6 +462,31 @@ const MediaDetail = () => {
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
+        <Modal visible={aModal} footer={null} onCancel={() => setAModal(false)}>
+          <Wrapper>
+            <Text fontSize={`25px`} fontWeight={"600"}>
+              강의를 이어보시겠습니까?
+            </Text>
+
+            {boughtMeDetail && (
+              <CommonButton
+                kindOf={`subTheme`}
+                width={width < 700 ? `100%` : `186px`}
+                height={`52px`}
+                fontSize={`20px`}
+                margin={`20px 0 0`}
+                onClick={() => {
+                  moveLinkHandler(
+                    `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0&recentlyTime=${boughtMeDetail.recentlyTime}`
+                  );
+                  setAModal(false);
+                }}
+              >
+                이어보기
+              </CommonButton>
+            )}
+          </Wrapper>
+        </Modal>
       </ClientLayout>
     </>
   );

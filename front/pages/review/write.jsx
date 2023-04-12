@@ -210,6 +210,12 @@ const ReviewWrite = ({}) => {
                 />
               </Form.Item>
 
+              <Wrapper al={`flex-start`}>
+                <Text color={Theme.grey2_C}>
+                  관리자 승인 후 등록되며, 유튜브 영상에서 소개될 수 있습니다.
+                </Text>
+              </Wrapper>
+
               <Wrapper dr={`row`} margin={`60px 0 0`}>
                 <CommonButton
                   fontSize={`18px`}
