@@ -452,11 +452,21 @@ const Media = ({}) => {
         type: MEDIA_CREATE_REQUEST,
         data: {
           type: data.type,
-          title: data.title,
-          mediaOriginName: data.mediaOriginName,
+          title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
+          mediaOriginName: data.mediaOriginName.replace(
+            /\'/gi,
+            `\'`,
+            /\"/gi,
+            `\"`
+          ),
           mediaPath: mediaPath,
           duration: mediaDuration,
-          sampleMediaOriginName: data.sampleMediaOriginName,
+          sampleMediaOriginName: data.sampleMediaOriginName.replace(
+            /\'/gi,
+            `\'`,
+            /\"/gi,
+            `\"`
+          ),
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
@@ -475,10 +485,20 @@ const Media = ({}) => {
           id: currentData.id,
           type: data.type,
           title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
-          mediaOriginName: data.mediaOriginName,
+          mediaOriginName: data.mediaOriginName.replace(
+            /\'/gi,
+            `\'`,
+            /\"/gi,
+            `\"`
+          ),
           mediaPath: mediaPath,
           duration: mediaDuration,
-          sampleMediaOriginName: data.sampleMediaOriginName,
+          sampleMediaOriginName: data.sampleMediaOriginName.replace(
+            /\'/gi,
+            `\'`,
+            /\"/gi,
+            `\"`
+          ),
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
