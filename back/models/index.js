@@ -32,6 +32,7 @@ const bannerHistory = require("./bannerHistory");
 const review = require("./review");
 const reference = require("./reference");
 const enjoyMedia = require("./enjoyMedia");
+const mobileBanner = require("./mobileBanner");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -77,6 +78,7 @@ db.BannerHistory = bannerHistory;
 db.Review = review;
 db.Reference = reference;
 db.EnjoyMedia = enjoyMedia;
+db.MobileBanner = mobileBanner;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);

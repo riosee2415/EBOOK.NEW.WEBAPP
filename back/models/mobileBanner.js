@@ -2,7 +2,7 @@ const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
 // 베너
-module.exports = class Banner extends Model {
+module.exports = class MobileBanner extends Model {
   static init(sequelize) {
     return super.init(
       {
@@ -31,8 +31,8 @@ module.exports = class Banner extends Model {
       },
 
       {
-        modelName: "Banner",
-        tableName: "banner",
+        modelName: "MobileBanner",
+        tableName: "mobileBanner",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,

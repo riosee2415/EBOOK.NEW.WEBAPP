@@ -470,8 +470,6 @@ const Media = ({}) => {
     [mediaPath, mediaDuration, media2Path, media2Duration]
   );
 
-  console.log("'test'".addsa);
-
   // 상품 업로드
   const mediaUpdateHandler = useCallback(
     (data) => {
