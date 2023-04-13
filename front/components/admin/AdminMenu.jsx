@@ -96,6 +96,10 @@ const AdminMenu = () => {
           name: "베너관리",
           link: "/admin/banner/banner",
         },
+        {
+          name: "모바일 베너관리",
+          link: "/admin/banner/mobileBanner",
+        },
       ],
     },
 

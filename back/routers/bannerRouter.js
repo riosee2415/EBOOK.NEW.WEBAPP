@@ -185,7 +185,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   const updateQ = `
   UPDATE  banner
      SET  type = ${type},
-          imagePath = '${imagePath}',
+          imagePath = ${imagePath ? `'${imagePath}'` : `NULL`},
           useYn = ${useYn}
    WHERE  id = ${id}
   `;
@@ -390,7 +390,7 @@ router.post("/mobile/update", isAdminCheck, async (req, res, next) => {
   const updateQ = `
   UPDATE  mobileBanner
      SET  type = ${type},
-          imagePath = '${imagePath}',
+          imagePath = ${imagePath ? `'${imagePath}'` : `NULL`},
           useYn = ${useYn}
    WHERE  id = ${id}
   `;

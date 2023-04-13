@@ -65,6 +65,11 @@ export const items = {
       link: "/admin/banner/banner",
       useYn: true,
     },
+    {
+      name: "모바일 베너관리",
+      link: "/admin/banner/mobileBanner",
+      useYn: true,
+    },
   ],
   강의관리: [
     {
@@ -206,7 +211,7 @@ const AdminLayout = ({ children }) => {
 
             <Image
               width={`170px`}
-              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/LOGO/logo4.png`}
+              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/1680145340334_%E1%84%85%E1%85%A9%E1%84%80%E1%85%A9.png`}
             />
 
             <Wrapper margin={`20px 0px 0px 0px`}>
@@ -352,7 +357,7 @@ const AdminLayout = ({ children }) => {
 
                 <Image
                   width={`170px`}
-                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/connectValue/assets/images/logo/logo_w.png`}
+                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/1680145340334_%E1%84%85%E1%85%A9%E1%84%80%E1%85%A9.png`}
                 />
 
                 <Wrapper margin={`20px 0px 0px 0px`}>

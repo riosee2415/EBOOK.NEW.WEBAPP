@@ -44,14 +44,13 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import {
-  BANNER_CREATE_REQUEST,
-  BANNER_DELETE_REQUEST,
-  BANNER_IMAGE_RESET,
-  BANNER_LIST_REQUEST,
+  MOBILE_BANNER_CREATE_REQUEST,
+  MOBILE_BANNER_DELETE_REQUEST,
+  MOBILE_BANNER_IMAGE_RESET,
+  MOBILE_BANNER_LIST_REQUEST,
   BANNER_MOBILE_UPLOAD_REQUEST,
-  BANNER_SORT_UPDATE_REQUEST,
-  BANNER_UPDATE_REQUEST,
-  BANNER_UPLOAD_REQUEST,
+  MOBILE_BANNER_SORT_UPDATE_REQUEST,
+  MOBILE_BANNER_UPDATE_REQUEST,
 } from "../../../reducers/banner";
 
 const InfoTitle = styled.div`
@@ -77,28 +76,27 @@ const ViewStatusIcon = styled(EyeOutlined)`
 const Banner = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    bannerList,
+    mobileBannerList,
 
-    imagePath,
     mobileImagePath,
 
-    st_bannerCreateLoading,
-    st_bannerCreateDone,
-    st_bannerCreateError,
+    st_mobileBannerCreateLoading,
+    st_mobileBannerCreateDone,
+    st_mobileBannerCreateError,
     //
-    st_bannerSortUpdateDone,
-    st_bannerSortUpdateError,
+    st_mobileBannerSortUpdateDone,
+    st_mobileBannerSortUpdateError,
     //
-    st_bannerUploadLoading,
-    st_bannerMobileUploadLoading,
+    st_mobileBannerUploadLoading,
+    st_mobileBannerMobileUploadLoading,
     //
-    st_bannerUpdateLoading,
-    st_bannerUpdateDone,
-    st_bannerUpdateError,
+    st_mobileBannerUpdateLoading,
+    st_mobileBannerUpdateDone,
+    st_mobileBannerUpdateError,
     //
-    st_bannerDeleteLoading,
-    st_bannerDeleteDone,
-    st_bannerDeleteError,
+    st_mobileBannerDeleteLoading,
+    st_mobileBannerDeleteDone,
+    st_mobileBannerDeleteError,
   } = useSelector((state) => state.banner);
 
   const router = useRouter();
@@ -175,7 +173,7 @@ const Banner = ({}) => {
 
   useEffect(() => {
     dispatch({
-      type: BANNER_LIST_REQUEST,
+      type: MOBILE_BANNER_LIST_REQUEST,
       data: {
         type: serachType,
       },
@@ -184,9 +182,9 @@ const Banner = ({}) => {
 
   // 배너 생성 후처리
   useEffect(() => {
-    if (st_bannerCreateDone) {
+    if (st_mobileBannerCreateDone) {
       dispatch({
-        type: BANNER_LIST_REQUEST,
+        type: MOBILE_BANNER_LIST_REQUEST,
         data: {
           type: serachType,
         },
@@ -197,16 +195,16 @@ const Banner = ({}) => {
       return message.success("베너가 생성되었습니다.");
     }
 
-    if (st_bannerCreateError) {
-      return message.error(st_bannerCreateError);
+    if (st_mobileBannerCreateError) {
+      return message.error(st_mobileBannerCreateError);
     }
-  }, [st_bannerCreateDone, st_bannerCreateError]);
+  }, [st_mobileBannerCreateDone, st_mobileBannerCreateError]);
 
   // 배너 순서변경 후처리
   useEffect(() => {
-    if (st_bannerSortUpdateDone) {
+    if (st_mobileBannerSortUpdateDone) {
       dispatch({
-        type: BANNER_LIST_REQUEST,
+        type: MOBILE_BANNER_LIST_REQUEST,
         data: {
           type: serachType,
         },
@@ -215,16 +213,16 @@ const Banner = ({}) => {
       return message.success("베너의 순서가 변경되었습니다.");
     }
 
-    if (st_bannerSortUpdateError) {
-      return message.error(st_bannerSortUpdateError);
+    if (st_mobileBannerSortUpdateError) {
+      return message.error(st_mobileBannerSortUpdateError);
     }
-  }, [st_bannerSortUpdateDone, st_bannerSortUpdateError]);
+  }, [st_mobileBannerSortUpdateDone, st_mobileBannerSortUpdateError]);
 
   // 배너 수정 후처리
   useEffect(() => {
-    if (st_bannerUpdateDone) {
+    if (st_mobileBannerUpdateDone) {
       dispatch({
-        type: BANNER_LIST_REQUEST,
+        type: MOBILE_BANNER_LIST_REQUEST,
         data: {
           type: serachType,
         },
@@ -233,16 +231,16 @@ const Banner = ({}) => {
       return message.success("베너의 정보가 수정되었습니다.");
     }
 
-    if (st_bannerUpdateError) {
-      return message.error(st_bannerUpdateError);
+    if (st_mobileBannerUpdateError) {
+      return message.error(st_mobileBannerUpdateError);
     }
-  }, [st_bannerUpdateDone, st_bannerUpdateError]);
+  }, [st_mobileBannerUpdateDone, st_mobileBannerUpdateError]);
 
   // 배너 삭제 후처리
   useEffect(() => {
-    if (st_bannerDeleteDone) {
+    if (st_mobileBannerDeleteDone) {
       dispatch({
-        type: BANNER_LIST_REQUEST,
+        type: MOBILE_BANNER_LIST_REQUEST,
         data: {
           type: serachType,
         },
@@ -253,10 +251,10 @@ const Banner = ({}) => {
       return message.success("베너가 삭제되었습니다.");
     }
 
-    if (st_bannerDeleteError) {
-      return message.error(st_bannerDeleteError);
+    if (st_mobileBannerDeleteError) {
+      return message.error(st_mobileBannerDeleteError);
     }
-  }, [st_bannerDeleteDone, st_bannerDeleteError]);
+  }, [st_mobileBannerDeleteDone, st_mobileBannerDeleteError]);
 
   ////// TOGGLE //////
   const cModalToggle = useCallback(() => {
@@ -282,7 +280,7 @@ const Banner = ({}) => {
   // 배너 생성
   const bannerCreateHandler = useCallback((data) => {
     dispatch({
-      type: BANNER_CREATE_REQUEST,
+      type: MOBILE_BANNER_CREATE_REQUEST,
       data: {
         type: data.type,
       },
@@ -297,7 +295,7 @@ const Banner = ({}) => {
       }
 
       dispatch({
-        type: BANNER_SORT_UPDATE_REQUEST,
+        type: MOBILE_BANNER_SORT_UPDATE_REQUEST,
         data: {
           id: data.id,
           sort: parseInt(data.sort) - 1,
@@ -306,7 +304,7 @@ const Banner = ({}) => {
       });
     } else {
       dispatch({
-        type: BANNER_SORT_UPDATE_REQUEST,
+        type: MOBILE_BANNER_SORT_UPDATE_REQUEST,
         data: {
           id: data.id,
           sort: parseInt(data.sort) + 1,
@@ -322,9 +320,9 @@ const Banner = ({}) => {
       setCurrentData(record);
 
       dispatch({
-        type: BANNER_IMAGE_RESET,
+        type: MOBILE_BANNER_IMAGE_RESET,
         data: {
-          imagePath: record.imagePath,
+          mobileImagePath: record.imagePath,
         },
       });
 
@@ -341,11 +339,11 @@ const Banner = ({}) => {
   );
 
   // 파일 업로드
-  const imageRefClickHandler = useCallback(() => {
-    imageRef.current.click();
+  const mobileImageRefClickHandler = useCallback(() => {
+    mobileImageRef.current.click();
   }, []);
 
-  const imageUploadHandler = useCallback((e) => {
+  const mobileImageUploadHandler = useCallback((e) => {
     const formData = new FormData();
 
     [].forEach.call(e.target.files, (file) => {
@@ -353,7 +351,7 @@ const Banner = ({}) => {
     });
 
     dispatch({
-      type: BANNER_UPLOAD_REQUEST,
+      type: BANNER_MOBILE_UPLOAD_REQUEST,
       data: formData,
     });
   }, []);
@@ -361,21 +359,21 @@ const Banner = ({}) => {
   const bannerUpdateHandler = useCallback(
     (data) => {
       dispatch({
-        type: BANNER_UPDATE_REQUEST,
+        type: MOBILE_BANNER_UPDATE_REQUEST,
         data: {
           id: currentData.id,
           useYn: isHidden,
           type: data.type,
-          imagePath: imagePath,
+          imagePath: mobileImagePath,
         },
       });
     },
-    [currentData, imagePath, isHidden]
+    [currentData, mobileImagePath, isHidden]
   );
 
   const bannerDeleteHandler = useCallback(() => {
     dispatch({
-      type: BANNER_DELETE_REQUEST,
+      type: MOBILE_BANNER_DELETE_REQUEST,
       data: {
         id: currentData.id,
         type: currentData.type,
@@ -473,7 +471,7 @@ const Banner = ({}) => {
           <GuideLi>홈페이지의 베너를 관리할 수 있습니다.</GuideLi>
           <GuideLi>유형에따라 화면에 나오는 베너가 달라집니다.</GuideLi>
           <GuideLi isImpo={true}>
-            PC 이미지는 width 1920px을 기준으로 합니다.
+            모바일 이미지는 width 700px을 기준으로 합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -513,14 +511,14 @@ const Banner = ({}) => {
               size="small"
               type="primary"
               onClick={cModalToggle}
-              loading={st_bannerCreateLoading}
+              loading={st_mobileBannerCreateLoading}
             >
               베너 생성
             </Button>
           </Wrapper>
           <Table
             size="small"
-            dataSource={bannerList}
+            dataSource={mobileBannerList}
             columns={columns}
             rowKey="num"
             style={{ width: "100%" }}
@@ -541,12 +539,16 @@ const Banner = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  베너 PC 이미지
+                  베너 MOBILE 이미지
                 </InfoTitle>
               </Wrapper>
 
-              {imagePath ? (
-                <Image width={`100%`} src={imagePath} alt="imagePath" />
+              {mobileImagePath ? (
+                <Image
+                  width={`100%`}
+                  src={mobileImagePath}
+                  alt="mobileImagePath"
+                />
               ) : (
                 "등록된 이미지가 없습니다."
               )}
@@ -556,14 +558,14 @@ const Banner = ({}) => {
                   type="file"
                   accept=".jpg, .png"
                   hidden
-                  ref={imageRef}
-                  onChange={imageUploadHandler}
+                  ref={mobileImageRef}
+                  onChange={mobileImageUploadHandler}
                 />
                 <Button
                   size="small"
                   type="primary"
-                  onClick={imageRefClickHandler}
-                  loading={st_bannerUploadLoading}
+                  onClick={mobileImageRefClickHandler}
+                  loading={st_mobileBannerMobileUploadLoading}
                 >
                   업로드
                 </Button>
@@ -638,7 +640,7 @@ const Banner = ({}) => {
                     <ModalBtn
                       size="small"
                       type="danger"
-                      loading={st_bannerDeleteLoading}
+                      loading={st_mobileBannerDeleteLoading}
                     >
                       베너 삭제
                     </ModalBtn>
@@ -647,7 +649,7 @@ const Banner = ({}) => {
                     type="primary"
                     size="small"
                     htmlType="submit"
-                    loading={st_bannerUpdateLoading}
+                    loading={st_mobileBannerUpdateLoading}
                   >
                     정보 업데이트
                   </ModalBtn>
@@ -708,7 +710,7 @@ const Banner = ({}) => {
               size="small"
               type="primary"
               htmlType="submit"
-              loading={st_bannerCreateLoading}
+              loading={st_mobileBannerCreateLoading}
             >
               생성
             </ModalBtn>
@@ -735,7 +737,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: BANNER_LIST_REQUEST,
+      type: MOBILE_BANNER_LIST_REQUEST,
     });
 
     // 구현부 종료

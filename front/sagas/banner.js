@@ -28,6 +28,26 @@ import {
   BANNER_MOBILE_UPLOAD_REQUEST,
   BANNER_MOBILE_UPLOAD_SUCCESS,
   BANNER_MOBILE_UPLOAD_FAILURE,
+  //
+  MOBILE_BANNER_LIST_REQUEST,
+  MOBILE_BANNER_LIST_SUCCESS,
+  MOBILE_BANNER_LIST_FAILURE,
+  //
+  MOBILE_BANNER_CREATE_REQUEST,
+  MOBILE_BANNER_CREATE_SUCCESS,
+  MOBILE_BANNER_CREATE_FAILURE,
+  //
+  MOBILE_BANNER_UPDATE_REQUEST,
+  MOBILE_BANNER_UPDATE_SUCCESS,
+  MOBILE_BANNER_UPDATE_FAILURE,
+  //
+  MOBILE_BANNER_SORT_UPDATE_REQUEST,
+  MOBILE_BANNER_SORT_UPDATE_SUCCESS,
+  MOBILE_BANNER_SORT_UPDATE_FAILURE,
+  //
+  MOBILE_BANNER_DELETE_REQUEST,
+  MOBILE_BANNER_DELETE_SUCCESS,
+  MOBILE_BANNER_DELETE_FAILURE,
 } from "../reducers/banner";
 
 // ******************************************************************************************************************
@@ -226,7 +246,150 @@ function* bannerMobileUpload(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+//MOBILE
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mobileBannerListAPI(data) {
+  return await axios.post(`/api/banner/mobile/list`, data);
+}
+
+function* mobileBannerList(action) {
+  try {
+    const result = yield call(mobileBannerListAPI, action.data);
+
+    yield put({
+      type: MOBILE_BANNER_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MOBILE_BANNER_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mobileBannerCreateAPI(data) {
+  return await axios.post(`/api/banner/mobile/create`, data);
+}
+
+function* mobileBannerCreate(action) {
+  try {
+    const result = yield call(mobileBannerCreateAPI, action.data);
+
+    yield put({
+      type: MOBILE_BANNER_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MOBILE_BANNER_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mobileBannerUpdateAPI(data) {
+  return await axios.post(`/api/banner/mobile/update`, data);
+}
+
+function* mobileBannerUpdate(action) {
+  try {
+    const result = yield call(mobileBannerUpdateAPI, action.data);
+
+    yield put({
+      type: MOBILE_BANNER_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MOBILE_BANNER_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mobileBannerSortUpdateAPI(data) {
+  return await axios.post(`/api/banner/mobile/sort/update`, data);
+}
+
+function* mobileBannerSortUpdate(action) {
+  try {
+    const result = yield call(mobileBannerSortUpdateAPI, action.data);
+
+    yield put({
+      type: MOBILE_BANNER_SORT_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MOBILE_BANNER_SORT_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function mobileBannerDeleteAPI(data) {
+  return await axios.post(`/api/banner/mobile/delete`, data);
+}
+
+function* mobileBannerDelete(action) {
+  try {
+    const result = yield call(mobileBannerDeleteAPI, action.data);
+
+    yield put({
+      type: MOBILE_BANNER_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: MOBILE_BANNER_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
+// PC
 function* watchBannerList() {
   yield takeLatest(BANNER_LIST_REQUEST, bannerList);
 }
@@ -245,6 +408,23 @@ function* watchBannerDelete() {
 function* watchBannerUpload() {
   yield takeLatest(BANNER_UPLOAD_REQUEST, bannerUpload);
 }
+
+// MOBILE
+function* watchMobileBannerList() {
+  yield takeLatest(MOBILE_BANNER_LIST_REQUEST, mobileBannerList);
+}
+function* watchMobileBannerCreate() {
+  yield takeLatest(MOBILE_BANNER_CREATE_REQUEST, mobileBannerCreate);
+}
+function* watchMobileBannerUpdate() {
+  yield takeLatest(MOBILE_BANNER_UPDATE_REQUEST, mobileBannerUpdate);
+}
+function* watchMobileBannerSortUpdate() {
+  yield takeLatest(MOBILE_BANNER_SORT_UPDATE_REQUEST, mobileBannerSortUpdate);
+}
+function* watchMobileBannerDelete() {
+  yield takeLatest(MOBILE_BANNER_DELETE_REQUEST, mobileBannerDelete);
+}
 function* watchBannerMobileUpload() {
   yield takeLatest(BANNER_MOBILE_UPLOAD_REQUEST, bannerMobileUpload);
 }
@@ -258,6 +438,11 @@ export default function* bannerSaga() {
     fork(watchBannerSortUpdate),
     fork(watchBannerDelete),
     fork(watchBannerUpload),
+    fork(watchMobileBannerList),
+    fork(watchMobileBannerCreate),
+    fork(watchMobileBannerUpdate),
+    fork(watchMobileBannerSortUpdate),
+    fork(watchMobileBannerDelete),
     fork(watchBannerMobileUpload),
 
     //
