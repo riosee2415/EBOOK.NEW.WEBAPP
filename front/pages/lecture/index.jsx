@@ -16,14 +16,18 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../../components/popup/popup";
-import { BANNER_LIST_REQUEST } from "../../reducers/banner";
+import {
+  BANNER_LIST_REQUEST,
+  MOBILE_BANNER_LIST_REQUEST,
+} from "../../reducers/banner";
 import { Empty } from "antd";
+import Fade from "react-reveal/Fade";
 // import Mainslider from "../components/slide/MainSlider";
 // import CC02 from "../components/common/CC02";
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
-  const { bannerList } = useSelector((state) => state.banner);
+  const { bannerList, mobileBannerList } = useSelector((state) => state.banner);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -44,23 +48,45 @@ const Home = ({}) => {
           {/* <Mainslider />
           <CC02 /> */}
 
-          {bannerList &&
-            (bannerList.length === 0 ? (
-              <Wrapper height={`100vh`}>
-                <Empty description="커리큘럼 베너가 없습니다." />
-              </Wrapper>
-            ) : (
-              bannerList.map((data) => {
-                return (
-                  <Image
-                    width={`100%`}
-                    height={`auto`}
-                    src={width < 700 ? data.mobileImagePath : data.imagePath}
-                    alt="bannerImage"
-                  />
-                );
-              })
-            ))}
+          <Fade>
+            <>
+              {width < 700
+                ? mobileBannerList &&
+                  (mobileBannerList.length === 0 ? (
+                    <Wrapper height={`100vh`}>
+                      <Empty description="커리큘럼 베너가 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    mobileBannerList.map((data) => {
+                      return (
+                        <Image
+                          width={`100%`}
+                          height={`auto`}
+                          src={data.imagePath}
+                          alt="bannerImage"
+                        />
+                      );
+                    })
+                  ))
+                : bannerList &&
+                  (bannerList.length === 0 ? (
+                    <Wrapper height={`100vh`}>
+                      <Empty description="커리큘럼 베너가 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    bannerList.map((data) => {
+                      return (
+                        <Image
+                          width={`100%`}
+                          height={`auto`}
+                          src={data.imagePath}
+                          alt="bannerImage"
+                        />
+                      );
+                    })
+                  ))}
+            </>
+          </Fade>
 
           <Popup />
         </WholeWrapper>
@@ -86,6 +112,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: BANNER_LIST_REQUEST,
+      data: {
+        type: 2,
+        useYn: 1,
+      },
+    });
+
+    context.store.dispatch({
+      type: MOBILE_BANNER_LIST_REQUEST,
       data: {
         type: 2,
         useYn: 1,

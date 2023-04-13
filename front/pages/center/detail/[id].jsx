@@ -21,7 +21,6 @@ import useWidth from "../../../hooks/useWidth";
 import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import { BANNER_LIST_REQUEST } from "../../../reducers/banner";
 import { Empty, Form, message, Modal } from "antd";
 import { useRouter } from "next/router";
 import { NOTICE_DETAIL_REQUEST } from "../../../reducers/notice";
@@ -216,13 +215,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
-    });
-
-    context.store.dispatch({
-      type: BANNER_LIST_REQUEST,
-      data: {
-        type: 3,
-      },
     });
 
     // 구현부 종료

@@ -20,13 +20,17 @@ import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import { BANNER_LIST_REQUEST } from "../../reducers/banner";
+import {
+  BANNER_LIST_REQUEST,
+  MOBILE_BANNER_LIST_REQUEST,
+} from "../../reducers/banner";
 import { Empty } from "antd";
 import { useRouter } from "next/router";
 import { NOTICE_PAGE_LIST_REQUEST } from "../../reducers/notice";
 import { REFERENCE_LIST_REQUEST } from "../../reducers/reference";
 import { DownloadOutlined } from "@ant-design/icons";
 import { saveAs } from "file-saver";
+import Fade from "react-reveal/Fade";
 
 const HoverWrapper = styled(Wrapper)`
   flex-direction: row;
@@ -68,7 +72,7 @@ const KakaoBtn = styled(Wrapper)`
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
-  const { bannerList } = useSelector((state) => state.banner);
+  const { bannerList, mobileBannerList } = useSelector((state) => state.banner);
 
   const { noticeList, noticeLastPage } = useSelector((state) => state.notice);
   const { referenceList } = useSelector((state) => state.reference);
@@ -127,307 +131,339 @@ const Home = ({}) => {
       </Head>
 
       <ClientLayout>
-        <WholeWrapper>
-          <RsWrapper
-            margin={width < 700 ? `40px 0 20px` : `100px 0 80px`}
-            padding={width < 1280 ? `0` : `0 210px`}
-          >
-            {/* 공지사항 */}
-            <Wrapper al={`flex-start`}>
-              <Text
-                color={Theme.grey5_C}
-                fontSize={width < 700 ? `20px` : `23px !important`}
-                margin={width < 700 ? `0 0 0 20px` : `0`}
-              >
-                공지사항
-              </Text>
-              <Wrapper
-                dr={`row`}
-                height={`2px`}
-                bgColor={Theme.lightSubTheme2_C}
-                ju={`flex-start`}
-                margin={`10px 0 50px`}
-              >
-                <Wrapper
-                  height={`100%`}
-                  bgColor={Theme.subTheme7_C}
-                  width={`30px`}
-                ></Wrapper>
-              </Wrapper>
-            </Wrapper>
-
-            <Wrapper
-              dr={`row`}
-              padding={width < 700 ? `10px 0` : `28px 0`}
-              margin={`20px 0 0`}
-              fontSize={width < 700 ? `20px` : `22px`}
-              color={Theme.grey3_C}
-              bgColor={Theme.lightGrey2_C}
-              borderTop={`1px solid ${Theme.grey2_C}`}
-              borderBottom={`1px solid ${Theme.lightGrey4_C}`}
+        <Fade>
+          <WholeWrapper>
+            <RsWrapper
+              margin={width < 700 ? `40px 0 20px` : `100px 0 80px`}
+              padding={width < 1280 ? `0` : `0 210px`}
             >
-              <Wrapper width={width < 700 ? `60px` : `120px`}>번호</Wrapper>
-              <Wrapper
-                width={
-                  width < 700
-                    ? `calc(100% - 60px - 120px)`
-                    : `calc(100% - 120px - 180px)`
-                }
-              >
-                제목
-              </Wrapper>
-              <Wrapper width={width < 700 ? `120px` : `180px`}>작성일</Wrapper>
-            </Wrapper>
-            <Wrapper>
-              {noticeList &&
-                (noticeList.length === 0 ? (
-                  <Wrapper margin={`40px 0`}>
-                    <Empty description="공지사항이 없습니다." />
-                  </Wrapper>
-                ) : (
-                  noticeList.map((data, idx) => {
-                    return (
-                      <HoverWrapper
-                        key={idx}
-                        onClick={() =>
-                          moveLinkHandler(`/center/detail/${data.id}`)
-                        }
-                      >
-                        <Wrapper
-                          width={width < 700 ? `60px` : `120px`}
-                          color={Theme.grey3_C}
-                        >
-                          {data.num}
-                        </Wrapper>
-                        <Wrapper
-                          width={
-                            width < 700
-                              ? `calc(100% - 60px - 120px)`
-                              : `calc(100% - 120px - 180px)`
-                          }
-                          padding={`0 18px`}
-                        >
-                          <Text width={`100%`} isEllipsis>
-                            [{data.type}]&nbsp;{data.title}
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          width={width < 700 ? `120px` : `180px`}
-                          color={Theme.grey3_C}
-                        >
-                          <Text width={`100%`} isEllipsis textAlign={`center`}>
-                            {data.viewCreatedAt}
-                          </Text>
-                        </Wrapper>
-                      </HoverWrapper>
-                    );
-                  })
-                ))}
-            </Wrapper>
-
-            <Wrapper margin={width < 700 ? `20px 0 0` : `40px 0 0`}>
-              <CustomPage
-                defaultCurrent={1}
-                current={parseInt(currentPage)}
-                total={noticeLastPage * 10}
-                pageSize={10}
-                onChange={(page) => otherPageCall(page)}
-              />
-            </Wrapper>
-
-            {/* 카카오톡 문의 */}
-            <Wrapper al={`flex-start`}>
-              <Text
-                color={Theme.grey5_C}
-                fontSize={width < 700 ? `20px` : `23px !important`}
-                margin={width < 700 ? `0 0 0 20px` : `0`}
-              >
-                온라인 상담
-              </Text>
-              <Wrapper
-                dr={`row`}
-                height={`2px`}
-                bgColor={Theme.lightSubTheme2_C}
-                ju={`flex-start`}
-                margin={`10px 0 50px`}
-              >
-                <Wrapper
-                  height={`100%`}
-                  bgColor={Theme.subTheme7_C}
-                  width={`30px`}
-                ></Wrapper>
-              </Wrapper>
-            </Wrapper>
-
-            <Wrapper
-              padding={width < 700 ? `0 20px` : `0`}
-              al={width < 700 ? `center` : `flex-start`}
-              margin={`0 0 100px`}
-            >
-              <ATag
-                target="_blank"
-                href="http://pf.kakao.com/_zxhxaxdb/chat"
-                width={`auto`}
-              >
-                <KakaoBtn>
-                  <Image
-                    width={width < 700 ? `30px` : `50px`}
-                    margin={width < 700 ? `0 5px 0 0` : `0 0 0 0`}
-                    src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Fconsulting_modify%2Ficon_kakao.png?alt=media&token=f356fc4d-625a-4942-aa14-fedacb37e9b5`}
-                  />
-                  <Text
-                    fontSize={width < 700 ? `20px !important` : `32px`}
-                    fontWeight={`600`}
-                  >
-                    1:1 카카오톡 상담 바로가기
-                  </Text>
-                </KakaoBtn>
-              </ATag>
-
-              <Text
-                margin={`25px 0 0`}
-                color={Theme.subBlack2_C}
-                fontSize={width < 700 ? `14px` : `18px`}
-              >
-                {width < 700
-                  ? "친절한 영어교실 카카오 채널을 추가 하시면"
-                  : "친절한 영어교실 카카오 채널을 추가 하시면 더 많은 정보를 받아보실 수 있습니다."}
-              </Text>
-              <Text
-                color={Theme.subBlack2_C}
-                fontSize={width < 700 ? `14px` : `18px`}
-              >
-                {width < 700 ? "더 많은 정보를 받아보실 수 있습니다." : ""}
-              </Text>
-            </Wrapper>
-
-            {/* 자료실 */}
-            <Wrapper al={`flex-start`}>
-              <Text
-                color={Theme.grey5_C}
-                fontSize={width < 700 ? `20px` : `23px !important`}
-                margin={width < 700 ? `0 0 0 20px` : `0`}
-              >
-                자료실
-              </Text>
-              <Wrapper
-                dr={`row`}
-                height={`2px`}
-                bgColor={Theme.lightSubTheme2_C}
-                ju={`flex-start`}
-                margin={`10px 0 0`}
-              >
-                <Wrapper
-                  height={`100%`}
-                  bgColor={Theme.subTheme7_C}
-                  width={`30px`}
-                ></Wrapper>
-              </Wrapper>
-            </Wrapper>
-
-            <Wrapper margin={`10px 0 0`}>
-              {referenceList &&
-                (referenceList.length === 0 ? (
-                  <Wrapper margin={`0 0 40px`}>
-                    <Empty description="자료가 없습니다." />
-                  </Wrapper>
-                ) : (
-                  referenceList.map((data, idx) => {
-                    return (
-                      <HoverWrapper key={idx}>
-                        <Wrapper
-                          width={width < 700 ? `60px` : `120px`}
-                          color={Theme.grey3_C}
-                        >
-                          {data.num}
-                        </Wrapper>
-                        <Wrapper
-                          width={
-                            width < 700
-                              ? `calc(100% - 60px - 150px)`
-                              : `calc(100% - 120px - 180px)`
-                          }
-                          padding={`0 18px`}
-                        >
-                          <Text width={`100%`} isEllipsis>
-                            {data.title}
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          width={width < 700 ? `150px` : `180px`}
-                          color={Theme.grey3_C}
-                        >
-                          {/* <ATag href={data.file}> */}
-                          {/* <a> */}
-                          <CommonButton
-                            width={`110px`}
-                            height={`40px`}
-                            fontSize={`16px`}
-                            padding={`0`}
-                            onClick={() => fileDownloadHandler(data)}
-                          >
-                            <DownloadOutlined />
-                            다운로드
-                          </CommonButton>
-                          {/* </a> */}
-                          {/* </ATag> */}
-                        </Wrapper>
-                      </HoverWrapper>
-                    );
-                  })
-                ))}
-            </Wrapper>
-
-            {/* 상담문의 */}
-
-            <Wrapper al={`flex-start`} margin={`100px 0`}>
-              <Text fontSize={width < 700 ? `26px` : `32px`} fontWeight={`700`}>
-                상담 문의
-              </Text>
-              <Wrapper
-                margin={`34px 0 46px`}
-                height={`1px`}
-                bgColor={Theme.lightGrey4_C}
-              />
-
-              <Wrapper padding={width < 700 ? `0 20px` : `0`} al={`flex-start`}>
-                <ATag href="tel:0263750300" width={`auto`}>
-                  <Text
-                    color={Theme.basicTheme_C}
-                    fontSize={width < 700 ? `30px !important` : `36px`}
-                    fontWeight={`600`}
-                  >
-                    02.6375.0300~1
-                  </Text>
-                </ATag>
+              {/* 공지사항 */}
+              <Wrapper al={`flex-start`}>
                 <Text
-                  color={Theme.grey4_C}
-                  fontSize={width < 700 ? `18px !important` : `22px`}
+                  color={Theme.grey5_C}
+                  fontSize={width < 700 ? `20px` : `23px !important`}
+                  margin={width < 700 ? `0 0 0 20px` : `0`}
                 >
-                  평일 09:00-17:00 (주말 및 공휴일 휴무)
+                  공지사항
+                </Text>
+                <Wrapper
+                  dr={`row`}
+                  height={`2px`}
+                  bgColor={Theme.lightSubTheme2_C}
+                  ju={`flex-start`}
+                  margin={`10px 0 50px`}
+                >
+                  <Wrapper
+                    height={`100%`}
+                    bgColor={Theme.subTheme7_C}
+                    width={`30px`}
+                  ></Wrapper>
+                </Wrapper>
+              </Wrapper>
+
+              <Wrapper
+                dr={`row`}
+                padding={width < 700 ? `10px 0` : `28px 0`}
+                margin={`20px 0 0`}
+                fontSize={width < 700 ? `20px` : `22px`}
+                color={Theme.grey3_C}
+                bgColor={Theme.lightGrey2_C}
+                borderTop={`1px solid ${Theme.grey2_C}`}
+                borderBottom={`1px solid ${Theme.lightGrey4_C}`}
+              >
+                <Wrapper width={width < 700 ? `60px` : `120px`}>번호</Wrapper>
+                <Wrapper
+                  width={
+                    width < 700
+                      ? `calc(100% - 60px - 120px)`
+                      : `calc(100% - 120px - 180px)`
+                  }
+                >
+                  제목
+                </Wrapper>
+                <Wrapper width={width < 700 ? `120px` : `180px`}>
+                  작성일
+                </Wrapper>
+              </Wrapper>
+              <Wrapper>
+                {noticeList &&
+                  (noticeList.length === 0 ? (
+                    <Wrapper margin={`40px 0`}>
+                      <Empty description="공지사항이 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    noticeList.map((data, idx) => {
+                      return (
+                        <HoverWrapper
+                          key={idx}
+                          onClick={() =>
+                            moveLinkHandler(`/center/detail/${data.id}`)
+                          }
+                        >
+                          <Wrapper
+                            width={width < 700 ? `60px` : `120px`}
+                            color={Theme.grey3_C}
+                          >
+                            {data.num}
+                          </Wrapper>
+                          <Wrapper
+                            width={
+                              width < 700
+                                ? `calc(100% - 60px - 120px)`
+                                : `calc(100% - 120px - 180px)`
+                            }
+                            padding={`0 18px`}
+                          >
+                            <Text width={`100%`} isEllipsis>
+                              [{data.type}]&nbsp;{data.title}
+                            </Text>
+                          </Wrapper>
+                          <Wrapper
+                            width={width < 700 ? `120px` : `180px`}
+                            color={Theme.grey3_C}
+                          >
+                            <Text
+                              width={`100%`}
+                              isEllipsis
+                              textAlign={`center`}
+                            >
+                              {data.viewCreatedAt}
+                            </Text>
+                          </Wrapper>
+                        </HoverWrapper>
+                      );
+                    })
+                  ))}
+              </Wrapper>
+
+              <Wrapper margin={width < 700 ? `20px 0 0` : `40px 0 0`}>
+                <CustomPage
+                  defaultCurrent={1}
+                  current={parseInt(currentPage)}
+                  total={noticeLastPage * 10}
+                  pageSize={10}
+                  onChange={(page) => otherPageCall(page)}
+                />
+              </Wrapper>
+
+              {/* 카카오톡 문의 */}
+              <Wrapper al={`flex-start`}>
+                <Text
+                  color={Theme.grey5_C}
+                  fontSize={width < 700 ? `20px` : `23px !important`}
+                  margin={width < 700 ? `0 0 0 20px` : `0`}
+                >
+                  온라인 상담
+                </Text>
+                <Wrapper
+                  dr={`row`}
+                  height={`2px`}
+                  bgColor={Theme.lightSubTheme2_C}
+                  ju={`flex-start`}
+                  margin={`10px 0 50px`}
+                >
+                  <Wrapper
+                    height={`100%`}
+                    bgColor={Theme.subTheme7_C}
+                    width={`30px`}
+                  ></Wrapper>
+                </Wrapper>
+              </Wrapper>
+
+              <Wrapper
+                padding={width < 700 ? `0 20px` : `0`}
+                al={width < 700 ? `center` : `flex-start`}
+                margin={`0 0 100px`}
+              >
+                <ATag
+                  target="_blank"
+                  href="http://pf.kakao.com/_zxhxaxdb/chat"
+                  width={`auto`}
+                >
+                  <KakaoBtn>
+                    <Image
+                      width={width < 700 ? `30px` : `50px`}
+                      margin={width < 700 ? `0 5px 0 0` : `0 0 0 0`}
+                      src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Fconsulting_modify%2Ficon_kakao.png?alt=media&token=f356fc4d-625a-4942-aa14-fedacb37e9b5`}
+                    />
+                    <Text
+                      fontSize={width < 700 ? `20px !important` : `32px`}
+                      fontWeight={`600`}
+                    >
+                      1:1 카카오톡 상담 바로가기
+                    </Text>
+                  </KakaoBtn>
+                </ATag>
+
+                <Text
+                  margin={`25px 0 0`}
+                  color={Theme.subBlack2_C}
+                  fontSize={width < 700 ? `14px` : `18px`}
+                >
+                  {width < 700
+                    ? "친절한 영어교실 카카오 채널을 추가 하시면"
+                    : "친절한 영어교실 카카오 채널을 추가 하시면 더 많은 정보를 받아보실 수 있습니다."}
+                </Text>
+                <Text
+                  color={Theme.subBlack2_C}
+                  fontSize={width < 700 ? `14px` : `18px`}
+                >
+                  {width < 700 ? "더 많은 정보를 받아보실 수 있습니다." : ""}
                 </Text>
               </Wrapper>
-            </Wrapper>
-          </RsWrapper>
 
-          {bannerList &&
-            (bannerList.length === 0 ? (
-              <Wrapper height={`100vh`}>
-                <Empty description="고객센터 베너가 없습니다." />
+              {/* 자료실 */}
+              <Wrapper al={`flex-start`}>
+                <Text
+                  color={Theme.grey5_C}
+                  fontSize={width < 700 ? `20px` : `23px !important`}
+                  margin={width < 700 ? `0 0 0 20px` : `0`}
+                >
+                  자료실
+                </Text>
+                <Wrapper
+                  dr={`row`}
+                  height={`2px`}
+                  bgColor={Theme.lightSubTheme2_C}
+                  ju={`flex-start`}
+                  margin={`10px 0 0`}
+                >
+                  <Wrapper
+                    height={`100%`}
+                    bgColor={Theme.subTheme7_C}
+                    width={`30px`}
+                  ></Wrapper>
+                </Wrapper>
               </Wrapper>
-            ) : (
-              bannerList.map((data) => {
-                return (
-                  <Image
-                    width={`100%`}
-                    height={`auto`}
-                    src={width < 700 ? data.mobileImagePath : data.imagePath}
-                    alt="bannerImage"
-                  />
-                );
-              })
-            ))}
-        </WholeWrapper>
+
+              <Wrapper margin={`10px 0 0`}>
+                {referenceList &&
+                  (referenceList.length === 0 ? (
+                    <Wrapper margin={`0 0 40px`}>
+                      <Empty description="자료가 없습니다." />
+                    </Wrapper>
+                  ) : (
+                    referenceList.map((data, idx) => {
+                      return (
+                        <HoverWrapper key={idx}>
+                          <Wrapper
+                            width={width < 700 ? `60px` : `120px`}
+                            color={Theme.grey3_C}
+                          >
+                            {data.num}
+                          </Wrapper>
+                          <Wrapper
+                            width={
+                              width < 700
+                                ? `calc(100% - 60px - 150px)`
+                                : `calc(100% - 120px - 180px)`
+                            }
+                            padding={`0 18px`}
+                          >
+                            <Text width={`100%`} isEllipsis>
+                              {data.title}
+                            </Text>
+                          </Wrapper>
+                          <Wrapper
+                            width={width < 700 ? `150px` : `180px`}
+                            color={Theme.grey3_C}
+                          >
+                            {/* <ATag href={data.file}> */}
+                            {/* <a> */}
+                            <CommonButton
+                              width={`110px`}
+                              height={`40px`}
+                              fontSize={`16px`}
+                              padding={`0`}
+                              onClick={() => fileDownloadHandler(data)}
+                            >
+                              <DownloadOutlined />
+                              다운로드
+                            </CommonButton>
+                            {/* </a> */}
+                            {/* </ATag> */}
+                          </Wrapper>
+                        </HoverWrapper>
+                      );
+                    })
+                  ))}
+              </Wrapper>
+
+              {/* 상담문의 */}
+
+              <Wrapper al={`flex-start`} margin={`100px 0`}>
+                <Text
+                  fontSize={width < 700 ? `26px` : `32px`}
+                  fontWeight={`700`}
+                >
+                  상담 문의
+                </Text>
+                <Wrapper
+                  margin={`34px 0 46px`}
+                  height={`1px`}
+                  bgColor={Theme.lightGrey4_C}
+                />
+
+                <Wrapper
+                  padding={width < 700 ? `0 20px` : `0`}
+                  al={`flex-start`}
+                >
+                  <ATag href="tel:0263750300" width={`auto`}>
+                    <Text
+                      color={Theme.basicTheme_C}
+                      fontSize={width < 700 ? `30px !important` : `36px`}
+                      fontWeight={`600`}
+                    >
+                      02.6375.0300~1
+                    </Text>
+                  </ATag>
+                  <Text
+                    color={Theme.grey4_C}
+                    fontSize={width < 700 ? `18px !important` : `22px`}
+                  >
+                    평일 09:00-17:00 (주말 및 공휴일 휴무)
+                  </Text>
+                </Wrapper>
+              </Wrapper>
+            </RsWrapper>
+
+            {width < 700
+              ? mobileBannerList &&
+                (mobileBannerList.length === 0 ? (
+                  <Wrapper height={`100vh`}>
+                    <Empty description="고객센터 베너가 없습니다." />
+                  </Wrapper>
+                ) : (
+                  mobileBannerList.map((data) => {
+                    return (
+                      <Image
+                        width={`100%`}
+                        height={`auto`}
+                        src={data.imagePath}
+                        alt="bannerImage"
+                      />
+                    );
+                  })
+                ))
+              : bannerList &&
+                (bannerList.length === 0 ? (
+                  <Wrapper height={`100vh`}>
+                    <Empty description="고객센터 베너가 없습니다." />
+                  </Wrapper>
+                ) : (
+                  bannerList.map((data) => {
+                    return (
+                      <Image
+                        width={`100%`}
+                        height={`auto`}
+                        src={data.imagePath}
+                        alt="bannerImage"
+                      />
+                    );
+                  })
+                ))}
+          </WholeWrapper>
+        </Fade>
       </ClientLayout>
     </>
   );
@@ -450,6 +486,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: BANNER_LIST_REQUEST,
+      data: {
+        type: 4,
+        useYn: 1,
+      },
+    });
+
+    context.store.dispatch({
+      type: MOBILE_BANNER_LIST_REQUEST,
       data: {
         type: 4,
         useYn: 1,
