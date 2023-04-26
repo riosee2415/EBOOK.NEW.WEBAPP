@@ -50,9 +50,10 @@ router.post(
 );
 
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
-  const { title, etcType } = req.body;
+  const { title, sort, etcType } = req.body;
 
   const _title = title ? title : "";
+  const _sort = sort ? parseInt(sort) : null;
 
   const _etcType = etcType ? etcType : 3;
   // 1 상담
@@ -80,6 +81,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
       FROM  media
      WHERE  1 = 1
        AND  title LIKE "%${_title}%"
+            ${_sort ? `AND  sort = ${_sort}` : ``}
        AND  isDelete = FALSE
             ${
               _etcType === 1

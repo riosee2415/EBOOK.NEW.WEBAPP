@@ -12,6 +12,7 @@ import {
   message,
   Switch,
   Modal,
+  Popconfirm,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -25,6 +26,7 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
+  ModalBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import {
@@ -34,6 +36,7 @@ import {
   NOTICE_FILE_INFO_REQUEST,
   UPLOAD_PATH_INIT,
   NOTICE_CREATE_REQUEST,
+  NOTICE_DELETE_REQUEST,
 } from "../../../reducers/notice";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
@@ -104,6 +107,10 @@ const Notice = ({}) => {
     //
     st_noticeCreateDone,
     st_noticeCreateError,
+    //
+    st_noticeDeleteLoading,
+    st_noticeDeleteDone,
+    st_noticeDeleteError,
   } = useSelector((state) => state.notice);
 
   const router = useRouter();
@@ -240,6 +247,45 @@ const Notice = ({}) => {
       return message.error(st_noticeUpdateError);
     }
   }, [st_noticeUpdateError]);
+
+  // ********************** 공지사항 삭제 *************************
+  useEffect(() => {
+    if (st_noticeDeleteDone) {
+      message.success("정보가 삭제 되었습니다.");
+
+      let sendType = "";
+
+      switch (tab) {
+        case 0:
+          sendType = "";
+          break;
+
+        case 1:
+          sendType = "공지사항";
+          break;
+
+        case 2:
+          sendType = "새소식";
+          break;
+
+        default:
+          break;
+      }
+
+      dispatch({
+        type: NOTICE_LIST_REQUEST,
+        data: {
+          type: sendType,
+        },
+      });
+    }
+  }, [st_noticeDeleteDone]);
+
+  useEffect(() => {
+    if (st_noticeDeleteError) {
+      return message.error(st_noticeDeleteError);
+    }
+  }, [st_noticeDeleteError]);
 
   // ********************** 공지사항 파일정보 적용 *************************
   useEffect(() => {
@@ -402,6 +448,15 @@ const Notice = ({}) => {
     },
     [currentData]
   );
+
+  const deleteNoticeHandler = useCallback(() => {
+    dispatch({
+      type: NOTICE_DELETE_REQUEST,
+      data: {
+        noticeId: currentData.id,
+      },
+    });
+  }, [currentData]);
 
   const applyFileHandler = useCallback(() => {
     dispatch({
@@ -647,10 +702,20 @@ const Notice = ({}) => {
                   />
                 </Form.Item>
 
-                <Wrapper al="flex-end">
-                  <Button type="primary" size="small" htmlType="submit">
+                <Wrapper dr={`row`} ju="flex-end">
+                  <Popconfirm
+                    title="삭제하시겠습니까?"
+                    okText="삭제"
+                    cancelText="취소"
+                    onConfirm={deleteNoticeHandler}
+                  >
+                    <ModalBtn type="danger" size="small">
+                      삭제
+                    </ModalBtn>
+                  </Popconfirm>
+                  <ModalBtn type="primary" size="small" htmlType="submit">
                     정보 업데이트
-                  </Button>
+                  </ModalBtn>
                 </Wrapper>
               </Form>
 

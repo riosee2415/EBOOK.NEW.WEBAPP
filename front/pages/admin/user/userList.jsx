@@ -295,6 +295,8 @@ const UserList = ({}) => {
     "수강권변경(3달->1년)",
     "수강권변경(3달->2년)",
     "수강권변경(3달->3년)",
+    "취소",
+    "부분취소",
   ];
 
   ////// USEEFFECT //////
@@ -391,6 +393,7 @@ const UserList = ({}) => {
         startDate: moment(boughtAdminId.startDate),
         endDate: moment(boughtAdminId.endDate),
         boughtDate: moment(boughtAdminId.boughtDate),
+        isPause: boughtAdminId.isPause,
       });
     }
   }, [boughtAdminId]);
@@ -610,6 +613,7 @@ const UserList = ({}) => {
           startDate: data.startDate.format("YYYY-MM-DD"),
           endDate: data.endDate.format("YYYY-MM-DD"),
           lectureType: data.lectureType,
+          isPause: data.isPause,
         },
       });
     },
@@ -708,11 +712,15 @@ const UserList = ({}) => {
     },
     {
       title: "전화번호",
-      dataIndex: "mobile",
+      dataIndex: "viewMobile",
     },
     {
       title: "가입일",
       dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "키워드",
+      dataIndex: "keyword",
     },
     {
       align: `center`,
@@ -1241,6 +1249,13 @@ const UserList = ({}) => {
                           ]}
                         >
                           <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                        <Form.Item
+                          name="isPause"
+                          label="일시정지"
+                          valuePropName="checked"
+                        >
+                          <Switch size="small" />
                         </Form.Item>
                       </>
                     ) : (

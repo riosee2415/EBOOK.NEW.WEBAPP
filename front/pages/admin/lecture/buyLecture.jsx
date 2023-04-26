@@ -39,6 +39,7 @@ import {
 } from "@ant-design/icons";
 import {
   BOUGHT_ADDRESS_UPDATE_REQUEST,
+  BOUGHT_ADMIN_DELETE_REQUEST,
   BOUGHT_ADMIN_LIST_REQUEST,
   BOUGHT_ISPAY_UPDATE_REQUEST,
 } from "../../../reducers/boughtLecture";
@@ -83,6 +84,10 @@ const BuyLecture = ({}) => {
     st_boughtAddressUpdateLoading,
     st_boughtAddressUpdateDone,
     st_boughtAddressUpdateError,
+    //
+    st_boughtAdminDeleteLoading,
+    st_boughtAdminDeleteDone,
+    st_boughtAdminDeleteError,
   } = useSelector((state) => state.boughtLecture);
 
   const router = useRouter();
@@ -262,7 +267,7 @@ const BuyLecture = ({}) => {
     }
   }, [st_boughtIsPayUpdateDone, st_boughtIsPayUpdateError]);
 
-  // 주서변경 후처리
+  // 주소변경 후처리
   useEffect(() => {
     if (st_boughtAddressUpdateDone) {
       dispatch({
@@ -284,6 +289,27 @@ const BuyLecture = ({}) => {
       return message.error(st_boughtAddressUpdateError);
     }
   }, [st_boughtAddressUpdateDone, st_boughtAddressUpdateError]);
+
+  // 삭제 후처리
+  useEffect(() => {
+    if (st_boughtAdminDeleteDone) {
+      dispatch({
+        type: BOUGHT_ADMIN_LIST_REQUEST,
+        data: {
+          searchDate: searchDate,
+          searchType: searchType,
+          searchPayType: searchPayType,
+          isPayType: searchPayType === "nobank" && isPayType,
+          isEndDate: isEndDate,
+        },
+      });
+
+      return message.success("이용권이 삭제되었습니디.");
+    }
+    if (st_boughtAdminDeleteError) {
+      return message.error(st_boughtAdminDeleteError);
+    }
+  }, [st_boughtAdminDeleteDone, st_boughtAdminDeleteError]);
 
   ////// TOGGLE //////
   // 주소변경
@@ -372,6 +398,19 @@ const BuyLecture = ({}) => {
     [aData]
   );
 
+  // 삭제하기
+  const deleteHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: BOUGHT_ADMIN_DELETE_REQUEST,
+        data: {
+          id: data.id,
+        },
+      });
+    },
+    [aData]
+  );
+
   const isEndDateChangeHandler = useCallback(
     (data) => {
       setIsEndDate(data);
@@ -391,17 +430,17 @@ const BuyLecture = ({}) => {
       dataIndex: "num",
     },
     {
-      width: "12%",
+      width: "10%",
       title: "구매자",
       dataIndex: "username",
     },
     {
-      width: "12%",
+      width: "10%",
       title: "구매자 ID",
       dataIndex: "userLoginId",
     },
     {
-      width: "11%",
+      width: "10%",
       title: "배송자",
       dataIndex: "receiver",
     },
@@ -475,12 +514,33 @@ const BuyLecture = ({}) => {
             <Button
               size="small"
               type="primary"
-              loading={st_boughtIsPayUpdateLoading}
+              loading={st_boughtAdminDeleteLoading}
             >
               승인
             </Button>
           </Popconfirm>
         ),
+    },
+    {
+      width: "5%",
+      align: "center",
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => deleteHandler(data)}
+        >
+          <Button
+            size="small"
+            type="danger"
+            loading={st_boughtIsPayUpdateLoading}
+          >
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
     },
   ];
 

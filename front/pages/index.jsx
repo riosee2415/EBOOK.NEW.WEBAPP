@@ -43,44 +43,44 @@ const Home = ({}) => {
         <WholeWrapper>
           {/* <Mainslider />
           <CC02 /> */}
-
           <Fade>
             <>
-              {width < 700
-                ? mobileBannerList &&
-                  (mobileBannerList.length === 0 ? (
-                    <Wrapper height={`100vh`}>
-                      <Empty description="메인 베너가 없습니다." />
-                    </Wrapper>
-                  ) : (
-                    mobileBannerList.map((data) => {
-                      return (
-                        <Image
-                          width={`100%`}
-                          height={`auto`}
-                          src={data.imagePath}
-                          alt="bannerImage"
-                        />
-                      );
-                    })
-                  ))
-                : bannerList &&
-                  (bannerList.length === 0 ? (
-                    <Wrapper height={`100vh`}>
-                      <Empty description="메인 베너가 없습니다." />
-                    </Wrapper>
-                  ) : (
-                    bannerList.map((data) => {
-                      return (
-                        <Image
-                          width={`100%`}
-                          height={`auto`}
-                          src={data.imagePath}
-                          alt="bannerImage"
-                        />
-                      );
-                    })
-                  ))}
+              {width !== 0 &&
+                (width < 700
+                  ? mobileBannerList &&
+                    (mobileBannerList.length === 0 ? (
+                      <Wrapper height={`100vh`}>
+                        <Empty description="메인 베너가 없습니다." />
+                      </Wrapper>
+                    ) : (
+                      mobileBannerList.map((data) => {
+                        return (
+                          <Image
+                            width={`100%`}
+                            height={`auto`}
+                            src={data.imagePath}
+                            alt="bannerImage"
+                          />
+                        );
+                      })
+                    ))
+                  : bannerList &&
+                    (bannerList.length === 0 ? (
+                      <Wrapper height={`100vh`}>
+                        <Empty description="메인 베너가 없습니다." />
+                      </Wrapper>
+                    ) : (
+                      bannerList.map((data) => {
+                        return (
+                          <Image
+                            width={`100%`}
+                            height={`auto`}
+                            src={data.imagePath}
+                            alt="bannerImage"
+                          />
+                        );
+                      })
+                    )))}
             </>
           </Fade>
 

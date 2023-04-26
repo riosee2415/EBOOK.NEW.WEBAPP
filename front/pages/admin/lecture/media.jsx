@@ -151,6 +151,7 @@ const Media = ({}) => {
   const [media2Duration, setMedia2Duration] = useState(null);
 
   const [serachTitle, setSearchTitle] = useState(null);
+  const [serachSort, setSearchSort] = useState(null);
 
   const [searchEtcType, setSearchEtcType] = useState(3);
 
@@ -224,10 +225,11 @@ const Media = ({}) => {
       type: MEDIA_ADMIN_LIST_REQUEST,
       data: {
         title: serachTitle,
+        sort: serachSort,
         etcType: searchEtcType,
       },
     });
-  }, [serachTitle, searchEtcType]);
+  }, [serachTitle, serachSort, searchEtcType]);
 
   // 영상 생성
   useEffect(() => {
@@ -236,6 +238,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          sort: serachSort,
           etcType: searchEtcType,
         },
       });
@@ -256,6 +259,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          sort: serachSort,
           etcType: searchEtcType,
         },
       });
@@ -275,6 +279,7 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          sort: serachSort,
           etcType: searchEtcType,
         },
       });
@@ -296,6 +301,8 @@ const Media = ({}) => {
         type: MEDIA_ADMIN_LIST_REQUEST,
         data: {
           title: serachTitle,
+          sort: serachSort,
+          etcType: searchEtcType,
         },
       });
 
@@ -329,11 +336,12 @@ const Media = ({}) => {
   ////// HANDLER //////
 
   // 검색
-  const serachTitleHandler = useCallback(
+  const serachHandler = useCallback(
     (data) => {
       setSearchTitle(data.title);
+      setSearchSort(data.sort);
     },
-    [serachTitle]
+    [serachTitle, serachSort]
   );
 
   // 상담 검색
@@ -537,7 +545,7 @@ const Media = ({}) => {
       },
     },
     {
-      title: "상담여부",
+      title: "메모여부",
       render: (data) => {
         return data.etc ? (
           <CheckOutlined style={{ color: Theme.naver_C }} />
@@ -610,13 +618,20 @@ const Media = ({}) => {
               <Form
                 style={{ display: "flex" }}
                 layout="inline"
-                onFinish={serachTitleHandler}
+                onFinish={serachHandler}
               >
-                <Form.Item style={{ width: `300px`, margin: `0` }} name="title">
+                <Form.Item style={{ width: `230px`, margin: `0` }} name="title">
                   <Input
                     width={`100%`}
                     size="small"
                     placeholder="강의이름으로 검색할 수 있습니다."
+                  />
+                </Form.Item>
+                <Form.Item style={{ width: `230px`, margin: `0` }} name="sort">
+                  <Input
+                    width={`100%`}
+                    size="small"
+                    placeholder="우선순위로 검색할 수 있습니다."
                   />
                 </Form.Item>
                 <Button
@@ -641,14 +656,14 @@ const Media = ({}) => {
                   type={searchEtcType === 1 && "primary"}
                   onClick={() => etcTypeChangeHandler(1)}
                 >
-                  상담
+                  메모작성
                 </Button>
                 <Button
                   size="small"
                   type={searchEtcType === 2 && "primary"}
                   onClick={() => etcTypeChangeHandler(2)}
                 >
-                  미상담
+                  메모미작성
                 </Button>
               </Wrapper>
             </Wrapper>

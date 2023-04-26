@@ -351,13 +351,14 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/admin/update", isAdminCheck, async (req, res, next) => {
-  const { id, startDate, endDate, lectureType } = req.body;
+  const { id, startDate, endDate, lectureType, isPause } = req.body;
 
   const updateQ = `
   UPDATE  boughtLecture
      SET  startDate = "${startDate}",
           endDate = "${endDate}",
-          lectureType = ${lectureType}
+          lectureType = ${lectureType},
+          isPause = ${isPause}
    WHERE  id = ${id}
   `;
   try {
@@ -422,7 +423,8 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
           A.isPay,
           A.isDelete,
           A.userId,
-          A.lectureId
+          A.lectureId,
+          isPause
     FROM  boughtLecture							A
    WHERE  A.isDelete = FALSE
      AND  (
@@ -481,7 +483,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           A.isPay,
           A.isDelete,
           A.userId,
-          A.lectureId
+          A.lectureId,
+          A.isPause
     FROM  boughtLecture							A
    WHERE  A.isDelete = FALSE
      AND  A.id = ${id}
@@ -529,7 +532,8 @@ router.post("/me/detail", isLoggedIn, async (req, res, next) => {
           A.isPay,
           A.isDelete,
           A.userId,
-          A.lectureId
+          A.lectureId,
+          A.isPause
     FROM  boughtLecture							A
    WHERE  A.isDelete = FALSE
      AND  A.userId = ${req.user.id}

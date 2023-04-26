@@ -104,6 +104,12 @@ module.exports = class BoughtLecture extends Model {
           type: DataTypes.TEXT, // 비고란
           allowNull: true,
         },
+
+        isPause: {
+          type: DataTypes.BOOLEAN, // 일시정지
+          defaultValue: false,
+          allowNull: false,
+        },
       },
       {
         modelName: "BoughtLecture",
