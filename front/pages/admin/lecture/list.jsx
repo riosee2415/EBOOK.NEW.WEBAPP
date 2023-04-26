@@ -275,6 +275,7 @@ const List = ({}) => {
         viewCreatedAt: record.viewCreatedAt,
         viewUpdatedAt: record.viewUpdatedAt,
         bookNotEtc: record.bookNotEtc,
+        isBookPay: record.isBookPay,
       });
     },
     [currentData]
@@ -318,6 +319,7 @@ const List = ({}) => {
             : null,
           isHidden: isHidden,
           bookNotEtc: data.bookNotEtc,
+          isBookPay: data.isBookPay,
         },
       });
     },
@@ -581,6 +583,15 @@ const List = ({}) => {
                 <Form.Item label="교재 미구매 안내" name="bookNotEtc">
                   <Input size="small" />
                 </Form.Item>
+
+                <Form.Item
+                  label="교재구매여부"
+                  name="isBookPay"
+                  valuePropName="checked"
+                >
+                  <Switch size="small" />
+                </Form.Item>
+
                 <Form.Item label="생성일" name="viewCreatedAt">
                   <Input size="small" readOnly />
                 </Form.Item>

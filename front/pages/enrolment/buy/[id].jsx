@@ -167,7 +167,9 @@ const Home = ({}) => {
   const [addressData, setAddressData] = useState(null);
   const [aModal, setAModal] = useState(false);
 
-  const [isBuyBook, setIsBuyBook] = useState(1);
+  const [isBuyBook, setIsBuyBook] = useState(
+    lectureDetail && lectureDetail.isBookPay ? 2 : 1
+  );
   const [isBuyType, setIsBuyType] = useState(null);
   const [isOverseas, setIsOverseas] = useState(false);
   const [overAddress, setOverAddress] = useState(false);
@@ -205,6 +207,12 @@ const Home = ({}) => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (lectureDetail) {
+      setIsBuyBook(lectureDetail.isBookPay ? 2 : 1);
+    }
+  }, [lectureDetail]);
 
   useEffect(() => {
     if (!me) {
@@ -893,99 +901,108 @@ const Home = ({}) => {
                   bgColor={Theme.lightGrey4_C}
                 />
                 {/* 교제구매 */}
-                <Wrapper al={`flex-start`}>
-                  <Text
-                    fontSize={`26px`}
-                    fontWeight={`bold`}
-                    color={Theme.grey4_C}
-                  >
-                    교재 구매
-                  </Text>
-                </Wrapper>
-                <Wrapper
-                  margin={width < 700 ? `25px 0` : `25px 0 44px`}
-                  height={`1px`}
-                  bgColor={Theme.lightGrey4_C}
-                />
-                <Wrapper al={`flex-start`} margin={`0 0 20px`}>
-                  <Radio.Group
-                    value={isBuyBook}
-                    onChange={isBuyBookChangeHandler}
-                    size="large"
-                  >
-                    <CustomRadio
-                      value={1}
-                      style={{
-                        width: width < 700 ? `100%` : `auto`,
-                        margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
-                      }}
-                    >
-                      구매
-                    </CustomRadio>
-
-                    {/* isBuyTypeChangeHandler */}
-                    <CustomRadio
-                      value={2}
-                      style={{ width: width < 700 ? `100%` : `auto` }}
-                    >
-                      구매 안 함
-                    </CustomRadio>
-                  </Radio.Group>
-                </Wrapper>
-
-                {isBuyBook === 1 ? (
-                  lectureDetail &&
-                  (!lectureDetail.bookEndDate ||
-                  !lectureDetail.viewBookDiscountPrice ? (
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text
-                        fontSize={width < 700 ? `16px` : `22px`}
-                        color={Theme.grey3_C}
-                        margin={`0 10px 0 0`}
-                      >
-                        {lectureDetail && lectureDetail.viewBookPrice}원이 추가
-                        결제됩니다.
-                      </Text>
-                    </Wrapper>
-                  ) : (
-                    <Wrapper dr={`row`} ju={`flex-start`}>
-                      <Text
-                        textDecoration={"line-through"}
-                        fontSize={width < 700 ? `16px` : `22px`}
-                        color={Theme.grey3_C}
-                      >
-                        {lectureDetail && lectureDetail.viewBookPrice}원
-                      </Text>
-                      <CustomArrowRightOutlined />
-                      <Text
-                        fontSize={width < 700 ? `16px` : `22px`}
-                        margin={`0 10px 0 0`}
-                      >
-                        {lectureDetail && lectureDetail.viewBookDiscountPrice}원
-                      </Text>
-                      <Text
-                        fontSize={width < 700 ? `16px` : `22px`}
-                        color={Theme.grey3_C}
-                      >
-                        ( {lectureDetail && lectureDetail.bookEndDate} )
-                      </Text>
-                    </Wrapper>
-                  ))
-                ) : (
+                {lectureDetail && !lectureDetail.isBookPay ? (
                   <>
-                    <Text
-                      fontSize={width < 700 ? `14px` : `16px`}
-                      color={Theme.grey2_C}
-                    >
-                      {lectureDetail && lectureDetail.bookNotEtc}
-                    </Text>
+                    <Wrapper al={`flex-start`}>
+                      <Text
+                        fontSize={`26px`}
+                        fontWeight={`bold`}
+                        color={Theme.grey4_C}
+                      >
+                        교재 구매
+                      </Text>
+                    </Wrapper>
+                    <Wrapper
+                      margin={width < 700 ? `25px 0` : `25px 0 44px`}
+                      height={`1px`}
+                      bgColor={Theme.lightGrey4_C}
+                    />
+                    <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+                      <Radio.Group
+                        value={isBuyBook}
+                        onChange={isBuyBookChangeHandler}
+                        size="large"
+                      >
+                        <CustomRadio
+                          value={1}
+                          style={{
+                            width: width < 700 ? `100%` : `auto`,
+                            margin:
+                              width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
+                          }}
+                        >
+                          구매
+                        </CustomRadio>
+
+                        {/* isBuyTypeChangeHandler */}
+                        <CustomRadio
+                          value={2}
+                          style={{ width: width < 700 ? `100%` : `auto` }}
+                        >
+                          구매 안 함
+                        </CustomRadio>
+                      </Radio.Group>
+                    </Wrapper>
+
+                    {isBuyBook === 1 ? (
+                      lectureDetail &&
+                      (!lectureDetail.bookEndDate ||
+                      !lectureDetail.viewBookDiscountPrice ? (
+                        <Wrapper dr={`row`} ju={`flex-start`}>
+                          <Text
+                            fontSize={width < 700 ? `16px` : `22px`}
+                            color={Theme.grey3_C}
+                            margin={`0 10px 0 0`}
+                          >
+                            {lectureDetail && lectureDetail.viewBookPrice}원이
+                            추가 결제됩니다.
+                          </Text>
+                        </Wrapper>
+                      ) : (
+                        <Wrapper dr={`row`} ju={`flex-start`}>
+                          <Text
+                            textDecoration={"line-through"}
+                            fontSize={width < 700 ? `16px` : `22px`}
+                            color={Theme.grey3_C}
+                          >
+                            {lectureDetail && lectureDetail.viewBookPrice}원
+                          </Text>
+                          <CustomArrowRightOutlined />
+                          <Text
+                            fontSize={width < 700 ? `16px` : `22px`}
+                            margin={`0 10px 0 0`}
+                          >
+                            {lectureDetail &&
+                              lectureDetail.viewBookDiscountPrice}
+                            원
+                          </Text>
+                          <Text
+                            fontSize={width < 700 ? `16px` : `22px`}
+                            color={Theme.grey3_C}
+                          >
+                            ( {lectureDetail && lectureDetail.bookEndDate} )
+                          </Text>
+                        </Wrapper>
+                      ))
+                    ) : (
+                      <>
+                        <Text
+                          fontSize={width < 700 ? `14px` : `16px`}
+                          color={Theme.grey2_C}
+                        >
+                          {lectureDetail && lectureDetail.bookNotEtc}
+                        </Text>
+                      </>
+                    )}
+                    <Wrapper
+                      margin={width < 700 ? `25px 0 80px` : `30px 0 80px`}
+                      height={`1px`}
+                      bgColor={Theme.lightGrey4_C}
+                    />
                   </>
+                ) : (
+                  ""
                 )}
-                <Wrapper
-                  margin={width < 700 ? `25px 0 80px` : `30px 0 80px`}
-                  height={`1px`}
-                  bgColor={Theme.lightGrey4_C}
-                />
                 {/* 결제방법 */}
                 <Wrapper al={`flex-start`}>
                   <Text

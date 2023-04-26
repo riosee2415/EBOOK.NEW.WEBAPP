@@ -57,6 +57,11 @@ module.exports = class Lecture extends Model {
           type: DataTypes.STRING(600), // 구매안함 안내문구
           allowNull: true,
         },
+        isBookPay: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
         isHidden: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,

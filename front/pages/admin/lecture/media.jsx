@@ -51,7 +51,7 @@ import {
   MEDIA_FILE2_UPLOAD_REQUEST,
   MEDIA_SORT_UPDATE_REQUEST,
 } from "../../../reducers/media";
-import moment from "moment";
+import { saveAs } from "file-saver";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -519,6 +519,18 @@ const Media = ({}) => {
     });
   }, []);
 
+  const fileDownloadHandler = useCallback(
+    async (filepath, filename) => {
+      let blob = await fetch(filepath).then((r) => r.blob());
+
+      const element = document.createElement("a");
+      const file = new Blob([blob]);
+
+      saveAs(file, filename);
+    },
+    [currentData]
+  );
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -750,7 +762,7 @@ const Media = ({}) => {
                   <Form.Item
                     label="영상 파일"
                     name="mediaOriginName"
-                    style={{ width: `calc(100% - 100px)` }}
+                    style={{ width: `calc(100% - 200px)` }}
                   >
                     <Input
                       size="small"
@@ -767,6 +779,19 @@ const Media = ({}) => {
                     loading={st_mediaFileUploadLoading}
                   >
                     업로드
+                  </Button>
+                  <Button
+                    style={{ width: `100px`, margin: `0 0 23px` }}
+                    size="small"
+                    type="dashed"
+                    onClick={() =>
+                      fileDownloadHandler(
+                        currentData.mediaPath,
+                        currentData.mediaOriginName
+                      )
+                    }
+                  >
+                    다운로드
                   </Button>
                 </Wrapper>
 
@@ -793,7 +818,7 @@ const Media = ({}) => {
                   <Form.Item
                     label="샘플 영상 파일"
                     name="sampleMediaOriginName"
-                    style={{ width: `calc(100% - 100px)` }}
+                    style={{ width: `calc(100% - 200px)` }}
                   >
                     <Input
                       size="small"
@@ -810,6 +835,19 @@ const Media = ({}) => {
                     loading={st_mediaFile2UploadLoading}
                   >
                     업로드
+                  </Button>
+                  <Button
+                    style={{ width: `100px`, margin: `0 0 23px` }}
+                    size="small"
+                    type="dashed"
+                    onClick={() =>
+                      fileDownloadHandler(
+                        currentData.sampleMediaPath,
+                        currentData.sampleMediaOriginName
+                      )
+                    }
+                  >
+                    다운로드
                   </Button>
                 </Wrapper>
 
