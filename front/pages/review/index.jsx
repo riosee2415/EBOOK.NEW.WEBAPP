@@ -27,6 +27,7 @@ import { REVIEW_LIST_REQUEST } from "../../reducers/review";
 import { Empty } from "antd";
 import { useRouter } from "next/router";
 import Fade from "react-reveal/Fade";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../reducers/boughtLecture";
 
 const HoverWrapper = styled(Wrapper)`
   flex-direction: row;
@@ -48,8 +49,10 @@ const HoverWrapper = styled(Wrapper)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { bannerList, mobileBannerList } = useSelector((state) => state.banner);
-
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
   const { reviewList, reviewLastPage } = useSelector((state) => state.review);
+
+  const { me } = useSelector((state) => state.user);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -104,7 +107,7 @@ const Home = ({}) => {
                   fontSize={width < 700 ? `20px` : `23px !important`}
                   margin={width < 700 ? `0 0 0 20px` : `0`}
                 >
-                  친절한 영어교실 수강생분들의 생생후기
+                  친절한 영어교실 수강생 분들의 생생후기
                 </Text>
                 <Wrapper
                   dr={`row`}
@@ -122,15 +125,20 @@ const Home = ({}) => {
               </Wrapper>
 
               <Wrapper dr={`row`} ju={`flex-end`}>
-                <CommonButton
-                  kindOf={`basic`}
-                  width={`114px`}
-                  height={`40px`}
-                  fontSize={`16px`}
-                  onClick={() => moveLinkHandler("/review/write")}
-                >
-                  글쓰기
-                </CommonButton>
+                {boughtMeDetail &&
+                  (boughtMeDetail.isPay ? (
+                    <CommonButton
+                      kindOf={`basic`}
+                      width={`114px`}
+                      height={`40px`}
+                      fontSize={`16px`}
+                      onClick={() => moveLinkHandler("/review/write")}
+                    >
+                      글쓰기
+                    </CommonButton>
+                  ) : (
+                    ""
+                  ))}
               </Wrapper>
 
               <Wrapper
@@ -138,7 +146,7 @@ const Home = ({}) => {
                 padding={width < 700 ? `10px 0` : `28px 0`}
                 margin={`30px 0 0`}
                 fontSize={width < 700 ? `20px` : `22px`}
-                color={Theme.grey3_C}
+                color={Theme.grey4_C}
                 bgColor={Theme.lightGrey2_C}
                 borderTop={`1px solid ${Theme.grey2_C}`}
                 borderBottom={`1px solid ${Theme.lightGrey4_C}`}
@@ -304,6 +312,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: REVIEW_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
     });
 
     // 구현부 종료

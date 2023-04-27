@@ -331,7 +331,7 @@ const MypageIndex = ({}) => {
                     ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`
                     : parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}
                   :
-                  {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)
+                  {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60) < 10
                     ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
                     : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
                   로부터 이어보기

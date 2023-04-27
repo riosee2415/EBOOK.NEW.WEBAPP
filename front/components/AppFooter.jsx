@@ -71,7 +71,11 @@ const AppFooter = () => {
   }, [modalFlag2]);
 
   return (
-    <WholeWrapper bgColor={Theme.lightGrey2_C} padding={`55px 0`}>
+    <WholeWrapper
+      bgColor={Theme.lightGrey2_C}
+      padding={`55px 0`}
+      margin={`60px 0 0`}
+    >
       <RsWrapper dr={`row`} ju={`space-between`} al={`flex-end`}>
         <Wrapper width={width < 700 ? `100%` : `50%`} al={`flex-start`}>
           {companys && (

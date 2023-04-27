@@ -36,7 +36,10 @@ import {
   BOUGHT_ME_DETAIL_REQUEST,
   BOUGHT_RECENTLY_UPDATE_REQUEST,
 } from "../../reducers/boughtLecture";
-import { ENJOY_CREATE_REQUEST } from "../../reducers/enjoy";
+import {
+  ENJOY_CREATE_REQUEST,
+  ENJOY_ME_LIST_REQUEST,
+} from "../../reducers/enjoy";
 
 const Video = styled.video`
   width: 100%;
@@ -49,9 +52,9 @@ const MediaDetail = () => {
   const { me } = useSelector((state) => state.user);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
-  console.log(boughtMeDetail);
-
   const { mediaAllList, mediaDetail } = useSelector((state) => state.media);
+
+  const { enjoyMeList } = useSelector((state) => state.enjoy);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -427,7 +430,13 @@ const MediaDetail = () => {
                               </CommonButton>
                             ) : boughtMeDetail && boughtMeDetail.isPay ? (
                               <CommonButton
-                                kindOf={`subTheme`}
+                                kindOf={
+                                  enjoyMeList.find(
+                                    (value) => value.MediumId === data.id
+                                  )
+                                    ? `checked`
+                                    : `subTheme`
+                                }
                                 width={width < 700 ? `100%` : `186px`}
                                 height={`52px`}
                                 fontSize={`20px`}
@@ -438,12 +447,23 @@ const MediaDetail = () => {
                                 }
                               >
                                 <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>강의 보기</Text>
+                                  <Text fontWeight={`600`}>
+                                    {enjoyMeList.find(
+                                      (value) => value.MediumId === data.id
+                                    )
+                                      ? `강의 다시 보기`
+                                      : `강의 보기`}
+                                  </Text>
 
                                   <Wrapper
                                     width={`auto`}
                                     padding={`6px`}
                                     bgColor={Theme.white_C}
+                                    color={
+                                      enjoyMeList.find(
+                                        (value) => value.MediumId === data.id
+                                      ) && Theme.subTheme6_C
+                                    }
                                     radius={`100%`}
                                   >
                                     <CaretRightOutlined />
@@ -464,6 +484,22 @@ const MediaDetail = () => {
         </WholeWrapper>
         <Modal visible={aModal} footer={null} onCancel={() => setAModal(false)}>
           <Wrapper>
+            <Text fontSize={`25px`} fontWeight={"600"}>
+              {mediaAllList &&
+                mediaAllList.length > 0 &&
+                mediaAllList.find(
+                  (data) => data.id === boughtMeDetail.recentlyTurn
+                ).num}
+              번 강의&nbsp;
+              {parseInt(parseInt(boughtMeDetail.recentlyTime) / 60) < 10
+                ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`
+                : parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}
+              :
+              {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60) < 10
+                ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
+                : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
+              부터
+            </Text>
             <Text fontSize={`25px`} fontWeight={"600"}>
               강의를 이어보시겠습니까?
             </Text>
@@ -509,6 +545,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: MEDIA_ALL_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ENJOY_ME_LIST_REQUEST,
     });
 
     context.store.dispatch({

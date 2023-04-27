@@ -166,7 +166,7 @@ const Home = ({}) => {
                 padding={width < 700 ? `10px 0` : `28px 0`}
                 margin={`20px 0 0`}
                 fontSize={width < 700 ? `20px` : `22px`}
-                color={Theme.grey3_C}
+                color={Theme.grey4_C}
                 bgColor={Theme.lightGrey2_C}
                 borderTop={`1px solid ${Theme.grey2_C}`}
                 borderBottom={`1px solid ${Theme.lightGrey4_C}`}
@@ -298,7 +298,7 @@ const Home = ({}) => {
                 <Text
                   margin={`25px 0 0`}
                   color={Theme.subBlack2_C}
-                  fontSize={width < 700 ? `14px` : `18px`}
+                  fontSize={width < 700 ? `20px` : `22px`}
                 >
                   {width < 700
                     ? "친절한 영어교실 카카오 채널을 추가 하시면"
@@ -306,7 +306,7 @@ const Home = ({}) => {
                 </Text>
                 <Text
                   color={Theme.subBlack2_C}
-                  fontSize={width < 700 ? `14px` : `18px`}
+                  fontSize={width < 700 ? `20px` : `22px`}
                 >
                   {width < 700 ? "더 많은 정보를 받아보실 수 있습니다." : ""}
                 </Text>

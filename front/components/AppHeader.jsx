@@ -58,6 +58,11 @@ const Menu = styled.h2`
     /* border-bottom: 3px solid ${Theme.white_C};
     transition: 0.4s; */
   }
+
+  @media (max-width: 900px) {
+    margin: 0;
+    font-size: 20px;
+  }
 `;
 
 const HoverText = styled(Text)`
@@ -154,8 +159,8 @@ const AppHeader = ({}) => {
   return (
     <>
       <WholeWrapper
-        display={width < 1100 && "none"}
-        position={`fixed`}
+        // display={width < 1100 && "none"}
+        position={width < 700 ? `none` : `fixed`}
         top={`0`}
         left={`0`}
         zIndex={`99`}
@@ -163,7 +168,7 @@ const AppHeader = ({}) => {
       >
         <RsWrapper>
           <Wrapper dr={`row`} ju={`space-between`} padding={`10px 0`}>
-            <ATag href="/" width={`210px`}>
+            <ATag href="/" width={width < 700 ? `130px` : `210px`}>
               {logos && logos.find((data) => data.typeOf === "H") && (
                 <Image
                   width={`100%`}
@@ -175,6 +180,16 @@ const AppHeader = ({}) => {
             {me ? (
               <Wrapper width={`auto`} dr={`row`}>
                 <HoverText onClick={logoutHandler}>로그아웃</HoverText>
+
+                {me && width <= 900 ? (
+                  <Link href={`/mypage`}>
+                    <a>
+                      <HoverText2>나의 강의실</HoverText2>
+                    </a>
+                  </Link>
+                ) : (
+                  ""
+                )}
               </Wrapper>
             ) : (
               <Wrapper width={`auto`} dr={`row`}>
@@ -218,7 +233,7 @@ const AppHeader = ({}) => {
               </a>
             </Link>
 
-            {me ? (
+            {me && width > 900 ? (
               <Link href={`/mypage`}>
                 <a>
                   <HoverText2>나의 강의실</HoverText2>
@@ -233,7 +248,7 @@ const AppHeader = ({}) => {
       </WholeWrapper>
 
       {/* mobile */}
-      <MobileRow justify={`center`} className={headerScroll && "background"}>
+      {/* <MobileRow justify={`center`} className={headerScroll && "background"}>
         <ColWrapper span={11} al={`flex-start`}>
           <ATag href="/" width={`155px`}>
             {logos && logos.find((data) => data.typeOf === "H") && (
@@ -306,7 +321,7 @@ const AppHeader = ({}) => {
             </Link>
           </Drawer>
         )}
-      </MobileRow>
+      </MobileRow> */}
     </>
   );
 };
