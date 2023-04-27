@@ -94,6 +94,36 @@ const CustomSelect = styled(Select)`
   }
 `;
 
+const CustomCommonButton = styled.button`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin: ${(props) => props.margin};
+  padding: ${(props) => props.padding};
+  font-size: ${(props) => props.fontSize};
+  color: ${(props) => props.color || props.theme.basicTheme_C};
+  border-radius: ${(props) => props.radius || `7px`};
+  transition: 0.2s;
+
+  outline: none;
+  border: ${(props) => `1px solid ${props.theme.basicTheme_C}`};
+
+  ${(props) => !props.kindOf && `background : ${props.theme.white_C};`}
+
+  ${(props) =>
+    props.kindOf === `basic` && `background : ${props.theme.basicTheme_C};`}
+  ${(props) => props.kindOf === `basic` && `color : ${props.theme.white_C};`}
+
+
+  &:hover {
+    background: ${(props) => props.theme.basicTheme_C};
+    color: ${(props) => props.theme.white_C};
+    ${(props) =>
+      props.kindOf === `basic` && `background : ${props.theme.white_C};`}
+    ${(props) =>
+      props.kindOf === `basic` && `color : ${props.theme.basicTheme_C};`}
+  }
+`;
+
 const SignUp = () => {
   ////// GLOBAL STATE //////
 
@@ -1075,7 +1105,7 @@ const SignUp = () => {
                       ju={`space-between`}
                       margin={`0 0 30px`}
                     >
-                      <CommonButton
+                      <CustomCommonButton
                         width={`calc(50% - 5px)`}
                         height={`54px`}
                         radius={`100px`}
@@ -1086,8 +1116,8 @@ const SignUp = () => {
                         }
                       >
                         여성
-                      </CommonButton>
-                      <CommonButton
+                      </CustomCommonButton>
+                      <CustomCommonButton
                         width={`calc(50% - 5px)`}
                         height={`54px`}
                         radius={`100px`}
@@ -1098,7 +1128,7 @@ const SignUp = () => {
                         }
                       >
                         남성
-                      </CommonButton>
+                      </CustomCommonButton>
                     </Wrapper>
 
                     <Text fontSize={`20px`} margin={`0 0 12px`}>
