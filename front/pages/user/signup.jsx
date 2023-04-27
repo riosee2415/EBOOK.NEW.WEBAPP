@@ -1106,6 +1106,7 @@ const SignUp = () => {
                       margin={`0 0 30px`}
                     >
                       <CustomCommonButton
+                        type="button"
                         width={`calc(50% - 5px)`}
                         height={`54px`}
                         radius={`100px`}
@@ -1118,6 +1119,7 @@ const SignUp = () => {
                         여성
                       </CustomCommonButton>
                       <CustomCommonButton
+                        type="button"
                         width={`calc(50% - 5px)`}
                         height={`54px`}
                         radius={`100px`}

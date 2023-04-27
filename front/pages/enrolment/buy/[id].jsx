@@ -420,7 +420,6 @@ const Home = ({}) => {
         // 해외 결제
         // 해외 결제
         // 해외 결제
-        console.log("test");
         IMP.request_pay(
           {
             pg: `${isBuyType}`,
