@@ -105,10 +105,9 @@ module.exports = class BoughtLecture extends Model {
           allowNull: true,
         },
 
-        isPause: {
-          type: DataTypes.BOOLEAN, // 일시정지
-          defaultValue: false,
-          allowNull: false,
+        pauseDate: {
+          type: DataTypes.DATE, // 일시정지 기간
+          allowNull: true,
         },
       },
       {
