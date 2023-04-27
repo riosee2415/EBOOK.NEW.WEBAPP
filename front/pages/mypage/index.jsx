@@ -195,7 +195,8 @@ const MypageIndex = ({}) => {
                 )}
               </Wrapper>
               {boughtMeDetail ? (
-                boughtMeDetail.isPause ? (
+                boughtMeDetail.pauseDate &&
+                moment(boughtMeDetail.pauseDate) >= moment() ? (
                   <Text
                     fontSize={width < 700 ? `20px` : `28px`}
                     fontWeight={`600`}
@@ -506,7 +507,8 @@ const MypageIndex = ({}) => {
                                   </Wrapper>
                                 </CommonButton>
                               ) : boughtMeDetail && boughtMeDetail.isPay ? (
-                                boughtMeDetail.isPause ? (
+                                boughtMeDetail.pauseDate &&
+                                moment(boughtMeDetail.pauseDate) >= moment() ? (
                                   ""
                                 ) : (
                                   <CommonButton

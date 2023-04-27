@@ -393,7 +393,9 @@ const UserList = ({}) => {
         startDate: moment(boughtAdminId.startDate),
         endDate: moment(boughtAdminId.endDate),
         boughtDate: moment(boughtAdminId.boughtDate),
-        isPause: boughtAdminId.isPause,
+        pauseDate: boughtAdminId.pauseDate
+          ? moment(boughtAdminId.pauseDate)
+          : null,
       });
     }
   }, [boughtAdminId]);
@@ -613,7 +615,9 @@ const UserList = ({}) => {
           startDate: data.startDate.format("YYYY-MM-DD"),
           endDate: data.endDate.format("YYYY-MM-DD"),
           lectureType: data.lectureType,
-          isPause: data.isPause,
+          pauseDate: data.pauseDate
+            ? data.pauseDate.format("YYYY-MM-DD")
+            : null,
         },
       });
     },
@@ -1250,12 +1254,8 @@ const UserList = ({}) => {
                         >
                           <DatePicker size="small" style={{ width: `100%` }} />
                         </Form.Item>
-                        <Form.Item
-                          name="isPause"
-                          label="일시정지"
-                          valuePropName="checked"
-                        >
-                          <Switch size="small" />
+                        <Form.Item name="pauseDate" label="일시정지">
+                          <DatePicker size="small" style={{ width: `100%` }} />
                         </Form.Item>
                       </>
                     ) : (
