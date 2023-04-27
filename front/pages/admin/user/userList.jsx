@@ -711,10 +711,6 @@ const UserList = ({}) => {
       dataIndex: "username",
     },
     {
-      title: "이메일",
-      dataIndex: "email",
-    },
-    {
       title: "전화번호",
       dataIndex: "viewMobile",
     },

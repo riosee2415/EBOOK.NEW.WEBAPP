@@ -54,7 +54,7 @@ const Home = ({}) => {
                 ? mobileBannerList &&
                   (mobileBannerList.length === 0 ? (
                     <Wrapper height={`100vh`}>
-                      <Empty description="커리큘럼 베너가 없습니다." />
+                      <Empty description="커리큘럼 배너가 없습니다." />
                     </Wrapper>
                   ) : (
                     mobileBannerList.map((data) => {
@@ -71,7 +71,7 @@ const Home = ({}) => {
                 : bannerList &&
                   (bannerList.length === 0 ? (
                     <Wrapper height={`100vh`}>
-                      <Empty description="커리큘럼 베너가 없습니다." />
+                      <Empty description="커리큘럼 배너가 없습니다." />
                     </Wrapper>
                   ) : (
                     bannerList.map((data) => {

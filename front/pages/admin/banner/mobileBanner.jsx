@@ -103,7 +103,7 @@ const Banner = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("베너관리");
+  const [level1, setLevel1] = useState("배너관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
 
@@ -192,7 +192,7 @@ const Banner = ({}) => {
 
       cModalToggle();
 
-      return message.success("베너가 생성되었습니다.");
+      return message.success("배너가 생성되었습니다.");
     }
 
     if (st_mobileBannerCreateError) {
@@ -210,7 +210,7 @@ const Banner = ({}) => {
         },
       });
 
-      return message.success("베너의 순서가 변경되었습니다.");
+      return message.success("배너의 순서가 변경되었습니다.");
     }
 
     if (st_mobileBannerSortUpdateError) {
@@ -228,7 +228,7 @@ const Banner = ({}) => {
         },
       });
 
-      return message.success("베너의 정보가 수정되었습니다.");
+      return message.success("배너의 정보가 수정되었습니다.");
     }
 
     if (st_mobileBannerUpdateError) {
@@ -248,7 +248,7 @@ const Banner = ({}) => {
 
       setCurrentData(null);
 
-      return message.success("베너가 삭제되었습니다.");
+      return message.success("배너가 삭제되었습니다.");
     }
 
     if (st_mobileBannerDeleteError) {
@@ -395,7 +395,7 @@ const Banner = ({}) => {
       dataIndex: "viewType",
     },
     {
-      title: "베너",
+      title: "배너",
       render: (data) =>
         data.imagePath ? (
           <Image width={`300px`} src={data.imagePath} />
@@ -468,8 +468,8 @@ const Banner = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>홈페이지의 베너를 관리할 수 있습니다.</GuideLi>
-          <GuideLi>유형에따라 화면에 나오는 베너가 달라집니다.</GuideLi>
+          <GuideLi>홈페이지의 배너를 관리할 수 있습니다.</GuideLi>
+          <GuideLi>유형에따라 화면에 나오는 배너가 달라집니다.</GuideLi>
           <GuideLi isImpo={true}>
             모바일 이미지는 width 700px을 기준으로 합니다.
           </GuideLi>
@@ -513,7 +513,7 @@ const Banner = ({}) => {
               onClick={cModalToggle}
               loading={st_mobileBannerCreateLoading}
             >
-              베너 생성
+              배너 생성
             </Button>
           </Wrapper>
           <Table
@@ -539,7 +539,7 @@ const Banner = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  베너 MOBILE 이미지
+                  배너 MOBILE 이미지
                 </InfoTitle>
               </Wrapper>
 
@@ -574,7 +574,7 @@ const Banner = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  베너 상세정보
+                  배너 상세정보
                 </InfoTitle>
               </Wrapper>
 
@@ -632,7 +632,7 @@ const Banner = ({}) => {
 
                 <Wrapper dr={`row`} ju="flex-end">
                   <Popconfirm
-                    title="해당 베너를 삭제하시겠습니까?"
+                    title="해당 배너를 삭제하시겠습니까?"
                     okText="삭제"
                     cancelText="취소"
                     onConfirm={bannerDeleteHandler}
@@ -642,7 +642,7 @@ const Banner = ({}) => {
                       type="danger"
                       loading={st_mobileBannerDeleteLoading}
                     >
-                      베너 삭제
+                      배너 삭제
                     </ModalBtn>
                   </Popconfirm>
                   <ModalBtn
@@ -680,7 +680,7 @@ const Banner = ({}) => {
 
       {/* CREATE MODAL */}
       <Modal
-        title="베너 생성"
+        title="배너 생성"
         visible={cModal}
         onCancel={cModalToggle}
         footer={null}

@@ -89,15 +89,15 @@ const AdminMenu = () => {
     },
 
     {
-      title: "베너관리",
+      title: "배너관리",
       key: "sub3",
       subMenu: [
         {
-          name: "베너관리",
+          name: "배너관리",
           link: "/admin/banner/banner",
         },
         {
-          name: "모바일 베너관리",
+          name: "모바일 배너관리",
           link: "/admin/banner/mobileBanner",
         },
       ],
