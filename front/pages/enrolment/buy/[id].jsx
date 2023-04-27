@@ -379,9 +379,14 @@ const Home = ({}) => {
             : lectureDetail.bookPrice
           : 0);
 
-      await dollarChange(buyPay).then((data) => {
+      await dollarChange(
+        buyPay
+        // 10000
+      ).then((data) => {
         paypalPay = data;
       });
+
+      // console.log(paypalPay);
 
       if (isBuyType === "nobank") {
         // 무통장입금
@@ -415,9 +420,10 @@ const Home = ({}) => {
         // 해외 결제
         // 해외 결제
         // 해외 결제
+        console.log("test");
         IMP.request_pay(
           {
-            pg: `${isBuyType}.sb-otnjs25340282_api1.business.example.com`,
+            pg: `${isBuyType}`,
             pay_method: "card",
             merchant_uid: orderPK,
             name: lectureDetail && lectureDetail.title,
