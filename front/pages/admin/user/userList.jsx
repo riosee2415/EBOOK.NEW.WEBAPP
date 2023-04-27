@@ -723,6 +723,20 @@ const UserList = ({}) => {
       dataIndex: "viewCreatedAt",
     },
     {
+      title: "결제여부",
+      render: (data) => {
+        return data.boughtList.length === 0 ? (
+          <Text color={Theme.red2_C}>
+            <CloseOutlined /> 0건
+          </Text>
+        ) : (
+          <Text color={Theme.naver_C}>
+            <CheckOutlined /> {data.boughtList.length}건
+          </Text>
+        );
+      },
+    },
+    {
       title: "키워드",
       dataIndex: "keyword",
     },
@@ -740,6 +754,7 @@ const UserList = ({}) => {
           type="primary"
           onClick={() => updateModalOpen(data)}
         >
+          {console.log(data)}
           수정
         </SettingBtn>
       ),

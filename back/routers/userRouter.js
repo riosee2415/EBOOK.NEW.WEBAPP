@@ -75,7 +75,6 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
 
 router.post("/list", isAdminCheck, async (req, res, next) => {
   const {
-    userId,
     keyword,
     page,
     searchData,
@@ -239,15 +238,79 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   try {
     const lengths = await models.sequelize.query(lengthQuery);
     const list = await models.sequelize.query(selectQuery);
+    const selectBoughtQ = `
+    SELECT  ROW_NUMBER() OVER()		AS num,
+            A.id,
+            A.mobile,
+            A.receiver,
+            A.zoneCode,
+            A.address,
+            A.detailAddress,
+            A.payType,
+            CASE
+                WHEN A.payType = "card" THEN "카드"
+                WHEN A.payType = "nobank" THEN "무통장입금"
+                WHEN A.payType = "paypal" THEN "페이팔"
+                WHEN A.payType = "admin" THEN "관리자제어"
+            END                                             AS viewPayType,
+            A.pay,
+            A.lectureType,
+            CASE
+                WHEN A.lectureType = 1 THEN  "1년"
+                WHEN A.lectureType = 2 THEN  "2년"
+                WHEN A.lectureType = 3 THEN  "3년"
+                WHEN A.lectureType = 4 THEN  "평생"
+                WHEN A.lectureType = 5 THEN  "3달"
+                WHEN A.lectureType = 6 THEN  "상품"
+            END                                           	AS viewLectureType,
+            A.name,
+            A.boughtDate,
+            A.startDate,
+            A.endDate,
+            A.impUid,
+            A.merchantUid,
+            A.boughtDate,
+            A.startDate,
+            A.endDate,
+            A.isPay,
+            A.isBuyBook,
+            A.bookPrice,
+            A.createdAt,
+            A.updatedAt,
+            DATE_FORMAT(A.createdAt, '%Y년 %m월 %d일')		AS viewCreatedAt,
+            DATE_FORMAT(A.boughtDate, '%Y년 %m월 %d일')		AS viewBoughtDate,
+            DATE_FORMAT(A.updatedAt, '%Y년 %m월 %d일')		AS viewUpdatedAt,
+            A.userId,
+            B.username,
+            B.userId                                    AS userLoginId,
+            B.birth,
+            B.gender,
+            A.etc
+      FROM  boughtLecture			A
+     INNER
+      JOIN  users					B
+        ON  A.userId = B.id
+     WHERE  A.isDelete = FALSE
+       AND  isPay = TRUE
+       AND  A.userId IN (${
+         list[0].length === 0 ? 0 : list[0].map((data) => data.id)
+       })
+     ORDER  BY  A.boughtDate  DESC
+    `;
+    const selectBought = await models.sequelize.query(selectBoughtQ);
 
     const listLen = lengths[0][0].userCnt;
 
     const lastPage =
       listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;
 
-    return res
-      .status(200)
-      .json({ list: list[0], lastPage: parseInt(lastPage) });
+    return res.status(200).json({
+      list: list[0].map((data) => ({
+        ...data,
+        boughtList: selectBought[0].filter((value) => data.id === value.userId),
+      })),
+      lastPage: parseInt(lastPage),
+    });
   } catch (error) {
     console.error(error);
     return res.status(401).send("사용자 목록을 불러올 수 없습니다.");
