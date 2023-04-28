@@ -20,7 +20,7 @@ import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../../components/popup/popup";
 import { BANNER_LIST_REQUEST } from "../../reducers/banner";
-import { Empty } from "antd";
+import { Empty, message } from "antd";
 import { LECTURE_LIST_REQUEST } from "../../reducers/lecture";
 import { useRouter } from "next/router";
 import { numberWithCommas } from "../../components/commonUtils";
@@ -30,6 +30,8 @@ import Fade from "react-reveal/Fade";
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { lectureList } = useSelector((state) => state.lecture);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
+  console.log(boughtMeDetail);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -273,7 +275,9 @@ const Home = ({}) => {
                             fontSize={`25px`}
                             kindOf={`basic`}
                             onClick={() =>
-                              moveLinkHandler(`/enrolment/buy/${data.id}`)
+                              boughtMeDetail
+                                ? message.error("이미 구매한 강의가 있습니다.")
+                                : moveLinkHandler(`/enrolment/buy/${data.id}`)
                             }
                           >
                             구매하기
@@ -304,6 +308,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
     });
 
     // 구현부 종료

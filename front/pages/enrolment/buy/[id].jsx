@@ -32,7 +32,10 @@ import { LECTURE_DETAIL_REQUEST } from "../../../reducers/lecture";
 import DaumPostcode from "react-daum-postcode";
 import { numberWithCommas } from "../../../components/commonUtils";
 import moment from "moment";
-import { BOUGHT_CREATE_REQUEST } from "../../../reducers/boughtLecture";
+import {
+  BOUGHT_CREATE_REQUEST,
+  BOUGHT_ME_DETAIL_REQUEST,
+} from "../../../reducers/boughtLecture";
 
 const BuyForm = styled(Form)`
   width: 100%;
@@ -151,6 +154,7 @@ const Home = ({}) => {
   );
   const {
     boughtCreateId,
+    boughtMeDetail,
     //
     st_boughtCreateLoading,
     st_boughtCreateDone,
@@ -207,6 +211,13 @@ const Home = ({}) => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (boughtMeDetail) {
+      router.push("/enrolment");
+      return message.error("이미 구매한 강의가 있습니다.");
+    }
+  }, [boughtMeDetail]);
 
   useEffect(() => {
     if (lectureDetail) {
@@ -1246,6 +1257,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
     });
 
     // 구현부 종료
