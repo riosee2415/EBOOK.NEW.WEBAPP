@@ -451,8 +451,8 @@ const MediaDetail = () => {
                                     {enjoyMeList.find(
                                       (value) => value.MediumId === data.id
                                     )
-                                      ? `강의 다시 보기`
-                                      : `강의 보기`}
+                                      ? `강의 다시보기`
+                                      : `강의 시청하기`}
                                   </Text>
 
                                   <Wrapper

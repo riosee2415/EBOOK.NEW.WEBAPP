@@ -26,6 +26,7 @@ import {
   REVIEW_DETAIL_REQUEST,
   REVIEW_UPDATE_REQUEST,
 } from "../../reducers/review";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../reducers/boughtLecture";
 
 const WriteForm = styled(Form)`
   width: 100%;
@@ -49,6 +50,7 @@ const ReviewWrite = ({}) => {
     st_reviewUpdateDone,
     st_reviewUpdateError,
   } = useSelector((state) => state.review);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -65,6 +67,13 @@ const ReviewWrite = ({}) => {
       return message.error("로그인 후 이용해주세요.");
     }
   }, [me]);
+
+  useEffect(() => {
+    if (boughtMeDetail) {
+      router.push("/review");
+      return message.error("구매한 강의가 없습니다.");
+    }
+  }, [boughtMeDetail]);
 
   useEffect(() => {
     if (router.query && router.query.updateId) {
@@ -147,7 +156,7 @@ const ReviewWrite = ({}) => {
   return (
     <>
       <Head>
-        <title>ALAL</title>
+        <title>친절한 영어교실 | 수강후기작성</title>
       </Head>
 
       <ClientLayout>
@@ -258,6 +267,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
     });
 
     // 구현부 종료

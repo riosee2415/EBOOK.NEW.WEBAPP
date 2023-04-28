@@ -85,6 +85,7 @@ const FixedNav = ({}) => {
 
   if (
     router.pathname === "/join" ||
+    router.pathname === "/user/signup" ||
     router.pathname === "/enrolment" ||
     router.pathname === "/order" ||
     router.pathname === "/orderOverseas" ||

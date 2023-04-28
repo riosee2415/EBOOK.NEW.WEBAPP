@@ -117,10 +117,6 @@ const CustomCommonButton = styled.button`
   &:hover {
     background: ${(props) => props.theme.basicTheme_C};
     color: ${(props) => props.theme.white_C};
-    ${(props) =>
-      props.kindOf === `basic` && `background : ${props.theme.white_C};`}
-    ${(props) =>
-      props.kindOf === `basic` && `color : ${props.theme.basicTheme_C};`}
   }
 `;
 
