@@ -334,6 +334,10 @@ const Home = ({}) => {
         return message.error("결제 방법을 선택해주세요.");
       }
 
+      if (st_boughtCreateDone) {
+        return message.error("이미 결제되었습니다.");
+      }
+
       const IMP = window.IMP;
 
       const address = isOverseas
@@ -556,7 +560,7 @@ const Home = ({}) => {
         );
       }
     },
-    [isBuyType, lectureDetail, isBuyBook, overAddress]
+    [isBuyType, lectureDetail, isBuyBook, overAddress, st_boughtCreateDone]
   );
 
   ////// DATAVIEW //////
