@@ -145,6 +145,9 @@ const Media = ({}) => {
   const fileRef = useRef();
   const file2Ref = useRef();
 
+  const videoRef = useRef();
+  const video2Ref = useRef();
+
   const [cModal, setCModal] = useState(false);
 
   const [mediaDuration, setMediaDuration] = useState(null);
@@ -518,15 +521,30 @@ const Media = ({}) => {
       },
     });
   }, []);
+  const downloadFile = async () => {
+    return receive(
+      client(url, {
+        method: "GET",
+        responseType: "blob",
+      })
+    );
+  };
 
   const fileDownloadHandler = useCallback(
     async (filepath, filename) => {
-      let blob = await fetch(filepath).then((r) => r.blob());
+      const link = document.createElement("a");
+      link.style.display = "none";
 
-      const element = document.createElement("a");
-      const file = new Blob([blob]);
+      const res = await fetch(filepath);
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
 
-      saveAs(file, filename);
+      link.href = downloadUrl;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
     [currentData]
   );
@@ -798,6 +816,7 @@ const Media = ({}) => {
                 {mediaPath && (
                   <Wrapper margin={`0 0 40px`}>
                     <video
+                      ref={videoRef}
                       id={`video-js`}
                       controls={true}
                       width={`700px`}
@@ -854,6 +873,7 @@ const Media = ({}) => {
                 {media2Path && (
                   <Wrapper margin={`0 0 40px`}>
                     <video
+                      ref={video2Ref}
                       id={`video2-js`}
                       controls={true}
                       width={`700px`}
