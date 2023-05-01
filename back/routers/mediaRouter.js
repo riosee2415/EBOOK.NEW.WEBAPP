@@ -106,12 +106,12 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
 router.post("/list", async (req, res, next) => {
   const { page, type } = req.body;
 
-  const LIMIT = 30;
+  const LIMIT = 50;
 
   const _page = page ? page : 1;
 
   const __page = _page - 1;
-  const OFFSET = __page * 30;
+  const OFFSET = __page * 50;
 
   const lengthQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,

@@ -48,6 +48,8 @@ const MypageIndex = ({}) => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [sForm] = Form.useForm();
+
   const CustomSlider = styled(Slider)`
     width: 200px;
 
@@ -109,9 +111,9 @@ const MypageIndex = ({}) => {
     (type) => {
       if (type.search) {
         const data = document.getElementById(
-          `lecture-${parseInt(type.search) % 30}`
+          `lecture-${parseInt(type.search) % 50}`
         );
-        let page = Math.ceil(parseInt(type.search) / 30);
+        let page = Math.ceil(parseInt(type.search) / 50);
 
         if (data) {
           window.scrollTo(0, data.offsetTop - 300);
@@ -124,6 +126,10 @@ const MypageIndex = ({}) => {
     },
     [currentPage]
   );
+
+  const onSearchSubmitHandler = useCallback(() => {
+    sForm.submit();
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -342,12 +348,21 @@ const MypageIndex = ({}) => {
               )}
             </Wrapper>
 
-            <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 34px`}>
-              <Text fontSize={width < 700 ? `30px` : `36px`} fontWeight={`700`}>
-                강의 목차
+            <Wrapper al={`flex-start`} margin={`0 0 34px`}>
+              <Text
+                fontSize={`22px`}
+                fontWeight={`700`}
+                color={Theme.basicTheme_C}
+              >
+                강의 검색
               </Text>
-              <Form onFinish={onSearchHandler} layout="inline">
-                <Form.Item name="search">
+              <Form
+                form={sForm}
+                onFinish={onSearchHandler}
+                layout="inline"
+                style={{ width: width < 700 ? `100%` : `auto` }}
+              >
+                <Form.Item name="search" style={{ width: `100%` }}>
                   <Input
                     type="number"
                     style={{
@@ -358,7 +373,11 @@ const MypageIndex = ({}) => {
                     }}
                     placeholder="숫자만 입력해주세요."
                     suffix={
-                      <Text color={Theme.basicTheme_C} fontWeight={`600`}>
+                      <Text
+                        color={Theme.basicTheme_C}
+                        fontWeight={`600`}
+                        onClick={onSearchSubmitHandler}
+                      >
                         검색
                         <SearchOutlined style={{ margin: `0 0 0 5px` }} />
                       </Text>
@@ -405,8 +424,8 @@ const MypageIndex = ({}) => {
                   margin={`0 0 10px`}
                   defaultCurrent={1}
                   current={parseInt(currentPage)}
-                  total={lastPage * 30}
-                  pageSize={30}
+                  total={lastPage * 50}
+                  pageSize={50}
                   onChange={(page) => otherPageCall(page)}
                 />
               </Wrapper>
@@ -435,9 +454,9 @@ const MypageIndex = ({}) => {
                           >
                             <Wrapper dr={`row`} ju={`flex-start`}>
                               <Text
-                                fontSize={`20px`}
-                                fontWeight={`700`}
-                                color={Theme.basicTheme_C}
+                                fontSize={`24px`}
+                                fontWeight={`600`}
+                                color={Theme.grey_C}
                               >
                                 {data.num < 100 ? `0` : ``}
                                 {data.num < 10 ? `0` : ``}
@@ -451,9 +470,9 @@ const MypageIndex = ({}) => {
                                 bgColor={Theme.lightGrey4_C}
                               />
                               <Text
-                                fontSize={`20px`}
-                                fontWeight={`700`}
-                                color={Theme.grey_C}
+                                fontSize={`24px`}
+                                fontWeight={`600`}
+                                color={Theme.basicTheme_C}
                               >
                                 {data.type}
                               </Text>

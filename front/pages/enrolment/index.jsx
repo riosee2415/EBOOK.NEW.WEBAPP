@@ -31,7 +31,6 @@ const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { lectureList } = useSelector((state) => state.lecture);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
-  console.log(boughtMeDetail);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -185,7 +184,7 @@ const Home = ({}) => {
                           <Text
                             fontSize={`26px`}
                             color={Theme.black2_C}
-                            margin={`18px 0 10px`}
+                            // margin={`18px 0 0`}
                           >
                             {data.title}
                           </Text>
@@ -194,15 +193,15 @@ const Home = ({}) => {
                               <Text
                                 textDecoration={"line-through"}
                                 fontSize={`24px`}
-                                color={Theme.lightGrey4_C}
+                                color={Theme.lightGrey5_C}
                                 margin={`0 10px 0 0`}
                               >
                                 {data.viewPrice}
                               </Text>
                               <Text
                                 fontSize={`17px`}
-                                bgColor={Theme.red2_C}
-                                padding={`4px 10px`}
+                                bgColor={Theme.red3_C}
+                                padding={`0 5px`}
                                 radius={`5px`}
                                 color={Theme.white_C}
                               >
@@ -215,7 +214,7 @@ const Home = ({}) => {
                             dr={`row`}
                             ju={`flex-start`}
                             al={`flex-end`}
-                            margin={width < 800 ? `3px 0 10px` : `3px 0 20px`}
+                            margin={width < 800 ? `3px 0 0` : `3px 0 0`}
                           >
                             <Text
                               fontSize={`38px`}
@@ -227,15 +226,15 @@ const Home = ({}) => {
                                 ? data.viewDiscountPrice
                                 : data.viewPrice}
                             </Text>
-                            <Text fontSize={`22px`} color={Theme.grey3_C}>
-                              원/{data.viewType}
+                            <Text fontSize={`22px`} color={Theme.darkGrey2_C}>
+                              원/{data.viewFrontType}
                             </Text>
                           </Wrapper>
                           <Wrapper
                             dr={`row`}
                             ju={`flex-start`}
                             al={`flex-end`}
-                            margin={width < 800 ? `3px 0 10px` : `13px 0 30px`}
+                            margin={width < 800 ? `3px 0 10px` : `33px 0 10px`}
                           >
                             {data.type &&
                               (data.type === 1 ||
@@ -262,8 +261,11 @@ const Home = ({}) => {
                                           )
                                         )}
                                   </Text>
-                                  <Text fontSize={`22px`} color={Theme.grey3_C}>
-                                    원/{data.viewType} 무이자 시
+                                  <Text
+                                    fontSize={`22px`}
+                                    color={Theme.darkGrey2_C}
+                                  >
+                                    원/{data.viewFrontType} 무이자 시
                                   </Text>
                                 </>
                               )}

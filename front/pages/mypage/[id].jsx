@@ -489,7 +489,7 @@ const MediaDetail = () => {
                 mediaAllList.length > 0 &&
                 mediaAllList.find(
                   (data) => data.id === boughtMeDetail.recentlyTurn
-                ).num}
+                )?.num}
               번 강의&nbsp;
               {parseInt(parseInt(boughtMeDetail.recentlyTime) / 60) < 10
                 ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`

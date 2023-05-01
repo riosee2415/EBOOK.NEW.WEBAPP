@@ -58,7 +58,12 @@ module.exports = class Lecture extends Model {
           allowNull: true,
         },
         isBookPay: {
-          type: DataTypes.BOOLEAN,
+          type: DataTypes.BOOLEAN, // 구매 함 on/off
+          defaultValue: false,
+          allowNull: false,
+        },
+        isBookNoPay: {
+          type: DataTypes.BOOLEAN, // 구매 안함 on/off
           defaultValue: false,
           allowNull: false,
         },

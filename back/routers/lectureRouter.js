@@ -69,6 +69,14 @@ router.post("/list", async (req, res, next) => {
               WHEN type = 5 THEN  "3달"
               WHEN type = 6 THEN  "상품"
           END                                           AS viewType,
+          CASE
+              WHEN type = 1 THEN  "12개월"
+              WHEN type = 2 THEN  "24개월"
+              WHEN type = 3 THEN  "36개월"
+              WHEN type = 4 THEN  "평생"
+              WHEN type = 5 THEN  "3달"
+              WHEN type = 6 THEN  "상품"
+          END                                           AS viewFrontType,
           thumbnail,
           title,
           subTitle,
@@ -89,7 +97,8 @@ router.post("/list", async (req, res, next) => {
           updatedAt,
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
-          isBookPay
+          isBookPay,
+          isBookNoPay
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -142,7 +151,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           updatedAt,
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
-          isBookPay
+          isBookPay,
+          isBookNoPay
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -203,7 +213,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           updatedAt,
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
-          isBookPay
+          isBookPay,
+          isBookNoPay
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -278,6 +289,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     isHidden,
     bookNotEtc,
     isBookPay,
+    isBookNoPay,
   } = req.body;
 
   const updateQ = `
@@ -294,6 +306,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
           isHidden = ${isHidden},
           bookNotEtc = ${bookNotEtc ? `"${bookNotEtc}"` : "NULL"},
           isBookPay = ${isBookPay},
+          isBookNoPay = ${isBookNoPay},
           updatedAt = NOW()
    WHERE  id = ${id}
   `;
@@ -304,7 +317,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
-    return res.status(400).send("상품을 생성할 수 없습니다.");
+    return res.status(400).send("상품을 수정할 수 없습니다.");
   }
 });
 

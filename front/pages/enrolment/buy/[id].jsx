@@ -921,7 +921,7 @@ const Home = ({}) => {
                   bgColor={Theme.lightGrey4_C}
                 />
                 {/* 교제구매 */}
-                {lectureDetail && !lectureDetail.isBookPay ? (
+                {lectureDetail ? (
                   <>
                     <Wrapper al={`flex-start`}>
                       <Text
@@ -943,24 +943,28 @@ const Home = ({}) => {
                         onChange={isBuyBookChangeHandler}
                         size="large"
                       >
-                        <CustomRadio
-                          value={1}
-                          style={{
-                            width: width < 700 ? `100%` : `auto`,
-                            margin:
-                              width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
-                          }}
-                        >
-                          구매
-                        </CustomRadio>
+                        {!lectureDetail.isBookPay && (
+                          <CustomRadio
+                            value={1}
+                            style={{
+                              width: width < 700 ? `100%` : `auto`,
+                              margin:
+                                width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
+                            }}
+                          >
+                            구매
+                          </CustomRadio>
+                        )}
 
                         {/* isBuyTypeChangeHandler */}
-                        <CustomRadio
-                          value={2}
-                          style={{ width: width < 700 ? `100%` : `auto` }}
-                        >
-                          구매 안 함
-                        </CustomRadio>
+                        {!lectureDetail.isBookNoPay && (
+                          <CustomRadio
+                            value={2}
+                            style={{ width: width < 700 ? `100%` : `auto` }}
+                          >
+                            구매 안 함
+                          </CustomRadio>
+                        )}
                       </Radio.Group>
                     </Wrapper>
 

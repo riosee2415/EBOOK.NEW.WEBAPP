@@ -276,6 +276,7 @@ const List = ({}) => {
         viewUpdatedAt: record.viewUpdatedAt,
         bookNotEtc: record.bookNotEtc,
         isBookPay: record.isBookPay,
+        isBookNoPay: record.isBookNoPay,
       });
     },
     [currentData]
@@ -320,6 +321,7 @@ const List = ({}) => {
           isHidden: isHidden,
           bookNotEtc: data.bookNotEtc,
           isBookPay: data.isBookPay,
+          isBookNoPay: data.isBookNoPay,
         },
       });
     },
@@ -513,8 +515,8 @@ const List = ({}) => {
               </Wrapper>
               <Form
                 form={infoForm}
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 21 }}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
                 style={{ width: "100%", paddingRight: "20px" }}
                 onFinish={lectureUpdateHandler}
               >
@@ -587,6 +589,14 @@ const List = ({}) => {
                 <Form.Item
                   label="교재구매여부"
                   name="isBookPay"
+                  valuePropName="checked"
+                >
+                  <Switch size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="교재구매안함여부"
+                  name="isBookNoPay"
                   valuePropName="checked"
                 >
                   <Switch size="small" />
