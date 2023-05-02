@@ -146,7 +146,7 @@ const MypageIndex = ({}) => {
             padding={width < 1280 ? `0` : `0 210px`}
           >
             <Wrapper dr={`row`} ju={`space-between`}>
-              <Text fontSize={width < 700 ? `30px` : `36px`} fontWeight={`700`}>
+              <Text fontSize={`32px`} fontWeight={`600`}>
                 안녕하세요. {me && me.username}님!
               </Text>
               <CommonButton
@@ -164,7 +164,7 @@ const MypageIndex = ({}) => {
             <Wrapper
               padding={width < 700 ? `20px` : `40px`}
               radius={`10px`}
-              border={`1px solid ${Theme.lightGrey4_C}`}
+              border={`1px solid ${Theme.grey2_C}`}
               margin={width < 700 ? `35px 0 0` : `35px 0 0`}
               al={`flex-start`}
             >
@@ -370,6 +370,7 @@ const MypageIndex = ({}) => {
                       height: `54px`,
                       borderRadius: `5px`,
                       fontSize: `18px`,
+                      border: `1px solid ${Theme.grey2_C}`,
                     }}
                     placeholder="숫자만 입력해주세요."
                     suffix={
@@ -564,7 +565,7 @@ const MypageIndex = ({}) => {
                                           enjoyMeList.find(
                                             (value) =>
                                               value.MediumId === data.id
-                                          ) && Theme.subTheme6_C
+                                          ) && Theme.blueTheme_C
                                         }
                                         radius={`100%`}
                                       >

@@ -10,6 +10,8 @@ export default {
   subTheme7_C: "#677294",
   lightBasicTheme_c: "#FFF2F3",
   lightSubTheme2_C: "#D8DEE5",
+  blueTheme_C: "#4379CE",
+  lightBlueTheme_C: "#E8EDFF",
 
   kakao_C: "#FAE100",
   naver_C: "#00C73C",

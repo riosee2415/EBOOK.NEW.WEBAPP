@@ -363,17 +363,17 @@ const SignUp = () => {
       <ClientLayout>
         <WholeWrapper>
           <RsWrapper>
-            <Wrapper margin={`120px 0 100px`}>
+            <Wrapper margin={`60px 0 100px`}>
               <Text
-                fontSize={width < 700 ? `30px` : `36px`}
-                fontWeight={`700`}
-                margin={`0 0 40px`}
+                fontSize={`40px  !important`}
+                fontWeight={`800`}
+                margin={`0 0 20px`}
               >
-                회원가입
+                JOIN US
               </Text>
 
               <Image
-                width={width < 700 ? `100%` : `430px`}
+                width={width < 700 ? `100%` : `480px`}
                 src={tabArr.find((data) => data.tab === selectTab).imagePath}
                 alt="tabImage"
               />

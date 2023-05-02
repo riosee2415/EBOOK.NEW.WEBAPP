@@ -220,10 +220,11 @@ export const CommonButton = styled(Button)`
 
   ${(props) =>
     props.kindOf === `checked` &&
-    `border : 1px solid ${props.theme.subTheme6_C};`}
+    `border : 1px solid ${props.theme.blueTheme_C};`}
   ${(props) =>
-    props.kindOf === `checked` && `background : ${props.theme.subTheme6_C};`}
-  ${(props) => props.kindOf === `checked` && `color : ${props.theme.white_C};`}
+    props.kindOf === `checked` && `background : ${props.theme.blueTheme_C};`}
+  ${(props) =>
+    props.kindOf === `checked` && `color : ${props.theme.lightBlueTheme_C};`}
 
 
   ${(props) =>
