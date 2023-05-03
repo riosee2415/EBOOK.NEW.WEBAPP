@@ -1109,9 +1109,6 @@ const UserList = ({}) => {
                   수정
                 </Button>
               </Wrapper>
-              <Form.Item name="email" label="이메일">
-                <Input size="small" readOnly />
-              </Form.Item>
               <Form.Item name="viewCreatedAt" label="가입일">
                 <Input size="small" readOnly />
               </Form.Item>
