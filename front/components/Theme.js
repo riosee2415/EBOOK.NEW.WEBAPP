@@ -1,5 +1,6 @@
 export default {
   basicTheme_C: "#77327F",
+  basicTheme2_C: "#793381",
 
   subTheme_C: "#31A5F0",
   subTheme2_C: "#106BDC",

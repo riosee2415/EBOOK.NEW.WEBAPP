@@ -48,11 +48,67 @@ const Video = styled.video`
   border-bottom: 1px solid ${(props) => props.theme.grey5_C};
 `;
 
+const Tab = styled(Wrapper)`
+  width: auto;
+  padding: 10px 30px;
+  border-radius: 30px;
+  border: 1px solid ${Theme.grey2_C};
+  color: ${Theme.grey2_C};
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 10px 0 0;
+
+  &:hover {
+    color: ${Theme.white_C};
+    border: 1px solid ${Theme.basicTheme2_C};
+    background: ${Theme.basicTheme2_C};
+  }
+
+  ${(props) =>
+    props.isActive &&
+    `
+   color: ${Theme.white_C};
+    border: 1px solid ${Theme.basicTheme2_C};
+    background: ${Theme.basicTheme2_C};
+  `}
+
+  @media (max-width: 700px) {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+`;
+
+const TextHover = styled(Text)`
+  font-size: 26px;
+  position: relative;
+  cursor: pointer;
+
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: ${Theme.basicTheme2_C};
+    transition: 0.5s;
+  }
+
+  &:hover {
+    color: ${Theme.basicTheme2_C};
+    &:before {
+      width: 100%;
+    }
+  }
+`;
+
 const MediaDetail = () => {
   const { me } = useSelector((state) => state.user);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
-  const { mediaAllList, mediaDetail } = useSelector((state) => state.media);
+  const { mediaAllList, mediaDetail, nextData } = useSelector(
+    (state) => state.media
+  );
 
   const { enjoyMeList } = useSelector((state) => state.enjoy);
 
@@ -66,6 +122,8 @@ const MediaDetail = () => {
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
   const [aModal, setAModal] = useState(false);
+
+  const [searchType, setSearchType] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -155,6 +213,29 @@ const MediaDetail = () => {
     [boughtMeDetail, router.query]
   );
 
+  const searchTypeHandler = useCallback(
+    (data) => {
+      if (searchType === data) {
+        setSearchType(null);
+        dispatch({
+          type: MEDIA_ALL_LIST_REQUEST,
+          data: {
+            searchType: null,
+          },
+        });
+        return;
+      }
+      setSearchType(data);
+      dispatch({
+        type: MEDIA_ALL_LIST_REQUEST,
+        data: {
+          searchType: data,
+        },
+      });
+    },
+    [searchType]
+  );
+
   return (
     <>
       <Head>
@@ -185,11 +266,7 @@ const MediaDetail = () => {
               margin={width < 700 ? `15px 0 10px` : `40px 0 36px`}
             /> */}
 
-            <Wrapper
-              padding={width < 700 ? `22px 0` : `44px 0`}
-              dr={`row`}
-              borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-            >
+            <Wrapper padding={width < 700 ? `22px 0` : `44px 0`} dr={`row`}>
               <Wrapper al={`flex-start`}>
                 <Wrapper dr={`row`} ju={`flex-start`}>
                   <Text
@@ -291,46 +368,71 @@ const MediaDetail = () => {
                 <Wrapper
                   padding={`23px 30px`}
                   dr={`row`}
-                  ju={`flex-end`}
+                  ju={`space-between`}
                   bgColor={Theme.lightGrey2_C}
                 >
-                  <Text
-                    fontSize={`22px`}
-                    fontWeight={`600`}
-                    margin={`0 16px 0 0 `}
-                  >
-                    재생속도
-                  </Text>
-                  <Wrapper width={`auto`} dr={`row`}>
-                    <Wrapper
-                      width={`auto`}
-                      padding={`5px`}
-                      bgColor={Theme.lightGrey4_C}
-                      color={Theme.grey3_C}
-                      radius={`100%`}
-                      cursor={`pointer`}
-                      onClick={() => speedUnitHandler(videoSpeed - 0.25)}
-                    >
-                      <MinusOutlined />
+                  {console.log(nextData)}
+                  {nextData && (
+                    <Wrapper dr={`row`} width={`auto`}>
+                      <TextHover
+                        fontSize={width < 700 ? `10px !important` : `26px`}
+                        margin={`0 10px 0 0`}
+                        onClick={() => {
+                          moveLinkHandler(`/mypage`);
+                        }}
+                      >
+                        강의목록
+                      </TextHover>
+                      <TextHover
+                        fontSize={width < 700 ? `10px !important` : `26px`}
+                        margin={`0 5px 0 0`}
+                        onClick={() => {
+                          moveLinkHandler(`/mypage/${nextData.id}?isSample=0`);
+                        }}
+                      >
+                        다음강의
+                      </TextHover>
                     </Wrapper>
+                  )}
+                  <Wrapper dr={`row`} width={`auto`}>
                     <Text
-                      width={width < 700 ? `80px` : `100px`}
-                      textAlign={`center`}
-                      fontSize={width < 700 ? `18px` : `20px`}
-                      fontWeight={`700`}
+                      fontSize={`22px`}
+                      fontWeight={`600`}
+                      margin={`0 16px 0 0 `}
                     >
-                      {videoSpeed}
+                      재생속도
                     </Text>
-                    <Wrapper
-                      width={`auto`}
-                      padding={`5px`}
-                      bgColor={Theme.lightGrey4_C}
-                      color={Theme.grey3_C}
-                      radius={`100%`}
-                      cursor={`pointer`}
-                      onClick={() => speedUnitHandler(videoSpeed + 0.25)}
-                    >
-                      <PlusOutlined />
+                    <Wrapper width={`auto`} dr={`row`}>
+                      <Wrapper
+                        width={`auto`}
+                        padding={`5px`}
+                        bgColor={Theme.lightGrey4_C}
+                        color={Theme.grey3_C}
+                        radius={`100%`}
+                        cursor={`pointer`}
+                        onClick={() => speedUnitHandler(videoSpeed - 0.25)}
+                      >
+                        <MinusOutlined />
+                      </Wrapper>
+                      <Text
+                        width={width < 700 ? `80px` : `100px`}
+                        textAlign={`center`}
+                        fontSize={width < 700 ? `18px` : `20px`}
+                        fontWeight={`700`}
+                      >
+                        {videoSpeed}
+                      </Text>
+                      <Wrapper
+                        width={`auto`}
+                        padding={`5px`}
+                        bgColor={Theme.lightGrey4_C}
+                        color={Theme.grey3_C}
+                        radius={`100%`}
+                        cursor={`pointer`}
+                        onClick={() => speedUnitHandler(videoSpeed + 0.25)}
+                      >
+                        <PlusOutlined />
+                      </Wrapper>
                     </Wrapper>
                   </Wrapper>
                 </Wrapper>
@@ -338,7 +440,56 @@ const MediaDetail = () => {
             </Wrapper>
 
             {/* MEDIA LIST */}
-            <Wrapper borderTop={`1px solid ${Theme.lightGrey4_C}`}>
+            <Wrapper>
+              <Wrapper al={`flex-start`}>
+                <Text
+                  color={Theme.grey5_C}
+                  fontSize={width < 700 ? `20px` : `23px !important`}
+                  margin={width < 700 ? `0 0 0 20px` : `0`}
+                >
+                  강의목차
+                </Text>
+                <Wrapper
+                  dr={`row`}
+                  height={`2px`}
+                  bgColor={Theme.lightSubTheme2_C}
+                  ju={`flex-start`}
+                  margin={`10px 0 50px`}
+                >
+                  <Wrapper
+                    height={`100%`}
+                    bgColor={Theme.subTheme7_C}
+                    width={`30px`}
+                  ></Wrapper>
+                </Wrapper>
+              </Wrapper>
+              <Wrapper dr={`row`} ju={`flex-start`} margin={`0 0 20px`}>
+                <Tab
+                  isActive={searchType && searchType === "읽기/발음"}
+                  onClick={() => searchTypeHandler("읽기/발음")}
+                >
+                  읽기/발음
+                </Tab>
+                <Tab
+                  isActive={searchType && searchType === "문법"}
+                  onClick={() => searchTypeHandler("문법")}
+                >
+                  문법
+                </Tab>
+                <Tab
+                  isActive={searchType && searchType === "회화"}
+                  onClick={() => searchTypeHandler("회화")}
+                >
+                  회화
+                </Tab>
+                <Tab
+                  isActive={searchType && searchType === "단어"}
+                  onClick={() => searchTypeHandler("단어")}
+                >
+                  단어
+                </Tab>
+              </Wrapper>
+
               {mediaAllList &&
                 (mediaAllList.length === 0 ? (
                   <Wrapper height={`50vh`}>
@@ -483,45 +634,47 @@ const MediaDetail = () => {
           </RsWrapper>
         </WholeWrapper>
         <Modal visible={aModal} footer={null} onCancel={() => setAModal(false)}>
-          <Wrapper>
-            <Text fontSize={`25px`} fontWeight={"600"}>
-              {mediaAllList &&
-                mediaAllList.length > 0 &&
-                mediaAllList.find(
-                  (data) => data.id === boughtMeDetail.recentlyTurn
-                )?.num}
-              번 강의&nbsp;
-              {parseInt(parseInt(boughtMeDetail.recentlyTime) / 60) < 10
-                ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`
-                : parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}
-              :
-              {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60) < 10
-                ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
-                : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
-              부터
-            </Text>
-            <Text fontSize={`25px`} fontWeight={"600"}>
-              강의를 이어보시겠습니까?
-            </Text>
+          {boughtMeDetail && boughtMeDetail.recentlyTurn && (
+            <Wrapper>
+              <Text fontSize={`25px`} fontWeight={"600"}>
+                {mediaAllList &&
+                  mediaAllList.length > 0 &&
+                  mediaAllList.find(
+                    (data) => data.id === boughtMeDetail.recentlyTurn
+                  )?.num}
+                번 강의&nbsp;
+                {parseInt(parseInt(boughtMeDetail.recentlyTime) / 60) < 10
+                  ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}`
+                  : parseInt(parseInt(boughtMeDetail.recentlyTime) / 60)}
+                :
+                {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60) < 10
+                  ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
+                  : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
+                부터
+              </Text>
+              <Text fontSize={`25px`} fontWeight={"600"}>
+                강의를 이어보시겠습니까?
+              </Text>
 
-            {boughtMeDetail && (
-              <CommonButton
-                kindOf={`subTheme`}
-                width={width < 700 ? `100%` : `186px`}
-                height={`52px`}
-                fontSize={`20px`}
-                margin={`20px 0 0`}
-                onClick={() => {
-                  moveLinkHandler(
-                    `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0&recentlyTime=${boughtMeDetail.recentlyTime}`
-                  );
-                  setAModal(false);
-                }}
-              >
-                이어보기
-              </CommonButton>
-            )}
-          </Wrapper>
+              {boughtMeDetail && (
+                <CommonButton
+                  kindOf={`subTheme`}
+                  width={width < 700 ? `100%` : `186px`}
+                  height={`52px`}
+                  fontSize={`20px`}
+                  margin={`20px 0 0`}
+                  onClick={() => {
+                    moveLinkHandler(
+                      `/mypage/${boughtMeDetail.recentlyTurn}?isSample=0&recentlyTime=${boughtMeDetail.recentlyTime}`
+                    );
+                    setAModal(false);
+                  }}
+                >
+                  이어보기
+                </CommonButton>
+              )}
+            </Wrapper>
+          )}
         </Modal>
       </ClientLayout>
     </>

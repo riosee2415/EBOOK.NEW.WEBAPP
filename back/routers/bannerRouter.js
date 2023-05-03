@@ -92,7 +92,7 @@ router.post("/list", async (req, res, next) => {
           type,
           CASE
             WHEN type = 1 THEN '메인'
-            WHEN type = 2 THEN '큐레이션'
+            WHEN type = 2 THEN '커리큘럼'
             WHEN type = 3 THEN '수강후기'
             WHEN type = 4 THEN '고객센터'
           END                                     AS viewType,
@@ -131,7 +131,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -177,7 +177,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -216,7 +216,7 @@ router.post("/sort/update", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -253,7 +253,7 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -297,7 +297,7 @@ router.post("/mobile/list", async (req, res, next) => {
           type,
           CASE
             WHEN type = 1 THEN '메인'
-            WHEN type = 2 THEN '큐레이션'
+            WHEN type = 2 THEN '커리큘럼'
             WHEN type = 3 THEN '수강후기'
             WHEN type = 4 THEN '고객센터'
           END                                     AS viewType,
@@ -336,7 +336,7 @@ router.post("/mobile/create", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -382,7 +382,7 @@ router.post("/mobile/update", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -421,7 +421,7 @@ router.post("/mobile/sort/update", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];
@@ -458,7 +458,7 @@ router.post("/mobile/delete", isAdminCheck, async (req, res, next) => {
 
   const typeArr = [
     { type: 1, name: "메인" },
-    { type: 2, name: "큐레이션" },
+    { type: 2, name: "커리큘럼" },
     { type: 3, name: "수강후기" },
     { type: 4, name: "고객센터" },
   ];

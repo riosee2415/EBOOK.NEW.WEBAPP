@@ -5,21 +5,6 @@ import { Wrapper, ATag, Image } from "../components/commonComponents";
 import Theme from "../components/Theme";
 import { useRouter } from "next/router";
 
-const FixedWrapper2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-  height: 140px;
-  background: ${Theme.basicTheme_C};
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 9999999;
-`;
-
 const translate10 = keyframes`
 0%{
   transform:translateY(0);
@@ -91,7 +76,8 @@ const FixedNav = ({}) => {
     router.pathname === "/orderOverseas" ||
     router.pathname === "/mypage" ||
     router.pathname === "/mypage/[id]" ||
-    router.pathname === "/mypage/update"
+    router.pathname === "/mypage/update" ||
+    router.pathname === "/enrolment/buy/[id]"
   ) {
     return null;
   }

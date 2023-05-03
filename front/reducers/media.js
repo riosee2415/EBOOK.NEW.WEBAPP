@@ -10,6 +10,7 @@ export const initailState = {
 
   mediaPath: null,
   mediaDetail: null,
+  nextData: null,
 
   media2Path: null,
 
@@ -173,7 +174,8 @@ const reducer = (state = initailState, action) =>
         draft.st_mediaDetialLoading = false;
         draft.st_mediaDetialDone = true;
         draft.st_mediaDetialError = null;
-        draft.mediaDetail = action.data;
+        draft.mediaDetail = action.data.detail;
+        draft.nextData = action.data.next;
         break;
       }
       case MEDIA_DETAIL_FAILURE: {

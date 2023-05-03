@@ -185,6 +185,10 @@ router.post("/list", async (req, res, next) => {
 });
 
 router.post("/all/list", async (req, res, next) => {
+  const { searchType } = req.body;
+
+  const _searchType = searchType ? searchType : null;
+
   const selectQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort ASC)		AS num,
             type,
@@ -205,6 +209,7 @@ router.post("/all/list", async (req, res, next) => {
       FROM  media
      WHERE  1 = 1
        AND  isDelete = FALSE
+            ${_searchType ? `AND  type LIKE "%${_searchType}%"` : ""}
      ORDER  BY  sort ASC
     `;
 
@@ -244,10 +249,21 @@ router.post("/detail", async (req, res, next) => {
        AND  id = ${id}
     `;
 
+  const nextDataQuery = `
+    SELECT  id,
+            title
+      FROM  media
+     WHERE  1 = 1
+       AND  id > ${id}
+       AND  isDelete = FALSE
+     LIMIT  1
+    `;
+
   try {
+    const nextData = await models.sequelize.query(nextDataQuery);
     const detail = await models.sequelize.query(selectQ);
 
-    return res.status(200).json(detail[0][0]);
+    return res.status(200).json({ detail: detail[0][0], next: nextData[0][0] });
   } catch (e) {
     console.error(e);
     return res.status(400).send("생성 할 수 없습니다.");
