@@ -172,7 +172,7 @@ const Home = ({}) => {
   const [aModal, setAModal] = useState(false);
 
   const [isBuyBook, setIsBuyBook] = useState(
-    lectureDetail && lectureDetail.isBookPay ? 2 : 1
+    lectureDetail && !lectureDetail.isBookPay ? 2 : 1
   );
   const [isBuyType, setIsBuyType] = useState(null);
   const [isOverseas, setIsOverseas] = useState(false);
@@ -221,7 +221,7 @@ const Home = ({}) => {
 
   useEffect(() => {
     if (lectureDetail) {
-      setIsBuyBook(lectureDetail.isBookPay ? 2 : 1);
+      setIsBuyBook(!lectureDetail.isBookPay ? 2 : 1);
     }
   }, [lectureDetail]);
 
@@ -943,7 +943,7 @@ const Home = ({}) => {
                         onChange={isBuyBookChangeHandler}
                         size="large"
                       >
-                        {!lectureDetail.isBookPay && (
+                        {lectureDetail.isBookPay && (
                           <CustomRadio
                             value={1}
                             style={{
@@ -957,7 +957,7 @@ const Home = ({}) => {
                         )}
 
                         {/* isBuyTypeChangeHandler */}
-                        {!lectureDetail.isBookNoPay && (
+                        {lectureDetail.isBookNoPay && (
                           <CustomRadio
                             value={2}
                             style={{ width: width < 700 ? `100%` : `auto` }}

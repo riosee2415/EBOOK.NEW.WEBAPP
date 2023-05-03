@@ -314,8 +314,6 @@ const SnsInfo = ({}) => {
   const updateModalToggleHandler = useCallback(
     (data) => {
       if (data) {
-        console.log(data);
-
         setCurrentId(data.id);
 
         updateForm.setFieldsValue({

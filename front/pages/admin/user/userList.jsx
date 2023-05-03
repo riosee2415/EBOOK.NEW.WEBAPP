@@ -750,7 +750,6 @@ const UserList = ({}) => {
           type="primary"
           onClick={() => updateModalOpen(data)}
         >
-          {console.log(data)}
           수정
         </SettingBtn>
       ),

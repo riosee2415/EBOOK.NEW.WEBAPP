@@ -41,8 +41,6 @@ const Home = ({}) => {
   const { me, st_meUpdateLoading, st_meUpdateDone, st_meUpdateError } =
     useSelector((state) => state.user);
 
-  console.log(me);
-
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
@@ -66,7 +64,6 @@ const Home = ({}) => {
     }
   }, [st_meUpdateDone, st_meUpdateError]);
 
-  console.log(me);
   useEffect(() => {
     if (!me) {
       message.error("로그인 후 이용해주세요.");

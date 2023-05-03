@@ -371,7 +371,6 @@ const MediaDetail = () => {
                   ju={`space-between`}
                   bgColor={Theme.lightGrey2_C}
                 >
-                  {console.log(nextData)}
                   {nextData && (
                     <Wrapper dr={`row`} width={`auto`}>
                       <TextHover
