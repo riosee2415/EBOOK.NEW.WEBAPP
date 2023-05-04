@@ -91,6 +91,10 @@ const Home = ({}) => {
   // 회원 수정
   const meUpdateHandler = useCallback(
     (data) => {
+      if (data.password && data.password !== data.rePassword) {
+        return message.error("비밀번호가 같지 않습니다.");
+      }
+
       dispatch({
         type: ME_UPDATE_REQUEST,
         data: {
@@ -146,12 +150,7 @@ const Home = ({}) => {
                   <SpanText color={Theme.basicTheme_C}>*</SpanText>
                   비밀번호 확인
                 </Text>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    { required: true, message: "비밀번호는 필수 입니다." },
-                  ]}
-                >
+                <Form.Item name="password">
                   <TextInput
                     width={`100%`}
                     height={`54px`}
@@ -159,6 +158,18 @@ const Home = ({}) => {
                     border={`1px solid ${Theme.lightGrey4_C}`}
                     fontSize={`18px`}
                     placeholder="비밀번호를 입력해주세요."
+                    margin={`0 0 10px`}
+                    type="password"
+                  />
+                </Form.Item>
+                <Form.Item name="rePassword">
+                  <TextInput
+                    width={`100%`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`1px solid ${Theme.lightGrey4_C}`}
+                    fontSize={`18px`}
+                    placeholder="비밀번호를 다시 입력해주세요."
                     margin={`0 0 10px`}
                     type="password"
                   />

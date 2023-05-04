@@ -463,14 +463,14 @@ const Media = ({}) => {
         type: MEDIA_CREATE_REQUEST,
         data: {
           type: data.type,
-          title: data.title.replace(/\'/gi, `\'`, /\"/gi, `\"`),
+          title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
           mediaOriginName: data.mediaOriginName
-            ? data.mediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            ? data.mediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
             : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
           sampleMediaOriginName: data.sampleMediaOriginName
-            ? data.sampleMediaOriginName.replace(/\'/gi, `\'`, /\"/gi, `\"`)
+            ? data.sampleMediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
             : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
@@ -501,7 +501,7 @@ const Media = ({}) => {
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
-          etc: data.etc,
+          etc: data.etc.replace(/\'/gi, `''`, /\"/gi, `""`),
         },
       });
     },

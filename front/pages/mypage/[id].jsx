@@ -373,24 +373,28 @@ const MediaDetail = () => {
                 >
                   {nextData && (
                     <Wrapper dr={`row`} width={`auto`}>
-                      <TextHover
-                        fontSize={width < 700 ? `10px !important` : `26px`}
+                      <Tab
+                        fontSize={width < 700 ? `10px !important` : `24px`}
+                        padding={`5px 10px !important`}
+                        radius={`0 !important`}
                         margin={`0 10px 0 0`}
                         onClick={() => {
                           moveLinkHandler(`/mypage`);
                         }}
                       >
                         강의목록
-                      </TextHover>
-                      <TextHover
-                        fontSize={width < 700 ? `10px !important` : `26px`}
+                      </Tab>
+                      <Tab
+                        fontSize={width < 700 ? `10px !important` : `24px`}
+                        padding={`5px 10px !important`}
+                        radius={`0 !important`}
                         margin={`0 5px 0 0`}
                         onClick={() => {
                           moveLinkHandler(`/mypage/${nextData.id}?isSample=0`);
                         }}
                       >
                         다음강의
-                      </TextHover>
+                      </Tab>
                     </Wrapper>
                   )}
                   <Wrapper dr={`row`} width={`auto`}>
