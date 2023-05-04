@@ -105,8 +105,8 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   try {
     const list = await models.sequelize.query(selectQ);
 
-    if (list[0].length === 10) {
-      return res.status(400).send("자료를 10개 이상 생성할 수 없습니다.");
+    if (list[0].length === 30) {
+      return res.status(400).send("자료를 30개 이상 생성할 수 없습니다.");
     }
 
     await models.sequelize.query(insertQ);

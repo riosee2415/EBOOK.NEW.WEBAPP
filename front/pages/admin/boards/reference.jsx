@@ -332,7 +332,7 @@ const Reference = ({}) => {
         <GuideUl>
           <GuideLi>고객센터의 자료실을 생성, 삭제할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            자료는 최대 10개까지 등록할 수 있습니다.
+            자료는 최대 30개까지 등록할 수 있습니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>

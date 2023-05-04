@@ -214,7 +214,7 @@ const Home = ({}) => {
                             dr={`row`}
                             ju={`flex-start`}
                             al={`flex-end`}
-                            margin={width < 800 ? `3px 0 0` : `3px 0 0`}
+                            margin={width < 800 ? `10px 0` : `3px 0 0`}
                           >
                             <Text
                               fontSize={`38px`}
@@ -234,7 +234,7 @@ const Home = ({}) => {
                             dr={`row`}
                             ju={`flex-start`}
                             al={`flex-end`}
-                            margin={width < 800 ? `3px 0 10px` : `33px 0 10px`}
+                            margin={width < 800 ? `10px 0` : `33px 0 10px`}
                           >
                             {data.type &&
                               (data.type === 1 ||

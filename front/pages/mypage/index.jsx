@@ -430,7 +430,6 @@ const MypageIndex = ({}) => {
                   onChange={(page) => otherPageCall(page)}
                 />
               </Wrapper>
-
               <Wrapper height={`1px`} bgColor={Theme.lightGrey4_C}></Wrapper>
               {mediaList &&
                 (mediaList.length === 0 ? (
@@ -439,7 +438,9 @@ const MypageIndex = ({}) => {
                   </Wrapper>
                 ) : (
                   mediaList
-                    .filter((data) => data.sort <= 118)
+                    .filter((data) =>
+                      boughtMeDetail.lectureType === 5 ? data.sort <= 118 : true
+                    )
                     .map((data, idx) => {
                       return (
                         <Wrapper
