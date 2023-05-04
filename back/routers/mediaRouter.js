@@ -387,19 +387,19 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
      SET  type = "${type}",
           title = '${title}',
           mediaOriginName = ${
-            mediaOriginName ? `"${mediaOriginName}"` : "NULL"
+            mediaOriginName ? `'${mediaOriginName}'` : "NULL"
           },
-          mediaPath = ${mediaPath ? `"${mediaPath}"` : "NULL"},
-          duration = ${duration ? `"${duration}"` : "NULL"},
+          mediaPath = ${mediaPath ? `'${mediaPath}'` : "NULL"},
+          duration = ${duration ? `'${duration}'` : "NULL"},
           sampleMediaOriginName = ${
-            sampleMediaOriginName ? `"${sampleMediaOriginName}"` : "NULL"
+            sampleMediaOriginName ? `'${sampleMediaOriginName}'` : "NULL"
           },
           sampleMediaPath = ${
-            sampleMediaPath ? `"${sampleMediaPath}"` : "NULL"
+            sampleMediaPath ? `'${sampleMediaPath}'` : "NULL"
           },
-          sampleDuration = ${sampleDuration ? `"${sampleDuration}"` : "NULL"},
+          sampleDuration = ${sampleDuration ? `'${sampleDuration}'` : "NULL"},
           isSample = ${isSample},
-          etc = ${etc ? `"${etc}"` : `NULL`},
+          etc = ${etc ? `'${etc}'` : `NULL`},
           updatedAt = NOW()
    WHERE  id = ${id}
   `;

@@ -887,13 +887,13 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
       return res.status(401).send("존재하지 않는 사용자 입니다.");
     }
 
-    const selectQ = `
-    SELECT  id,
-            password
-      FROM  users
-     WHERE  id = ${req.user.id}
-    `;
-    const find = await models.sequelize.query(selectQ);
+    // const selectQ = `
+    // SELECT  id,
+    //         password
+    //   FROM  users
+    //  WHERE  id = ${req.user.id}
+    // `;
+    // const find = await models.sequelize.query(selectQ);
 
     let cipher = crypto.createHash("sha512");
 
@@ -902,11 +902,11 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
 
     // const result = await bcrypt.compare(password, exUser.password);
 
-    if (find[0][0]) {
-      if (find[0][0].password !== hashedPassword) {
-        return res.status(401).send("비밀번호가 일치하지 않습니다.");
-      }
-    }
+    // if (find[0][0]) {
+    //   if (find[0][0].password !== hashedPassword) {
+    //     return res.status(401).send("비밀번호가 일치하지 않습니다.");
+    //   }
+    // }
 
     const updateQ = `
     UPDATE  users
@@ -915,6 +915,7 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
             address = "${address}",
             zoneCode = "${zoneCode}",
             detailAddress = "${detailAddress}",
+            ${password ? `password = "${hashedPassword}",` : ""}
             updatedAt = NOW()
      WHERE  id = ${req.user.id}
     `;
