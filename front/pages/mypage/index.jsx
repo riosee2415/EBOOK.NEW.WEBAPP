@@ -14,13 +14,18 @@ import {
   Wrapper,
   TextInput,
   CustomPage,
+  SpanText,
 } from "../../components/commonComponents";
 import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import { Empty, Form, Input, message, Slider } from "antd";
-import { SearchOutlined, CaretRightOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  CaretRightOutlined,
+  CheckCircleFilled,
+} from "@ant-design/icons";
 import {
   MEDIA_ALL_LIST_REQUEST,
   MEDIA_LIST_REQUEST,
@@ -341,7 +346,7 @@ const MypageIndex = ({}) => {
                   {parseInt(parseInt(boughtMeDetail.recentlyTime) % 60) < 10
                     ? `0${parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}`
                     : parseInt(parseInt(boughtMeDetail.recentlyTime) % 60)}
-                  로부터 이어보기
+                  부터 이어보기
                 </CommonButton>
               ) : (
                 ""
@@ -446,7 +451,7 @@ const MypageIndex = ({}) => {
                         <Wrapper
                           id={`lecture-${idx}`}
                           key={idx}
-                          padding={`30px 0`}
+                          padding={`30px 0 50px`}
                           dr={`row`}
                           borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
@@ -479,7 +484,11 @@ const MypageIndex = ({}) => {
                                 {data.type}
                               </Text>
                             </Wrapper>
-                            <Wrapper dr={`row`} ju={`flex-start`}>
+                            <Wrapper
+                              dr={`row`}
+                              ju={`flex-start`}
+                              margin={width < 700 && `10px 0 20px`}
+                            >
                               <Wrapper
                                 width={`4px`}
                                 height={`4px`}
@@ -487,10 +496,26 @@ const MypageIndex = ({}) => {
                                 color={Theme.black2_C}
                               />
                               <Text
-                                fontSize={width < 700 ? `24px` : `26px`}
+                                fontSize={width < 700 ? `22px` : `26px`}
                                 fontWeight={"700"}
                               >
                                 {data.title}
+
+                                {enjoyMeList.find(
+                                  (value) => value.MediumId === data.id
+                                ) ? (
+                                  <SpanText
+                                    fontSize={width < 700 && `16px`}
+                                    margin={`0 0 0 10px`}
+                                    color={Theme.subTheme2_C}
+                                    fontWeight={`500`}
+                                  >
+                                    <CheckCircleFilled />
+                                    &nbsp;수강 완료
+                                  </SpanText>
+                                ) : (
+                                  ``
+                                )}
                               </Text>
                             </Wrapper>
                           </Wrapper>

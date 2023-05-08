@@ -6,7 +6,7 @@ export default {
   subTheme2_C: "#106BDC",
   subTheme3_C: "#2D53A3",
   subTheme4_C: "#FFD321",
-  subTheme5_C: "#FCF6FC",
+  subTheme5_C: "#F8F4FF",
   subTheme6_C: "#C5C5EE",
   subTheme7_C: "#677294",
   lightBasicTheme_c: "#FFF2F3",

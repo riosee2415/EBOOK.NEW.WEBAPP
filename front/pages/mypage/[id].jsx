@@ -217,21 +217,9 @@ const MediaDetail = () => {
     (data) => {
       if (searchType === data) {
         setSearchType(null);
-        dispatch({
-          type: MEDIA_ALL_LIST_REQUEST,
-          data: {
-            searchType: null,
-          },
-        });
         return;
       }
       setSearchType(data);
-      dispatch({
-        type: MEDIA_ALL_LIST_REQUEST,
-        data: {
-          searchType: data,
-        },
-      });
     },
     [searchType]
   );
@@ -366,7 +354,7 @@ const MediaDetail = () => {
                 )}
 
                 <Wrapper
-                  padding={`23px 30px`}
+                  padding={width < 700 ? `23px 0` : `23px 30px`}
                   dr={`row`}
                   ju={`space-between`}
                   bgColor={Theme.lightGrey2_C}
@@ -399,7 +387,7 @@ const MediaDetail = () => {
                   )}
                   <Wrapper dr={`row`} width={`auto`}>
                     <Text
-                      fontSize={`22px`}
+                      fontSize={width < 700 ? `18px` : `22px`}
                       fontWeight={`600`}
                       margin={`0 16px 0 0 `}
                     >
@@ -418,7 +406,7 @@ const MediaDetail = () => {
                         <MinusOutlined />
                       </Wrapper>
                       <Text
-                        width={width < 700 ? `80px` : `100px`}
+                        width={width < 700 ? `50px` : `100px`}
                         textAlign={`center`}
                         fontSize={width < 700 ? `18px` : `20px`}
                         fontWeight={`700`}
@@ -499,139 +487,149 @@ const MediaDetail = () => {
                     <Empty description="강의가 없습니다." />
                   </Wrapper>
                 ) : (
-                  mediaAllList.map((data, idx) => {
-                    return (
-                      <Wrapper
-                        key={idx}
-                        padding={`30px 0`}
-                        dr={`row`}
-                        borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                      >
+                  mediaAllList
+                    .filter((data) =>
+                      searchType ? data.type.indexOf(searchType) !== -1 : true
+                    )
+                    .map((data, idx) => {
+                      return (
                         <Wrapper
-                          width={width < 700 ? `100%` : `50%`}
-                          al={`flex-start`}
+                          key={idx}
+                          padding={`30px 0 50px`}
+                          dr={`row`}
+                          borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
-                          <Wrapper dr={`row`} ju={`flex-start`}>
-                            <Text
-                              fontSize={`20px`}
-                              fontWeight={`700`}
-                              color={Theme.basicTheme_C}
-                            >
-                              {data.num < 100 ? `0` : ``}
-                              {data.num < 10 ? `0` : ``}
-                              {data.num}
-                            </Text>
-                            <Wrapper
-                              width={`4px`}
-                              height={`4px`}
-                              margin={`0 10px`}
-                              borderRadius={`100%`}
-                              bgColor={Theme.lightGrey4_C}
-                            />
-                            <Text
-                              fontSize={`20px`}
-                              fontWeight={`700`}
-                              color={Theme.grey_C}
-                            >
-                              {data.type}
-                            </Text>
-                          </Wrapper>
-                          <Wrapper dr={`row`} ju={`flex-start`}>
-                            <Wrapper
-                              width={`4px`}
-                              height={`4px`}
-                              borderRadius={`100%`}
-                              color={Theme.black2_C}
-                            />
-                            <Text
-                              fontSize={width < 700 ? `24px` : `26px`}
-                              fontWeight={"700"}
-                            >
-                              {data.title}
-                            </Text>
-                          </Wrapper>
-                        </Wrapper>
-                        <Wrapper
-                          width={width < 700 ? `100%` : `50%`}
-                          al={`flex-end`}
-                        >
-                          <Wrapper dr={`row`} ju={`flex-end`}>
-                            {(!boughtMeDetail || !boughtMeDetail.isPay) &&
-                            data.isSample ? (
-                              <CommonButton
-                                kindOf={`subTheme`}
-                                width={width < 700 ? `100%` : `186px`}
-                                height={`52px`}
+                          <Wrapper
+                            width={width < 700 ? `100%` : `50%`}
+                            al={`flex-start`}
+                          >
+                            <Wrapper dr={`row`} ju={`flex-start`}>
+                              <Text
                                 fontSize={`20px`}
-                                onClick={() =>
-                                  moveLinkHandler(
-                                    `/mypage/${data.id}?isSample=1`
-                                  )
-                                }
+                                fontWeight={`700`}
+                                color={Theme.basicTheme_C}
                               >
-                                <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>샘플강의 보기</Text>
+                                {data.num < 100 ? `0` : ``}
+                                {data.num < 10 ? `0` : ``}
+                                {data.num}
+                              </Text>
+                              <Wrapper
+                                width={`4px`}
+                                height={`4px`}
+                                margin={`0 10px`}
+                                borderRadius={`100%`}
+                                bgColor={Theme.lightGrey4_C}
+                              />
+                              <Text
+                                fontSize={`20px`}
+                                fontWeight={`700`}
+                                color={Theme.grey_C}
+                              >
+                                {data.type}
+                              </Text>
+                            </Wrapper>
+                            <Wrapper
+                              dr={`row`}
+                              ju={`flex-start`}
+                              margin={width < 700 && `10px 0 20px`}
+                            >
+                              <Wrapper
+                                width={`4px`}
+                                height={`4px`}
+                                borderRadius={`100%`}
+                                color={Theme.black2_C}
+                              />
+                              <Text
+                                fontSize={width < 700 ? `24px` : `26px`}
+                                fontWeight={"700"}
+                              >
+                                {data.title}
+                              </Text>
+                            </Wrapper>
+                          </Wrapper>
+                          <Wrapper
+                            width={width < 700 ? `100%` : `50%`}
+                            al={`flex-end`}
+                          >
+                            <Wrapper dr={`row`} ju={`flex-end`}>
+                              {(!boughtMeDetail || !boughtMeDetail.isPay) &&
+                              data.isSample ? (
+                                <CommonButton
+                                  kindOf={`subTheme`}
+                                  width={width < 700 ? `100%` : `186px`}
+                                  height={`52px`}
+                                  fontSize={`20px`}
+                                  onClick={() =>
+                                    moveLinkHandler(
+                                      `/mypage/${data.id}?isSample=1`
+                                    )
+                                  }
+                                >
+                                  <Wrapper dr={`row`} ju={`space-between`}>
+                                    <Text fontWeight={`600`}>
+                                      샘플강의 보기
+                                    </Text>
 
-                                  <Wrapper
-                                    width={`auto`}
-                                    padding={`6px`}
-                                    bgColor={Theme.white_C}
-                                    radius={`100%`}
-                                  >
-                                    <CaretRightOutlined />
+                                    <Wrapper
+                                      width={`auto`}
+                                      padding={`6px`}
+                                      bgColor={Theme.white_C}
+                                      radius={`100%`}
+                                    >
+                                      <CaretRightOutlined />
+                                    </Wrapper>
                                   </Wrapper>
-                                </Wrapper>
-                              </CommonButton>
-                            ) : boughtMeDetail && boughtMeDetail.isPay ? (
-                              <CommonButton
-                                kindOf={
-                                  enjoyMeList.find(
-                                    (value) => value.MediumId === data.id
-                                  )
-                                    ? `checked`
-                                    : `subTheme`
-                                }
-                                width={width < 700 ? `100%` : `186px`}
-                                height={`52px`}
-                                fontSize={`20px`}
-                                onClick={() =>
-                                  moveLinkHandler(
-                                    `/mypage/${data.id}?isSample=0`
-                                  )
-                                }
-                              >
-                                <Wrapper dr={`row`} ju={`space-between`}>
-                                  <Text fontWeight={`600`}>
-                                    {enjoyMeList.find(
+                                </CommonButton>
+                              ) : boughtMeDetail && boughtMeDetail.isPay ? (
+                                <CommonButton
+                                  kindOf={
+                                    enjoyMeList.find(
                                       (value) => value.MediumId === data.id
                                     )
-                                      ? `강의 다시보기`
-                                      : `강의 시청하기`}
-                                  </Text>
-
-                                  <Wrapper
-                                    width={`auto`}
-                                    padding={`6px`}
-                                    bgColor={Theme.white_C}
-                                    color={
-                                      enjoyMeList.find(
+                                      ? `checked`
+                                      : `subTheme`
+                                  }
+                                  width={width < 700 ? `100%` : `186px`}
+                                  height={`52px`}
+                                  fontSize={`20px`}
+                                  onClick={() =>
+                                    moveLinkHandler(
+                                      `/mypage/${data.id}?isSample=0`
+                                    )
+                                  }
+                                >
+                                  <Wrapper dr={`row`} ju={`space-between`}>
+                                    <Text fontWeight={`600`}>
+                                      {enjoyMeList.find(
                                         (value) => value.MediumId === data.id
-                                      ) && Theme.subTheme6_C
-                                    }
-                                    radius={`100%`}
-                                  >
-                                    <CaretRightOutlined />
+                                      )
+                                        ? `강의 다시보기`
+                                        : `강의 시청하기`}
+                                    </Text>
+
+                                    <Wrapper
+                                      width={`auto`}
+                                      padding={`6px`}
+                                      bgColor={Theme.white_C}
+                                      color={
+                                        enjoyMeList.find(
+                                          (value) => value.MediumId === data.id
+                                        ) && Theme.subTheme6_C
+                                      }
+                                      radius={`100%`}
+                                    >
+                                      <CaretRightOutlined />
+                                    </Wrapper>
                                   </Wrapper>
-                                </Wrapper>
-                              </CommonButton>
-                            ) : (
-                              ""
-                            )}
+                                </CommonButton>
+                              ) : (
+                                ""
+                              )}
+                            </Wrapper>
                           </Wrapper>
                         </Wrapper>
-                      </Wrapper>
-                    );
-                  })
+                      );
+                    })
                 ))}
             </Wrapper>
           </RsWrapper>
