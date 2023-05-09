@@ -90,15 +90,33 @@ const TextHover = styled(Text)`
     left: 0;
     width: 0;
     height: 1px;
-    background: ${Theme.basicTheme2_C};
+    background: ${Theme.white_C};
     transition: 0.5s;
   }
 
   &:hover {
-    color: ${Theme.basicTheme2_C};
     &:before {
       width: 100%;
     }
+  }
+`;
+
+const MinusBtn = styled(Wrapper)`
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background: ${Theme.white_C};
+  cursor: pointer;
+
+  &:hover {
+    color: ${Theme.white_C};
+    border: 1px solid ${Theme.white_C};
+    background: transparent;
+  }
+
+  @media (max-width: 700px) {
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -352,79 +370,87 @@ const MediaDetail = () => {
                     controlsList="nodownload"
                   />
                 )}
-
                 <Wrapper
-                  padding={width < 700 ? `23px 0` : `23px 30px`}
                   dr={`row`}
                   ju={`space-between`}
-                  bgColor={Theme.lightGrey2_C}
+                  bgColor={Theme.darkGrey3_C}
+                  padding={width < 700 ? `10px` : `20px 40px`}
                 >
-                  {nextData && (
-                    <Wrapper dr={`row`} width={`auto`}>
-                      <Tab
-                        fontSize={width < 700 ? `10px !important` : `24px`}
-                        padding={`5px 10px !important`}
-                        radius={`0 !important`}
-                        margin={`0 10px 0 0`}
-                        onClick={() => {
-                          moveLinkHandler(`/mypage`);
-                        }}
-                      >
-                        강의목록
-                      </Tab>
-                      <Tab
-                        fontSize={width < 700 ? `10px !important` : `24px`}
-                        padding={`5px 10px !important`}
-                        radius={`0 !important`}
-                        margin={`0 5px 0 0`}
-                        onClick={() => {
-                          moveLinkHandler(`/mypage/${nextData.id}?isSample=0`);
-                        }}
-                      >
-                        다음강의
-                      </Tab>
-                    </Wrapper>
-                  )}
-                  <Wrapper dr={`row`} width={`auto`}>
+                  <Wrapper width={`auto`} dr={`row`}>
+                    {nextData && (
+                      <Wrapper dr={`row`} width={`auto`}>
+                        <TextHover
+                          fontSize={width < 700 ? `10px !important` : `26px`}
+                          color={Theme.white_C}
+                          margin={`0 5px 0 0`}
+                          onClick={() => {
+                            moveLinkHandler(`/mypage`);
+                          }}
+                        >
+                          강의 목록
+                        </TextHover>
+
+                        <TextHover
+                          fontSize={width < 700 ? `10px !important` : `26px`}
+                          color={Theme.white_C}
+                          margin={`0 5px 0 0`}
+                          onClick={() => {
+                            moveLinkHandler(
+                              `/mypage/${nextData.id}?isSample=0`
+                            );
+                          }}
+                        >
+                          다음강의
+                        </TextHover>
+
+                        <Image
+                          onClick={() => {
+                            moveLinkHandler(
+                              `/mypage/${nextData.id}?isSample=0`
+                            );
+                          }}
+                          width={width < 700 ? `15px` : `25px`}
+                          src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Fmyclass_modify%2Ficon_next.png?alt=media&token=bae734f2-0537-4d4a-b4bd-92bedb0e56e6`}
+                        />
+                      </Wrapper>
+                    )}
+                  </Wrapper>
+
+                  <Wrapper width={`auto`} al={`flex-start`}>
+                    {/* <CustmoCheckBox checked={loopCheck} onChange={loopCheckHandler}>
+                  반복재생
+                </CustmoCheckBox> */}
+                    {/* <CustmoCheckBox checked={nextCheck} onChange={nextCheckHandler}>
+                  자동 다음강의
+                </CustmoCheckBox> */}
+                  </Wrapper>
+
+                  <Wrapper width={`auto`} dr={`row`}>
                     <Text
-                      fontSize={width < 700 ? `18px` : `22px`}
-                      fontWeight={`600`}
-                      margin={`0 16px 0 0 `}
+                      fontSize={width < 700 ? `11px !important` : `26px`}
+                      color={Theme.white_C}
                     >
                       재생속도
                     </Text>
-                    <Wrapper width={`auto`} dr={`row`}>
-                      <Wrapper
-                        width={`auto`}
-                        padding={`5px`}
-                        bgColor={Theme.lightGrey4_C}
-                        color={Theme.grey3_C}
-                        radius={`100%`}
-                        cursor={`pointer`}
-                        onClick={() => speedUnitHandler(videoSpeed - 0.25)}
-                      >
-                        <MinusOutlined />
-                      </Wrapper>
-                      <Text
-                        width={width < 700 ? `50px` : `100px`}
-                        textAlign={`center`}
-                        fontSize={width < 700 ? `18px` : `20px`}
-                        fontWeight={`700`}
-                      >
-                        {videoSpeed}
-                      </Text>
-                      <Wrapper
-                        width={`auto`}
-                        padding={`5px`}
-                        bgColor={Theme.lightGrey4_C}
-                        color={Theme.grey3_C}
-                        radius={`100%`}
-                        cursor={`pointer`}
-                        onClick={() => speedUnitHandler(videoSpeed + 0.25)}
-                      >
-                        <PlusOutlined />
-                      </Wrapper>
-                    </Wrapper>
+
+                    <MinusBtn
+                      margin={`0 10px`}
+                      onClick={() => speedUnitHandler(videoSpeed - 0.25)}
+                    >
+                      -
+                    </MinusBtn>
+                    <Text
+                      color={Theme.white_C}
+                      fontSize={width < 700 ? `11px !important` : `26px`}
+                    >
+                      {videoSpeed}
+                    </Text>
+                    <MinusBtn
+                      margin={`0 0 0 10px`}
+                      onClick={() => speedUnitHandler(videoSpeed + 0.25)}
+                    >
+                      +
+                    </MinusBtn>
                   </Wrapper>
                 </Wrapper>
               </Wrapper>

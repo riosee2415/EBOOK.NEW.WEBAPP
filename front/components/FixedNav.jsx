@@ -70,6 +70,7 @@ const FixedNav = ({}) => {
 
   if (
     router.pathname === "/join" ||
+    router.pathname === "/user/login" ||
     router.pathname === "/user/signup" ||
     router.pathname === "/enrolment" ||
     router.pathname === "/order" ||
@@ -98,31 +99,6 @@ const FixedNav = ({}) => {
           src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2FMM13%2F%E1%84%8F%E1%85%A1%E1%84%8F%E1%85%A1%E1%84%8B%E1%85%A9%E1%84%90%E1%85%A9%E1%86%A82.png?alt=media&token=a505efd4-9648-4a49-a1c2-b608da60dc20`}
         />
       </ATag>
-      {/* <ATag href="" target="_blank">
-        <Wrapper dr={`row`} width={`auto`}>
-          <Wrapper
-            width={`70px`}
-            height={`70px`}
-            bgColor={Theme.kakao_C}
-            radius={`50%`}
-            margin={`0 -10px 0 0`}
-            zIndex={`10`}
-          >
-            <RiKakaoTalkFill size={40} />
-          </Wrapper>
-          <Wrapper
-            width={`100px`}
-            height={`40px`}
-            bgColor={Theme.red_C}
-            radius={`0 5px 5px 0`}
-            color={Theme.white_C}
-            fontWeight={`700`}
-            fontSize={`18px`}
-          >
-            문의하기
-          </Wrapper>
-        </Wrapper>
-      </ATag> */}
     </FixedWrapper>
   );
 };

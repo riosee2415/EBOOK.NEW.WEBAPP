@@ -39,6 +39,7 @@ export default {
   lightGrey5_C: "#B9B9B9",
   darkGrey_C: "#2d3436",
   darkGrey2_C: "#5E5E5E",
+  darkGrey3_C: "#575757",
   //admin
   adminTheme_1: "#1e272e",
   adminTheme_2: "#485460",
