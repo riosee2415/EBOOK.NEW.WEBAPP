@@ -440,8 +440,8 @@ const Notice = ({}) => {
         type: NOTICE_UPDATE_REQUEST,
         data: {
           id: currentData.id,
-          title: data.title,
-          content: data.content,
+          title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
+          content: data.content.replace(/\'/gi, `''`, /\"/gi, `""`),
           type: data.type,
         },
       });
