@@ -32,7 +32,7 @@ export const items = {
       useYn: false,
     },
   ],
-  기초정보관리: [
+  홈정보관리: [
     {
       name: "사업자정보관리",
       link: "/admin/info/businessInformation",
@@ -290,8 +290,8 @@ const AdminLayout = ({ children }) => {
           />
           <AdminMenuBox
             right={me && me.menuRight2}
-            title={`기초정보관리`}
-            menus={items["기초정보관리"]}
+            title={`홈정보관리`}
+            menus={items["홈정보관리"]}
           />
           <AdminMenuBox
             right={me && me.menuRight3}

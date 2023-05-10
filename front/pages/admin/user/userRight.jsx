@@ -547,7 +547,7 @@ const UserRight = ({}) => {
             isChecked={currentUser && currentUser.menuRight2}
             onClick={() => rightChangeUpdateHandler(currentUser, 2)}
           >
-            <BoxText>기초정보관리</BoxText>
+            <BoxText>홈정보관리</BoxText>
             <BoxIcon>
               <CheckOutlined />
             </BoxIcon>

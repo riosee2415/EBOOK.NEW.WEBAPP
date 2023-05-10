@@ -1,21 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Menu, Switch } from "antd";
-import {
-  InfoCircleOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-  BarChartOutlined,
-  UserOutlined,
-  BookOutlined,
-  PhoneOutlined,
-  EditOutlined,
-  ProfileOutlined,
-  CopyrightOutlined,
-  ApartmentOutlined,
-  FileTextOutlined,
-  ContainerOutlined,
-  InfoOutlined,
-} from "@ant-design/icons";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,26 +23,37 @@ const AdminMenu = () => {
 
   const router = useRouter();
 
+  const menuRef = useRef();
+
   const [mode, setMode] = useState(`dark`);
 
-  const [current, setCurrent] = useState(`1`);
+  const clickAction = useCallback(
+    (e) => {
+      router.replace(e.key);
 
-  const clickAction = useCallback((e) => {
-    // console.log("click", e);
-
-    router.replace(e.key);
-    setCurrent(e.key);
-  }, []);
-
-  const titleClickHandler = useCallback(
-    (key) => () => {
       dispatch({
         type: CURRENT_ADMINMENU_STATUS,
-        data: { key },
+        data: {
+          key: e.keyPath[1],
+        },
       });
     },
     [currentAdminMenu]
   );
+
+  // console.log(menuRef);
+  // const titleOnHandler = useCallback(
+  //   (e) => {
+  //     menuRef.current.updater.enqueueReplaceState();
+  //     dispatch({
+  //       type: CURRENT_ADMINMENU_STATUS,
+  //       data: {
+  //         key: e.key,
+  //       },
+  //     });
+  //   },
+  //   [currentAdminMenu]
+  // );
 
   const menus = [
     {
@@ -73,7 +68,7 @@ const AdminMenu = () => {
       ],
     },
     {
-      title: "기초정보관리",
+      title: "홈정보관리",
       key: "sub2",
 
       subMenu: [
@@ -158,11 +153,13 @@ const AdminMenu = () => {
 
   return (
     <>
+      {console.log(currentAdminMenu)}
       <Menu
+        ref={menuRef}
         theme={mode}
         onClick={clickAction}
         style={{ width: `100%`, height: `100%`, overflow: `auto` }}
-        defaultOpenKeys={currentAdminMenu}
+        defaultOpenKeys={[currentAdminMenu]}
         mode="inline"
         selectedKeys={router.pathname}
         disabled={false}
@@ -197,9 +194,8 @@ const AdminMenu = () => {
           return (
             <SubMenu
               key={data.key}
-              //   icon={data.icon}
               title={data.title}
-              onTitleClick={titleClickHandler(data.key)}
+              // onTitleClick={titleOnHandler}
             >
               {data.subMenu.map((value) => {
                 return (

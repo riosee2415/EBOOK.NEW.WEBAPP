@@ -67,6 +67,12 @@ export const CustomHtmlWrapper = styled(Wrapper)`
   }
 `;
 
+const HtmlWrapper = styled(Wrapper)`
+  & img {
+    max-width: 100%;
+  }
+`;
+
 const ReviewDetail = ({}) => {
   ////// GLOBAL STATE //////
   const {
@@ -168,13 +174,13 @@ const ReviewDetail = ({}) => {
             </Wrapper>
 
             {noticeDetail && (
-              <div
+              <HtmlWrapper
                 className="view ql-editor"
                 style={{ minHeight: `300px`, width: `100%` }}
                 dangerouslySetInnerHTML={{
                   __html: noticeDetail.content,
                 }}
-              ></div>
+              ></HtmlWrapper>
             )}
 
             {/* <Quill></ */}

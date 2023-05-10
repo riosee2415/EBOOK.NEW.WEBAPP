@@ -60,7 +60,7 @@ const BusinessInfomation = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("기초정보관리");
+  const [level1, setLevel1] = useState("홈정보관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [createModal, setCreateModal] = useState(false);

@@ -735,17 +735,18 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
 
       case CURRENT_ADMINMENU_STATUS: {
-        const exist = draft.currentAdminMenu.filter(
-          (data) => data === action.data.key
-        );
+        // const exist = draft.currentAdminMenu.filter(
+        //   (data) => data === action.data.key
+        // );
 
-        if (exist.length > 0) {
-          draft.currentAdminMenu = draft.currentAdminMenu.filter(
-            (data) => data !== action.data.key
-          );
-        } else {
-          draft.currentAdminMenu = [...draft.currentAdminMenu, action.data.key];
-        }
+        // if (exist.length > 0) {
+        //   draft.currentAdminMenu = draft.currentAdminMenu.filter(
+        //     (data) => data !== action.data.key
+        //   );
+        // } else {
+        //   draft.currentAdminMenu = [...draft.currentAdminMenu, action.data.key];
+        // }
+        draft.currentAdminMenu = action.data.key;
 
         break;
       }
