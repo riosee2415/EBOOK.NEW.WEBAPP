@@ -2,7 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   me: null,
-  currentAdminMenu: [],
+  currentAdminMenu: null,
   users: null,
   lastPages: 1,
   updateModal: false,

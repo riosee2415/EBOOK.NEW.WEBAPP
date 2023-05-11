@@ -199,6 +199,7 @@ const MediaDetail = () => {
 
   // 페이지 변경
   const moveLinkHandler = useCallback((link) => {
+    window.scrollTo(0, 0);
     router.push(link);
   }, []);
 

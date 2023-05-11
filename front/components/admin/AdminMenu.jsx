@@ -27,19 +27,21 @@ const AdminMenu = () => {
 
   const [mode, setMode] = useState(`dark`);
 
-  const clickAction = useCallback(
+  const openAction = useCallback(
     (e) => {
-      router.replace(e.key);
-
       dispatch({
         type: CURRENT_ADMINMENU_STATUS,
         data: {
-          key: e.keyPath[1],
+          key: e[1],
         },
       });
     },
     [currentAdminMenu]
   );
+
+  const clickAction = useCallback((e) => {
+    router.replace(e.key);
+  }, []);
 
   // console.log(menuRef);
   // const titleOnHandler = useCallback(
@@ -153,13 +155,13 @@ const AdminMenu = () => {
 
   return (
     <>
-      {console.log(currentAdminMenu)}
       <Menu
         ref={menuRef}
         theme={mode}
+        onOpenChange={openAction}
         onClick={clickAction}
         style={{ width: `100%`, height: `100%`, overflow: `auto` }}
-        defaultOpenKeys={[currentAdminMenu]}
+        openKeys={[currentAdminMenu]}
         mode="inline"
         selectedKeys={router.pathname}
         disabled={false}
@@ -195,7 +197,7 @@ const AdminMenu = () => {
             <SubMenu
               key={data.key}
               title={data.title}
-              // onTitleClick={titleOnHandler}
+              // onTitleClick={() => clickAction(data.link)}
             >
               {data.subMenu.map((value) => {
                 return (
