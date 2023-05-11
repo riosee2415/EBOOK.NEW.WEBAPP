@@ -1219,8 +1219,19 @@ router.get("/logout", function (req, res) {
 });
 
 router.post("/admin/update", isAdminCheck, async (req, res, next) => {
-  const { id, type, userId, username, password, mobile, keyword, consulting } =
-    req.body;
+  const {
+    id,
+    type,
+    userId,
+    username,
+    password,
+    mobile,
+    keyword,
+    consulting,
+    zoneCode,
+    address,
+    detailAddress,
+  } = req.body;
   // type
   // 1 아이디수정
   // 2 사용자명수정
@@ -1284,11 +1295,38 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
         `;
 
       await models.sequelize.query(updateQ);
-    } else if (parseInt(type) == 5) {
+    } else if (parseInt(type) === 5) {
       const updateQ = `
         UPDATE  users
            SET  keyword = "${keyword}",
                 consulting = "${consulting}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 6) {
+      const updateQ = `
+        UPDATE  users
+           SET  zoneCode = "${zoneCode}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 7) {
+      const updateQ = `
+        UPDATE  users
+           SET  address = "${address}",
+                updatedAt = NOW()
+         WHERE  id = ${id}
+        `;
+
+      await models.sequelize.query(updateQ);
+    } else if (parseInt(type) === 8) {
+      const updateQ = `
+        UPDATE  users
+           SET  detailAddress = "${detailAddress}",
                 updatedAt = NOW()
          WHERE  id = ${id}
         `;

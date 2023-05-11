@@ -598,7 +598,7 @@ const BuyLecture = ({}) => {
     { label: "신청일자", key: "no" },
     { label: "성함", key: "name" },
     { label: "연락처", key: "mobile" },
-    { label: "배송지", key: "zoneCode" },
+    { label: "우편번호", key: "zoneCode" },
     { label: "배송지", key: "address" },
     { label: "배송지", key: "detailAddress" },
     { label: "배송여부", key: "none" },

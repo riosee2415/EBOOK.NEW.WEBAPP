@@ -599,6 +599,9 @@ const UserList = ({}) => {
           mobile: detailData.mobile,
           keyword: detailData.keyword,
           consulting: detailData.consulting,
+          zoneCode: detailData.zoneCode,
+          address: detailData.address,
+          detailAddress: detailData.detailAddress,
         },
       });
     },
@@ -1121,15 +1124,60 @@ const UserList = ({}) => {
               <Form.Item name="birth" label="생년">
                 <Input size="small" readOnly />
               </Form.Item>
-              <Form.Item name="zoneCode" label="우편번호">
-                <Input size="small" readOnly />
-              </Form.Item>
-              <Form.Item name="address" label="기본주소">
-                <Input size="small" readOnly />
-              </Form.Item>
-              <Form.Item name="detailAddress" label="상세주소">
-                <Input size="small" readOnly />
-              </Form.Item>
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="zoneCode"
+                  label="우편번호"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(6)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="address"
+                  label="기본주소"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(7)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
+              <Wrapper dr={`row`}>
+                <Form.Item
+                  name="detailAddress"
+                  label="상세주소"
+                  style={{ width: `calc(100% - 50px)` }}
+                >
+                  <Input size="small" />
+                </Form.Item>
+                <Button
+                  style={{ width: `50px`, margin: `0 0 24px` }}
+                  size="small"
+                  type="primary"
+                  loading={st_adminUpdateLoading}
+                  onClick={() => adminUpdateHandler(8)}
+                >
+                  수정
+                </Button>
+              </Wrapper>
               <Form.Item label="후기작성여부">
                 {dData &&
                   (dData.isWriteReview ? (
