@@ -275,7 +275,8 @@ export const CommonButton = styled(Button)`
       `border : 1px solid ${props.theme.blueTheme_C};`}
     ${(props) =>
       props.kindOf === `checked` && `background : ${props.theme.blueTheme_C};`}
-  ${(props) => props.kindOf === `checked` && `color : ${props.theme.white_C};`}
+    ${(props) =>
+      props.kindOf === `checked` && `color : ${props.theme.white_C};`}
 
 
     ${(props) =>
@@ -322,6 +323,70 @@ export const CommonButton = styled(Button)`
     ${(props) =>
       props.kindOf === `delete` && `border : 1px solid ${props.theme.red_C};`}
   }
+`;
+
+export const MobileCommonButton = styled(Button)`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin: ${(props) => props.margin};
+  padding: ${(props) => props.padding};
+  font-size: ${(props) => props.fontSize};
+  color: ${(props) => props.color || props.theme.basicTheme_C};
+  border-radius: ${(props) => props.radius || `7px`};
+
+  ${(props) => !props.kindOf && `background : ${props.theme.white_C};`}
+
+  ${(props) =>
+    !props.kindOf && `border : 1px solid ${props.theme.basicTheme_C};`}
+  ${(props) =>
+    props.kindOf === `basic` && `background : ${props.theme.basicTheme_C};`}
+  ${(props) => props.kindOf === `basic` && `color : ${props.theme.white_C};`}
+
+  ${(props) =>
+    props.kindOf === `checked` &&
+    `border : 1px solid ${props.theme.lightBlueTheme_C};`}
+  ${(props) =>
+    props.kindOf === `checked` &&
+    `background : ${props.theme.lightBlueTheme_C};`}
+  ${(props) => props.kindOf === `checked` && `color : ${props.theme.black_C};`}
+
+
+  ${(props) =>
+    props.kindOf === `gray` && `background : ${props.theme.lightGrey2_C};`}
+    ${(props) => props.kindOf === `gray` && `color : ${props.theme.grey2_C};`}
+    ${(props) =>
+    props.kindOf === `gray` &&
+    `border : 1px solid ${props.theme.lightGrey2_C};`}
+
+
+  ${(props) =>
+    props.kindOf === `white` && `background : ${props.theme.basicTheme_C};`}
+  ${(props) => props.kindOf === `white` && `color : ${props.theme.subTheme_C};`}
+  ${(props) =>
+    props.kindOf === `white` && `border : 1px solid ${props.theme.subTheme_C};`}
+  ${(props) =>
+    props.kindOf === `black` && `background : ${props.theme.black_C};`}
+  ${(props) => props.kindOf === `black` && `color : ${props.theme.white_C};`}
+  
+  ${(props) =>
+    props.kindOf === `subTheme` && `background : ${props.theme.subTheme5_C};`}
+  ${(props) =>
+    props.kindOf === `subTheme` && `color : ${props.theme.basicTheme_C};`}
+  ${(props) =>
+    props.kindOf === `subTheme` &&
+    `border : 1px solid ${props.theme.subTheme5_C};`}
+  ${(props) =>
+    props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
+  ${(props) =>
+    props.kindOf === `kakao` && `color : ${props.theme.subTheme4_C};`}
+  ${(props) =>
+    props.kindOf === `kakao` && `border : 1px solid ${props.theme.kakao_C};`}
+
+  ${(props) =>
+    props.kindOf === `delete` && `background : ${props.theme.red_C};`}
+  ${(props) => props.kindOf === `delete` && `color : ${props.theme.white_C};`}
+  ${(props) =>
+    props.kindOf === `delete` && `border : 1px solid ${props.theme.red_C};`}
 `;
 
 export const Text = styled.p`

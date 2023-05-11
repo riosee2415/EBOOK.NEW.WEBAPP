@@ -267,7 +267,7 @@ const BuyLecture = ({}) => {
     }
   }, [st_boughtIsPayUpdateDone, st_boughtIsPayUpdateError]);
 
-  // 주소변경 후처리
+  // 정보확인 후처리
   useEffect(() => {
     if (st_boughtAddressUpdateDone) {
       dispatch({
@@ -312,7 +312,7 @@ const BuyLecture = ({}) => {
   }, [st_boughtAdminDeleteDone, st_boughtAdminDeleteError]);
 
   ////// TOGGLE //////
-  // 주소변경
+  // 정보확인
   const aModalToggle = useCallback(
     (data) => {
       if (data) {
@@ -365,7 +365,7 @@ const BuyLecture = ({}) => {
     [isPayType]
   );
 
-  // 주소변경
+  // 정보확인
   const aUpdateHandler = useCallback(
     (data) => {
       dispatch({
@@ -464,7 +464,7 @@ const BuyLecture = ({}) => {
     {
       width: "6%",
       align: "center",
-      title: "교제여부",
+      title: "교재여부",
       render: (data) =>
         data.isBuyBook ? (
           <CheckOutlined style={{ color: Theme.naver_C }} />
@@ -485,7 +485,7 @@ const BuyLecture = ({}) => {
     {
       width: "5%",
       align: "center",
-      title: "주소변경",
+      title: "정보확인",
       render: (data) => (
         <Button
           size="small"
@@ -493,7 +493,7 @@ const BuyLecture = ({}) => {
           onClick={() => aModalToggle(data)}
           loading={st_boughtAddressUpdateLoading}
         >
-          주소변경
+          정보변경
         </Button>
       ),
     },
@@ -647,7 +647,7 @@ const BuyLecture = ({}) => {
             엑셀은 현재 검색된 리스트까지 출력합니다.
           </GuideLi>
           <GuideLi isImpo={true}>
-            주소변경또는 승인시 바로 반영이 되니 신중한 작업을 필요로 합니다.
+            정보확인또는 승인시 바로 반영이 되니 신중한 작업을 필요로 합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -747,7 +747,9 @@ const BuyLecture = ({}) => {
             rowKey="num"
             style={{ width: "100%" }}
             pagination={{
-              pageSize: 20,
+              total: boughtAdminList ? boughtAdminList.length : 0,
+              pageSize: boughtAdminList ? boughtAdminList.length : 0,
+              hideOnSinglePage: true,
             }}
           ></Table>
         </Wrapper>
@@ -756,7 +758,7 @@ const BuyLecture = ({}) => {
       {/* ADDRESS MODAL */}
       <Modal
         width={`700px`}
-        title="주소변경"
+        title="정보확인"
         visible={aModal}
         onCancel={() => aModalToggle(null)}
         footer={null}

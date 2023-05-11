@@ -15,6 +15,7 @@ import {
   TextInput,
   CustomPage,
   SpanText,
+  MobileCommonButton,
 } from "../../components/commonComponents";
 import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
@@ -556,6 +557,49 @@ const MypageIndex = ({}) => {
                                 boughtMeDetail.pauseDate &&
                                 moment(boughtMeDetail.pauseDate) >= moment() ? (
                                   ""
+                                ) : width < 700 ? (
+                                  <MobileCommonButton
+                                    kindOf={
+                                      enjoyMeList.find(
+                                        (value) => value.MediumId === data.id
+                                      )
+                                        ? `checked`
+                                        : `subTheme`
+                                    }
+                                    width={width < 700 ? `100%` : `186px`}
+                                    height={`52px`}
+                                    fontSize={`20px`}
+                                    onClick={() =>
+                                      moveLinkHandler(
+                                        `/mypage/${data.id}?isSample=0`
+                                      )
+                                    }
+                                  >
+                                    <Wrapper dr={`row`} ju={`space-between`}>
+                                      <Text fontWeight={`600`}>
+                                        {enjoyMeList.find(
+                                          (value) => value.MediumId === data.id
+                                        )
+                                          ? `강의 다시보기`
+                                          : `강의 시청하기`}
+                                      </Text>
+
+                                      <Wrapper
+                                        width={`auto`}
+                                        padding={`6px`}
+                                        bgColor={Theme.white_C}
+                                        color={
+                                          enjoyMeList.find(
+                                            (value) =>
+                                              value.MediumId === data.id
+                                          ) && Theme.blueTheme_C
+                                        }
+                                        radius={`100%`}
+                                      >
+                                        <CaretRightOutlined />
+                                      </Wrapper>
+                                    </Wrapper>
+                                  </MobileCommonButton>
                                 ) : (
                                   <CommonButton
                                     kindOf={

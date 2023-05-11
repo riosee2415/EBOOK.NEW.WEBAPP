@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Router, { useRouter } from "next/router";
 import { Input, Button, Form, message } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import useInput from "../../hooks/useInput";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGIN_REQUEST, SIGNUP_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
@@ -22,6 +21,33 @@ import {
 import styled from "styled-components";
 import Theme from "../../components/Theme";
 import useWidth from "../../hooks/useWidth";
+
+const LoginFormWrapper = styled(Wrapper)`
+  flex-direction: row;
+  align-items: normal;
+  margin: 5px 0 20px;
+  height: 45px;
+  border-radius: 5px;
+`;
+
+const LoginIconWrapper = styled(Wrapper)`
+  width: 50px;
+  height: 100%;
+  font-size: 20px;
+  background: #f2f2f2;
+`;
+
+const LoginInputWrapper = styled(Wrapper)`
+  width: calc(100% - 50px);
+`;
+
+const LoginInput = styled(TextInput)`
+  width: 100%;
+  height: 45px;
+  padding: 0 10px;
+  letter-spacing: 0.5px;
+  border: 1px solid #dedede;
+`;
 
 const LoginForm = styled(Form)`
   width: 100%;
@@ -81,48 +107,105 @@ const Login = () => {
       <ClientLayout>
         <WholeWrapper>
           <RsWrapper>
-            <Wrapper maxWidth={`420px`} margin={`120px 0`}>
+            <Wrapper
+              maxWidth={`420px`}
+              margin={width < 700 ? `80px 0` : `120px 0`}
+            >
               <Text
                 fontSize={width < 700 ? `30px` : `36px`}
-                fontWeight={`700`}
+                fontWeight={`800`}
                 margin={`0 0 40px`}
               >
-                로그인
+                LOG IN
               </Text>
               <LoginForm layout="inline" onFinish={loginHandler}>
-                <Form.Item
-                  name="userId"
-                  rules={[
-                    { required: true, message: "아이디를 입력해주세요." },
-                  ]}
-                >
-                  <TextInput
-                    width={`100%`}
-                    height={`54px`}
-                    radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
-                    fontSize={`18px`}
-                    placeholder="아이디를 입력해주세요."
-                    margin={`0 0 10px`}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    { required: true, message: "비밀번호를 입력해주세요." },
-                  ]}
-                >
-                  <TextInput
-                    width={`100%`}
-                    height={`54px`}
-                    radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
-                    fontSize={`18px`}
-                    placeholder="비밀번호를 입력해주세요."
-                    margin={`0 0 10px`}
-                    type="password"
-                  />
-                </Form.Item>
+                {/* <Wrapper dr={`row`} al={`flex-start`}>
+                  <Wrapper
+                    width={`80px`}
+                    height={`52px`}
+                    fontSize={`20px`}
+                    bgColor={Theme.grey2_C}
+                  >
+                    <UserOutlined />
+                  </Wrapper>
+                  <Form.Item
+                    name="userId"
+                    rules={[
+                      { required: true, message: "아이디를 입력해주세요." },
+                    ]}
+                  >
+                    <TextInput
+                      width={`100%`}
+                      height={`54px`}
+                      radius={`5px`}
+                      border={`1px solid ${Theme.lightGrey4_C}`}
+                      fontSize={`18px`}
+                      placeholder="아이디를 입력해주세요."
+                      margin={`0 0 10px`}
+                    />
+                  </Form.Item>
+                </Wrapper>
+                <Wrapper dr={`row`} al={`flex-start`}>
+                  <Wrapper
+                    width={`80px`}
+                    height={`52px`}
+                    fontSize={`20px`}
+                    bgColor={Theme.grey2_C}
+                  >
+                    <LockOutlined />
+                  </Wrapper>
+                  <Form.Item
+                    name="password"
+                    rules={[
+                      { required: true, message: "비밀번호를 입력해주세요." },
+                    ]}
+                  >
+                    <TextInput
+                      width={`100%`}
+                      height={`54px`}
+                      radius={`5px`}
+                      border={`1px solid ${Theme.lightGrey4_C}`}
+                      fontSize={`18px`}
+                      placeholder="비밀번호를 입력해주세요."
+                      margin={`0 0 10px`}
+                      type="password"
+                    />
+                  </Form.Item>
+                </Wrapper> */}
+
+                <LoginFormWrapper>
+                  <LoginIconWrapper>
+                    <UserOutlined />
+                  </LoginIconWrapper>
+
+                  <LoginInputWrapper>
+                    <Form.Item
+                      name="userId"
+                      rules={[
+                        { required: true, message: "아이디를 입력해주세요." },
+                      ]}
+                    >
+                      <LoginInput />
+                    </Form.Item>
+                  </LoginInputWrapper>
+                </LoginFormWrapper>
+
+                <LoginFormWrapper>
+                  <LoginIconWrapper>
+                    <LockOutlined />
+                  </LoginIconWrapper>
+
+                  <LoginInputWrapper>
+                    <Form.Item
+                      name="password"
+                      rules={[
+                        { required: true, message: "비밀번호를 입력해주세요." },
+                      ]}
+                    >
+                      <LoginInput type="password" />
+                    </Form.Item>
+                  </LoginInputWrapper>
+                </LoginFormWrapper>
 
                 <Wrapper>
                   <CommonButton
