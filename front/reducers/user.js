@@ -107,6 +107,10 @@ export const initailState = {
   st_userAllListLoading: false, // 회원 전체 데이터 (엑셀)
   st_userAllListDone: false,
   st_userAllListError: null,
+  //
+  st_userAdminDeleteLoading: false, // 관리자 회원 삭제
+  st_userAdminDeleteDone: false,
+  st_userAdminDeleteError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -208,6 +212,10 @@ export const ADMIN_BANNER_FAILURE = "ADMIN_BANNER_FAILURE";
 export const USER_ALL_LIST_REQUEST = "USER_ALL_LIST_REQUEST";
 export const USER_ALL_LIST_SUCCESS = "USER_ALL_LIST_SUCCESS";
 export const USER_ALL_LIST_FAILURE = "USER_ALL_LIST_FAILURE";
+//
+export const USER_ADMIN_DELETE_REQUEST = "USER_ADMIN_DELETE_REQUEST";
+export const USER_ADMIN_DELETE_SUCCESS = "USER_ADMIN_DELETE_SUCCESS";
+export const USER_ADMIN_DELETE_FAILURE = "USER_ADMIN_DELETE_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -730,6 +738,26 @@ const reducer = (state = initailState, action) =>
         draft.st_userAllListLoading = false;
         draft.st_userAllListDone = false;
         draft.st_userAllListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_ADMIN_DELETE_REQUEST: {
+        draft.st_userAdminDeleteLoading = true;
+        draft.st_userAdminDeleteDone = false;
+        draft.st_userAdminDeleteError = null;
+        break;
+      }
+      case USER_ADMIN_DELETE_SUCCESS: {
+        draft.st_userAdminDeleteLoading = false;
+        draft.st_userAdminDeleteDone = true;
+        draft.st_userAdminDeleteError = null;
+        break;
+      }
+      case USER_ADMIN_DELETE_FAILURE: {
+        draft.st_userAdminDeleteLoading = false;
+        draft.st_userAdminDeleteDone = false;
+        draft.st_userAdminDeleteError = action.error;
         break;
       }
       //////////////////////////////////////////////

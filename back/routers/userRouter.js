@@ -1444,4 +1444,41 @@ router.post("/admin/banner", isAdminCheck, async (req, res, next) => {
     return res.status(400).send("관리자 베너를 불러올 수 없습니다.");
   }
 });
+
+router.post("/admin/delete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQ = `
+    SELECT  id,
+            isExit
+      FROM  users
+     WHERE  id = ${id}
+    `;
+
+  const delQ = `
+  UPDATE  users
+     SEt  isExit = 1,
+          exitedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    const find = await models.sequelize.query(findQ);
+
+    if (find[0].length === 0) {
+      return res.status(401).send("존재하지 않는 회원입니다.");
+    }
+
+    if (findQ[0][0].isExit) {
+      return res.status(401).send("이미 삭제된 회원입니다.");
+    }
+
+    await models.sequelize.query(delQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("회원을 삭제할 수 없습니다.");
+  }
+});
 module.exports = router;

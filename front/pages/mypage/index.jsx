@@ -110,6 +110,7 @@ const MypageIndex = ({}) => {
   );
 
   const moveLinkHandler = useCallback((link) => {
+    window.scrollTo(0, 0);
     router.push(link);
   }, []);
 

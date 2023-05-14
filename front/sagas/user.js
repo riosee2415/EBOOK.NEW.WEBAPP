@@ -101,6 +101,10 @@ import {
   USER_ALL_LIST_SUCCESS,
   USER_ALL_LIST_FAILURE,
   /////////////////////////////
+  USER_ADMIN_DELETE_REQUEST,
+  USER_ADMIN_DELETE_SUCCESS,
+  USER_ADMIN_DELETE_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -770,6 +774,33 @@ function* userAllList(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userAdminDeleteAPI(data) {
+  return await axios.post(`/api/user/admin/delete`, data);
+}
+
+function* userAdminDelete(action) {
+  try {
+    const result = yield call(userAdminDeleteAPI, action.data);
+
+    yield put({
+      type: USER_ADMIN_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_ADMIN_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -872,6 +903,10 @@ function* watchUserAllList() {
   yield takeLatest(USER_ALL_LIST_REQUEST, userAllList);
 }
 
+function* watchUserAdminDelete() {
+  yield takeLatest(USER_ADMIN_DELETE_REQUEST, userAdminDelete);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -900,6 +935,7 @@ export default function* userSaga() {
     fork(watchXlsx),
     fork(watchAdminBanner),
     fork(watchUserAllList),
+    fork(watchUserAdminDelete),
     //
   ]);
 }

@@ -140,7 +140,8 @@ const MediaDetail = () => {
 
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
-  const [aModal, setAModal] = useState(false);
+  // 이어보기 모달
+  // const [aModal, setAModal] = useState(false);
 
   const [searchType, setSearchType] = useState(null);
 
@@ -172,15 +173,16 @@ const MediaDetail = () => {
     }
   }, [router.query]);
 
-  useEffect(() => {
-    if (boughtMeDetail && router.query) {
-      if (boughtMeDetail.recentlyTurn) {
-        if (parseInt(router.query.id) !== boughtMeDetail.recentlyTurn) {
-          setAModal(true);
-        }
-      }
-    }
-  }, [boughtMeDetail, router.query]);
+  // 이어보기 모달
+  // useEffect(() => {
+  //   if (boughtMeDetail && router.query) {
+  //     if (boughtMeDetail.recentlyTurn) {
+  //       if (parseInt(router.query.id) !== boughtMeDetail.recentlyTurn) {
+  //         setAModal(true);
+  //       }
+  //     }
+  //   }
+  // }, [boughtMeDetail, router.query]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -708,7 +710,8 @@ const MediaDetail = () => {
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
-        <Modal visible={aModal} footer={null} onCancel={() => setAModal(false)}>
+        {/* 이어보기 모달 */}
+        {/* <Modal visible={aModal} footer={null} onCancel={() => setAModal(false)}>
           {boughtMeDetail && boughtMeDetail.recentlyTurn && (
             <Wrapper>
               <Text fontSize={`25px`} fontWeight={"600"}>
@@ -750,7 +753,7 @@ const MediaDetail = () => {
               )}
             </Wrapper>
           )}
-        </Modal>
+        </Modal> */}
       </ClientLayout>
     </>
   );

@@ -185,7 +185,7 @@ const Login = () => {
                         { required: true, message: "아이디를 입력해주세요." },
                       ]}
                     >
-                      <LoginInput />
+                      <LoginInput placeholder="아이디를 입력해주세요." />
                     </Form.Item>
                   </LoginInputWrapper>
                 </LoginFormWrapper>
@@ -202,7 +202,10 @@ const Login = () => {
                         { required: true, message: "비밀번호를 입력해주세요." },
                       ]}
                     >
-                      <LoginInput type="password" />
+                      <LoginInput
+                        type="password"
+                        placeholder="비밀번호를 입력해주세요."
+                      />
                     </Form.Item>
                   </LoginInputWrapper>
                 </LoginFormWrapper>

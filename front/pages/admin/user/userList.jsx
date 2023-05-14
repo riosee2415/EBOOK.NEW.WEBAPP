@@ -10,6 +10,7 @@ import {
   UPDATE_MODAL_OPEN_REQUEST,
   USERLIST_REQUEST,
   USERLIST_UPDATE_REQUEST,
+  USER_ADMIN_DELETE_REQUEST,
   USER_ALL_LIST_REQUEST,
 } from "../../../reducers/user";
 import {
@@ -38,6 +39,7 @@ import {
   SearchFormItem,
   SettingBtn,
   ModalBtn,
+  DelBtn,
 } from "../../../components/commonComponents";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -197,6 +199,10 @@ const UserList = ({}) => {
     st_adminUpdateLoading,
     st_adminUpdateDone,
     st_adminUpdateError,
+    //
+    st_userAdminDeleteLoading,
+    st_userAdminDeleteDone,
+    st_userAdminDeleteError,
   } = useSelector((state) => state.user);
 
   const {
@@ -399,6 +405,28 @@ const UserList = ({}) => {
       });
     }
   }, [boughtAdminId]);
+
+  // 회원정보 삭제
+  useEffect(() => {
+    if (st_userAdminDeleteDone) {
+      dispatch({
+        type: USERLIST_REQUEST,
+        data: {
+          searchData: sData,
+          searchLevel: currentTab,
+          searchReviewType: reviewWriteType,
+          page: currentPage,
+          keyword: sKeyword,
+        },
+      });
+
+      return message.success("회원 정보가 삭제되었습니다.");
+    }
+
+    if (st_userAdminDeleteError) {
+      return message.error(st_userAdminDeleteError);
+    }
+  }, [st_userAdminDeleteDone, st_userAdminDeleteError]);
 
   // 수강권 생성
   useEffect(() => {
@@ -666,6 +694,23 @@ const UserList = ({}) => {
     });
   }, [me]);
 
+  // 관리자 회원 삭제
+  const userAdminDeleteHandler = useCallback(
+    (data) => {
+      if (st_userAdminDeleteLoading) {
+        return message.info("실행중입니다.");
+      }
+
+      dispatch({
+        type: USER_ADMIN_DELETE_REQUEST,
+        data: {
+          id: data.id,
+        },
+      });
+    },
+    [st_userAdminDeleteLoading]
+  );
+
   const content = (
     <PopWrapper>
       {sameDepth.map((data) => {
@@ -762,8 +807,27 @@ const UserList = ({}) => {
       title: "상세정보",
       render: (data) => <SnippetsBtn onClick={() => dModalToggle(data)} />,
     },
+    {
+      align: `center`,
+      title: "삭제하기",
+      render: (data) => (
+        <Popconfirm
+          placement="topRight"
+          title={
+            <Wrapper al={`flex-start`}>
+              <Text>정말 삭제하시겠습니까?</Text>
+              <Text>삭제 후 되돌릴 수 없습니다.</Text>
+            </Wrapper>
+          }
+          onConfirm={() => userAdminDeleteHandler(data)}
+          okText="삭제"
+          cancelText="취소"
+        >
+          <DelBtn />
+        </Popconfirm>
+      ),
+    },
   ];
-
   const columns2 = [
     {
       width: `15%`,
