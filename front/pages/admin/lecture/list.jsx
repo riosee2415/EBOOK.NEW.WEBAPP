@@ -277,6 +277,7 @@ const List = ({}) => {
         bookNotEtc: record.bookNotEtc,
         isBookPay: record.isBookPay,
         isBookNoPay: record.isBookNoPay,
+        sort: record.sort,
       });
     },
     [currentData]
@@ -322,6 +323,7 @@ const List = ({}) => {
           bookNotEtc: data.bookNotEtc,
           isBookPay: data.isBookPay,
           isBookNoPay: data.isBookNoPay,
+          sort: data.sort,
         },
       });
     },
@@ -542,7 +544,7 @@ const List = ({}) => {
                 >
                   <Input size="small" />
                 </Form.Item>
-                <Form.Item label="부제목" name="subTitle">
+                <Form.Item label="구매페이지용 제목" name="subTitle">
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item
@@ -615,6 +617,14 @@ const List = ({}) => {
                     checked={isHidden}
                     onChange={isHiddenToggle}
                   />
+                </Form.Item>
+
+                <Form.Item
+                  label="순서"
+                  name="sort"
+                  rules={[{ required: true, message: "순서는 필수 입니다." }]}
+                >
+                  <Input size="small" type="number" />
                 </Form.Item>
 
                 <Wrapper dr={`row`} ju="flex-end">

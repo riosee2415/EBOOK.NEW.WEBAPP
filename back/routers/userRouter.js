@@ -58,7 +58,8 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
             ELSE DATE_FORMAT(A.previousCreatedAt, "%Y년 %m월 %d일")
           END                                       AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
-		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
+		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt,
+          isBlack
     FROM	users         A
    WHERE  isExit = FALSE
    ORDER	BY num DESC
@@ -191,7 +192,8 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
             ELSE DATE_FORMAT(A.previousCreatedAt, "%Y년 %m월 %d일")
           END                                       AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
-		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt
+		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt,
+          isBlack
     FROM	users         A
    WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
           ${_keyword ? `AND  keyword = "${_keyword}"` : ""}
@@ -578,7 +580,8 @@ router.get("/signin", async (req, res, next) => {
               A.menuRight5,
               A.menuRight6,
               A.menuRight7,
-              A.menuRight8
+              A.menuRight8,
+              A.isBlack
         FROM  users			A
        WHERE  A.id = ${req.user.id}
       `;
@@ -640,7 +643,8 @@ router.post("/signin", (req, res, next) => {
               A.menuRight5,
               A.menuRight6,
               A.menuRight7,
-              A.menuRight8
+              A.menuRight8,
+              A.isBlack
         FROM  users			A
        WHERE  A.id = ${user.id}
       `;
@@ -799,7 +803,8 @@ router.post("/signup", async (req, res, next) => {
                 A.menuRight5,
                 A.menuRight6,
                 A.menuRight7,
-                A.menuRight8
+                A.menuRight8,
+                A.isBlack
           FROM  users			A
          WHERE  A.id = ${insertResult[0]}
         `;
@@ -1474,6 +1479,38 @@ router.post("/admin/delete", isAdminCheck, async (req, res, next) => {
     }
 
     await models.sequelize.query(delQ);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("회원을 삭제할 수 없습니다.");
+  }
+});
+
+router.post("/admin/isBlack", isAdminCheck, async (req, res, next) => {
+  const { id, isBlack } = req.body;
+
+  const findQ = `
+    SELECT  id
+      FROM  users
+     WHERE  id = ${id}
+    `;
+
+  const blackQ = `
+  UPDATE  users
+     SEt  isBlack = ${isBlack},
+          updatedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    const find = await models.sequelize.query(findQ);
+
+    if (find[0].length === 0) {
+      return res.status(401).send("존재하지 않는 회원입니다.");
+    }
+
+    await models.sequelize.query(blackQ);
 
     return res.status(200).json({ result: true });
   } catch (e) {

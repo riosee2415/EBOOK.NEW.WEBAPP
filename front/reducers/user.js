@@ -111,6 +111,10 @@ export const initailState = {
   st_userAdminDeleteLoading: false, // 관리자 회원 삭제
   st_userAdminDeleteDone: false,
   st_userAdminDeleteError: null,
+  //
+  st_userAdminIsBlackLoading: false, // 관리자 회원 블랙리스트
+  st_userAdminIsBlackDone: false,
+  st_userAdminIsBlackError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -216,6 +220,10 @@ export const USER_ALL_LIST_FAILURE = "USER_ALL_LIST_FAILURE";
 export const USER_ADMIN_DELETE_REQUEST = "USER_ADMIN_DELETE_REQUEST";
 export const USER_ADMIN_DELETE_SUCCESS = "USER_ADMIN_DELETE_SUCCESS";
 export const USER_ADMIN_DELETE_FAILURE = "USER_ADMIN_DELETE_FAILURE";
+//
+export const USER_ADMIN_ISBLACK_REQUEST = "USER_ADMIN_ISBLACK_REQUEST";
+export const USER_ADMIN_ISBLACK_SUCCESS = "USER_ADMIN_ISBLACK_SUCCESS";
+export const USER_ADMIN_ISBLACK_FAILURE = "USER_ADMIN_ISBLACK_FAILURE";
 
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
@@ -758,6 +766,26 @@ const reducer = (state = initailState, action) =>
         draft.st_userAdminDeleteLoading = false;
         draft.st_userAdminDeleteDone = false;
         draft.st_userAdminDeleteError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case USER_ADMIN_ISBLACK_REQUEST: {
+        draft.st_userAdminIsBlackLoading = true;
+        draft.st_userAdminIsBlackDone = false;
+        draft.st_userAdminIsBlackError = null;
+        break;
+      }
+      case USER_ADMIN_ISBLACK_SUCCESS: {
+        draft.st_userAdminIsBlackLoading = false;
+        draft.st_userAdminIsBlackDone = true;
+        draft.st_userAdminIsBlackError = null;
+        break;
+      }
+      case USER_ADMIN_ISBLACK_FAILURE: {
+        draft.st_userAdminIsBlackLoading = false;
+        draft.st_userAdminIsBlackDone = false;
+        draft.st_userAdminIsBlackError = action.error;
         break;
       }
       //////////////////////////////////////////////

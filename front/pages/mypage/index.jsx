@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import { LOAD_MY_INFO_REQUEST, LOGOUT_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../../store/configureStore";
@@ -84,6 +84,14 @@ const MypageIndex = ({}) => {
     if (!me) {
       message.error("로그인 후 이용해주세요.");
       return router.push("/user/login");
+    } else {
+      if (me.isBlack) {
+        dispatch({
+          type: LOGOUT_REQUEST,
+        });
+
+        return message.error("차단된 계정입니다. 고객센터 문의부탁드립니다.");
+      }
     }
   }, [me]);
 

@@ -81,6 +81,12 @@ module.exports = class Lecture extends Model {
           type: DataTypes.DATE,
           allowNull: true,
         },
+
+        sort: {
+          type: DataTypes.INTEGER, // 순서
+          defaultValue: 1,
+          allowNull: false,
+        },
       },
       {
         modelName: "Lecture",

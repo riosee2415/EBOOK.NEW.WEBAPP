@@ -23,6 +23,12 @@ module.exports = () => {
             });
           }
 
+          if (user.isBlack) {
+            return done(null, false, {
+              reason: "차단된 계정입니다. 고객센터 문의부탁드립니다.",
+            });
+          }
+
           // const result = await bcrypt.compare(password, user.password);
 
           let cipher = crypto.createHash("sha512");

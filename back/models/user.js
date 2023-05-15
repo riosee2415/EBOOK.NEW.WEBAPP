@@ -217,6 +217,12 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(300),
           allowNull: true,
         },
+
+        isBlack: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
       },
       {
         modelName: "User",

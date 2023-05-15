@@ -11,6 +11,7 @@ import {
   USERLIST_REQUEST,
   USERLIST_UPDATE_REQUEST,
   USER_ADMIN_DELETE_REQUEST,
+  USER_ADMIN_ISBLACK_REQUEST,
   USER_ALL_LIST_REQUEST,
 } from "../../../reducers/user";
 import {
@@ -203,6 +204,10 @@ const UserList = ({}) => {
     st_userAdminDeleteLoading,
     st_userAdminDeleteDone,
     st_userAdminDeleteError,
+    //
+    st_userAdminIsBlackLoading,
+    st_userAdminIsBlackDone,
+    st_userAdminIsBlackError,
   } = useSelector((state) => state.user);
 
   const {
@@ -428,6 +433,28 @@ const UserList = ({}) => {
     }
   }, [st_userAdminDeleteDone, st_userAdminDeleteError]);
 
+  // 회원정보 삭제
+  useEffect(() => {
+    if (st_userAdminIsBlackDone) {
+      dispatch({
+        type: USERLIST_REQUEST,
+        data: {
+          searchData: sData,
+          searchLevel: currentTab,
+          searchReviewType: reviewWriteType,
+          page: currentPage,
+          keyword: sKeyword,
+        },
+      });
+
+      return message.success("블랙리스트가 수정되었습니다.");
+    }
+
+    if (st_userAdminIsBlackError) {
+      return message.error(st_userAdminIsBlackError);
+    }
+  }, [st_userAdminIsBlackDone, st_userAdminIsBlackError]);
+
   // 수강권 생성
   useEffect(() => {
     if (st_boughtAdminCreateDone) {
@@ -525,6 +552,7 @@ const UserList = ({}) => {
           zoneCode: data.zoneCode,
           address: data.address,
           detailAddress: data.detailAddress,
+          isBlack: data.isBlack,
         });
 
         dispatch({
@@ -710,6 +738,21 @@ const UserList = ({}) => {
     },
     [st_userAdminDeleteLoading]
   );
+
+  // 관리자 블랙리스트 수정
+  const isBlackChangeHandler = useCallback(() => {
+    if (!dData) {
+      return message.info("잠시 후 다시 시도해주세요.");
+    }
+
+    dispatch({
+      type: USER_ADMIN_ISBLACK_REQUEST,
+      data: {
+        id: dData.id,
+        isBlack: !dData.isBlack,
+      },
+    });
+  }, [dData]);
 
   const content = (
     <PopWrapper>
@@ -1287,7 +1330,7 @@ const UserList = ({}) => {
                 </Button>
               </Wrapper>
 
-              <Wrapper dr={`row`} ju={`flex-end`}>
+              <Wrapper dr={`row`} ju={`flex-end`} margin={`0 0 23px`}>
                 {/* <ModalBtn size="small" type="danger">
                   삭제
                 </ModalBtn> */}
@@ -1300,6 +1343,18 @@ const UserList = ({}) => {
                   키워드 & 상담 저장
                 </ModalBtn>
               </Wrapper>
+
+              <Form.Item
+                name="isBlack"
+                label={"블랙리스트"}
+                valuePropName="checked"
+              >
+                <Switch
+                  size="small"
+                  onChange={isBlackChangeHandler}
+                  loading={st_userAdminIsBlackLoading}
+                />
+              </Form.Item>
             </CustomForm>
           </Wrapper>
           <Wrapper width={`1px`} height={`800px`} bgColor={Theme.lightGrey_C} />

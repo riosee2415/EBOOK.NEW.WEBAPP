@@ -98,12 +98,14 @@ router.post("/list", async (req, res, next) => {
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
           isBookPay,
-          isBookNoPay
+          isBookNoPay,
+          sort
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
      AND  isHidden = TRUE
      AND  type IN (${searchType.map((data) => data)})
+   ORDER  BY sort ASC
 `;
 
   try {
@@ -152,11 +154,13 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
           isBookPay,
-          isBookNoPay
+          isBookNoPay,
+          sort
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
           ${_searchType === 7 ? `` : `AND  type = ${_searchType}`}
+   ORDER  BY sort ASC
 `;
 
   try {
@@ -214,7 +218,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           DATE_FORMAT(updatedAt, '%Y년 %m월 %d일')       AS viewUpdatedAt,
           bookNotEtc,
           isBookPay,
-          isBookNoPay
+          isBookNoPay,
+          sort
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -290,6 +295,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     bookNotEtc,
     isBookPay,
     isBookNoPay,
+    sort,
   } = req.body;
 
   const updateQ = `
@@ -307,7 +313,8 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
           bookNotEtc = ${bookNotEtc ? `"${bookNotEtc}"` : "NULL"},
           isBookPay = ${isBookPay},
           isBookNoPay = ${isBookNoPay},
-          updatedAt = NOW()
+          updatedAt = NOW(),
+          sort = ${sort}
    WHERE  id = ${id}
   `;
 

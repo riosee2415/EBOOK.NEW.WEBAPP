@@ -105,6 +105,10 @@ import {
   USER_ADMIN_DELETE_SUCCESS,
   USER_ADMIN_DELETE_FAILURE,
   /////////////////////////////
+  USER_ADMIN_ISBLACK_REQUEST,
+  USER_ADMIN_ISBLACK_SUCCESS,
+  USER_ADMIN_ISBLACK_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -801,6 +805,33 @@ function* userAdminDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userAdminIsBlackAPI(data) {
+  return await axios.post(`/api/user/admin/isBlack`, data);
+}
+
+function* userAdminIsBlack(action) {
+  try {
+    const result = yield call(userAdminIsBlackAPI, action.data);
+
+    yield put({
+      type: USER_ADMIN_ISBLACK_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_ADMIN_ISBLACK_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -907,6 +938,10 @@ function* watchUserAdminDelete() {
   yield takeLatest(USER_ADMIN_DELETE_REQUEST, userAdminDelete);
 }
 
+function* watchUserAdminIsBlack() {
+  yield takeLatest(USER_ADMIN_ISBLACK_REQUEST, userAdminIsBlack);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -936,6 +971,7 @@ export default function* userSaga() {
     fork(watchAdminBanner),
     fork(watchUserAllList),
     fork(watchUserAdminDelete),
+    fork(watchUserAdminIsBlack),
     //
   ]);
 }
