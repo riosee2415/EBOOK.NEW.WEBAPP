@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_ADMINMENU_STATUS } from "../../reducers/user";
 import { Wrapper, Image } from "../commonComponents";
-import Link from "next/dist/client/link";
+import Link from "next/link";
 
 const { SubMenu } = Menu;
 
@@ -211,9 +211,7 @@ const AdminMenu = () => {
                 return (
                   <Menu.Item key={value.link}>
                     <Link href={value.link}>
-                      <a>
-                        <MenuName>{value.name}</MenuName>
-                      </a>
+                      <MenuName>{value.name}</MenuName>
                     </Link>
                   </Menu.Item>
                 );

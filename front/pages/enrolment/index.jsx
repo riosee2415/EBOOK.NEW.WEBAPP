@@ -223,26 +223,47 @@ const Home = ({}) => {
                             al={`flex-end`}
                             margin={width < 800 ? `10px 0` : `33px 0 10px`}
                           >
-                            <Text
-                              fontSize={`38px`}
-                              fontWeight={`600`}
-                              lineHeight={`1`}
-                              margin={`0 6px 0 0`}
-                            >
-                              월&nbsp;
-                              {data.discountPrice
-                                ? numberWithCommas(
-                                    parseInt(
-                                      data.discountPrice / (12 * data.type)
-                                    )
-                                  )
-                                : numberWithCommas(
-                                    parseInt(data.price / (12 * data.type))
-                                  )}
-                            </Text>
-                            <Text fontSize={`22px`} color={Theme.darkGrey2_C}>
-                              {data.installmentText}
-                            </Text>
+                            {data.installmentText &&
+                              data.installmentText.trim().length > 0 && (
+                                <>
+                                  <Text
+                                    fontSize={`38px`}
+                                    fontWeight={`600`}
+                                    lineHeight={`1`}
+                                    margin={`0 6px 0 0`}
+                                  >
+                                    월&nbsp;
+                                    {data.type === 1 ||
+                                    data.type === 2 ||
+                                    data.type === 3
+                                      ? data.discountPrice
+                                        ? numberWithCommas(
+                                            parseInt(
+                                              data.discountPrice /
+                                                (12 * data.type)
+                                            )
+                                          )
+                                        : numberWithCommas(
+                                            parseInt(
+                                              data.price / (12 * data.type)
+                                            )
+                                          )
+                                      : data.discountPrice
+                                      ? numberWithCommas(
+                                          parseInt(data.discountPrice / 12)
+                                        )
+                                      : numberWithCommas(
+                                          parseInt(data.price / 12)
+                                        )}
+                                  </Text>
+                                  <Text
+                                    fontSize={`22px`}
+                                    color={Theme.darkGrey2_C}
+                                  >
+                                    {data.installmentText}
+                                  </Text>
+                                </>
+                              )}
                             {/* {data.type &&
                               (data.type === 1 ||
                                 data.type === 2 ||
