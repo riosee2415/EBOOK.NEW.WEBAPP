@@ -463,14 +463,16 @@ const Media = ({}) => {
         type: MEDIA_CREATE_REQUEST,
         data: {
           type: data.type,
-          title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
+          title: data.title.replace(/\'/gi, `''`).replace(/\"/gi, `""`),
           mediaOriginName: data.mediaOriginName
-            ? data.mediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
+            ? data.mediaOriginName.replace(/\'/gi, `''`).replace(/\"/gi, `""`)
             : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
           sampleMediaOriginName: data.sampleMediaOriginName
-            ? data.sampleMediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
+            ? data.sampleMediaOriginName
+                .replace(/\'/gi, `''`)
+                .replace(/\"/gi, `""`)
             : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
@@ -489,19 +491,23 @@ const Media = ({}) => {
         data: {
           id: currentData.id,
           type: data.type,
-          title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
+          title: data.title.replace(/\'/gi, `''`).replace(/\"/gi, `""`),
           mediaOriginName: data.mediaOriginName
-            ? data.mediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
+            ? data.mediaOriginName.replace(/\'/gi, `''`).replace(/\"/gi, `""`)
             : null,
           mediaPath: mediaPath,
           duration: mediaDuration,
           sampleMediaOriginName: data.sampleMediaOriginName
-            ? data.sampleMediaOriginName.replace(/\'/gi, `''`, /\"/gi, `""`)
+            ? data.sampleMediaOriginName
+                .replace(/\'/gi, `''`)
+                .replace(/\"/gi, `""`)
             : null,
           sampleMediaPath: media2Path,
           sampleDuration: media2Duration,
           isSample: data.isSample ? 1 : 0,
-          etc: data.etc.replace(/\'/gi, `''`, /\"/gi, `""`),
+          etc: data.etc
+            ? data.etc.replace(/\'/gi, `''`).replace(/\"/gi, `""`)
+            : null,
         },
       });
     },

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { CURRENT_ADMINMENU_STATUS } from "../../reducers/user";
 import { Wrapper, Image } from "../commonComponents";
+import Link from "next/dist/client/link";
 
 const { SubMenu } = Menu;
 
@@ -27,16 +28,22 @@ const AdminMenu = () => {
 
   const [mode, setMode] = useState(`dark`);
 
+  const [curentMenu, setCurrentMenu] = useState(null);
+
   const openAction = useCallback(
     (e) => {
-      dispatch({
-        type: CURRENT_ADMINMENU_STATUS,
-        data: {
-          key: e[1],
-        },
-      });
+      setCurrentMenu(e[1]);
+      // dispatch({
+      //   type: CURRENT_ADMINMENU_STATUS,
+      //   data: {
+      //     key: e[1],
+      //   },
+      // });
     },
-    [currentAdminMenu]
+    [
+      curentMenu,
+      // currentAdminMenu
+    ]
   );
 
   const clickAction = useCallback((e) => {
@@ -158,10 +165,11 @@ const AdminMenu = () => {
       <Menu
         ref={menuRef}
         theme={mode}
+        multiple={false}
         onOpenChange={openAction}
-        onClick={clickAction}
+        // onClick={clickAction}
         style={{ width: `100%`, height: `100%`, overflow: `auto` }}
-        openKeys={[currentAdminMenu]}
+        openKeys={[curentMenu]}
         mode="inline"
         selectedKeys={router.pathname}
         disabled={false}
@@ -202,7 +210,11 @@ const AdminMenu = () => {
               {data.subMenu.map((value) => {
                 return (
                   <Menu.Item key={value.link}>
-                    <MenuName>{value.name}</MenuName>
+                    <Link href={value.link}>
+                      <a>
+                        <MenuName>{value.name}</MenuName>
+                      </a>
+                    </Link>
                   </Menu.Item>
                 );
               })}

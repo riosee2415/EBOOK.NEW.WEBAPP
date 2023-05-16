@@ -267,6 +267,7 @@ const List = ({}) => {
         type: record.type,
         title: record.title,
         subTitle: record.subTitle,
+        installmentText: record.installmentText,
         price: record.price,
         discountPrice: record.discountPrice,
         bookPrice: record.bookPrice,
@@ -312,6 +313,7 @@ const List = ({}) => {
           thumbnail: thumbnailPath,
           title: data.title,
           subTitle: data.subTitle,
+          installmentText: data.installmentText,
           price: data.price,
           discountPrice: data.discountPrice,
           bookPrice: data.bookPrice,
@@ -544,7 +546,10 @@ const List = ({}) => {
                 >
                   <Input size="small" />
                 </Form.Item>
-                <Form.Item label="구매페이지용 제목" name="subTitle">
+                <Form.Item label="구매페이지 제목" name="subTitle">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="할부내용" name="installmentText">
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item

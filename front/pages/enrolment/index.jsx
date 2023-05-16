@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
-import useInput from "../../hooks/useInput";
 import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../../store/configureStore";
@@ -16,10 +15,7 @@ import {
 } from "../../components/commonComponents";
 import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
-import styled from "styled-components";
 import Head from "next/head";
-import Popup from "../../components/popup/popup";
-import { BANNER_LIST_REQUEST } from "../../reducers/banner";
 import { Empty, message } from "antd";
 import { LECTURE_LIST_REQUEST } from "../../reducers/lecture";
 import { useRouter } from "next/router";
@@ -70,15 +66,6 @@ const Home = ({}) => {
               margin={width < 800 ? `40px 0` : `100px 0 `}
               padding={width < 1280 ? `0` : `0 210px`}
             >
-              {/* <Wrapper al={`flex-start`}>
-              <Text fontSize={width < 800 ? `26px` : `32px`} fontWeight={`800`}>
-                수강신청
-              </Text>
-              <Text fontSize={`16px`} color={Theme.grey4_C}>
-                원하시는 수강기간을 선택해주세요.
-              </Text>
-            </Wrapper> */}
-              {/* PRODUCT WRAPPER */}
               <Wrapper al={`flex-start`}>
                 <Text
                   color={Theme.grey5_C}
@@ -236,7 +223,27 @@ const Home = ({}) => {
                             al={`flex-end`}
                             margin={width < 800 ? `10px 0` : `33px 0 10px`}
                           >
-                            {data.type &&
+                            <Text
+                              fontSize={`38px`}
+                              fontWeight={`600`}
+                              lineHeight={`1`}
+                              margin={`0 6px 0 0`}
+                            >
+                              월&nbsp;
+                              {data.discountPrice
+                                ? numberWithCommas(
+                                    parseInt(
+                                      data.discountPrice / (12 * data.type)
+                                    )
+                                  )
+                                : numberWithCommas(
+                                    parseInt(data.price / (12 * data.type))
+                                  )}
+                            </Text>
+                            <Text fontSize={`22px`} color={Theme.darkGrey2_C}>
+                              {data.installmentText}
+                            </Text>
+                            {/* {data.type &&
                               (data.type === 1 ||
                                 data.type === 2 ||
                                 data.type === 3) && (
@@ -268,7 +275,7 @@ const Home = ({}) => {
                                     원/{data.viewFrontType} 무이자 시
                                   </Text>
                                 </>
-                              )}
+                              )} */}
                           </Wrapper>
 
                           <CommonButton
