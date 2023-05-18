@@ -201,6 +201,7 @@ router.post("/all/list", async (req, res, next) => {
             sampleMediaPath,
             sampleDuration,
             isSample,
+            previousId,
             sort,
             createdAt,
             DATE_FORMAT(createdAt, '%Y년 %m월 %d일')       AS viewCreatedAt,
