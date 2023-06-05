@@ -403,6 +403,8 @@ const Home = ({}) => {
 
       // console.log(paypalPay);
 
+      IMP.init("imp20437848");
+
       if (isBuyType === "nobank") {
         // 무통장입금
         // 무통장입금
