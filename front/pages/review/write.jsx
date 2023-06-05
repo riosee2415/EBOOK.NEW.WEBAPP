@@ -69,7 +69,7 @@ const ReviewWrite = ({}) => {
   }, [me]);
 
   useEffect(() => {
-    if (boughtMeDetail) {
+    if (!boughtMeDetail) {
       router.push("/review");
       return message.error("구매한 강의가 없습니다.");
     }

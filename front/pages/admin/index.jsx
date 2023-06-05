@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Input, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import AdminLayout from "../../components/AdminLayout";
@@ -14,6 +14,8 @@ import wrapper from "../../store/configureStore";
 import { END } from "redux-saga";
 import axios from "axios";
 
+// import { CSVLink } from "react-csv";
+
 const AdminHome = () => {
   const dispatch = useDispatch();
 
@@ -25,6 +27,8 @@ const AdminHome = () => {
 
   const inputId = useInput("");
   const inputPw = useInput("");
+
+  // const [xlsxData, setXlsxData] = useState(null);
 
   const onLoginHandler = () => {
     dispatch({
@@ -43,6 +47,40 @@ const AdminHome = () => {
     }
   }, [st_loginAdminError]);
 
+  // const readXlsxHandler = useCallback((e) => {
+  //   let input = e.target;
+  //   let reader = new FileReader();
+
+  //   reader.onload = function () {
+  //     let data = reader.result;
+  //     let workBook = XLSX.read(data, { type: "binary" });
+  //     workBook.SheetNames.forEach(function (sheetName) {
+  //       console.log("SheetName: " + sheetName);
+  //       let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+  //       let testArr = [];
+
+  //       rows.map((data) =>
+  //         JSON.parse(data.enjoyMedia).map((value) =>
+  //           testArr.push({
+  //             previousUserId: data._id,
+  //             previousMediaId: value.$oid,
+  //           })
+  //         )
+  //       );
+  //       console.log(testArr);
+
+  //       setXlsxData(testArr);
+  //     });
+  //   };
+
+  //   reader.readAsBinaryString(input.files[0]);
+  // }, []);
+
+  // const headers = [
+  //   { label: "previousUserId", key: "previousUserId" },
+  //   { label: "previousMediaId", key: "previousMediaId" },
+  // ];
+
   return (
     <>
       {me && me.level > 3 ? (
@@ -50,6 +88,12 @@ const AdminHome = () => {
       ) : (
         <>
           <Wrapper dr={`row`} height={`100vh`}>
+            {/* <input type="file" onChange={readXlsxHandler} />
+            {xlsxData && (
+              <CSVLink filename={`수강기록`} headers={headers} data={xlsxData}>
+                test
+              </CSVLink>
+            )} */}
             <Wrapper
               width={`50%`}
               height={`100%`}
