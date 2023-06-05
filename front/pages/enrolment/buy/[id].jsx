@@ -352,13 +352,15 @@ const Home = ({}) => {
       const IMP = window.IMP;
 
       const address = isOverseas
-        ? dataArr.find((value) => value.id === data.overAddress).title +
-          " / " +
-          (data.detailAddress ? data.detailAddress : "") +
-          " " +
-          (data.detailAddress2 ? data.detailAddress2 : "") +
-          " " +
-          (data.detailAddress3 ? data.detailAddress3 : "")
+        ? isBuyBook === 1
+          ? dataArr.find((value) => value.id === data.overAddress).title +
+            " / " +
+            (data.detailAddress ? data.detailAddress : "") +
+            " " +
+            (data.detailAddress2 ? data.detailAddress2 : "") +
+            " " +
+            (data.detailAddress3 ? data.detailAddress3 : "")
+          : data.address
         : data.address;
 
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
