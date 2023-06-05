@@ -900,10 +900,14 @@ router.post("/me/update", isLoggedIn, async (req, res, next) => {
     // `;
     // const find = await models.sequelize.query(selectQ);
 
-    let cipher = crypto.createHash("sha512");
+    let hashedPassword = null;
 
-    cipher.update(password);
-    const hashedPassword = cipher.digest("hex");
+    if (password) {
+      let cipher = crypto.createHash("sha512");
+
+      cipher.update(password);
+      hashedPassword = cipher.digest("hex");
+    }
 
     // const result = await bcrypt.compare(password, exUser.password);
 
