@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { ACCEPT_LOG_CREATE_REQUEST } from "../reducers/accept";
 import wrapper from "../store/configureStore";
+import { LOGIN_REQUEST } from "../reducers/user";
 
 const Fourleaf = ({ Component }) => {
   const router = useRouter();
@@ -38,6 +39,22 @@ const Fourleaf = ({ Component }) => {
       } catch (error) {
         console.error(error);
       }
+    }
+  }, []);
+
+  useEffect(() => {
+    let localData = localStorage.getItem("ebook_login")
+      ? JSON.parse(localStorage.getItem("ebook_login"))
+      : null;
+
+    if (localData) {
+      dispatch({
+        type: LOGIN_REQUEST,
+        data: {
+          userId: localData.userId,
+          password: localData.password,
+        },
+      });
     }
   }, []);
 

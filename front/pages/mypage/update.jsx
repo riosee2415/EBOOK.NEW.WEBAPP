@@ -50,12 +50,18 @@ const Home = ({}) => {
 
   const [aModal, setAModal] = useState(false);
 
+  const [localData, setLocalData] = useState(null);
+
   ////// REDUX //////
   ////// USEEFFECT //////
 
   useEffect(() => {
     if (st_meUpdateDone) {
       message.success("내 정보가 수정되었습니다.");
+
+      if (localData && localData.password) {
+        localStorage.setItem("ebook_login", JSON.stringify(localData));
+      }
       return router.push("/mypage");
     }
 
@@ -102,6 +108,11 @@ const Home = ({}) => {
       if (data.password && data.password !== data.rePassword) {
         return message.error("비밀번호가 같지 않습니다.");
       }
+
+      setLocalData({
+        userId: me.userId,
+        password: data.password,
+      });
 
       dispatch({
         type: ME_UPDATE_REQUEST,

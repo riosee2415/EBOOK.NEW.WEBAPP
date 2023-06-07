@@ -146,6 +146,8 @@ const SignUp = () => {
   // 년도 배열
   const [year, setYear] = useState(null);
 
+  const [localData, setLocalData] = useState(null);
+
   ////// REDUX //////
   const {
     st_signUpLoading,
@@ -163,6 +165,8 @@ const SignUp = () => {
   useEffect(() => {
     if (st_signUpDone) {
       setSelectTab(3);
+
+      localStorage.setItem("ebook_login", JSON.stringify(localData));
     }
   }, [st_signUpDone]);
 
@@ -309,6 +313,11 @@ const SignUp = () => {
       if (data.userId.indexOf(" ") >= 0) {
         return message.info("아이디에 띄어쓰기는 사용 불가능합니다.");
       }
+
+      setLocalData({
+        userId: data.userId,
+        password: data.password,
+      });
 
       dispatch({
         type: SIGNUP_REQUEST,

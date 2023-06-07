@@ -148,6 +148,9 @@ const AppHeader = ({}) => {
       dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
+
+      localStorage.removeItem("ebook_login");
+
       return message.success("로그아웃 되었습니다.");
     }
 

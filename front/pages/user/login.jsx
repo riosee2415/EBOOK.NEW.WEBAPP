@@ -66,11 +66,16 @@ const Login = () => {
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [localData, setLocalData] = useState(null);
+
   ////// REDUX //////
   ////// USEEFFECT //////
 
   useEffect(() => {
     if (st_loginDone) {
+      localStorage.setItem("ebook_login", JSON.stringify(localData));
+
       router.push("/");
       return message.success("로그인되었습니다.");
     }
@@ -87,15 +92,19 @@ const Login = () => {
     router.push(link);
   }, []);
 
-  const loginHandler = useCallback((data) => {
-    dispatch({
-      type: LOGIN_REQUEST,
-      data: {
-        userId: data.userId,
-        password: data.password,
-      },
-    });
-  }, []);
+  const loginHandler = useCallback(
+    (data) => {
+      setLocalData(data);
+      dispatch({
+        type: LOGIN_REQUEST,
+        data: {
+          userId: data.userId,
+          password: data.password,
+        },
+      });
+    },
+    [localData]
+  );
   ////// DATAVIEW //////
 
   return (
