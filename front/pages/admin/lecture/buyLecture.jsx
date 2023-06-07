@@ -202,7 +202,7 @@ const BuyLecture = ({}) => {
             type: data.payType,
             complete: data.isPay
               ? "처리 완료"
-              : data.payType === "무통장입금"
+              : data.payType === "nobank"
               ? "처리"
               : "처리 완료",
           });
@@ -228,7 +228,7 @@ const BuyLecture = ({}) => {
             type: data.viewPayType,
             complete: data.isPay
               ? "처리 완료"
-              : data.payType === "무통장입금"
+              : data.payType === "nobank"
               ? "처리 필요"
               : "처리 완료",
           });
