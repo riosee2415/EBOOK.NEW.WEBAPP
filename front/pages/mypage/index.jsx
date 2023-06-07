@@ -134,7 +134,7 @@ const MypageIndex = ({}) => {
           if (data) {
             window.scrollTo(0, data.offsetTop + 300);
           }
-        }, 0);
+        }, 10000);
 
         setCurrentPage(parseInt(page));
       } else {
