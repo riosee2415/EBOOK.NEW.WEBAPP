@@ -126,13 +126,15 @@ const MypageIndex = ({}) => {
     (type) => {
       if (type.search) {
         const data = document.getElementById(
-          `lecture-${parseInt(type.search) % 50}`
+          `lecture-${parseInt(type.search - 1) % 50}`
         );
-        let page = Math.ceil(parseInt(type.search) / 50);
+        let page = Math.ceil(parseInt(type.search - 1) / 50);
 
-        if (data) {
-          window.scrollTo(0, data.offsetTop - 300);
-        }
+        setTimeout(() => {
+          if (data) {
+            window.scrollTo(0, data.offsetTop + 300);
+          }
+        }, 0);
 
         setCurrentPage(parseInt(page));
       } else {
