@@ -1307,8 +1307,8 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
     } else if (parseInt(type) === 5) {
       const updateQ = `
         UPDATE  users
-           SET  keyword = "${keyword}",
-                consulting = "${consulting}",
+           SET  keyword = ${keyword ? `"${keyword}"` : `NULL`},
+                consulting = ${consulting ? `"${consulting}"` : `NULL`},
                 updatedAt = NOW()
          WHERE  id = ${id}
         `;

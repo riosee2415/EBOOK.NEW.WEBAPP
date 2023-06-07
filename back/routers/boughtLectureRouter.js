@@ -296,7 +296,7 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
 
   const YEAR =
     lectureType === 4
-      ? `"9999-12-31"`
+      ? `"9999-12-31 23:59:00"`
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 
   const insertQ = `
@@ -356,7 +356,9 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
   const updateQ = `
   UPDATE  boughtLecture
      SET  startDate = "${startDate}",
-          endDate = "${endDate}",
+          endDate = ${
+            lectureType === 4 ? `"9999-12-31 23:59:00"` : `"${endDate}"`
+          },
           lectureType = ${lectureType},
           pauseDate = ${pauseDate ? `"${pauseDate}"` : null}
    WHERE  id = ${id}
