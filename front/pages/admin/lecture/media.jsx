@@ -561,18 +561,23 @@ const Media = ({}) => {
 
   const columns = [
     {
+      width: "10%",
+      align: "center",
       title: "번호",
       dataIndex: "num",
     },
     {
+      width: "35%",
       title: "강의이름",
       dataIndex: "title",
     },
     {
+      width: "15%",
+      align: "center",
       title: "우선순위",
       render: (data) => {
         return (
-          <Wrapper dr="row" ju="flex-start" al="center">
+          <Wrapper dr="row" al="center">
             <UpBtn onClick={() => sortUpdateHandler(data, data.sort + 1)} />
             <SortView>{data.sort}</SortView>
             <DownBtn onClick={() => sortUpdateHandler(data, data.sort - 1)} />
@@ -581,6 +586,8 @@ const Media = ({}) => {
       },
     },
     {
+      width: "10%",
+      align: "center",
       title: "메모여부",
       render: (data) => {
         return data.etc ? (
@@ -591,10 +598,13 @@ const Media = ({}) => {
       },
     },
     {
+      width: "20%",
       title: "생성일",
       dataIndex: "viewCreatedAt",
     },
     {
+      width: "10%",
+      align: "center",
       title: "상태창",
       render: (data) => (
         <ViewStatusIcon
@@ -826,7 +836,7 @@ const Media = ({}) => {
                       id={`video-js`}
                       controls={true}
                       width={`700px`}
-                      src={mediaPath}
+                      src={mediaPath.replace(/\"/gi, "")}
                     />
                   </Wrapper>
                 )}

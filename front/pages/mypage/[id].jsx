@@ -366,8 +366,8 @@ const MediaDetail = () => {
                     ref={videoRef}
                     src={
                       router.query.isSample === "1"
-                        ? mediaDetail.sampleMediaPath
-                        : mediaDetail.mediaPath
+                        ? mediaDetail.sampleMediaPath.replace(/\"/gi, "")
+                        : mediaDetail.mediaPath.replace(/\"/gi, "")
                     }
                     onPlay={
                       router.query.isSample === "0"
