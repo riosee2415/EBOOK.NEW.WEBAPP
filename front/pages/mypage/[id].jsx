@@ -422,7 +422,7 @@ const MediaDetail = () => {
                             );
                           }}
                           width={width < 700 ? `15px` : `25px`}
-                          src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Fmyclass_modify%2Ficon_next.png?alt=media&token=bae734f2-0537-4d4a-b4bd-92bedb0e56e6`}
+                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/icon_next.png`}
                         />
                       </Wrapper>
                     )}

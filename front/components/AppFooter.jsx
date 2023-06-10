@@ -567,7 +567,7 @@ o	② 환불 의사표시에 대하여 회사가 회신한 날로 부터 영업�
             <Image
               margin={`10px 0`}
               width={width < 700 ? `100%` : `40%`}
-              src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2FMM07%2F%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.png?alt=media&token=c8a13ea4-e42a-4dc0-abd0-8fd1cca1efb1`}
+              src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.png`}
             />
 
             <PreText>

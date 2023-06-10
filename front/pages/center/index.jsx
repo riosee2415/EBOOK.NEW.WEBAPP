@@ -282,13 +282,14 @@ const Home = ({}) => {
                 >
                   <KakaoBtn>
                     <Image
-                      width={width < 700 ? `30px` : `50px`}
+                      width={width < 700 ? `30px` : `30px`}
                       margin={width < 700 ? `0 5px 0 0` : `0 0 0 0`}
-                      src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Fconsulting_modify%2Ficon_kakao.png?alt=media&token=f356fc4d-625a-4942-aa14-fedacb37e9b5`}
+                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%91%E1%85%A2%E1%84%89%E1%85%B3+8.png`}
                     />
                     <Text
                       fontSize={width < 700 ? `20px !important` : `32px`}
                       fontWeight={`600`}
+                      margin={`0 0 0 10px`}
                     >
                       1:1 카카오톡 상담 바로가기
                     </Text>

@@ -64,7 +64,7 @@ const NobankFinish = () => {
               <Image
                 width={`300px`}
                 margin={`0 10px 0 0`}
-                src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2Flogo%2Fp2.png?alt=media&token=9fa90b82-ccce-48f6-adfd-8129ec357fa8`}
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/p2.png`}
               />
 
               <Text

@@ -90,13 +90,13 @@ const FixedNav = ({}) => {
           moveLinkHandler("/enrolment");
         }}
         width={`100px`}
-        src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2FMM13%2F%EB%B3%B4%EB%9D%BC%EC%83%89.png?alt=media&token=c352c176-3ed7-46d2-bf4f-eae6d87b272d`}
+        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%87%E1%85%A9%E1%84%85%E1%85%A1%E1%84%89%E1%85%A2%E1%86%A8.png`}
       />
 
       <ATag target="_blank" href="http://pf.kakao.com/_zxhxaxdb/chat">
         <Image
           width={`100px`}
-          src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/E-BOOK3%2Fassets%2Fimages%2FMM13%2F%E1%84%8F%E1%85%A1%E1%84%8F%E1%85%A1%E1%84%8B%E1%85%A9%E1%84%90%E1%85%A9%E1%86%A82.png?alt=media&token=a505efd4-9648-4a49-a1c2-b608da60dc20`}
+          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%8F%E1%85%A1%E1%84%8F%E1%85%A1%E1%84%8B%E1%85%A9%E1%84%90%E1%85%A9%E1%86%A82.png`}
         />
       </ATag>
     </FixedWrapper>

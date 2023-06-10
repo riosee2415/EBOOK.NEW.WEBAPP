@@ -97,12 +97,12 @@ const AdminHome = () => {
             <Wrapper
               width={`50%`}
               height={`100%`}
-              bgImg={`url("https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/4leaf%2F5137894.jpg?alt=media&token=99858357-4602-44aa-b32a-e6c9867788ff")`}
+              bgImg={`url("https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/5137894.jpg")`}
             >
               <Image
                 width={`300px`}
                 alt="logo"
-                src={`https://firebasestorage.googleapis.com/v0/b/storage-4leaf.appspot.com/o/4leaf%2Flogo%2F4leafsoftware_logo_LW.png?alt=media&token=bc68284c-e82a-42ee-b4c4-a95e0ebc699e`}
+                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/4leafsoftware_logo_LW.png`}
               />
               <Wrapper
                 color={Theme.white_C}
