@@ -11,7 +11,7 @@ module.exports = class Reference extends Model {
           allowNull: false, // 필수
         },
         file: {
-          type: DataTypes.STRING(2000), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
+          type: DataTypes.TEXT("long"), // STRING, TEXT, BOOLEAN, INTEGER, FLOAT, DATETIME
           allowNull: true,
         },
         isDelete: {

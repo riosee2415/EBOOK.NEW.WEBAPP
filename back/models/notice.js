@@ -17,7 +17,7 @@ module.exports = class Notice extends Model {
           defaultValue: "공지사항",
         },
         content: {
-          type: DataTypes.TEXT,
+          type: DataTypes.TEXT("long"),
           allowNull: false, // 필수
         },
         author: {
