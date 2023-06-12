@@ -160,6 +160,16 @@ const AdminMenu = () => {
     },
   ];
 
+  useEffect(() => {
+    if (router.pathname) {
+      setCurrentMenu(
+        menus.find((data) =>
+          data.subMenu.find((value) => value.link === router.pathname)
+        ).key
+      );
+    }
+  }, [router.pathname]);
+
   return (
     <>
       <Menu
@@ -211,7 +221,9 @@ const AdminMenu = () => {
                 return (
                   <Menu.Item key={value.link}>
                     <Link href={value.link}>
-                      <MenuName>{value.name}</MenuName>
+                      <a>
+                        <MenuName>{value.name}</MenuName>
+                      </a>
                     </Link>
                   </Menu.Item>
                 );
