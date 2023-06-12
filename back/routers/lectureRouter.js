@@ -67,7 +67,8 @@ router.post("/list", async (req, res, next) => {
               WHEN type = 3 THEN  "3년"
               WHEN type = 4 THEN  "평생"
               WHEN type = 5 THEN  "3달"
-              WHEN type = 6 THEN  "상품"
+              WHEN type = 6 THEN  "태블릿(신규)"
+              WHEN type = 7 THEN  "태블릿(기존)"
           END                                           AS viewType,
           CASE
               WHEN type = 1 THEN  "12개월"
@@ -75,7 +76,8 @@ router.post("/list", async (req, res, next) => {
               WHEN type = 3 THEN  "36개월"
               WHEN type = 4 THEN  "평생"
               WHEN type = 5 THEN  "3달"
-              WHEN type = 6 THEN  "상품"
+              WHEN type = 6 THEN  "태블릿(신규)"
+              WHEN type = 7 THEN  "태블릿(기존)"
           END                                           AS viewFrontType,
           thumbnail,
           title,
@@ -153,7 +155,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
               WHEN type = 3 THEN  "3년"
               WHEN type = 4 THEN  "평생"
               WHEN type = 5 THEN  "3달"
-              WHEN type = 6 THEN  "상품"
+              WHEN type = 6 THEN  "태블릿(신규)"
+              WHEN type = 7 THEN  "태블릿(기존)"
           END                                           AS viewType,
           thumbnail,
           title,
@@ -215,7 +218,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
               WHEN type = 3 THEN  "3년"
               WHEN type = 4 THEN  "평생"
               WHEN type = 5 THEN  "3달"
-              WHEN type = 6 THEN  "상품"
+              WHEN type = 6 THEN  "태블릿(신규)"
+              WHEN type = 7 THEN  "태블릿(기존)"
           END                                           AS viewType,
           thumbnail,
           title,
@@ -250,16 +254,16 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
   `;
 
   try {
-    const find = await models.sequelize.query(findQ);
-
-    if (find[0].length > 0) {
-      return res.status(400).send("이미 수강권이 있습니다.");
-    }
-
     const select = await models.sequelize.query(selectQ);
 
     if (!select[0][0]) {
       return res.status(400).send("현재 구매할 수 없는 상품입니다.");
+    }
+
+    const find = await models.sequelize.query(findQ);
+
+    if (select[0][0].type !== 7 && find[0].length > 0) {
+      return res.status(400).send("이미 수강권이 있습니다.");
     }
 
     return res.status(200).json(select[0][0]);

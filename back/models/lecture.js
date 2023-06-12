@@ -14,7 +14,8 @@ module.exports = class Lecture extends Model {
           // 3. 3년,
           // 4. 평생,
           // 5. 3달,
-          // 6. 상품,
+          // 6. 태블릿(신규),
+          // 7. 태블릿(기존),
         },
         thumbnail: {
           type: DataTypes.STRING(600),

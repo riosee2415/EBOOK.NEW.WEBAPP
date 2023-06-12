@@ -42,7 +42,7 @@ const Home = ({}) => {
       dispatch({
         type: LECTURE_LIST_REQUEST,
         data: {
-          searchType: router.query.isVoucher ? [5] : [1, 2, 3, 4],
+          searchType: router.query.isVoucher ? [5] : [1, 2, 3, 4, 6, 7],
         },
       });
     }
@@ -104,7 +104,7 @@ const Home = ({}) => {
                         dr={width < 800 ? `column` : `row`}
                         ju={`space-between`}
                         al={`flex-start`}
-                        margin={`0 0 30px`}
+                        margin={`0 0 100px`}
                       >
                         <Wrapper
                           width={width < 800 ? `100%` : `calc(100% / 2 - 25px)`}
@@ -284,7 +284,11 @@ const Home = ({}) => {
                             kindOf={`basic`}
                             onClick={() =>
                               boughtMeDetail
-                                ? message.error("이미 구매한 강의가 있습니다.")
+                                ? data.type === 7
+                                  ? moveLinkHandler(`/enrolment/buy/${data.id}`)
+                                  : message.error(
+                                      "이미 구매한 강의가 있습니다."
+                                    )
                                 : moveLinkHandler(`/enrolment/buy/${data.id}`)
                             }
                           >

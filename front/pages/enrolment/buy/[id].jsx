@@ -201,6 +201,10 @@ const Home = ({}) => {
 
   ////// REDUX //////
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     if (router.query) {
       dispatch({
@@ -214,10 +218,17 @@ const Home = ({}) => {
 
   useEffect(() => {
     if (boughtMeDetail) {
-      router.push("/enrolment");
-      return message.error("이미 구매한 강의가 있습니다.");
+      if (lectureDetail && lectureDetail.type !== 7) {
+        message.error("이미 구매한 강의가 있습니다.");
+        return router.push("/enrolment");
+      }
+    } else {
+      if (lectureDetail && lectureDetail.type === 7) {
+        message.error("수강중인 강의가 없습니다.");
+        return router.push("/enrolment");
+      }
     }
-  }, [boughtMeDetail]);
+  }, [boughtMeDetail, lectureDetail]);
 
   useEffect(() => {
     if (lectureDetail) {
