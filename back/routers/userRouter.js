@@ -25,7 +25,11 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
           isExit,
           birth,
           gender,
-          keyword,
+          (
+            SELECT  COUNT(B.id)
+              FROM  keywordConnect    B
+             WHERE  B.UserId = A.id
+          )                               AS keyword,
           consulting,
           zoneCode,
           address,
@@ -106,6 +110,17 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
     FROM	users   A
    WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
           ${
+            _keyword
+              ? `AND  keyword IN (
+                                   SELECT  C.value
+                                     FROM  keywordConnect    B
+                                    INNER
+                                     JOIN  keyword           C
+                                       ON  B.KeywordId = C.id
+                                 )`
+              : ""
+          }
+          ${
             _searchLevel === parseInt(0)
               ? ``
               : _searchLevel === 1
@@ -159,7 +174,11 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           isExit,
           birth,
           gender,
-          keyword,
+          (
+            SELECT  COUNT(B.id)
+              FROM  keywordConnect    B
+             WHERE  B.UserId = A.id
+          )                               AS keyword,
           consulting,
           zoneCode,
           address,
@@ -196,7 +215,17 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
           isBlack
     FROM	users         A
    WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
-          ${_keyword ? `AND  keyword = "${_keyword}"` : ""}
+          ${
+            _keyword
+              ? `AND  keyword IN (
+                                   SELECT  C.value
+                                     FROM  keywordConnect    B
+                                    INNER
+                                     JOIN  keyword           C
+                                       ON  B.KeywordId = C.id
+                                 )`
+              : ""
+          }
           ${
             _searchLevel === parseInt(0)
               ? ``
@@ -1235,7 +1264,6 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
     username,
     password,
     mobile,
-    keyword,
     consulting,
     zoneCode,
     address,
@@ -1253,7 +1281,7 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
       const findQ = `
         SELECT  userId
           FROM  users
-         WHERE  id = ${id}
+         WHERE  id = ${userId}
       `;
 
       const find = await models.sequelize.query(findQ);
@@ -1307,7 +1335,6 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
     } else if (parseInt(type) === 5) {
       const updateQ = `
         UPDATE  users
-           SET  keyword = ${keyword ? `"${keyword}"` : `NULL`},
                 consulting = ${consulting ? `"${consulting}"` : `NULL`},
                 updatedAt = NOW()
          WHERE  id = ${id}
@@ -1522,4 +1549,185 @@ router.post("/admin/isBlack", isAdminCheck, async (req, res, next) => {
     return res.status(401).send("회원을 삭제할 수 없습니다.");
   }
 });
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// KEYWORD ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+// 키워드 리스트
+router.post("/keyword/list", isAdminCheck, async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER() OVER(ORDER BY A.createdAt)        	AS num,
+          A.id,
+          A.value,
+          (
+            SELECT  COUNT(id)
+              FROM  keywordConnect				B
+             WHERE  B.KeywordId = A.id
+          )												AS useKeywordCnt,
+          A.createdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")			AS viewCreatedAt,
+          A.updatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")			AS viewUpdatedAt
+    FROM  keyword 			A
+   WHERE  A.isDelete = 0
+  `;
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("키워드를 불러올 수 업습니다.");
+  }
+});
+
+// 키워드 생성
+router.post("/keyword/create", isAdminCheck, async (req, res, next) => {
+  const { value } = req.body;
+
+  const insertQuery = `
+  INSERT INTO keyword (
+    value,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    "${value}",
+    NOW(),
+    NOW()
+  )
+  `;
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("키워드를 생성할 수 없습니다.");
+  }
+});
+
+// 키워드 삭제
+router.post("/keyword/delete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQuery = `
+  SELECT  id
+    FROM  keyword k
+   WHERE  id = ${id}
+     AND  isDelete = 0
+  `;
+
+  const deleteQuery = `
+  UPDATE  keyword
+     SET  isDelete = 1,
+          deletedAt = NOW()
+   WHERE  id = ${id}
+  `;
+  try {
+    const findResult = await models.sequelize.query(findQuery);
+
+    if (findResult[0].length === 0) {
+      return res.status(400).send("키워드를 삭제할 수 없습니다.");
+    }
+
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("키워드를 삭제할 수 없습니다.");
+  }
+});
+
+// 회원 키워드 리스트
+router.post("/keyword/userList", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQuery = `
+  SELECT  A.id,
+		      A.UserId,
+		      A.KeywordId,
+		      B.value
+    FROM  keywordConnect				A
+   INNER
+    JOIN  keyword						    B
+      ON  A.KeywordId = B.id
+   WHERE  A.UserId = ${id}
+  `;
+
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("키워드를 조회할 수 없습니다.");
+  }
+});
+
+// 회원 키워드 부여
+router.post("/keyword/userCreate", isAdminCheck, async (req, res, next) => {
+  const { UserId, KeywordId } = req.body;
+
+  const insertQuery = `
+  INSERT INTO keywordConnect (
+    UserId,
+    KeywordId,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    ${UserId},
+    ${KeywordId},
+    NOW(),
+    NOW()
+  )
+  `;
+
+  try {
+    const result = await models.sequelize.query(insertQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("키워드를 추가할 수 없습니다.");
+  }
+});
+
+// 회원 키워드 삭제
+router.post("/keyword/userDelete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQuery = `
+  SELECT  id
+    FROM  keywordConnect k
+   WHERE  id = ${id}
+  `;
+
+  const deleteQuery = `
+    DELETE  
+      FROM  keywordConnect
+     WHERE  id = ${id}
+  `;
+
+  try {
+    const findResult = await models.sequelize.query(findQuery);
+
+    if (findResult[0].length === 0) {
+      return res.status(400).send("이미 삭제된 키워드 입니다.");
+    }
+
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("키워드를 삭제할 수 없습니다.");
+  }
+});
+
 module.exports = router;

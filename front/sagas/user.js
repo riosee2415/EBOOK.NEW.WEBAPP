@@ -109,6 +109,30 @@ import {
   USER_ADMIN_ISBLACK_SUCCESS,
   USER_ADMIN_ISBLACK_FAILURE,
   /////////////////////////////
+  KEYWORD_LIST_REQUEST,
+  KEYWORD_LIST_SUCCESS,
+  KEYWORD_LIST_FAILURE,
+  /////////////////////////////
+  KEYWORD_CREATE_REQUEST,
+  KEYWORD_CREATE_SUCCESS,
+  KEYWORD_CREATE_FAILURE,
+  /////////////////////////////
+  KEYWORD_DELETE_REQUEST,
+  KEYWORD_DELETE_SUCCESS,
+  KEYWORD_DELETE_FAILURE,
+  /////////////////////////////
+  USER_KEYWORD_LIST_REQUEST,
+  USER_KEYWORD_LIST_SUCCESS,
+  USER_KEYWORD_LIST_FAILURE,
+  /////////////////////////////
+  USER_KEYWORD_CREATE_REQUEST,
+  USER_KEYWORD_CREATE_SUCCESS,
+  USER_KEYWORD_CREATE_FAILURE,
+  /////////////////////////////
+  USER_KEYWORD_DELETE_REQUEST,
+  USER_KEYWORD_DELETE_SUCCESS,
+  USER_KEYWORD_DELETE_FAILURE,
+  /////////////////////////////
 } from "../reducers/user";
 
 // SAGA AREA ********************************************************************************************************
@@ -832,6 +856,168 @@ function* userAdminIsBlack(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function keywordListAPI(data) {
+  return await axios.post(`/api/user/keyword/list`, data);
+}
+
+function* keywordList(action) {
+  try {
+    const result = yield call(keywordListAPI, action.data);
+
+    yield put({
+      type: KEYWORD_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: KEYWORD_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function keywordCreateAPI(data) {
+  return await axios.post(`/api/user/keyword/create`, data);
+}
+
+function* keywordCreate(action) {
+  try {
+    const result = yield call(keywordCreateAPI, action.data);
+
+    yield put({
+      type: KEYWORD_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: KEYWORD_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function keywordDeleteAPI(data) {
+  return await axios.post(`/api/user/keyword/delete`, data);
+}
+
+function* keywordDelete(action) {
+  try {
+    const result = yield call(keywordDeleteAPI, action.data);
+
+    yield put({
+      type: KEYWORD_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: KEYWORD_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userKeywordListAPI(data) {
+  return await axios.post(`/api/user/keyword/userList`, data);
+}
+
+function* userKeywordList(action) {
+  try {
+    const result = yield call(userKeywordListAPI, action.data);
+
+    yield put({
+      type: USER_KEYWORD_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_KEYWORD_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userKeywordCreateAPI(data) {
+  return await axios.post(`/api/user/keyword/userCreate`, data);
+}
+
+function* userKeywordCreate(action) {
+  try {
+    const result = yield call(userKeywordCreateAPI, action.data);
+
+    yield put({
+      type: USER_KEYWORD_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_KEYWORD_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function userKeywordDeleteAPI(data) {
+  return await axios.post(`/api/user/keyword/userDelete`, data);
+}
+
+function* userKeywordDelete(action) {
+  try {
+    const result = yield call(userKeywordDeleteAPI, action.data);
+
+    yield put({
+      type: USER_KEYWORD_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_KEYWORD_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 
 function* watchLoadMyInfo() {
@@ -942,6 +1128,30 @@ function* watchUserAdminIsBlack() {
   yield takeLatest(USER_ADMIN_ISBLACK_REQUEST, userAdminIsBlack);
 }
 
+function* watchKeywordList() {
+  yield takeLatest(KEYWORD_LIST_REQUEST, keywordList);
+}
+
+function* watchKeywordCreate() {
+  yield takeLatest(KEYWORD_CREATE_REQUEST, keywordCreate);
+}
+
+function* watchKeywordDelete() {
+  yield takeLatest(KEYWORD_DELETE_REQUEST, keywordDelete);
+}
+
+function* watchUserKeywordList() {
+  yield takeLatest(USER_KEYWORD_LIST_REQUEST, userKeywordList);
+}
+
+function* watchUserKeywordCreate() {
+  yield takeLatest(USER_KEYWORD_CREATE_REQUEST, userKeywordCreate);
+}
+
+function* watchUserKeywordDelete() {
+  yield takeLatest(USER_KEYWORD_DELETE_REQUEST, userKeywordDelete);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* userSaga() {
   yield all([
@@ -972,6 +1182,12 @@ export default function* userSaga() {
     fork(watchUserAllList),
     fork(watchUserAdminDelete),
     fork(watchUserAdminIsBlack),
+    fork(watchKeywordList),
+    fork(watchKeywordCreate),
+    fork(watchKeywordDelete),
+    fork(watchUserKeywordList),
+    fork(watchUserKeywordCreate),
+    fork(watchUserKeywordDelete),
     //
   ]);
 }

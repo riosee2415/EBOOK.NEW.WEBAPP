@@ -25,10 +25,6 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(300),
           allowNull: false, // 필수
         },
-        keyword: {
-          type: DataTypes.STRING(300),
-          allowNull: true, // 필수
-        },
 
         gender: {
           type: DataTypes.STRING(300),

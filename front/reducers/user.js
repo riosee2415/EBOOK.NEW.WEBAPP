@@ -11,6 +11,8 @@ export const initailState = {
   findUserId: null,
   adminBanner: null,
   userAllList: null,
+  keywordList: [],
+  userKeywordList: [],
   //
   st_loginLoading: false,
   st_loginDone: false,
@@ -115,6 +117,30 @@ export const initailState = {
   st_userAdminIsBlackLoading: false, // 관리자 회원 블랙리스트
   st_userAdminIsBlackDone: false,
   st_userAdminIsBlackError: null,
+  //
+  st_keywordListLoading: false, // 키워드 리스트
+  st_keywordListDone: false,
+  st_keywordListError: null,
+  //
+  st_keywordCreateLoading: false, // 키워드 생성
+  st_keywordCreateDone: false,
+  st_keywordCreateError: null,
+  //
+  st_keywordDeleteLoading: false, // 키워드 삭제
+  st_keywordDeleteDone: false,
+  st_keywordDeleteError: null,
+  //
+  st_userKeywordListLoading: false, // 키워드 회원 리스트
+  st_userKeywordListDone: false,
+  st_userKeywordListError: null,
+  //
+  st_userKeywordCreateLoading: false, // 키워드 회원 생성
+  st_userKeywordCreateDone: false,
+  st_userKeywordCreateError: null,
+  //
+  st_userKeywordDeleteLoading: false, // 카워드 회원 삭제
+  st_userKeywordDeleteDone: false,
+  st_userKeywordDeleteError: null,
 };
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
@@ -224,7 +250,31 @@ export const USER_ADMIN_DELETE_FAILURE = "USER_ADMIN_DELETE_FAILURE";
 export const USER_ADMIN_ISBLACK_REQUEST = "USER_ADMIN_ISBLACK_REQUEST";
 export const USER_ADMIN_ISBLACK_SUCCESS = "USER_ADMIN_ISBLACK_SUCCESS";
 export const USER_ADMIN_ISBLACK_FAILURE = "USER_ADMIN_ISBLACK_FAILURE";
-
+//
+export const KEYWORD_LIST_REQUEST = "KEYWORD_LIST_REQUEST";
+export const KEYWORD_LIST_SUCCESS = "KEYWORD_LIST_SUCCESS";
+export const KEYWORD_LIST_FAILURE = "KEYWORD_LIST_FAILURE";
+//
+export const KEYWORD_CREATE_REQUEST = "KEYWORD_CREATE_REQUEST";
+export const KEYWORD_CREATE_SUCCESS = "KEYWORD_CREATE_SUCCESS";
+export const KEYWORD_CREATE_FAILURE = "KEYWORD_CREATE_FAILURE";
+//
+export const KEYWORD_DELETE_REQUEST = "KEYWORD_DELETE_REQUEST";
+export const KEYWORD_DELETE_SUCCESS = "KEYWORD_DELETE_SUCCESS";
+export const KEYWORD_DELETE_FAILURE = "KEYWORD_DELETE_FAILURE";
+//
+export const USER_KEYWORD_LIST_REQUEST = "USER_KEYWORD_LIST_REQUEST";
+export const USER_KEYWORD_LIST_SUCCESS = "USER_KEYWORD_LIST_SUCCESS";
+export const USER_KEYWORD_LIST_FAILURE = "USER_KEYWORD_LIST_FAILURE";
+//
+export const USER_KEYWORD_CREATE_REQUEST = "USER_KEYWORD_CREATE_REQUEST";
+export const USER_KEYWORD_CREATE_SUCCESS = "USER_KEYWORD_CREATE_SUCCESS";
+export const USER_KEYWORD_CREATE_FAILURE = "USER_KEYWORD_CREATE_FAILURE";
+//
+export const USER_KEYWORD_DELETE_REQUEST = "USER_KEYWORD_DELETE_REQUEST";
+export const USER_KEYWORD_DELETE_SUCCESS = "USER_KEYWORD_DELETE_SUCCESS";
+export const USER_KEYWORD_DELETE_FAILURE = "USER_KEYWORD_DELETE_FAILURE";
+//
 export const UPDATE_MODAL_OPEN_REQUEST = "UPDATE_MODAL_OPEN_REQUEST";
 export const UPDATE_MODAL_CLOSE_REQUEST = "UPDATE_MODAL_CLOSE_REQUEST";
 
@@ -807,6 +857,122 @@ const reducer = (state = initailState, action) =>
         break;
       }
 
+      //////////////////////////////////////////////
+      case KEYWORD_LIST_REQUEST: {
+        draft.st_keywordListLoading = true;
+        draft.st_keywordListDone = false;
+        draft.st_keywordListError = null;
+        break;
+      }
+      case KEYWORD_LIST_SUCCESS: {
+        draft.st_keywordListLoading = false;
+        draft.st_keywordListDone = true;
+        draft.st_keywordListError = null;
+        draft.keywordList = action.data;
+        break;
+      }
+      case KEYWORD_LIST_FAILURE: {
+        draft.st_keywordListLoading = false;
+        draft.st_keywordListDone = false;
+        draft.st_keywordListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case KEYWORD_CREATE_REQUEST: {
+        draft.st_keywordCreateLoading = true;
+        draft.st_keywordCreateDone = false;
+        draft.st_keywordCreateError = null;
+        break;
+      }
+      case KEYWORD_CREATE_SUCCESS: {
+        draft.st_keywordCreateLoading = false;
+        draft.st_keywordCreateDone = true;
+        draft.st_keywordCreateError = null;
+        break;
+      }
+      case KEYWORD_CREATE_FAILURE: {
+        draft.st_keywordCreateLoading = false;
+        draft.st_keywordCreateDone = false;
+        draft.st_keywordCreateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case KEYWORD_DELETE_REQUEST: {
+        draft.st_keywordDeleteLoading = true;
+        draft.st_keywordDeleteDone = false;
+        draft.st_keywordDeleteError = null;
+        break;
+      }
+      case KEYWORD_DELETE_SUCCESS: {
+        draft.st_keywordDeleteLoading = false;
+        draft.st_keywordDeleteDone = true;
+        draft.st_keywordDeleteError = null;
+        break;
+      }
+      case KEYWORD_DELETE_FAILURE: {
+        draft.st_keywordDeleteLoading = false;
+        draft.st_keywordDeleteDone = false;
+        draft.st_keywordDeleteError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case USER_KEYWORD_LIST_REQUEST: {
+        draft.st_userKeywordListLoading = true;
+        draft.st_userKeywordListDone = false;
+        draft.st_userKeywordListError = null;
+        break;
+      }
+      case USER_KEYWORD_LIST_SUCCESS: {
+        draft.st_userKeywordListLoading = false;
+        draft.st_userKeywordListDone = true;
+        draft.st_userKeywordListError = null;
+        draft.userKeywordList = action.data;
+        break;
+      }
+      case USER_KEYWORD_LIST_FAILURE: {
+        draft.st_userKeywordListLoading = false;
+        draft.st_userKeywordListDone = false;
+        draft.st_userKeywordListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case USER_KEYWORD_CREATE_REQUEST: {
+        draft.st_userKeywordCreateLoading = true;
+        draft.st_userKeywordCreateDone = false;
+        draft.st_userKeywordCreateError = null;
+        break;
+      }
+      case USER_KEYWORD_CREATE_SUCCESS: {
+        draft.st_userKeywordCreateLoading = false;
+        draft.st_userKeywordCreateDone = true;
+        draft.st_userKeywordCreateError = null;
+        break;
+      }
+      case USER_KEYWORD_CREATE_FAILURE: {
+        draft.st_userKeywordCreateLoading = false;
+        draft.st_userKeywordCreateDone = false;
+        draft.st_userKeywordCreateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case USER_KEYWORD_DELETE_REQUEST: {
+        draft.st_userKeywordDeleteLoading = true;
+        draft.st_userKeywordDeleteDone = false;
+        draft.st_userKeywordDeleteError = null;
+        break;
+      }
+      case USER_KEYWORD_DELETE_SUCCESS: {
+        draft.st_userKeywordDeleteLoading = false;
+        draft.st_userKeywordDeleteDone = true;
+        draft.st_userKeywordDeleteError = null;
+        break;
+      }
+      case USER_KEYWORD_DELETE_FAILURE: {
+        draft.st_userKeywordDeleteLoading = false;
+        draft.st_userKeywordDeleteDone = false;
+        draft.st_userKeywordDeleteError = action.error;
+        break;
+      }
       //////////////////////////////////////////////
 
       case UPDATE_MODAL_OPEN_REQUEST:

@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   ADMIN_UPDATE_REQUEST,
   INSERT_XLSX_REQUEST,
+  KEYWORD_CREATE_REQUEST,
+  KEYWORD_DELETE_REQUEST,
+  KEYWORD_LIST_REQUEST,
   LOAD_MY_INFO_REQUEST,
   UPDATE_MODAL_CLOSE_REQUEST,
   UPDATE_MODAL_OPEN_REQUEST,
@@ -13,6 +16,9 @@ import {
   USER_ADMIN_DELETE_REQUEST,
   USER_ADMIN_ISBLACK_REQUEST,
   USER_ALL_LIST_REQUEST,
+  USER_KEYWORD_CREATE_REQUEST,
+  USER_KEYWORD_DELETE_REQUEST,
+  USER_KEYWORD_LIST_REQUEST,
 } from "../../../reducers/user";
 import {
   Table,
@@ -157,6 +163,18 @@ export const SnippetsBtn = styled(SnippetsOutlined)`
     color: ${(props) => props.theme.adminTheme_4};
   }
 `;
+
+const CustomForm2 = styled(Form)`
+  margin: 0 0 10px;
+
+  & .ant-form-item {
+    margin: 0;
+  }
+
+  & .ant-form-item-control-input {
+    min-height: 0;
+  }
+`;
 const UserList = ({}) => {
   // LOAD CURRENT INFO AREA /////////////////////////////////////////////
   const { me, st_loadMyInfoDone } = useSelector((state) => state.user);
@@ -190,6 +208,8 @@ const UserList = ({}) => {
     updateModal,
     userAllList,
     st_userAllListLoading,
+    keywordList,
+    userKeywordList,
     //
     st_userListLoading,
     st_userListError,
@@ -208,6 +228,22 @@ const UserList = ({}) => {
     st_userAdminIsBlackLoading,
     st_userAdminIsBlackDone,
     st_userAdminIsBlackError,
+    //
+    st_keywordCreateLoading,
+    st_keywordCreateDone,
+    st_keywordCreateError,
+    //
+    st_keywordDeleteLoading,
+    st_keywordDeleteDone,
+    st_keywordDeleteError,
+    //
+    st_userKeywordCreateLoading,
+    st_userKeywordCreateDone,
+    st_userKeywordCreateError,
+    //
+    st_userKeywordDeleteLoading,
+    st_userKeywordDeleteDone,
+    st_userKeywordDeleteError,
   } = useSelector((state) => state.user);
 
   const {
@@ -241,6 +277,7 @@ const UserList = ({}) => {
   const [sForm] = Form.useForm();
   const [dForm] = Form.useForm();
   const [bForm] = Form.useForm();
+  const [kForm] = Form.useForm();
 
   const [currentTab, setCurrentTab] = useState(0);
 
@@ -253,6 +290,8 @@ const UserList = ({}) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [reviewWriteType, setReviewWriteType] = useState(3);
+
+  const [kModal, setKModal] = useState(false);
 
   const levelArr = [
     {
@@ -513,6 +552,76 @@ const UserList = ({}) => {
     }
   }, [st_boughtAdminDeleteDone, st_boughtAdminDeleteError]);
 
+  // 키워드 생성
+  useEffect(() => {
+    if (st_keywordCreateDone) {
+      kForm.resetFields();
+
+      dispatch({
+        type: KEYWORD_LIST_REQUEST,
+      });
+
+      return message.success("키워드가 생성되었습니다.");
+    }
+    if (st_keywordCreateError) {
+      return message.error(st_keywordCreateError);
+    }
+  }, [st_keywordCreateDone, st_keywordCreateError]);
+  // 키워드 삭제
+  useEffect(() => {
+    if (st_keywordDeleteDone) {
+      dispatch({
+        type: KEYWORD_LIST_REQUEST,
+      });
+
+      return message.success("키워드가 삭제되었습니다.");
+    }
+    if (st_keywordDeleteError) {
+      return message.error(st_keywordDeleteError);
+    }
+  }, [st_keywordDeleteDone, st_keywordDeleteError]);
+
+  // 회원 키워드 생성
+  useEffect(() => {
+    if (st_userKeywordCreateDone) {
+      dForm.setFieldsValue({
+        keyword: "",
+      });
+
+      if (dData) {
+        dispatch({
+          type: USER_KEYWORD_LIST_REQUEST,
+          data: {
+            id: dData.id,
+          },
+        });
+      }
+
+      return message.success("키워드가 추가되었습니다.");
+    }
+    if (st_userKeywordCreateError) {
+      return message.error(st_userKeywordCreateError);
+    }
+  }, [st_userKeywordCreateDone, st_userKeywordCreateError]);
+  // 회원 키워드 삭제
+  useEffect(() => {
+    if (st_userKeywordDeleteDone) {
+      if (dData) {
+        dispatch({
+          type: USER_KEYWORD_LIST_REQUEST,
+          data: {
+            id: dData.id,
+          },
+        });
+      }
+
+      return message.success("키워드가 삭제되었습니다.");
+    }
+    if (st_userKeywordDeleteError) {
+      return message.error(st_userKeywordDeleteError);
+    }
+  }, [st_userKeywordDeleteDone, st_userKeywordDeleteError]);
+
   ////// TOGGLE //////
   const updateModalOpen = useCallback(
     (data) => {
@@ -547,7 +656,6 @@ const UserList = ({}) => {
           level: levelArr.find((value) => value.id === data.level).name,
           gender: data.gender,
           birth: data.birth,
-          keyword: data.keyword,
           consulting: data.consulting,
           zoneCode: data.zoneCode,
           address: data.address,
@@ -568,6 +676,13 @@ const UserList = ({}) => {
             id: data.id,
           },
         });
+
+        dispatch({
+          type: USER_KEYWORD_LIST_REQUEST,
+          data: {
+            id: data.id,
+          },
+        });
       } else {
         setDData(null);
       }
@@ -576,6 +691,18 @@ const UserList = ({}) => {
     },
     [dModal, dData, levelArr]
   );
+
+  const kModalToggle = useCallback(
+    (data) => {
+      dispatch({
+        type: KEYWORD_LIST_REQUEST,
+      });
+
+      setKModal((prev) => !prev);
+    },
+    [kModal]
+  );
+
   ////// HANDLER //////
 
   // 페이지 변경
@@ -754,6 +881,54 @@ const UserList = ({}) => {
     });
   }, [dData]);
 
+  // 키워드 생성
+  const kCreateHandler = useCallback((data) => {
+    dispatch({
+      type: KEYWORD_CREATE_REQUEST,
+      data: {
+        value: data.value,
+      },
+    });
+  }, []);
+
+  // 키워드 삭제
+  const kDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: KEYWORD_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
+  // 회원 키워드 추가
+  const uKCreateHandler = useCallback(
+    (data) => {
+      if (!dData) {
+        return message.error("잠시 후 다시 시도해주세요.");
+      }
+
+      dispatch({
+        type: USER_KEYWORD_CREATE_REQUEST,
+        data: {
+          UserId: dData.id,
+          KeywordId: data,
+        },
+      });
+    },
+    [dData]
+  );
+
+  // 회원 키워드 삭제
+  const ukDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: USER_KEYWORD_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
   const content = (
     <PopWrapper>
       {sameDepth.map((data) => {
@@ -825,7 +1000,7 @@ const UserList = ({}) => {
     },
     {
       title: "키워드",
-      dataIndex: "keyword",
+      render: (data) => `${data.keyword}개`,
     },
     {
       align: `center`,
@@ -887,6 +1062,46 @@ const UserList = ({}) => {
       width: `30%`,
       title: "날짜",
       dataIndex: "viewCreatedAt",
+    },
+  ];
+
+  const columns3 = [
+    {
+      width: `10%`,
+      align: "center",
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      width: `40%`,
+      title: "키워드이름",
+      dataIndex: "value",
+    },
+    {
+      width: `15%`,
+      title: "부여회원수",
+      dataIndex: "useKeywordCnt",
+    },
+    {
+      width: `20%`,
+      title: "생성일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
+      width: `15%`,
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="정말 삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => kDeleteHandler(data)}
+        >
+          <Button size="small" type="danger" loading={st_keywordDeleteLoading}>
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
     },
   ];
 
@@ -971,11 +1186,11 @@ const UserList = ({}) => {
               onChange={sKeywordHandlr}
               allowClear
             >
-              {keywordArr &&
-                keywordArr.map((data, idx) => {
+              {keywordList &&
+                keywordList.map((data, idx) => {
                   return (
-                    <Select.Option key={idx} value={data}>
-                      {data}
+                    <Select.Option key={idx} value={data.value}>
+                      {data.value}
                     </Select.Option>
                   );
                 })}
@@ -1040,7 +1255,10 @@ const UserList = ({}) => {
           </TypeButton>
         </Wrapper>
 
-        <Wrapper width={`auto`}>
+        <Wrapper width={`auto`} dr={`row`}>
+          <Button size="small" onClick={kModalToggle}>
+            키워드 관리
+          </Button>
           {userAllList ? (
             <DownloadBtn
               filename={`회원 정보`}
@@ -1295,16 +1513,61 @@ const UserList = ({}) => {
               </Form.Item>
 
               <Form.Item name="keyword" label="키워드">
-                <Select size="small">
-                  {keywordArr.map((data, idx) => {
+                <Select size="small" onChange={uKCreateHandler}>
+                  {keywordList.map((data, idx) => {
                     return (
-                      <Select.Option key={idx} value={data}>
-                        {data}
+                      <Select.Option key={idx} value={data.id}>
+                        {data.value}
                       </Select.Option>
                     );
                   })}
                 </Select>
               </Form.Item>
+
+              <Wrapper al={`flex-end`}>
+                <Wrapper
+                  width={`83.4%`}
+                  margin={`0 0 30px`}
+                  height={`200px`}
+                  ju={`flex-start`}
+                  borderBottom={`1px solid ${Theme.lightGrey_C}`}
+                  overflow={`auto`}
+                >
+                  <Wrapper height={`auto`}>
+                    {userKeywordList &&
+                      (userKeywordList.length === 0 ? (
+                        <Wrapper margin={`20px 0`}>
+                          <Empty description="부여된 키워드가 없습니다." />
+                        </Wrapper>
+                      ) : (
+                        userKeywordList.map((data, idx) => {
+                          return (
+                            <Wrapper
+                              key={idx}
+                              dr={`row`}
+                              padding={`5px 10px`}
+                              border={`1px solid ${Theme.lightGrey_C}`}
+                              margin={`0 0 5px`}
+                            >
+                              <Text width={`calc(100% - 20px)`}>
+                                {data.value}
+                              </Text>
+                              <Wrapper width={`20px`}>
+                                <CloseOutlined
+                                  style={{
+                                    cursor: `pointer`,
+                                    color: Theme.red_C,
+                                  }}
+                                  onClick={() => ukDeleteHandler(data)}
+                                />
+                              </Wrapper>
+                            </Wrapper>
+                          );
+                        })
+                      ))}
+                  </Wrapper>
+                </Wrapper>
+              </Wrapper>
 
               <Form.Item
                 name="consulting"
@@ -1340,7 +1603,7 @@ const UserList = ({}) => {
                   loading={st_adminUpdateLoading}
                   onClick={() => adminUpdateHandler(5)}
                 >
-                  키워드 & 상담 저장
+                  상담 저장
                 </ModalBtn>
               </Wrapper>
 
@@ -1569,6 +1832,41 @@ const UserList = ({}) => {
           </Wrapper>
         </Wrapper>
       </Modal>
+
+      {/* KEYWORD MODAL */}
+      <Modal
+        title="키워드 관리"
+        visible={kModal}
+        onCancel={kModalToggle}
+        footer={null}
+        width={`1080px`}
+      >
+        <CustomForm2 layout="inline" from={kForm} onFinish={kCreateHandler}>
+          <Form.Item
+            name="value"
+            rules={[{ required: true, message: "키워드를 입력해주세요." }]}
+          >
+            <Input
+              style={{ width: `300px` }}
+              placeholder="생성할 키워드를 입력해주세요."
+              size="small"
+            />
+          </Form.Item>
+          <Button
+            size="small"
+            type="primary"
+            htmlType="submit"
+            loading={st_keywordCreateLoading}
+          >
+            생성
+          </Button>
+        </CustomForm2>
+        <Table
+          size="small"
+          columns={columns3}
+          dataSource={keywordList ? keywordList : []}
+        />
+      </Modal>
     </AdminLayout>
   );
 };
@@ -1597,6 +1895,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         searchType: [1, 2, 3, 4],
       },
+    });
+
+    context.store.dispatch({
+      type: KEYWORD_LIST_REQUEST,
     });
 
     // 구현부 종료
