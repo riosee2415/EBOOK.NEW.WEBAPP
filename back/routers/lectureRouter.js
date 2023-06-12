@@ -205,7 +205,7 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
     FROM  boughtLecture
    WHERE  userId = ${req.user.id}
      AND  isDelete = FALSE
-     AND  endDate >= NOW()
+     AND  DATE_FORMAT(endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
   `;
 
   const selectQ = `
@@ -261,6 +261,10 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
     }
 
     const find = await models.sequelize.query(findQ);
+
+    console.log("🟩");
+    console.log(find);
+    console.log("🟩");
 
     if (select[0][0].type !== 7 && find[0].length > 0) {
       return res.status(400).send("이미 수강권이 있습니다.");

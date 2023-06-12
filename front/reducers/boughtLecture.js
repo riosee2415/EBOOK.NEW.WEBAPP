@@ -7,6 +7,7 @@ export const initailState = {
   boughtCreateId: null,
 
   boughtAdminId: null,
+  existingLecture: null,
 
   boughtDetail: null,
 
@@ -128,7 +129,8 @@ const reducer = (state = initailState, action) =>
         draft.st_boughtAdminIdLoading = false;
         draft.st_boughtAdminIdDone = true;
         draft.st_boughtAdminIdError = null;
-        draft.boughtAdminId = action.data;
+        draft.boughtAdminId = action.data.detail;
+        draft.existingLecture = action.data.existingLecture;
         break;
       case BOUGHT_ADMIN_ID_FAILURE:
         draft.st_boughtAdminIdLoading = false;

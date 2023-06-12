@@ -456,7 +456,9 @@ const MypageIndex = ({}) => {
                 ) : (
                   mediaList
                     .filter((data) =>
-                      boughtMeDetail.lectureType === 5 ? data.sort <= 118 : true
+                      boughtMeDetail?.lectureType === 5
+                        ? data.sort <= 118
+                        : true
                     )
                     .map((data, idx) => {
                       return (

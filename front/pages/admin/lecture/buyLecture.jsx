@@ -571,7 +571,11 @@ const BuyLecture = ({}) => {
     },
     {
       type: 6,
-      title: "상품",
+      title: "태블릿(신규)",
+    },
+    {
+      type: 7,
+      title: "태블릿(기존)",
     },
   ];
 

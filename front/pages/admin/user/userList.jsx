@@ -248,6 +248,7 @@ const UserList = ({}) => {
 
   const {
     boughtAdminId,
+    existingLecture,
     //
     st_boughtAdminCreateLoading,
     st_boughtAdminCreateDone,
@@ -277,6 +278,7 @@ const UserList = ({}) => {
   const [sForm] = Form.useForm();
   const [dForm] = Form.useForm();
   const [bForm] = Form.useForm();
+  const [eForm] = Form.useForm();
   const [kForm] = Form.useForm();
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -449,6 +451,21 @@ const UserList = ({}) => {
       });
     }
   }, [boughtAdminId]);
+
+  useEffect(() => {
+    if (existingLecture) {
+      eForm.setFieldsValue({
+        payWay: existingLecture.payType,
+        lectureType: existingLecture.lectureType,
+        startDate: moment(existingLecture.startDate),
+        endDate: moment(existingLecture.endDate),
+        boughtDate: moment(existingLecture.boughtDate),
+        pauseDate: existingLecture.pauseDate
+          ? moment(existingLecture.pauseDate)
+          : null,
+      });
+    }
+  }, [existingLecture]);
 
   // 회원정보 삭제
   useEffect(() => {
@@ -818,8 +835,8 @@ const UserList = ({}) => {
         data: {
           id: dData.id,
           lectureId: data.lectureId,
-          mobile: me.mobile,
-          username: me.username,
+          mobile: dData.mobile,
+          username: dData.username,
           lectureType: lectureList.find((value) => value.id === data.lectureId)
             .type,
         },
@@ -837,6 +854,16 @@ const UserList = ({}) => {
       },
     });
   }, [boughtAdminId]);
+
+  // 기존 태블릿 삭제
+  const existingDeleteHandler = useCallback(() => {
+    dispatch({
+      type: BOUGHT_ADMIN_DELETE_REQUEST,
+      data: {
+        id: existingLecture.id,
+      },
+    });
+  }, [existingLecture]);
 
   // 상담자 추가
   const consultingAddHandler = useCallback(() => {
@@ -1668,7 +1695,8 @@ const UserList = ({}) => {
                         <Select.Option value={3}>3년</Select.Option>
                         <Select.Option value={4}>평생</Select.Option>
                         <Select.Option value={5}>3달</Select.Option>
-                        <Select.Option value={6}>상품</Select.Option>
+                        <Select.Option value={6}>태블릿(신규)</Select.Option>
+                        <Select.Option value={7}>태블릿(기존)</Select.Option>
                       </Select>
                     </Form.Item>
                     {boughtAdminId.isPay ? (
@@ -1774,6 +1802,126 @@ const UserList = ({}) => {
                       }
                     >
                       {boughtAdminId ? "수정" : "추가"}
+                    </ModalBtn>
+                  )}
+                </Wrapper>
+              </CustomForm>
+            </Wrapper>
+            <Wrapper margin={`0 0 30px`}>
+              <Wrapper al={`flex-start`} margin={`0 0 20px`}>
+                <Text fontSize={`20px`}>기존태블릿구매여부</Text>
+              </Wrapper>
+
+              <CustomForm
+                form={eForm}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
+                onFinish={
+                  existingLecture ? boughtUpdateHandler : boughtCreateHandler
+                }
+              >
+                {existingLecture ? (
+                  <>
+                    <Form.Item name="lectureType" label="수강권유형">
+                      <Select size="small" style={{ width: `100%` }} disabled>
+                        <Select.Option value={1}>1년</Select.Option>
+                        <Select.Option value={2}>2년</Select.Option>
+                        <Select.Option value={3}>3년</Select.Option>
+                        <Select.Option value={4}>평생</Select.Option>
+                        <Select.Option value={5}>3달</Select.Option>
+                        <Select.Option value={6}>태블릿(신규)</Select.Option>
+                        <Select.Option value={7}>태블릿(기존)</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    {/* {existingLecture.isPay ? (
+                      <>
+                        <Form.Item
+                          name="startDate"
+                          label="시작일"
+                          rules={[
+                            { required: true, message: "시작일은 필수입니다." },
+                          ]}
+                        >
+                          <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                        <Form.Item
+                          name="endDate"
+                          label="종료일"
+                          rules={[
+                            { required: true, message: "종료일은 필수입니다." },
+                          ]}
+                        >
+                          <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                        <Form.Item name="pauseDate" label="일시정지">
+                          <DatePicker size="small" style={{ width: `100%` }} />
+                        </Form.Item>
+                      </>
+                    ) : (
+                      <Wrapper margin={`0 0 23px`}>
+                        <Text>승인되지 않았습니다.</Text>
+                      </Wrapper>
+                    )} */}
+                    <Form.Item name="boughtDate" label="구매일">
+                      <DatePicker
+                        size="small"
+                        style={{ width: `100%` }}
+                        disabled
+                      />
+                    </Form.Item>
+                  </>
+                ) : (
+                  <Form.Item
+                    name="lectureId"
+                    label="이용권 선택"
+                    rules={[
+                      { required: true, message: "종료일은 필수입니다." },
+                    ]}
+                  >
+                    <Select size="small">
+                      {lectureList &&
+                        lectureList
+                          .filter((data) => data.type === 7)
+                          .map((data, idx) => {
+                            return (
+                              <Select.Option key={idx} value={data.id}>
+                                {data.title}
+                              </Select.Option>
+                            );
+                          })}
+                    </Select>
+                  </Form.Item>
+                )}
+
+                <Wrapper dr={`row`} ju={`flex-end`}>
+                  {existingLecture && (
+                    <Popconfirm
+                      title="정말로 삭제하시겠습니까?"
+                      okText="삭제"
+                      cancelText="취소"
+                      onConfirm={existingDeleteHandler}
+                    >
+                      <ModalBtn
+                        size="small"
+                        type="danger"
+                        loading={st_boughtAdminDeleteLoading}
+                      >
+                        삭제
+                      </ModalBtn>
+                    </Popconfirm>
+                  )}
+
+                  {!existingLecture && (
+                    <ModalBtn
+                      size="small"
+                      type="primary"
+                      htmlType="submit"
+                      loading={
+                        st_boughtAdminCreateLoading ||
+                        st_boughtAdminUpdateLoading
+                      }
+                    >
+                      추가
                     </ModalBtn>
                   )}
                 </Wrapper>
@@ -1893,7 +2041,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: LECTURE_LIST_REQUEST,
       data: {
-        searchType: [1, 2, 3, 4],
+        searchType: [1, 2, 3, 4, 6, 7],
       },
     });
 

@@ -218,15 +218,16 @@ const Home = ({}) => {
 
   useEffect(() => {
     if (boughtMeDetail) {
-      if (lectureDetail && lectureDetail.type !== 7) {
-        message.error("이미 구매한 강의가 있습니다.");
-        return router.push("/enrolment");
-      }
-    } else {
-      if (lectureDetail && lectureDetail.type === 7) {
-        message.error("수강중인 강의가 없습니다.");
-        return router.push("/enrolment");
-      }
+      console.log(boughtMeDetail);
+      //   if (lectureDetail && lectureDetail.type !== 7) {
+      //     message.error("이미 구매한 강의가 있습니다.");
+      //     return router.push("/enrolment");
+      //   }
+      // } else {
+      //   if (lectureDetail && lectureDetail.type === 7) {
+      //     message.error("수강중인 강의가 없습니다.");
+      //     return router.push("/enrolment");
+      // }
     }
   }, [boughtMeDetail, lectureDetail]);
 
@@ -256,12 +257,12 @@ const Home = ({}) => {
     }
   }, [me]);
 
-  useEffect(() => {
-    if (st_lectureDetailError) {
-      message.error(st_lectureDetailError);
-      return router.push("/enrolment");
-    }
-  }, [st_lectureDetailError]);
+  // useEffect(() => {
+  //   if (st_lectureDetailError) {
+  //     message.error(st_lectureDetailError);
+  //     return router.push("/enrolment");
+  //   }
+  // }, [st_lectureDetailError]);
 
   // 결제 후처리
   useEffect(() => {
@@ -433,7 +434,7 @@ const Home = ({}) => {
             payType: isBuyType,
             pay: buyPay,
             lectureType: lectureDetail.type,
-            name: "-",
+            name: data.name,
             impUid: "-",
             merchantUid: "-",
             isBuyBook: isBuyBook === 1 ? 1 : 0,

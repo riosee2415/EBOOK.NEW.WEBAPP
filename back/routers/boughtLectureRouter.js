@@ -38,7 +38,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
               WHEN A.lectureType = 3 THEN  "3년"
               WHEN A.lectureType = 4 THEN  "평생"
               WHEN A.lectureType = 5 THEN  "3달"
-              WHEN A.lectureType = 6 THEN  "상품"
+              WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+              WHEN A.lectureType = 7 THEN  "태블릿(기존)"
           END                                           	AS viewLectureType,
           A.name,
           A.boughtDate,
@@ -412,7 +413,8 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
             WHEN A.lectureType = 3 THEN "3년"
             WHEN A.lectureType = 4 THEN "평생"
             WHEN A.lectureType = 5 THEN "3달"
-            WHEN A.lectureType = 6 THEN "상품"
+            WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+            WHEN A.lectureType = 7 THEN  "태블릿(기존)"
           END										AS viewLectureType,
           A.name,
           A.recentlyTurn,
@@ -426,8 +428,11 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
           A.isDelete,
           A.userId,
           A.lectureId,
-          pauseDate
+          A.pauseDate
     FROM  boughtLecture							A
+   INNER  
+    JOIN  lecture                   B
+      ON  A.lectureId = B.id
    WHERE  A.isDelete = FALSE
      AND  (
                 A.payType = "nobank" 
@@ -437,14 +442,69 @@ router.post("/admin/bought", isAdminCheck, async (req, res, next) => {
             AND DATE_FORMAT(A.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
           )
      AND  A.userId = ${id}
+     AND  B.type != 7
+   ORDER  BY  A.createdAt DESC
+   LIMIT  1
+  `;
+
+  const selectQ2 = `
+  SELECT  ROW_NUMBER() OVER()						AS num,
+          A.id,
+          A.receiver,
+          A.mobile,
+          A.zoneCode,
+          A.address,
+          A.detailAddress,
+          A.payType,
+          A.pay,
+          A.lectureType,
+          CASE
+            WHEN A.lectureType = 1 THEN "1년"
+            WHEN A.lectureType = 2 THEN "2년"
+            WHEN A.lectureType = 3 THEN "3년"
+            WHEN A.lectureType = 4 THEN "평생"
+            WHEN A.lectureType = 5 THEN "3달"
+            WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+            WHEN A.lectureType = 7 THEN  "태블릿(기존)"
+          END										AS viewLectureType,
+          A.name,
+          A.recentlyTurn,
+          A.recentlyTime,
+          A.boughtDate,
+          A.startDate,
+          A.endDate,
+          A.impUid,
+          A.merchantUid,
+          A.isPay,
+          A.isDelete,
+          A.userId,
+          A.lectureId,
+          A.pauseDate
+    FROM  boughtLecture							A
+   INNER  
+    JOIN  lecture                   B
+      ON  A.lectureId = B.id
+   WHERE  A.isDelete = FALSE
+     AND  (
+                A.payType = "nobank" 
+            AND A.endDate IS NULL 
+             OR A.isPay = TRUE 
+            AND A.endDate IS NOT NULL 
+            AND DATE_FORMAT(A.endDate, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+          )
+     AND  A.userId = ${id}
+     AND  B.type = 7
    ORDER  BY  A.createdAt DESC
    LIMIT  1
   `;
 
   try {
     const list = await models.sequelize.query(selectQ);
+    const list2 = await models.sequelize.query(selectQ2);
 
-    return res.status(200).json(list[0][0]);
+    return res
+      .status(200)
+      .json({ detail: list[0][0], existingLecture: list2[0][0] });
   } catch (e) {
     console.error(e);
     return res.status(400).send("회원이 구매 목록을 불러올 수 없습니다.");
@@ -470,7 +530,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
             WHEN A.lectureType = 3 THEN "3년"
             WHEN A.lectureType = 4 THEN "평생"
             WHEN A.lectureType = 5 THEN "3달"
-            WHEN A.lectureType = 6 THEN "상품"
+            WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+            WHEN A.lectureType = 7 THEN  "태블릿(기존)"
           END										AS viewLectureType,
           A.name,
           A.recentlyTurn,
@@ -519,7 +580,8 @@ router.post("/me/detail", isLoggedIn, async (req, res, next) => {
             WHEN A.lectureType = 3 THEN "3년"
             WHEN A.lectureType = 4 THEN "평생"
             WHEN A.lectureType = 5 THEN "3달"
-            WHEN A.lectureType = 6 THEN "상품"
+            WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+            WHEN A.lectureType = 7 THEN  "태블릿(기존)"
           END										AS viewLectureType,
           A.name,
           A.recentlyTurn,
@@ -537,8 +599,68 @@ router.post("/me/detail", isLoggedIn, async (req, res, next) => {
           A.lectureId,
           A.pauseDate
     FROM  boughtLecture							A
+   INNER
+    JOIN  lecture                   B
+      ON  A.lectureId = B.id
    WHERE  A.isDelete = FALSE
      AND  A.userId = ${req.user.id}
+     AND  B.type != 7
+   ORDER  BY  A.createdAt DESC
+   LIMIT  1
+  `;
+  try {
+    const list = await models.sequelize.query(selectQ);
+
+    return res.status(200).json(list[0][0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("수강권을 불러올 수 없습니다.");
+  }
+});
+
+router.post("/me/existingDetail", isLoggedIn, async (req, res, next) => {
+  const selectQ = `
+  SELECT  A.id,
+          A.receiver,
+          A.mobile,
+          A.zoneCode,
+          A.address,
+          A.detailAddress,
+          A.payType,
+          FORMAT(A.pay, ',')  AS  viewPay,
+          A.pay,
+          A.lectureType,
+          CASE
+            WHEN A.lectureType = 1 THEN "1년"
+            WHEN A.lectureType = 2 THEN "2년"
+            WHEN A.lectureType = 3 THEN "3년"
+            WHEN A.lectureType = 4 THEN "평생"
+            WHEN A.lectureType = 5 THEN "3달"
+            WHEN A.lectureType = 6 THEN  "태블릿(신규)"
+            WHEN A.lectureType = 7 THEN  "태블릿(기존)"
+          END										AS viewLectureType,
+          A.name,
+          A.recentlyTurn,
+          A.recentlyTime,
+          A.boughtDate,
+          A.startDate,
+          DATE_FORMAT(A.startDate, '%Y년 %m월 %d일')    AS viewStateDate,
+          A.endDate,
+          DATE_FORMAT(A.endDate, '%Y년 %m월 %d일')      AS viewEndDate,
+          A.impUid,
+          A.merchantUid,
+          A.isPay,
+          A.isDelete,
+          A.userId,
+          A.lectureId,
+          A.pauseDate
+    FROM  boughtLecture							A
+   INNER
+    JOIN  lecture                   B
+      ON  A.lectureId = B.id
+   WHERE  A.isDelete = FALSE
+     AND  A.userId = ${req.user.id}
+     AND  B.type = 7
    ORDER  BY  A.createdAt DESC
    LIMIT  1
   `;
