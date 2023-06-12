@@ -35,6 +35,8 @@ const enjoyMedia = require("./enjoyMedia");
 const mobileBanner = require("./mobileBanner");
 const keyword = require("./keyword");
 const keywordConnect = require("./keywordConnect");
+const tag = require("./tag");
+const tagConnect = require("./tagConnect");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -83,6 +85,8 @@ db.EnjoyMedia = enjoyMedia;
 db.MobileBanner = mobileBanner;
 db.Keyword = keyword;
 db.KeywordConnect = keywordConnect;
+db.Tag = tag;
+db.TagConnect = tagConnect;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);

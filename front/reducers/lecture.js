@@ -4,6 +4,8 @@ export const initailState = {
   lectureAdminList: [],
   lectureList: [],
   lectureDetail: null,
+  tagList: [],
+  lectureTagList: [],
 
   thumbnailPath: null,
 
@@ -34,6 +36,30 @@ export const initailState = {
   st_lectureDeleteLoading: false,
   st_lectureDeleteDone: false,
   st_lectureDeleteError: null,
+  //
+  st_tagListLoading: false, // 키워드 리스트
+  st_tagListDone: false,
+  st_tagListError: null,
+  //
+  st_tagCreateLoading: false, // 키워드 생성
+  st_tagCreateDone: false,
+  st_tagCreateError: null,
+  //
+  st_tagDeleteLoading: false, // 키워드 삭제
+  st_tagDeleteDone: false,
+  st_tagDeleteError: null,
+  //
+  st_lectureTagListLoading: false, // 키워드 회원 리스트
+  st_lectureTagListDone: false,
+  st_lectureTagListError: null,
+  //
+  st_lectureTagCreateLoading: false, // 키워드 회원 생성
+  st_lectureTagCreateDone: false,
+  st_lectureTagCreateError: null,
+  //
+  st_lectureTagDeleteLoading: false, // 카워드 회원 삭제
+  st_lectureTagDeleteDone: false,
+  st_lectureTagDeleteError: null,
 };
 
 export const LECTURE_LIST_REQUEST = "LECTURE_LIST_REQUEST";
@@ -63,6 +89,30 @@ export const LECTURE_UPDATE_FAILURE = "LECTURE_UPDATE_FAILURE";
 export const LECTURE_DELETE_REQUEST = "LECTURE_DELETE_REQUEST";
 export const LECTURE_DELETE_SUCCESS = "LECTURE_DELETE_SUCCESS";
 export const LECTURE_DELETE_FAILURE = "LECTURE_DELETE_FAILURE";
+//
+export const TAG_LIST_REQUEST = "TAG_LIST_REQUEST";
+export const TAG_LIST_SUCCESS = "TAG_LIST_SUCCESS";
+export const TAG_LIST_FAILURE = "TAG_LIST_FAILURE";
+//
+export const TAG_CREATE_REQUEST = "TAG_CREATE_REQUEST";
+export const TAG_CREATE_SUCCESS = "TAG_CREATE_SUCCESS";
+export const TAG_CREATE_FAILURE = "TAG_CREATE_FAILURE";
+//
+export const TAG_DELETE_REQUEST = "TAG_DELETE_REQUEST";
+export const TAG_DELETE_SUCCESS = "TAG_DELETE_SUCCESS";
+export const TAG_DELETE_FAILURE = "TAG_DELETE_FAILURE";
+//
+export const LECTURE_TAG_LIST_REQUEST = "LECTURE_TAG_LIST_REQUEST";
+export const LECTURE_TAG_LIST_SUCCESS = "LECTURE_TAG_LIST_SUCCESS";
+export const LECTURE_TAG_LIST_FAILURE = "LECTURE_TAG_LIST_FAILURE";
+//
+export const LECTURE_TAG_CREATE_REQUEST = "LECTURE_TAG_CREATE_REQUEST";
+export const LECTURE_TAG_CREATE_SUCCESS = "LECTURE_TAG_CREATE_SUCCESS";
+export const LECTURE_TAG_CREATE_FAILURE = "LECTURE_TAG_CREATE_FAILURE";
+//
+export const LECTURE_TAG_DELETE_REQUEST = "LECTURE_TAG_DELETE_REQUEST";
+export const LECTURE_TAG_DELETE_SUCCESS = "LECTURE_TAG_DELETE_SUCCESS";
+export const LECTURE_TAG_DELETE_FAILURE = "LECTURE_TAG_DELETE_FAILURE";
 
 export const LECTURE_IMAGE_RESET = "LECTURE_IMAGE_RESET";
 
@@ -215,6 +265,122 @@ const reducer = (state = initailState, action) =>
       }
 
       ///////////////////////////////////////////////////////
+      case TAG_LIST_REQUEST: {
+        draft.st_tagListLoading = true;
+        draft.st_tagListDone = false;
+        draft.st_tagListError = null;
+        break;
+      }
+      case TAG_LIST_SUCCESS: {
+        draft.st_tagListLoading = false;
+        draft.st_tagListDone = true;
+        draft.st_tagListError = null;
+        draft.tagList = action.data;
+        break;
+      }
+      case TAG_LIST_FAILURE: {
+        draft.st_tagListLoading = false;
+        draft.st_tagListDone = false;
+        draft.st_tagListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case TAG_CREATE_REQUEST: {
+        draft.st_tagCreateLoading = true;
+        draft.st_tagCreateDone = false;
+        draft.st_tagCreateError = null;
+        break;
+      }
+      case TAG_CREATE_SUCCESS: {
+        draft.st_tagCreateLoading = false;
+        draft.st_tagCreateDone = true;
+        draft.st_tagCreateError = null;
+        break;
+      }
+      case TAG_CREATE_FAILURE: {
+        draft.st_tagCreateLoading = false;
+        draft.st_tagCreateDone = false;
+        draft.st_tagCreateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case TAG_DELETE_REQUEST: {
+        draft.st_tagDeleteLoading = true;
+        draft.st_tagDeleteDone = false;
+        draft.st_tagDeleteError = null;
+        break;
+      }
+      case TAG_DELETE_SUCCESS: {
+        draft.st_tagDeleteLoading = false;
+        draft.st_tagDeleteDone = true;
+        draft.st_tagDeleteError = null;
+        break;
+      }
+      case TAG_DELETE_FAILURE: {
+        draft.st_tagDeleteLoading = false;
+        draft.st_tagDeleteDone = false;
+        draft.st_tagDeleteError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case LECTURE_TAG_LIST_REQUEST: {
+        draft.st_lectureTagListLoading = true;
+        draft.st_lectureTagListDone = false;
+        draft.st_lectureTagListError = null;
+        break;
+      }
+      case LECTURE_TAG_LIST_SUCCESS: {
+        draft.st_lectureTagListLoading = false;
+        draft.st_lectureTagListDone = true;
+        draft.st_lectureTagListError = null;
+        draft.lectureTagList = action.data;
+        break;
+      }
+      case LECTURE_TAG_LIST_FAILURE: {
+        draft.st_lectureTagListLoading = false;
+        draft.st_lectureTagListDone = false;
+        draft.st_lectureTagListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case LECTURE_TAG_CREATE_REQUEST: {
+        draft.st_lectureTagCreateLoading = true;
+        draft.st_lectureTagCreateDone = false;
+        draft.st_lectureTagCreateError = null;
+        break;
+      }
+      case LECTURE_TAG_CREATE_SUCCESS: {
+        draft.st_lectureTagCreateLoading = false;
+        draft.st_lectureTagCreateDone = true;
+        draft.st_lectureTagCreateError = null;
+        break;
+      }
+      case LECTURE_TAG_CREATE_FAILURE: {
+        draft.st_lectureTagCreateLoading = false;
+        draft.st_lectureTagCreateDone = false;
+        draft.st_lectureTagCreateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case LECTURE_TAG_DELETE_REQUEST: {
+        draft.st_lectureTagDeleteLoading = true;
+        draft.st_lectureTagDeleteDone = false;
+        draft.st_lectureTagDeleteError = null;
+        break;
+      }
+      case LECTURE_TAG_DELETE_SUCCESS: {
+        draft.st_lectureTagDeleteLoading = false;
+        draft.st_lectureTagDeleteDone = true;
+        draft.st_lectureTagDeleteError = null;
+        break;
+      }
+      case LECTURE_TAG_DELETE_FAILURE: {
+        draft.st_lectureTagDeleteLoading = false;
+        draft.st_lectureTagDeleteDone = false;
+        draft.st_lectureTagDeleteError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
       default:
         break;
     }

@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   DatePicker,
+  Empty,
   Form,
   Image,
   Input,
   message,
+  Modal,
   Popconfirm,
   Popover,
   Select,
@@ -38,6 +40,7 @@ import {
   EyeOutlined,
   AlertOutlined,
   CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import {
   LECTURE_ADMIN_LIST_REQUEST,
@@ -45,7 +48,13 @@ import {
   LECTURE_DELETE_REQUEST,
   LECTURE_IMAGE_RESET,
   LECTURE_IMAGE_UPLOAD_REQUEST,
+  LECTURE_TAG_CREATE_REQUEST,
+  LECTURE_TAG_DELETE_REQUEST,
+  LECTURE_TAG_LIST_REQUEST,
   LECTURE_UPDATE_REQUEST,
+  TAG_CREATE_REQUEST,
+  TAG_DELETE_REQUEST,
+  TAG_LIST_REQUEST,
 } from "../../../reducers/lecture";
 import moment from "moment";
 
@@ -69,17 +78,28 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.subTheme_C : props.theme.lightGrey_C};
 `;
 
+const CustomForm = styled(Form)`
+  margin: 0 0 10px;
+
+  & .ant-form-item {
+    margin: 0;
+  }
+
+  & .ant-form-item-control-input {
+    min-height: 0;
+  }
+`;
+
 const List = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
 
   const {
     lectureAdminList,
-
+    tagList,
+    lectureTagList,
     thumbnailPath,
     //
     st_lectureImageUploadLoading,
-    st_lectureImageUploadDone,
-    st_lectureImageUploadError,
     //
     st_lectureCreateLoading,
     st_lectureCreateDone,
@@ -92,6 +112,22 @@ const List = ({}) => {
     st_lectureDeleteLoading,
     st_lectureDeleteDone,
     st_lectureDeleteError,
+    //
+    st_tagCreateLoading,
+    st_tagCreateDone,
+    st_tagCreateError,
+    //
+    st_tagDeleteLoading,
+    st_tagDeleteDone,
+    st_tagDeleteError,
+    //
+    st_lectureTagCreateLoading,
+    st_lectureTagCreateDone,
+    st_lectureTagCreateError,
+    //
+    st_lectureTagDeleteLoading,
+    st_lectureTagDeleteDone,
+    st_lectureTagDeleteError,
   } = useSelector((state) => state.lecture);
 
   const router = useRouter();
@@ -126,6 +162,7 @@ const List = ({}) => {
   ////// HOOKS //////
 
   const [infoForm] = Form.useForm();
+  const [tForm] = Form.useForm();
 
   const imageRef = useRef();
 
@@ -134,6 +171,8 @@ const List = ({}) => {
   const [serachType, setSearchType] = useState(7);
 
   const [isHidden, setIsHidden] = useState(false);
+
+  const [tModal, setTModal] = useState(false);
 
   ////// USEEFFECT //////
 
@@ -227,10 +266,86 @@ const List = ({}) => {
     }
   }, [st_lectureDeleteDone, st_lectureDeleteError]);
 
+  useEffect(() => {
+    if (st_tagCreateDone) {
+      tForm.resetFields();
+
+      dispatch({
+        type: TAG_LIST_REQUEST,
+      });
+
+      return message.success("태그가 생성되었습니다.");
+    }
+
+    if (st_tagCreateError) {
+      return message.error(st_tagCreateError);
+    }
+  }, [st_tagCreateDone, st_tagCreateError]);
+
+  useEffect(() => {
+    if (st_tagDeleteDone) {
+      dispatch({
+        type: TAG_LIST_REQUEST,
+      });
+
+      return message.success("태그가 삭제되었습니다.");
+    }
+
+    if (st_tagDeleteError) {
+      return message.error(st_tagDeleteError);
+    }
+  }, [st_tagDeleteDone, st_tagDeleteError]);
+
+  useEffect(() => {
+    if (st_lectureTagCreateDone) {
+      if (currentData) {
+        dispatch({
+          type: LECTURE_TAG_LIST_REQUEST,
+          data: {
+            id: currentData.id,
+          },
+        });
+      }
+
+      infoForm.setFieldsValue({
+        tag: "",
+      });
+
+      return message.success("태그가 추가되었습니다.");
+    }
+
+    if (st_lectureTagCreateError) {
+      return message.error(st_lectureTagCreateError);
+    }
+  }, [st_lectureTagCreateDone, st_lectureTagCreateError]);
+
+  useEffect(() => {
+    if (st_lectureTagDeleteDone) {
+      if (currentData) {
+        dispatch({
+          type: LECTURE_TAG_LIST_REQUEST,
+          data: {
+            id: currentData.id,
+          },
+        });
+      }
+
+      return message.success("태그가 삭제되었습니다.");
+    }
+
+    if (st_lectureTagDeleteError) {
+      return message.error(st_lectureTagDeleteError);
+    }
+  }, [st_lectureTagDeleteDone, st_lectureTagDeleteError]);
+
   ////// TOGGLE //////
   const isHiddenToggle = useCallback(() => {
     setIsHidden((prev) => !prev);
   }, [isHidden]);
+
+  const tModalToggle = useCallback(() => {
+    setTModal((prev) => !prev);
+  }, [tModal]);
 
   ////// HANDLER //////
 
@@ -279,6 +394,13 @@ const List = ({}) => {
         isBookPay: record.isBookPay,
         isBookNoPay: record.isBookNoPay,
         sort: record.sort,
+      });
+
+      dispatch({
+        type: LECTURE_TAG_LIST_REQUEST,
+        data: {
+          id: record.id,
+        },
       });
     },
     [currentData]
@@ -342,6 +464,50 @@ const List = ({}) => {
     });
   }, [currentData]);
 
+  // 태그 생성
+  const tCreateHandler = useCallback((data) => {
+    dispatch({
+      type: TAG_CREATE_REQUEST,
+      data: {
+        value: data.value,
+      },
+    });
+  }, []);
+
+  // 태그 삭제
+  const tDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: TAG_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
+  // 강의 태그 추가
+  const ltCreateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: LECTURE_TAG_CREATE_REQUEST,
+        data: {
+          LectureId: currentData.id,
+          TagId: data,
+        },
+      });
+    },
+    [currentData]
+  );
+
+  // 강의 태그 삭제
+  const ltDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: LECTURE_TAG_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -371,6 +537,46 @@ const List = ({}) => {
             parseInt(data.id) === (currentData && parseInt(currentData.id))
           }
         />
+      ),
+    },
+  ];
+
+  const columns2 = [
+    {
+      width: `10%`,
+      align: "center",
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      width: `40%`,
+      title: "키워드이름",
+      dataIndex: "value",
+    },
+    {
+      width: `15%`,
+      title: "부여강의수",
+      dataIndex: "useTagCnt",
+    },
+    {
+      width: `20%`,
+      title: "생성일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
+      width: `15%`,
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="정말 삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => tDeleteHandler(data)}
+        >
+          <Button size="small" type="danger" loading={st_tagDeleteLoading}>
+            삭제
+          </Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -456,14 +662,19 @@ const List = ({}) => {
                   );
                 })}
             </Wrapper>
-            <Button
-              size="small"
-              type="primary"
-              loading={st_lectureCreateLoading}
-              onClick={lectureCreateHandler}
-            >
-              상품 생성
-            </Button>
+            <Wrapper dr={`row`} width={`auto`}>
+              <Button size="small" onClick={tModalToggle}>
+                태그 관리
+              </Button>
+              <Button
+                size="small"
+                type="primary"
+                loading={st_lectureCreateLoading}
+                onClick={lectureCreateHandler}
+              >
+                상품 생성
+              </Button>
+            </Wrapper>
           </Wrapper>
           <Table
             size="small"
@@ -632,7 +843,7 @@ const List = ({}) => {
                   <Input size="small" type="number" />
                 </Form.Item>
 
-                <Wrapper dr={`row`} ju="flex-end">
+                <Wrapper dr={`row`} ju="flex-end" margin={`0 0 30px`}>
                   <Popconfirm
                     title="해당 상품을 삭제하시겠습니까?"
                     okText="삭제"
@@ -656,6 +867,63 @@ const List = ({}) => {
                     정보 업데이트
                   </ModalBtn>
                 </Wrapper>
+
+                <Form.Item name="tag" label="태그">
+                  <Select size="small" onChange={ltCreateHandler}>
+                    {tagList.map((data, idx) => {
+                      return (
+                        <Select.Option key={idx} value={data.id}>
+                          {data.value}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+
+                <Wrapper al={`flex-end`}>
+                  <Wrapper
+                    width={`83.4%`}
+                    margin={`0 0 30px`}
+                    height={`200px`}
+                    ju={`flex-start`}
+                    borderBottom={`1px solid ${Theme.lightGrey_C}`}
+                    overflow={`auto`}
+                  >
+                    <Wrapper height={`auto`}>
+                      {lectureTagList &&
+                        (lectureTagList.length === 0 ? (
+                          <Wrapper margin={`20px 0`}>
+                            <Empty description="부여된 태그가 없습니다." />
+                          </Wrapper>
+                        ) : (
+                          lectureTagList.map((data, idx) => {
+                            return (
+                              <Wrapper
+                                key={idx}
+                                dr={`row`}
+                                padding={`5px 10px`}
+                                border={`1px solid ${Theme.lightGrey_C}`}
+                                margin={`0 0 5px`}
+                              >
+                                <Text width={`calc(100% - 20px)`}>
+                                  {data.value}
+                                </Text>
+                                <Wrapper width={`20px`}>
+                                  <CloseOutlined
+                                    style={{
+                                      cursor: `pointer`,
+                                      color: Theme.red_C,
+                                    }}
+                                    onClick={() => ltDeleteHandler(data)}
+                                  />
+                                </Wrapper>
+                              </Wrapper>
+                            );
+                          })
+                        ))}
+                    </Wrapper>
+                  </Wrapper>
+                </Wrapper>
               </Form>
               <Wrapper
                 width="100%"
@@ -678,6 +946,41 @@ const List = ({}) => {
           )}
         </Wrapper>
       </Wrapper>
+
+      {/* TAG MODAL */}
+      <Modal
+        width={`1080px`}
+        title="태그 관리"
+        visible={tModal}
+        onCancel={tModalToggle}
+        footer={null}
+      >
+        <CustomForm layout="inline" form={tForm} onFinish={tCreateHandler}>
+          <Form.Item
+            name="value"
+            rules={[{ required: true, message: "태그를 입력해주세요." }]}
+          >
+            <Input
+              style={{ width: `300px` }}
+              placeholder="생성할 태그를 입력해주세요."
+              size="small"
+            />
+          </Form.Item>
+          <Button
+            size="small"
+            type="primary"
+            htmlType="submit"
+            loading={st_tagCreateLoading}
+          >
+            생성
+          </Button>
+        </CustomForm>
+        <Table
+          size="small"
+          columns={columns2}
+          dataSource={tagList ? tagList : []}
+        />
+      </Modal>
     </AdminLayout>
   );
 };
@@ -699,6 +1002,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LECTURE_ADMIN_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: TAG_LIST_REQUEST,
     });
 
     // 구현부 종료

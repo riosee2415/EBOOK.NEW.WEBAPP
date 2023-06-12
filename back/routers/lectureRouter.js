@@ -112,7 +112,26 @@ router.post("/list", async (req, res, next) => {
   try {
     const list = await models.sequelize.query(selectQ);
 
-    return res.status(200).json(list[0]);
+    const selectQ2 = `
+    SELECT  A.id,
+		        A.TagId,
+		        A.LectureId,
+		        B.value
+      FROM  tagConnect		A
+     INNER
+      JOIN  tag				B
+        ON  A.TagId = B.id
+     WHERE  A.LectureId IN (${list[0].map((data) => data.id)})
+    `;
+
+    const list2 = await models.sequelize.query(selectQ2);
+
+    return res.status(200).json(
+      list[0].map((data) => ({
+        ...data,
+        tags: list2[0].filter((value) => value.LectureId === data.id),
+      }))
+    );
   } catch (e) {
     console.error(e);
     return res.status(400).send("상품 리스트를 불러올 수 없습니다.");
@@ -355,4 +374,183 @@ router.post("/delete", isAdminCheck, async (req, res, next) => {
   }
 });
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////// TAG /////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+// 태그 리스트
+router.post("/tag/list", isAdminCheck, async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER() OVER(ORDER BY A.createdAt)        	AS num,
+          A.id,
+          A.value,
+          (
+            SELECT  COUNT(id)
+              FROM  tagConnect				B
+             WHERE  B.TagId = A.id
+          )												AS useTagCnt,
+          A.createdAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")			AS viewCreatedAt,
+          A.updatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")			AS viewUpdatedAt
+    FROM  tag 			A
+   WHERE  A.isDelete = 0
+  `;
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("태그를 불러올 수 업습니다.");
+  }
+});
+
+// 태그 생성
+router.post("/tag/create", isAdminCheck, async (req, res, next) => {
+  const { value } = req.body;
+
+  const insertQuery = `
+  INSERT INTO tag (
+    value,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    "${value}",
+    NOW(),
+    NOW()
+  )
+  `;
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("태그를 생성할 수 없습니다.");
+  }
+});
+
+// 태그 삭제
+router.post("/tag/delete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQuery = `
+  SELECT  id
+    FROM  tag k
+   WHERE  id = ${id}
+     AND  isDelete = 0
+  `;
+
+  const deleteQuery = `
+  UPDATE  tag
+     SET  isDelete = 1,
+          deletedAt = NOW()
+   WHERE  id = ${id}
+  `;
+  try {
+    const findResult = await models.sequelize.query(findQuery);
+
+    if (findResult[0].length === 0) {
+      return res.status(400).send("태그를 삭제할 수 없습니다.");
+    }
+
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("태그를 삭제할 수 없습니다.");
+  }
+});
+
+// 회원 태그 리스트
+router.post("/tag/tagList", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQuery = `
+  SELECT  A.id,
+		      A.LectureId,
+		      A.TagId,
+		      B.value
+    FROM  tagConnect				A
+   INNER
+    JOIN  tag						    B
+      ON  A.TagId = B.id
+   WHERE  A.LectureId = ${id}
+  `;
+
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("태그를 조회할 수 없습니다.");
+  }
+});
+
+// 회원 태그 부여
+router.post("/tag/tagCreate", isAdminCheck, async (req, res, next) => {
+  const { LectureId, TagId } = req.body;
+
+  const insertQuery = `
+  INSERT INTO tagConnect (
+    LectureId,
+    TagId,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    ${LectureId},
+    ${TagId},
+    NOW(),
+    NOW()
+  )
+  `;
+
+  try {
+    const result = await models.sequelize.query(insertQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("태그를 추가할 수 없습니다.");
+  }
+});
+
+// 회원 태그 삭제
+router.post("/tag/tagDelete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQuery = `
+  SELECT  id
+    FROM  tagConnect k
+   WHERE  id = ${id}
+  `;
+
+  const deleteQuery = `
+    DELETE  
+      FROM  tagConnect
+     WHERE  id = ${id}
+  `;
+
+  try {
+    const findResult = await models.sequelize.query(findQuery);
+
+    if (findResult[0].length === 0) {
+      return res.status(400).send("이미 삭제된 태그 입니다.");
+    }
+
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(400).send("태그를 삭제할 수 없습니다.");
+  }
+});
 module.exports = router;

@@ -28,6 +28,8 @@ const Home = ({}) => {
   const { lectureList } = useSelector((state) => state.lecture);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
+  console.log(lectureList);
+
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
@@ -114,46 +116,22 @@ const Home = ({}) => {
                             ju={`space-between`}
                             margin={`14px 0 0`}
                           >
-                            <Wrapper
-                              width={`auto`}
-                              fontSize={`17px`}
-                              padding={width < 800 ? `8px 10px` : `8px 15px`}
-                              border={`1px solid ${Theme.lightGrey4_C}`}
-                              color={Theme.subTheme7_C}
-                              radius={`30px`}
-                            >
-                              #이지쌤
-                            </Wrapper>
-                            <Wrapper
-                              width={`auto`}
-                              fontSize={`17px`}
-                              padding={width < 800 ? `8px 10px` : `8px 15px`}
-                              border={`1px solid ${Theme.lightGrey4_C}`}
-                              color={Theme.subTheme7_C}
-                              radius={`30px`}
-                            >
-                              #제이미쌤
-                            </Wrapper>
-                            <Wrapper
-                              width={`auto`}
-                              fontSize={`17px`}
-                              padding={width < 800 ? `8px 10px` : `8px 15px`}
-                              border={`1px solid ${Theme.lightGrey4_C}`}
-                              color={Theme.subTheme7_C}
-                              radius={`30px`}
-                            >
-                              #무제한 수강
-                            </Wrapper>
-                            <Wrapper
-                              width={`auto`}
-                              fontSize={`17px`}
-                              padding={width < 800 ? `8px 10px` : `8px 15px`}
-                              border={`1px solid ${Theme.lightGrey4_C}`}
-                              color={Theme.subTheme7_C}
-                              radius={`30px`}
-                            >
-                              #{data.viewType}
-                            </Wrapper>
+                            {data.tags.map((data) => {
+                              return (
+                                <Wrapper
+                                  width={`auto`}
+                                  fontSize={`17px`}
+                                  padding={
+                                    width < 800 ? `8px 10px` : `8px 15px`
+                                  }
+                                  border={`1px solid ${Theme.lightGrey4_C}`}
+                                  color={Theme.subTheme7_C}
+                                  radius={`30px`}
+                                >
+                                  #{data.value}
+                                </Wrapper>
+                              );
+                            })}
                           </Wrapper>
                         </Wrapper>
                         <Wrapper
