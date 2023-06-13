@@ -349,6 +349,8 @@ const UserList = ({}) => {
     "수강권변경(3달->3년)",
     "취소",
     "부분취소",
+    "테블릿신규",
+    "테블릿기존",
   ];
 
   ////// USEEFFECT //////
@@ -2041,7 +2043,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: LECTURE_LIST_REQUEST,
       data: {
-        searchType: [1, 2, 3, 4, 6, 7],
+        searchType: [1, 2, 3, 4, 5, 6, 7],
       },
     });
 

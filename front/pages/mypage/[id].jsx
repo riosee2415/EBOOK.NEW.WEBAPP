@@ -207,6 +207,15 @@ const MediaDetail = () => {
     }
   }, [videoSpeed]);
 
+  useEffect(() => {
+    if (boughtMeDetail && mediaDetail) {
+      if (boughtMeDetail.lectureType === 5 && mediaDetail.sort > 118) {
+        router.push("/mypage");
+        return message.error("수강하실 수 없는 강의 입니다.");
+      }
+    }
+  }, [boughtMeDetail, mediaDetail]);
+
   ////// HANDLER //////
 
   // 페이지 변경
@@ -233,14 +242,16 @@ const MediaDetail = () => {
     (data) => {
       const currentVideo = document.getElementById("videoTag");
 
-      dispatch({
-        type: BOUGHT_RECENTLY_UPDATE_REQUEST,
-        data: {
-          id: boughtMeDetail.id,
-          recentlyTurn: router.query.id,
-          recentlyTime: currentVideo.currentTime,
-        },
-      });
+      if (boughtMeDetail) {
+        dispatch({
+          type: BOUGHT_RECENTLY_UPDATE_REQUEST,
+          data: {
+            id: boughtMeDetail.id,
+            recentlyTurn: router.query.id,
+            recentlyTime: currentVideo.currentTime,
+          },
+        });
+      }
     },
     [boughtMeDetail, router.query]
   );
@@ -404,28 +415,66 @@ const MediaDetail = () => {
                           강의 목록
                         </TextHover>
 
-                        <TextHover
-                          fontSize={width < 700 ? `10px !important` : `26px`}
-                          color={Theme.white_C}
-                          margin={`0 5px 0 0`}
-                          onClick={() => {
-                            moveLinkHandler(
-                              `/mypage/${nextData.id}?isSample=0`
-                            );
-                          }}
-                        >
-                          다음강의
-                        </TextHover>
+                        {router.query &&
+                          router.query.isSample !== "1" &&
+                          mediaDetail &&
+                          (mediaDetail.sort === 118 ? (
+                            boughtMeDetail?.lectureType !== 5 && (
+                              <>
+                                <TextHover
+                                  fontSize={
+                                    width < 700 ? `10px !important` : `26px`
+                                  }
+                                  color={Theme.white_C}
+                                  margin={`0 5px 0 0`}
+                                  onClick={() => {
+                                    moveLinkHandler(
+                                      `/mypage/${nextData.id}?isSample=0`
+                                    );
+                                  }}
+                                >
+                                  다음강의
+                                </TextHover>
 
-                        <Image
-                          onClick={() => {
-                            moveLinkHandler(
-                              `/mypage/${nextData.id}?isSample=0`
-                            );
-                          }}
-                          width={width < 700 ? `15px` : `25px`}
-                          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/icon_next.png`}
-                        />
+                                <Image
+                                  onClick={() => {
+                                    moveLinkHandler(
+                                      `/mypage/${nextData.id}?isSample=0`
+                                    );
+                                  }}
+                                  width={width < 700 ? `15px` : `25px`}
+                                  src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/icon_next.png`}
+                                />
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <TextHover
+                                fontSize={
+                                  width < 700 ? `10px !important` : `26px`
+                                }
+                                color={Theme.white_C}
+                                margin={`0 5px 0 0`}
+                                onClick={() => {
+                                  moveLinkHandler(
+                                    `/mypage/${nextData.id}?isSample=0`
+                                  );
+                                }}
+                              >
+                                다음강의
+                              </TextHover>
+
+                              <Image
+                                onClick={() => {
+                                  moveLinkHandler(
+                                    `/mypage/${nextData.id}?isSample=0`
+                                  );
+                                }}
+                                width={width < 700 ? `15px` : `25px`}
+                                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/icon_next.png`}
+                              />
+                            </>
+                          ))}
                       </Wrapper>
                     )}
                   </Wrapper>
@@ -530,6 +579,11 @@ const MediaDetail = () => {
                   mediaAllList
                     .filter((data) =>
                       searchType ? data.type.indexOf(searchType) !== -1 : true
+                    )
+                    .filter((data) =>
+                      boughtMeDetail?.lectureType === 5
+                        ? data.sort <= 118
+                        : true
                     )
                     .map((data, idx) => {
                       return (

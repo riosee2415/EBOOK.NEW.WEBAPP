@@ -81,10 +81,7 @@ const MypageIndex = ({}) => {
   ////// USEEFFECT //////
 
   useEffect(() => {
-    if (!me) {
-      message.error("로그인 후 이용해주세요.");
-      return router.push("/user/login");
-    } else {
+    if (me) {
       if (me.isBlack) {
         dispatch({
           type: LOGOUT_REQUEST,
