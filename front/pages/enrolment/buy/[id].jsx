@@ -541,19 +541,19 @@ const Home = ({}) => {
             name: lectureDetail && lectureDetail.title,
             buyer_name: me.username,
             biz_num: me.mobile,
-            amount: 150,
-            // amount:
-            //   (lectureDetail.discountPrice
-            //     ? lectureDetail.discountPrice
-            //     : lectureDetail.price) +
-            //   (isBuyBook === 1 && overAddress
-            //     ? dataArr.find((data) => data.id === overAddress).price
-            //     : 0) +
-            //   (isBuyBook === 1
-            //     ? lectureDetail.bookEndDate
-            //       ? lectureDetail.bookDiscountPrice
-            //       : lectureDetail.bookPrice
-            //     : 0),
+            // amount: 150,
+            amount:
+              (lectureDetail.discountPrice
+                ? lectureDetail.discountPrice
+                : lectureDetail.price) +
+              (isBuyBook === 1 && overAddress
+                ? dataArr.find((data) => data.id === overAddress).price
+                : 0) +
+              (isBuyBook === 1
+                ? lectureDetail.bookEndDate
+                  ? lectureDetail.bookDiscountPrice
+                  : lectureDetail.bookPrice
+                : 0),
           },
           async (rsp) => {
             if (rsp.success) {
