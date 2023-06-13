@@ -302,7 +302,8 @@ const MypageIndex = ({}) => {
                       있습니다.)
                     </Text>
                   </>
-                ) : boughtMeDetail.lectureType === 4 ? (
+                ) : boughtMeDetail.lectureType === 4 ||
+                  boughtMeDetail.lectureType === 6 ? (
                   <Text
                     fontSize={width < 700 ? `20px` : `28px`}
                     fontWeight={`600`}

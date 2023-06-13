@@ -122,7 +122,7 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
   } = req.body;
 
   const YEAR =
-    lectureType === 4
+    lectureType === 4 || lectureType === 6 || lectureType === 7
       ? `"9999-12-31"`
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 

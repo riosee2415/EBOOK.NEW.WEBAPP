@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,9 +57,15 @@ import { saveAs } from "file-saver";
 
 import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-});
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    return function comp({ forwardedRef, ...props }) {
+      return <RQ ref={forwardedRef} {...props} />;
+    };
+  },
+  { ssr: false }
+);
 import "react-quill/dist/quill.snow.css";
 
 const QuillWrapper = styled(ReactQuill)`
@@ -129,6 +141,7 @@ const Notice = ({}) => {
   const [infoForm] = Form.useForm();
 
   const fileRef = useRef();
+  const quillRef = useRef();
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -156,19 +169,35 @@ const Notice = ({}) => {
   ////// USEEFFECT //////
 
   useEffect(() => {
-    if (st_noticeFileDone) {
-      setCurrentData((prev) => {
-        return {
-          ...prev,
-          file: uploadFilePath,
-        };
-      });
+    if (uploadFilePath) {
+      // setCurrentData((prev) => {
+      //   return {
+      //     ...prev,
+      //     file: uploadFilePath,
+      //   };
+      // });
 
-      return message.success(
-        "파일이 업로드되었습니다. 적용하기 버튼을 눌러주세요."
-      );
+      // return message.success(
+      //   "파일이 업로드되었습니다. 적용하기 버튼을 눌러주세요."
+      // );
+
+      // S3 Presigned URL로 업로드하고 image url 받아오기
+
+      // 현재 커서 위치에 이미지를 삽입하고 커서 위치를 +1 하기
+      if (quillRef.current) {
+        const range = quillRef.current.getEditorSelection();
+        quillRef.current
+          .getEditor()
+          .insertEmbed(range.index, "image", uploadFilePath);
+        quillRef.current.getEditor().setSelection(range.index + 1);
+        document.body.querySelector(":scope > input").remove();
+
+        console.log(uploadFilePath);
+      }
     }
-  }, [st_noticeFileDone]);
+  }, [uploadFilePath, quillRef]);
+
+  console.log(quillRef);
 
   // ********************** 공지사항 생성 후처리 *************************
   useEffect(() => {
@@ -473,6 +502,52 @@ const Notice = ({}) => {
 
   ////// DATAVIEW //////
 
+  const imageHandler = useCallback((data) => {
+    const input = document.createElement("input");
+
+    input.setAttribute("type", "file");
+    input.setAttribute("hidden", true);
+    input.setAttribute("accept", "image/*");
+    document.body.appendChild(input);
+
+    input.click();
+
+    input.onchange = async () => {
+      const [file] = input.files;
+
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      dispatch({
+        type: NOTICE_FILE_REQUEST,
+        data: formData,
+      });
+    };
+  }, []);
+
+  // useMemo를 사용한 이유는 modules가 렌더링마다 변하면 에디터에서 입력이 끊기는 버그가 발생
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, false] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" },
+          ],
+          ["link", "image"],
+          ["clean"],
+        ],
+        handlers: { image: imageHandler },
+      },
+    }),
+    []
+  );
+
   ////// DATA COLUMNS //////
 
   const noticeCol = [
@@ -651,24 +726,10 @@ const Notice = ({}) => {
                   ]}
                 >
                   <QuillWrapper
+                    forwardedRef={quillRef}
                     style={{ width: `100%`, height: `100%` }}
                     theme="snow"
-                    modules={{
-                      toolbar: [
-                        ["bold", "italic", "underline", "strike"], // toggled buttons
-                        ["blockquote"],
-
-                        [{ header: 1 }, { header: 2 }], // custom button values
-                        [{ list: "ordered" }, { list: "bullet" }],
-
-                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-                        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-                        [{ align: [] }],
-
-                        ["link", "image", "video"],
-                      ],
-                    }}
+                    modules={modules}
                   />
                 </Form.Item>
 

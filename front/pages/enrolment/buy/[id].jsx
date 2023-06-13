@@ -218,16 +218,15 @@ const Home = ({}) => {
 
   useEffect(() => {
     if (boughtMeDetail) {
-      console.log(boughtMeDetail);
-      //   if (lectureDetail && lectureDetail.type !== 7) {
-      //     message.error("이미 구매한 강의가 있습니다.");
-      //     return router.push("/enrolment");
-      //   }
-      // } else {
-      //   if (lectureDetail && lectureDetail.type === 7) {
-      //     message.error("수강중인 강의가 없습니다.");
-      //     return router.push("/enrolment");
-      // }
+      if (lectureDetail && lectureDetail.type !== 7) {
+        message.error("이미 구매한 강의가 있습니다.");
+        return router.push("/enrolment");
+      }
+    } else {
+      if (lectureDetail && lectureDetail.type === 7) {
+        message.error("수강중인 강의가 없습니다.");
+        return router.push("/enrolment");
+      }
     }
   }, [boughtMeDetail, lectureDetail]);
 
@@ -542,19 +541,19 @@ const Home = ({}) => {
             name: lectureDetail && lectureDetail.title,
             buyer_name: me.username,
             biz_num: me.mobile,
-            // amount: 150,
-            amount:
-              (lectureDetail.discountPrice
-                ? lectureDetail.discountPrice
-                : lectureDetail.price) +
-              (isBuyBook === 1 && overAddress
-                ? dataArr.find((data) => data.id === overAddress).price
-                : 0) +
-              (isBuyBook === 1
-                ? lectureDetail.bookEndDate
-                  ? lectureDetail.bookDiscountPrice
-                  : lectureDetail.bookPrice
-                : 0),
+            amount: 150,
+            // amount:
+            //   (lectureDetail.discountPrice
+            //     ? lectureDetail.discountPrice
+            //     : lectureDetail.price) +
+            //   (isBuyBook === 1 && overAddress
+            //     ? dataArr.find((data) => data.id === overAddress).price
+            //     : 0) +
+            //   (isBuyBook === 1
+            //     ? lectureDetail.bookEndDate
+            //       ? lectureDetail.bookDiscountPrice
+            //       : lectureDetail.bookPrice
+            //     : 0),
           },
           async (rsp) => {
             if (rsp.success) {
