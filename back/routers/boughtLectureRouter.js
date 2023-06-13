@@ -123,7 +123,9 @@ router.post("/create", isLoggedIn, async (req, res, next) => {
 
   const YEAR =
     lectureType === 4 || lectureType === 6 || lectureType === 7
-      ? `"9999-12-31"`
+      ? `"9999-12-31 23:59:00"`
+      : lectureType === 5
+      ? `DATE_ADD(NOW(), INTERVAL 3 MONTH)`
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 
   try {
@@ -296,8 +298,10 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
   const { id, lectureId, mobile, username, lectureType } = req.body;
 
   const YEAR =
-    lectureType === 4
+    lectureType === 4 || lectureType === 6
       ? `"9999-12-31 23:59:00"`
+      : lectureType === 5
+      ? `DATE_ADD(NOW(), INTERVAL 3 MONTH)`
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 
   const insertQ = `
