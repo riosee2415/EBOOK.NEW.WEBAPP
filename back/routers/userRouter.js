@@ -108,7 +108,7 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
   const lengthQuery = `
   SELECT	COUNT(A.id)           AS userCnt
     FROM	users   A
-   WHERE	CONCAT(username, email) LIKE '%${_searchData}%'
+   WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
           ${
             _keyword
               ? `AND  keyword IN (

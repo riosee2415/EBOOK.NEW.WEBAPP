@@ -31,6 +31,10 @@ export const initailState = {
   st_noticeUpdateDone: false,
   st_noticeUpdateError: null,
   //
+  st_noticeShowUpdateLoading: false, // 공지사항 숨김 업데이트
+  st_noticeShowUpdateDone: false,
+  st_noticeShowUpdateError: null,
+  //
   st_noticeUpdateTopLoading: false, // 공지사항 상단고정 업데이트
   st_noticeUpdateTopDone: false,
   st_noticeUpdateTopError: null,
@@ -72,6 +76,10 @@ export const NOTICE_CREATE_FAILURE = "NOTICE_CREATE_FAILURE";
 export const NOTICE_UPDATE_REQUEST = "NOTICE_UPDATE_REQUEST";
 export const NOTICE_UPDATE_SUCCESS = "NOTICE_UPDATE_SUCCESS";
 export const NOTICE_UPDATE_FAILURE = "NOTICE_UPDATE_FAILURE";
+//
+export const NOTICE_SHOW_UPDATE_REQUEST = "NOTICE_SHOW_UPDATE_REQUEST";
+export const NOTICE_SHOW_UPDATE_SUCCESS = "NOTICE_SHOW_UPDATE_SUCCESS";
+export const NOTICE_SHOW_UPDATE_FAILURE = "NOTICE_SHOW_UPDATE_FAILURE";
 //
 export const NOTICE_UPDATE_TOP_REQUEST = "NOTICE_UPDATE_TOP_REQUEST";
 export const NOTICE_UPDATE_TOP_SUCCESS = "NOTICE_UPDATE_TOP_SUCCESS";
@@ -200,6 +208,25 @@ const reducer = (state = initailState, action) =>
         draft.st_noticeUpdateLoading = false;
         draft.st_noticeUpdateDone = false;
         draft.st_noticeUpdateError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      case NOTICE_SHOW_UPDATE_REQUEST: {
+        draft.st_noticeShowUpdateLoading = true;
+        draft.st_noticeShowUpdateDone = false;
+        draft.st_noticeShowUpdateError = null;
+        break;
+      }
+      case NOTICE_SHOW_UPDATE_SUCCESS: {
+        draft.st_noticeShowUpdateLoading = false;
+        draft.st_noticeShowUpdateDone = true;
+        draft.st_noticeShowUpdateError = null;
+        break;
+      }
+      case NOTICE_SHOW_UPDATE_FAILURE: {
+        draft.st_noticeShowUpdateLoading = false;
+        draft.st_noticeShowUpdateDone = false;
+        draft.st_noticeShowUpdateError = action.error;
         break;
       }
       ///////////////////////////////////////////////////////

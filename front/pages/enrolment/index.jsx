@@ -148,7 +148,14 @@ const Home = ({}) => {
                           </Text>
                           <Text
                             fontSize={`26px`}
-                            color={Theme.black2_C}
+                            color={
+                              data.type === 6 || data.type === 7
+                                ? Theme.basicTheme_C
+                                : Theme.black2_C
+                            }
+                            fontWeight={
+                              (data.type === 6 || data.type === 7) && `800`
+                            }
                             // margin={`18px 0 0`}
                           >
                             {data.title}
@@ -210,7 +217,7 @@ const Home = ({}) => {
                                     lineHeight={`1`}
                                     margin={`0 6px 0 0`}
                                   >
-                                    월&nbsp;
+                                    {/* 월&nbsp;
                                     {data.type === 1 ||
                                     data.type === 2 ||
                                     data.type === 3
@@ -232,7 +239,8 @@ const Home = ({}) => {
                                         )
                                       : numberWithCommas(
                                           parseInt(data.price / 12)
-                                        )}
+                                        )} */}
+                                    {data.installmentText2}
                                   </Text>
                                   <Text
                                     fontSize={`22px`}

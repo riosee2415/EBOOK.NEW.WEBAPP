@@ -21,6 +21,10 @@ import {
   NOTICE_UPDATE_SUCCESS,
   NOTICE_UPDATE_FAILURE,
   //
+  NOTICE_SHOW_UPDATE_REQUEST,
+  NOTICE_SHOW_UPDATE_SUCCESS,
+  NOTICE_SHOW_UPDATE_FAILURE,
+  //
   NOTICE_DELETE_REQUEST,
   NOTICE_DELETE_SUCCESS,
   NOTICE_DELETE_FAILURE,
@@ -168,6 +172,33 @@ function* noticeUpdate(action) {
     console.error(err);
     yield put({
       type: NOTICE_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function noticeShowUpdateAPI(data) {
+  return await axios.post(`/api/notice/show/update`, data);
+}
+
+function* noticeShowUpdate(action) {
+  try {
+    const result = yield call(noticeShowUpdateAPI, action.data);
+
+    yield put({
+      type: NOTICE_SHOW_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: NOTICE_SHOW_UPDATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -333,6 +364,10 @@ function* watchNoticeUpdate() {
   yield takeLatest(NOTICE_UPDATE_REQUEST, noticeUpdate);
 }
 
+function* watchNoticeShowUpdate() {
+  yield takeLatest(NOTICE_SHOW_UPDATE_REQUEST, noticeShowUpdate);
+}
+
 function* watchNoticeDelete() {
   yield takeLatest(NOTICE_DELETE_REQUEST, noticeDelete);
 }
@@ -361,6 +396,7 @@ export default function* noticeSaga() {
     fork(watchNoticeDetail),
     fork(watchNoticeCreate),
     fork(watchNoticeUpdate),
+    fork(watchNoticeShowUpdate),
     fork(watchNoticeUpdateTop),
     fork(watchNoticeDelete),
     fork(watchNoticeFile),

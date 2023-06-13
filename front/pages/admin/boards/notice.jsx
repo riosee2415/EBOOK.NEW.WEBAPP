@@ -426,6 +426,7 @@ const Notice = ({}) => {
         type: record.type,
         content: record.content,
         hit: record.hit,
+        isUpdate: record.isUpdate,
         createdAt: record.viewCreatedAt,
         updatedAt: record.viewUpdatedAt,
         updator: record.updator,
@@ -443,6 +444,7 @@ const Notice = ({}) => {
           title: data.title.replace(/\'/gi, `''`, /\"/gi, `""`),
           content: data.content.replace(/\'/gi, `''`, /\"/gi, `""`),
           type: data.type,
+          isUpdate: data.isUpdate ? 1 : 0,
         },
       });
     },
@@ -668,6 +670,14 @@ const Notice = ({}) => {
                       ],
                     }}
                   />
+                </Form.Item>
+
+                <Form.Item
+                  label="보임여부"
+                  name="isUpdate"
+                  valuePropName="checked"
+                >
+                  <Switch size="small" />
                 </Form.Item>
 
                 <Form.Item label="조회수" name="hit">

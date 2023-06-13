@@ -27,6 +27,8 @@ router.post("/list", async (req, res, next) => {
             A.title,
             A.content,
             B.username,
+            B.mobile,
+            CONCAT(SUBSTR(B.mobile,1,3),'-',SUBSTR(B.mobile,4,4),'-',SUBSTR(B.mobile,8,4))      AS viewMobile,
             DATE_FORMAT(A.createdAt, "%Y.%m.%d") 	AS	viewCreatedAt,
             DATE_FORMAT(A.updatedAt, "%Y.%m.%d") 	AS	viewUpdatedAt
       FROM  review          A
@@ -44,6 +46,8 @@ router.post("/list", async (req, res, next) => {
             A.title,
             A.content,
             B.username,
+            B.mobile,
+            CONCAT(SUBSTR(B.mobile,1,3),'-',SUBSTR(B.mobile,4,4),'-',SUBSTR(B.mobile,8,4))      AS viewMobile,
             DATE_FORMAT(A.createdAt, "%Y.%m.%d") 	AS	viewCreatedAt,
             DATE_FORMAT(A.updatedAt, "%Y.%m.%d") 	AS	viewUpdatedAt
       FROM  review          A
@@ -83,6 +87,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
             A.title,
             A.content,
             B.username,
+            B.mobile,
+            CONCAT(SUBSTR(B.mobile,1,3),'-',SUBSTR(B.mobile,4,4),'-',SUBSTR(B.mobile,8,4))      AS viewMobile,
             DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 	AS	viewCreatedAt,
             DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 	AS	viewUpdatedAt,
             A.isOk
@@ -112,6 +118,8 @@ router.post("/detail", async (req, res, next) => {
           A.title,
           A.content,
           B.username,
+          B.mobile,
+          CONCAT(SUBSTR(B.mobile,1,3),'-',SUBSTR(B.mobile,4,4),'-',SUBSTR(B.mobile,8,4))      AS viewMobile,
           A.UserId,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 	AS	viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 	AS	viewUpdatedAt

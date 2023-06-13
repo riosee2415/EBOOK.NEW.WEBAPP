@@ -72,6 +72,10 @@ module.exports = class Lecture extends Model {
           defaultValue: false,
           allowNull: false,
         },
+        installmentText2: {
+          type: DataTypes.STRING(600), // 할부 내용
+          allowNull: true,
+        },
         isHidden: {
           type: DataTypes.BOOLEAN,
           defaultValue: false,

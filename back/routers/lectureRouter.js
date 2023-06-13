@@ -102,7 +102,8 @@ router.post("/list", async (req, res, next) => {
           bookNotEtc,
           isBookPay,
           isBookNoPay,
-          sort
+          sort,
+          installmentText2
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -179,7 +180,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           bookNotEtc,
           isBookPay,
           isBookNoPay,
-          sort
+          sort,
+          installmentText2
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -245,7 +247,8 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
           bookNotEtc,
           isBookPay,
           isBookNoPay,
-          sort
+          sort,
+          installmentText2
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
@@ -327,6 +330,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     isBookPay,
     isBookNoPay,
     sort,
+    installmentText2,
   } = req.body;
 
   const updateQ = `
@@ -348,7 +352,10 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
           isBookPay = ${isBookPay},
           isBookNoPay = ${isBookNoPay},
           updatedAt = NOW(),
-          sort = ${sort}
+          sort = ${sort},
+          installmentText2 = ${
+            installmentText2 ? `"${installmentText2}"` : "NULL"
+          }
    WHERE  id = ${id}
   `;
 

@@ -148,19 +148,21 @@ const MediaDetail = () => {
   ////// USEEFFECT //////
 
   useEffect(() => {
-    if (!me) {
-      message.error("로그인 후 이용해주세요.");
-      return router.push("/user/login");
-    } else {
-      if (me.isBlack) {
-        dispatch({
-          type: LOGOUT_REQUEST,
-        });
+    if (router.query && router.query.isSample !== "1") {
+      if (!me) {
+        message.error("로그인 후 이용해주세요.");
+        return router.push("/user/login");
+      } else {
+        if (me.isBlack) {
+          dispatch({
+            type: LOGOUT_REQUEST,
+          });
 
-        return message.error("차단된 계정입니다. 고객센터 문의부탁드립니다.");
+          return message.error("차단된 계정입니다. 고객센터 문의부탁드립니다.");
+        }
       }
     }
-  }, [me]);
+  }, [me, router.query]);
 
   useEffect(() => {
     if (router.query) {

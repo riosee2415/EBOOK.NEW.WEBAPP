@@ -172,6 +172,8 @@ const Review = ({}) => {
         title: data.title,
         content: data.content,
         createdAt: data.viewCreatedAt,
+        username: data.username,
+        mobile: data.viewMobile,
       });
     },
     [currentData]
@@ -281,9 +283,9 @@ const Review = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>화면 가이드안내 문구를 입력하세요.</GuideLi>
+          <GuideLi>회원이 작성한 강의후기를 관리할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            화면 가이드안내 문구를 입력하세요. (RED COLOR)
+            강의후기 삭제시 복구할 수 없으니 유의해주시기 바랍니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -336,6 +338,12 @@ const Review = ({}) => {
                     autoSize={{ minRows: 10, maxRows: 15 }}
                     readOnly
                   />
+                </Form.Item>
+                <Form.Item label="회원이름" name="username">
+                  <Input size="small"></Input>
+                </Form.Item>
+                <Form.Item label="전화번호" name="mobile">
+                  <Input size="small"></Input>
                 </Form.Item>
                 <Form.Item label="생성일" name="createdAt">
                   <Input size="small" readOnly />

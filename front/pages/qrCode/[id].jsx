@@ -46,7 +46,7 @@ const Home = ({}) => {
     for (let i = 0; i < mediaAllList.length; i++) {
       const data = mediaAllList[i].previousId;
 
-      if (data === match.params.id) {
+      if (data === parseInt(router.query.id)) {
         router.push(`/mypage?id=${data}?isSample=0`);
         isCheck = true;
 
@@ -58,7 +58,7 @@ const Home = ({}) => {
       message.error("잘못된 코드입니다.");
       router.push("/");
     }
-  }, [me, boughtMeDetail, mediaAllList]);
+  }, [me, boughtMeDetail, mediaAllList, router.query]);
 
   ////// TOGGLE //////
   ////// HANDLER //////

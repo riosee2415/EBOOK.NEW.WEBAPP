@@ -225,7 +225,7 @@ router.post("/all/list", async (req, res, next) => {
 });
 
 router.post("/detail", async (req, res, next) => {
-  const { id } = req.body;
+  const { id, sort } = req.body;
 
   const selectQ = `
     SELECT  ROW_NUMBER() OVER(ORDER	BY sort DESC)		AS num,
@@ -255,8 +255,13 @@ router.post("/detail", async (req, res, next) => {
             title
       FROM  media
      WHERE  1 = 1
-       AND  id > ${id}
+       AND  sort > (
+                    SELECT  sort
+                      FROM  media
+                     WHERE  id = ${id}
+                   )
        AND  isDelete = FALSE
+     ORDER  BY sort ASC
      LIMIT  1
     `;
 

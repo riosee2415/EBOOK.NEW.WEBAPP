@@ -394,6 +394,7 @@ const List = ({}) => {
         isBookPay: record.isBookPay,
         isBookNoPay: record.isBookNoPay,
         sort: record.sort,
+        installmentText2: record.installmentText2,
       });
 
       dispatch({
@@ -448,6 +449,7 @@ const List = ({}) => {
           isBookPay: data.isBookPay,
           isBookNoPay: data.isBookNoPay,
           sort: data.sort,
+          installmentText2: data.installmentText2,
         },
       });
     },
@@ -761,7 +763,10 @@ const List = ({}) => {
                 <Form.Item label="구매페이지 제목" name="subTitle">
                   <Input size="small" />
                 </Form.Item>
-                <Form.Item label="할부내용" name="installmentText">
+                <Form.Item label="할부내용 앞글자" name="installmentText2">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="할부내용 뒷글자" name="installmentText">
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item

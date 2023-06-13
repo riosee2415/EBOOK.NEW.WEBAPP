@@ -123,6 +123,7 @@ router.post("/page/list", async (req, res, next) => {
           A.file,
           A.createdAt,
           A.updatedAt,
+          A.isUpdate,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
           B.username 										AS updator 
@@ -146,6 +147,7 @@ router.post("/page/list", async (req, res, next) => {
           A.file,
           A.createdAt,
           A.updatedAt,
+          A.isUpdate,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
           B.username 										AS updator 
@@ -195,6 +197,7 @@ router.post("/list", async (req, res, next) => {
           A.file,
           A.createdAt,
           A.updatedAt,
+          A.isUpdate,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
           B.username 										AS updator 
@@ -258,7 +261,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
 });
 
 router.post("/update", isAdminCheck, async (req, res, next) => {
-  const { id, title, content, type } = req.body;
+  const { id, title, content, type, isUpdate } = req.body;
 
   const updateQ = `
     UPDATE  notices
@@ -267,7 +270,38 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
             type = "${type}",
             updatedAt = now(),
             updator = ${req.user.id},
-            isUpdate = TRUE
+            isUpdate = ${isUpdate}
+     WHERE  id = ${id}
+  `;
+
+  const insertQuery2 = `
+  INSERT INTO noticeHistory (content, title, updator, createdAt, updatedAt) VALUES 
+  (
+    "데이터 수정",
+    "${title}",
+    ${req.user.id},
+    now(),
+    now()
+  )
+  `;
+
+  try {
+    await models.sequelize.query(updateQ);
+    await models.sequelize.query(insertQuery2);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("공지사항을 수정할 수 없습니다. [CODE 087]");
+  }
+});
+
+router.post("/show/update", isAdminCheck, async (req, res, next) => {
+  const { id, title, isUpdate } = req.body;
+
+  const updateQ = `
+    UPDATE  notices
+      SET   isUpdate = ${isUpdate}
      WHERE  id = ${id}
   `;
 
@@ -337,6 +371,7 @@ router.post("/detail", async (req, res, next) => {
           A.author,
           A.hit,
           A.file,
+          A.isUpdate,
           DATE_FORMAT(A.createdAt, "%Y.%m.%d") 		AS viewCreatedAt,
           DATE_FORMAT(A.updatedAt, "%Y.%m.%d") 		AS viewUpdatedAt
     FROM  notices     A
