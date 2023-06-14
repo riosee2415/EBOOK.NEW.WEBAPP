@@ -168,7 +168,7 @@ const List = ({}) => {
 
   const [currentData, setCurrentData] = useState(null);
 
-  const [serachType, setSearchType] = useState(7);
+  const [serachType, setSearchType] = useState(8);
 
   const [isHidden, setIsHidden] = useState(false);
 
