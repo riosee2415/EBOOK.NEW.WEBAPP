@@ -46,7 +46,7 @@ const Home = ({}) => {
     for (let i = 0; i < mediaAllList.length; i++) {
       const data = mediaAllList[i];
 
-      if (data.sort === router.query.id) {
+      if (data.sort === parseInt(router.query.id)) {
         router.push(`/mypage?id=${data.id}?isSample=0`);
         isCheck = true;
 
