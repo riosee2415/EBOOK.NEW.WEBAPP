@@ -670,6 +670,7 @@ const UserList = ({}) => {
           userId: data.userId,
           username: data.username,
           mobile: data.mobile,
+          password: null,
           email: data.email,
           viewCreatedAt: data.viewCreatedAt,
           level: levelArr.find((value) => value.id === data.level).name,
@@ -704,6 +705,7 @@ const UserList = ({}) => {
         });
       } else {
         setDData(null);
+        dForm.resetFields();
       }
 
       setDModal((prev) => !prev);
