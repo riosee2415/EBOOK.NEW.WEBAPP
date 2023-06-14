@@ -1215,8 +1215,6 @@ const Home = ({}) => {
                           (isBuyBook === 1
                             ? lectureDetail.bookEndDate
                               ? lectureDetail.bookDiscountPrice
-                                ? lectureDetail.bookDiscountPrice
-                                : lectureDetail.bookPrice
                               : lectureDetail.bookPrice
                             : 0)
                       )}

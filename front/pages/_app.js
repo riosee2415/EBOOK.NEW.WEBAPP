@@ -71,19 +71,24 @@ const Fourleaf = ({ Component }) => {
         <meta name="author" content="4LEAF SOFTWARE <4leaf.ysh@gmail.com>" />
         {/* <!-- OG tag  --> */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.sample.com/" />
+        <meta property="og:url" content="https://friendlyuni2.com" />
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="400" />
         <meta property="og:image" content="./og_img.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://www.sample.com" />
+        <link rel="canonical" href="https://friendlyuni2.com" />
 
-        <meta name="keywords" content="[[**4LEAF GEAR SAMPLE**]]" />
-        <meta property="og:keywords" content="[[**4LEAF GEAR SAMPLE**]]" />
+        <meta name="keywords" content="친절한 영어교실" />
+        <meta property="og:keywords" content="친절한 영어교실" />
 
-        <meta property="og:description" content="[[**4LEAF GEAR SAMPLE**]]" />
-        <meta name="description" content="[[**4LEAF GEAR SAMPLE**]]" />
-
+        <meta
+          property="og:description"
+          content="유튜브 100만 구독자가 선택한 최고의 수업 영어 신생아를 위한 가장 쉽고 친절한 영어수업"
+        />
+        <meta
+          name="description"
+          content="유튜브 100만 구독자가 선택한 최고의 수업 영어 신생아를 위한 가장 쉽고 친절한 영어수업"
+        />
         {/* 프리텐다드 폰트 */}
         <link
           href="https://webfontworld.github.io/pretendard/Pretendard.css"
