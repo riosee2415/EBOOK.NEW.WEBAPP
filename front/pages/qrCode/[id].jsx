@@ -44,10 +44,10 @@ const Home = ({}) => {
 
     let isCheck = false;
     for (let i = 0; i < mediaAllList.length; i++) {
-      const data = mediaAllList[i].previousId;
+      const data = mediaAllList[i];
 
-      if (data === parseInt(router.query.id)) {
-        router.push(`/mypage?id=${data}?isSample=0`);
+      if (data.sort === router.query.id) {
+        router.push(`/mypage?id=${data.id}?isSample=0`);
         isCheck = true;
 
         break;
