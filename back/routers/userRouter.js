@@ -1335,7 +1335,7 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
     } else if (parseInt(type) === 5) {
       const updateQ = `
         UPDATE  users
-                consulting = ${consulting ? `"${consulting}"` : `NULL`},
+           SET  consulting = ${consulting ? `"${consulting}"` : `NULL`},
                 updatedAt = NOW()
          WHERE  id = ${id}
         `;
