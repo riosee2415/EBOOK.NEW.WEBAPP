@@ -47,7 +47,7 @@ const Home = ({}) => {
       const data = mediaAllList[i];
 
       if (data.sort === parseInt(router.query.id)) {
-        router.push(`/mypage?id=${data.id}?isSample=0`);
+        router.push(`/mypage/${data.id}?isSample=0`);
         isCheck = true;
 
         break;
