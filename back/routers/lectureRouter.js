@@ -144,7 +144,7 @@ router.post("/list", async (req, res, next) => {
 router.post("/admin/list", isAdminCheck, async (req, res, next) => {
   const { searchType } = req.body;
 
-  const _searchType = searchType ? parseInt(searchType) : 7;
+  const _searchType = searchType ? parseInt(searchType) : 8;
 
   const selectQ = `
   SELECT  ROW_NUMBER() OVER(ORDER	BY createdAt ASC)		AS num,
@@ -185,7 +185,7 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
     FROM  lecture
    WHERE  1 = 1
      AND  isDelete = FALSE
-          ${_searchType === 7 ? `` : `AND  type = ${_searchType}`}
+          ${_searchType === 8 ? `` : `AND  type = ${_searchType}`}
    ORDER  BY sort ASC
 `;
 
@@ -264,10 +264,6 @@ router.post("/detail", isLoggedIn, async (req, res, next) => {
     }
 
     const find = await models.sequelize.query(findQ);
-
-    console.log("🟩");
-    console.log(find);
-    console.log("🟩");
 
     if (select[0][0].type !== 7 && find[0].length > 0) {
       return res.status(400).send("이미 수강권이 있습니다.");

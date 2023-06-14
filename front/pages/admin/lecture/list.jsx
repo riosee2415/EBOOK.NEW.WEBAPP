@@ -646,8 +646,8 @@ const List = ({}) => {
             <Wrapper width={`auto`} dr={`row`}>
               <Button
                 size="small"
-                type={serachType === 7 && "primary"}
-                onClick={() => serachTypeHandler(7)}
+                type={serachType === 8 && "primary"}
+                onClick={() => serachTypeHandler(8)}
               >
                 전체
               </Button>

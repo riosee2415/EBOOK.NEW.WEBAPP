@@ -362,7 +362,9 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
   UPDATE  boughtLecture
      SET  startDate = "${startDate}",
           endDate = ${
-            lectureType === 4 ? `"9999-12-31 23:59:00"` : `"${endDate}"`
+            lectureType === 4 || lectureType === 6 || lectureType === 7
+              ? `"9999-12-31 23:59:00"`
+              : `"${endDate}"`
           },
           lectureType = ${lectureType},
           pauseDate = ${pauseDate ? `"${pauseDate}"` : null}
