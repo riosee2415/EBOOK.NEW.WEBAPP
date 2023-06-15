@@ -1281,7 +1281,7 @@ router.post("/admin/update", isAdminCheck, async (req, res, next) => {
       const findQ = `
         SELECT  userId
           FROM  users
-         WHERE  id = ${userId}
+         WHERE  id = ${id}
       `;
 
       const find = await models.sequelize.query(findQ);
