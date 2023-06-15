@@ -222,6 +222,12 @@ const Home = ({}) => {
         message.error("이미 구매한 강의가 있습니다.");
         return router.push("/enrolment");
       }
+      if (!boughtMeDetail.isPay) {
+        if (lectureDetail && lectureDetail.type === 7) {
+          message.error("수강중인 강의가 없습니다.");
+          return router.push("/enrolment");
+        }
+      }
     } else {
       if (lectureDetail && lectureDetail.type === 7) {
         message.error("수강중인 강의가 없습니다.");
@@ -935,7 +941,7 @@ const Home = ({}) => {
                   height={`1px`}
                   bgColor={Theme.lightGrey4_C}
                 />
-                {/* 교제구매 */}
+                {/* 교재구매 */}
                 {lectureDetail ? (
                   <>
                     <Wrapper al={`flex-start`}>

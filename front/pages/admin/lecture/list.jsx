@@ -792,11 +792,11 @@ const List = ({}) => {
                 >
                   <Input size="small" type="number" />
                 </Form.Item>
-                <Form.Item label="교제할인가격" name="bookDiscountPrice">
+                <Form.Item label="교재할인가격" name="bookDiscountPrice">
                   <Input
                     size="small"
                     type="number"
-                    placeholder="교제가 할인된 가격을 입력해주세요."
+                    placeholder="교재가 할인된 가격을 입력해주세요."
                   />
                 </Form.Item>
                 <Form.Item label="교재할인마감일" name="bookEndDate">

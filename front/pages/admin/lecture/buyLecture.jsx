@@ -609,7 +609,7 @@ const BuyLecture = ({}) => {
     { label: "아이디", key: "id" },
     { label: "생년월일", key: "birth" },
     { label: "성별", key: "gender" },
-    { label: "교제 여부", key: "isBuyBook" },
+    { label: "교재 여부", key: "isBuyBook" },
     { label: "결제 유형", key: "type" },
     { label: "처리 유무", key: "complete" },
   ];
