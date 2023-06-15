@@ -73,7 +73,10 @@ import {
   BOUGHT_ADMIN_UPDATE_REQUEST,
 } from "../../../reducers/boughtLecture";
 import moment from "moment";
-import { LECTURE_LIST_REQUEST } from "../../../reducers/lecture";
+import {
+  LECTURE_ADMIN_LIST_REQUEST,
+  LECTURE_LIST_REQUEST,
+} from "../../../reducers/lecture";
 import { ADMIN_USER_ENJOY_REQUEST } from "../../../reducers/enjoy";
 import { MEDIA_CREATE_REQUEST } from "../../../reducers/media";
 
@@ -263,7 +266,7 @@ const UserList = ({}) => {
     st_boughtAdminDeleteError,
   } = useSelector((state) => state.boughtLecture);
 
-  const { lectureList } = useSelector((state) => state.lecture);
+  const { lectureAdminList } = useSelector((state) => state.lecture);
 
   const { adminUserEnjoyList, maxLen } = useSelector((state) => state.enjoy);
 
@@ -841,8 +844,9 @@ const UserList = ({}) => {
           lectureId: data.lectureId,
           mobile: dData.mobile,
           username: dData.username,
-          lectureType: lectureList.find((value) => value.id === data.lectureId)
-            .type,
+          lectureType: lectureAdminList.find(
+            (value) => value.id === data.lectureId
+          ).type,
         },
       });
     },
@@ -1700,7 +1704,6 @@ const UserList = ({}) => {
                         <Select.Option value={4}>평생</Select.Option>
                         <Select.Option value={5}>3달</Select.Option>
                         <Select.Option value={6}>태블릿(신규)</Select.Option>
-                        <Select.Option value={7}>태블릿(기존)</Select.Option>
                       </Select>
                     </Form.Item>
                     {boughtAdminId.isPay ? (
@@ -1745,21 +1748,24 @@ const UserList = ({}) => {
                     name="lectureId"
                     label="이용권 선택"
                     rules={[
-                      { required: true, message: "종료일은 필수입니다." },
+                      { required: true, message: "이용권은 필수입니다." },
                     ]}
                   >
                     <Select size="small">
-                      {lectureList &&
-                        lectureList.map((data, idx) => {
-                          return (
-                            <Select.Option key={idx} value={data.id}>
-                              {data.title}
-                            </Select.Option>
-                          );
-                        })}
+                      {lectureAdminList &&
+                        lectureAdminList
+                          .filter((data) => data.type !== 7)
+                          .map((data, idx) => {
+                            return (
+                              <Select.Option key={idx} value={data.id}>
+                                {data.title}
+                              </Select.Option>
+                            );
+                          })}
                     </Select>
                   </Form.Item>
                 )}
+                {console.log(lectureAdminList)}
 
                 <Wrapper dr={`row`} ju={`flex-end`}>
                   {boughtAdminId && (
@@ -1883,8 +1889,8 @@ const UserList = ({}) => {
                     ]}
                   >
                     <Select size="small">
-                      {lectureList &&
-                        lectureList
+                      {lectureAdminList &&
+                        lectureAdminList
                           .filter((data) => data.type === 7)
                           .map((data, idx) => {
                             return (
@@ -2043,10 +2049,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: LECTURE_LIST_REQUEST,
-      data: {
-        searchType: [1, 2, 3, 4, 5, 6, 7],
-      },
+      type: LECTURE_ADMIN_LIST_REQUEST,
     });
 
     context.store.dispatch({
