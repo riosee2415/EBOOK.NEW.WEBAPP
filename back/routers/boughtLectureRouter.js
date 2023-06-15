@@ -245,8 +245,10 @@ router.post("/isPay/update", isAdminCheck, async (req, res, next) => {
   const { id, lectureType } = req.body;
 
   const YEAR =
-    lectureType === 4
-      ? `"9999-12-31"`
+    lectureType === 4 || lectureType === 6 || lectureType === 7
+      ? `"9999-12-31 23:59:00"`
+      : lectureType === 5
+      ? `DATE_ADD(NOW(), INTERVAL 3 MONTH)`
       : `DATE_ADD(NOW(), INTERVAL ${lectureType} YEAR)`;
 
   const updateQ = `
@@ -298,7 +300,7 @@ router.post("/admin/create", isAdminCheck, async (req, res, next) => {
   const { id, lectureId, mobile, username, lectureType } = req.body;
 
   const YEAR =
-    lectureType === 4 || lectureType === 6
+    lectureType === 4 || lectureType === 6 || lectureType === 7
       ? `"9999-12-31 23:59:00"`
       : lectureType === 5
       ? `DATE_ADD(NOW(), INTERVAL 3 MONTH)`
