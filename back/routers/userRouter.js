@@ -63,7 +63,17 @@ router.post("/all/list", isAdminCheck, async (req, res, next) => {
           END                                       AS viewCreatedAt,
 		      DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
 		      DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt,
-          isBlack
+          isBlack,
+          CASE
+            WHEN (
+                   SELECT  COUNT(B.id)
+                     FROM  boughtLecture   B
+                    WHERE  B.UserId = A.id 
+                      AND  B.isDelete = FALSE
+                      AND  B.isPay = TRUE
+                 ) > 0  THEN  "o"
+            ELSE "x"
+          END                                       AS boughtLecture
     FROM	users         A
    WHERE  isExit = FALSE
    ORDER	BY num DESC
@@ -297,7 +307,6 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
                 WHEN A.lectureType = 6 THEN  "상품"
             END                                           	AS viewLectureType,
             A.name,
-            A.boughtDate,
             A.startDate,
             A.endDate,
             A.impUid,
@@ -337,13 +346,149 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
     const lastPage =
       listLen % LIMIT > 0 ? listLen / LIMIT + 1 : listLen / LIMIT;
 
-    return res.status(200).json({
-      list: list[0].map((data) => ({
-        ...data,
-        boughtList: selectBought[0].filter((value) => data.id === value.userId),
-      })),
-      lastPage: parseInt(lastPage),
-    });
+    const keywordSelect = `
+      SELECT	ROW_NUMBER() OVER(ORDER	BY (
+                                           CASE
+                                             WHEN A.previousCreatedAt IS NULL THEN createdAt
+                                             ELSE A.previousCreatedAt
+                                           END
+                                         ))		AS num,
+              id,
+              userId,
+              email,
+              username,
+              mobile,
+              CONCAT(SUBSTR(mobile,1,3),'-',SUBSTR(mobile,4,4),'-',SUBSTR(mobile,8,4))      AS viewMobile,
+              level,
+              isExit,
+              birth,
+              gender,
+              (
+                SELECT  COUNT(B.id)
+                FROM  keywordConnect    B
+                WHERE  B.UserId = A.id
+              )                               AS keyword,
+              consulting,
+              zoneCode,
+              address,
+              detailAddress,
+              tel,
+              CASE
+                WHEN	level = 1	THEN "일반회원"
+                WHEN	level = 2	THEN "비어있음"
+                WHEN	level = 3	THEN "운영자"
+                WHEN	level = 4	THEN "최고관리자"
+                WHEN	level = 5	THEN "개발사"
+              END											AS viewLevel,
+              terms,
+              CASE
+                WHEN A.previousCreatedAt IS NULL THEN createdAt
+                ELSE A.previousCreatedAt
+              END                     AS createdAt,
+              updatedAt,
+              exitedAt,
+              CASE
+                WHEN (
+                      SELECT  COUNT(B.id)
+                      FROM  review        B
+                      WHERE  A.id = B.UserId
+                     ) > 0 THEN 1
+                ELSE 0
+              END                                       AS isWriteReview,
+              CASE
+                WHEN A.previousCreatedAt IS NULL THEN DATE_FORMAT(createdAt, "%Y년 %m월 %d일")
+                ELSE DATE_FORMAT(A.previousCreatedAt, "%Y년 %m월 %d일")
+              END                                       AS viewCreatedAt,
+              DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")		AS viewUpdatedAt,
+              DATE_FORMAT(exitedAt, "%Y년 %m월 %d일")		  AS viewExitedAt,
+              isBlack,
+              CASE
+                WHEN (
+                        SELECT  COUNT(B.id)
+                          FROM  boughtLecture   B
+                         WHERE  B.UserId = A.id 
+                           AND  B.isDelete = FALSE
+                           AND  B.isPay = TRUE
+                     ) > 0  THEN  "o"
+                ELSE "x"
+              END                                       AS boughtLecture
+        FROM	users         A
+       WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
+              ${
+                _keyword
+                  ? `AND ${_keyword} IN (
+                     SELECT  C.id
+                       FROM  keywordConnect    B
+                      INNER
+                       JOIN  keyword           C
+                         ON  B.KeywordId = C.id
+                      WHERE  A.id = B.UserId
+                   )`
+                  : ""
+              }
+              ${
+                _searchLevel === parseInt(0)
+                  ? ``
+                  : _searchLevel === 1
+                  ? `AND level = 1`
+                  : _searchLevel === 3
+                  ? `AND level = 3`
+                  : _searchLevel === 4
+                  ? `AND level = 4`
+                  : _searchLevel === 5
+                  ? `AND level = 5`
+                  : ``
+              } 
+              AND	isExit = ${_searchExit}
+              ${
+                _searchReviewType === 1
+                  ? `AND  (CASE
+              WHEN (
+              SELECT  COUNT(B.id)
+              FROM  review        B
+              WHERE  A.id = B.UserId
+              ) > 0 THEN 1
+              ELSE 0
+              END) = 1`
+                  : _searchReviewType === 2
+                  ? `AND  (CASE
+              WHEN (
+              SELECT  COUNT(B.id)
+              FROM  review        B
+              WHERE  A.id = B.UserId
+              ) > 0 THEN 1
+              ELSE 0
+              END) = 0`
+                  : ``
+              }
+              ORDER	BY num DESC
+                    `;
+
+    if (_keyword) {
+      const keywordResult = await models.sequelize.query(keywordSelect);
+
+      return res.status(200).json({
+        list: list[0].map((data) => ({
+          ...data,
+          boughtList: selectBought[0].filter(
+            (value) => data.id === value.userId
+          ),
+        })),
+        lastPage: parseInt(lastPage),
+        keywordList: keywordResult[0],
+      });
+    } else {
+      return res.status(200).json({
+        list: list[0].map((data) => ({
+          ...data,
+          boughtList: selectBought[0].filter(
+            (value) => data.id === value.userId
+          ),
+        })),
+        lastPage: parseInt(lastPage),
+        keywordList: null,
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(401).send("사용자 목록을 불러올 수 없습니다.");
