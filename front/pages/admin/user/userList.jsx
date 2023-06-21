@@ -1224,7 +1224,7 @@ const UserList = ({}) => {
               {keywordList &&
                 keywordList.map((data, idx) => {
                   return (
-                    <Select.Option key={idx} value={data.value}>
+                    <Select.Option key={idx} value={data.id}>
                       {data.value}
                     </Select.Option>
                   );
