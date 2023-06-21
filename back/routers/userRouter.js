@@ -111,13 +111,14 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
    WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
           ${
             _keyword
-              ? `AND  keyword IN (
-                                   SELECT  C.value
-                                     FROM  keywordConnect    B
-                                    INNER
-                                     JOIN  keyword           C
-                                       ON  B.KeywordId = C.id
-                                 )`
+              ? `AND ${_keyword} IN (
+                                        SELECT  C.id
+                                          FROM  keywordConnect    B
+                                         INNER
+                                          JOIN  keyword           C
+                                            ON  B.KeywordId = C.id
+                                         WHERE  A.id = B.UserId
+                                      )`
               : ""
           }
           ${
@@ -217,13 +218,14 @@ router.post("/list", isAdminCheck, async (req, res, next) => {
    WHERE	CONCAT(username, userId, mobile) LIKE '%${_searchData}%'
           ${
             _keyword
-              ? `AND  keyword IN (
-                                   SELECT  C.value
-                                     FROM  keywordConnect    B
-                                    INNER
-                                     JOIN  keyword           C
-                                       ON  B.KeywordId = C.id
-                                 )`
+              ? `AND ${_keyword} IN (
+                                       SELECT  C.id
+                                         FROM  keywordConnect    B
+                                        INNER
+                                         JOIN  keyword           C
+                                           ON  B.KeywordId = C.id
+                                        WHERE  A.id = B.UserId
+                                     )`
               : ""
           }
           ${
