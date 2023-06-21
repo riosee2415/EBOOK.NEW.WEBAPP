@@ -4,6 +4,7 @@ export const initailState = {
   me: null,
   currentAdminMenu: null,
   users: null,
+  keywordUserList: null,
   lastPages: 1,
   updateModal: false,
   userHistory: [],
@@ -375,6 +376,7 @@ const reducer = (state = initailState, action) =>
         draft.st_userListError = null;
         draft.users = action.data.list;
         draft.lastPages = action.data.lastPage;
+        draft.keywordUserList = action.data.keywordList;
         break;
       }
       case USERLIST_FAILURE: {

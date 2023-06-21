@@ -305,6 +305,9 @@ const SignUp = () => {
       // }
 
       const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+      if (data.userId && data.userId.trim().length < 3) {
+        return message.info("아이디를 3자리 이상 적어주시기 바랍니다.");
+      }
 
       if (!regex.test(data.userId)) {
         return message.info("아이디에 특수 문자는 사용 불가능합니다.");

@@ -208,6 +208,7 @@ const UserList = ({}) => {
   const {
     users,
     lastPages,
+    keywordUserList,
     updateModal,
     userAllList,
     st_userAllListLoading,
@@ -1294,6 +1295,17 @@ const UserList = ({}) => {
           <Button size="small" onClick={kModalToggle}>
             키워드 관리
           </Button>
+          {keywordUserList ? (
+            <DownloadBtn
+              filename={`검색 회원 정보`}
+              headers={headers}
+              data={keywordUserList}
+            >
+              검색회원출력
+            </DownloadBtn>
+          ) : (
+            ""
+          )}
           {userAllList ? (
             <DownloadBtn
               filename={`회원 정보`}
