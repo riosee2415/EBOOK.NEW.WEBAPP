@@ -1777,7 +1777,6 @@ const UserList = ({}) => {
                     </Select>
                   </Form.Item>
                 )}
-                {console.log(lectureAdminList)}
 
                 <Wrapper dr={`row`} ju={`flex-end`}>
                   {boughtAdminId && (
@@ -1982,7 +1981,17 @@ const UserList = ({}) => {
                   />
                   <Wrapper fontSize={`14px`} width={`auto`}>
                     {boughtAdminId.lectureType === 5
-                      ? 118
+                      ? [
+                          ...new Set(
+                            adminUserEnjoyList.map((data) => data.MediumId)
+                          ),
+                        ].length > 118
+                        ? 118
+                        : [
+                            ...new Set(
+                              adminUserEnjoyList.map((data) => data.MediumId)
+                            ),
+                          ].length
                       : [
                           ...new Set(
                             adminUserEnjoyList.map((data) => data.MediumId)
