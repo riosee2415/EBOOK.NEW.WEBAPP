@@ -679,7 +679,9 @@ const Home = ({}) => {
                   </Text>
                   <Text fontSize={width < 700 ? `28px` : `32px`}>
                     {lectureDetail && lectureDetail.subTitle}
-                    {isBuyBook === 1 ? ` + 교재 7권` : ``}
+                    {lectureDetail && isBuyBook === 1
+                      ? ` + ${lectureDetail.bookTitle}`
+                      : ``}
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -687,7 +689,7 @@ const Home = ({}) => {
                   dr={`row`}
                   fontSize={width < 700 ? `28px` : `32px`}
                 >
-                  <SpanText
+                  {/* <SpanText
                     fontWeight={`700`}
                     color={Theme.basicTheme_C}
                     margin={`0 4px 0 0`}
@@ -697,7 +699,7 @@ const Home = ({}) => {
                         ? lectureDetail.viewDiscountPrice
                         : lectureDetail.viewPrice)}
                   </SpanText>
-                  원
+                  원 */}
                 </Wrapper>
               </Wrapper>
 

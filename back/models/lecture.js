@@ -30,6 +30,10 @@ module.exports = class Lecture extends Model {
           type: DataTypes.STRING(300),
           allowNull: true,
         },
+        bookTitle: {
+          type: DataTypes.STRING(300),
+          allowNull: true,
+        },
         installmentText: {
           type: DataTypes.STRING(300),
           allowNull: true,

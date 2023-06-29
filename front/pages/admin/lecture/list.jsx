@@ -382,6 +382,7 @@ const List = ({}) => {
         type: record.type,
         title: record.title,
         subTitle: record.subTitle,
+        bookTitle: record.bookTitle,
         installmentText: record.installmentText,
         price: record.price,
         discountPrice: record.discountPrice,
@@ -436,6 +437,7 @@ const List = ({}) => {
           thumbnail: thumbnailPath,
           title: data.title,
           subTitle: data.subTitle,
+          bookTitle: data.bookTitle,
           installmentText: data.installmentText,
           price: data.price,
           discountPrice: data.discountPrice,
@@ -733,8 +735,8 @@ const List = ({}) => {
               </Wrapper>
               <Form
                 form={infoForm}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 19 }}
                 style={{ width: "100%", paddingRight: "20px" }}
                 onFinish={lectureUpdateHandler}
               >
@@ -761,6 +763,9 @@ const List = ({}) => {
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item label="구매페이지 제목" name="subTitle">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="구매페이지 교재 제목" name="bookTitle">
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item label="할부내용 앞글자" name="installmentText2">
