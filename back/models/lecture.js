@@ -34,6 +34,11 @@ module.exports = class Lecture extends Model {
           type: DataTypes.STRING(300),
           allowNull: true,
         },
+        subPrice: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+        },
         installmentText: {
           type: DataTypes.STRING(300),
           allowNull: true,

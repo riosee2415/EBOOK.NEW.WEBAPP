@@ -689,17 +689,21 @@ const Home = ({}) => {
                   dr={`row`}
                   fontSize={width < 700 ? `28px` : `32px`}
                 >
-                  {/* <SpanText
-                    fontWeight={`700`}
-                    color={Theme.basicTheme_C}
-                    margin={`0 4px 0 0`}
-                  >
-                    {lectureDetail &&
-                      (lectureDetail.discountPrice
-                        ? lectureDetail.viewDiscountPrice
-                        : lectureDetail.viewPrice)}
-                  </SpanText>
-                  원 */}
+                  {lectureDetail &&
+                    (lectureDetail.subPrice > 0 ? (
+                      <>
+                        <SpanText
+                          fontWeight={`700`}
+                          color={Theme.basicTheme_C}
+                          margin={`0 4px 0 0`}
+                        >
+                          {lectureDetail && lectureDetail.viewSubPrice}
+                        </SpanText>
+                        원
+                      </>
+                    ) : (
+                      ""
+                    ))}
                 </Wrapper>
               </Wrapper>
 
