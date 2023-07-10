@@ -334,7 +334,7 @@ const MypageIndex = ({}) => {
               boughtMeDetail.recentlyTurn ? (
                 <CommonButton
                   kindOf={`basic`}
-                  width={`250px`}
+                  width={`auto`}
                   height={`40px`}
                   fontSize={`18px`}
                   onClick={() =>
