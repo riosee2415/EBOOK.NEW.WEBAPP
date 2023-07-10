@@ -541,7 +541,7 @@ const MypageIndex = ({}) => {
                                 <CommonButton
                                   kindOf={`subTheme`}
                                   width={width < 700 ? `100%` : `186px`}
-                                  padding={`4px 13px`}
+                                  padding={`4px 8px`}
                                   height={`52px`}
                                   fontSize={`20px`}
                                   onClick={() =>
@@ -571,7 +571,7 @@ const MypageIndex = ({}) => {
                                   ""
                                 ) : width < 700 ? (
                                   <MobileCommonButton
-                                    padding={`4px 13px`}
+                                    padding={`4px 8px`}
                                     kindOf={
                                       enjoyMeList.find(
                                         (value) => value.MediumId === data.id
@@ -623,7 +623,7 @@ const MypageIndex = ({}) => {
                                         : `subTheme`
                                     }
                                     width={width < 700 ? `100%` : `186px`}
-                                    padding={`4px 13px`}
+                                    padding={`4px 8px`}
                                     height={`52px`}
                                     fontSize={`20px`}
                                     onClick={() =>

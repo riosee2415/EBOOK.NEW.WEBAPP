@@ -650,7 +650,7 @@ const MediaDetail = () => {
                               data.isSample ? (
                                 <CommonButton
                                   kindOf={`subTheme`}
-                                  padding={`4px 13px`}
+                                  padding={`4px 8px`}
                                   width={width < 700 ? `100%` : `186px`}
                                   height={`52px`}
                                   fontSize={`20px`}
@@ -685,7 +685,7 @@ const MediaDetail = () => {
                                         ? `checked`
                                         : `subTheme`
                                     }
-                                    padding={`4px 13px`}
+                                    padding={`4px 8px`}
                                     width={width < 700 ? `100%` : `186px`}
                                     height={`52px`}
                                     fontSize={`20px`}
@@ -729,7 +729,7 @@ const MediaDetail = () => {
                                         ? `checked`
                                         : `subTheme`
                                     }
-                                    padding={`4px 13px`}
+                                    padding={`4px 8px`}
                                     width={width < 700 ? `100%` : `186px`}
                                     height={`52px`}
                                     fontSize={`20px`}
