@@ -468,7 +468,7 @@ const MypageIndex = ({}) => {
                           borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
                           <Wrapper
-                            width={width < 700 ? `100%` : `50%`}
+                            width={width < 700 ? `100%` : `70%`}
                             al={`flex-start`}
                           >
                             <Wrapper dr={`row`} ju={`flex-start`}>
@@ -532,7 +532,7 @@ const MypageIndex = ({}) => {
                             </Wrapper>
                           </Wrapper>
                           <Wrapper
-                            width={width < 700 ? `100%` : `50%`}
+                            width={width < 700 ? `100%` : `30%`}
                             al={`flex-end`}
                           >
                             <Wrapper dr={`row`} ju={`flex-end`}>
@@ -541,6 +541,7 @@ const MypageIndex = ({}) => {
                                 <CommonButton
                                   kindOf={`subTheme`}
                                   width={width < 700 ? `100%` : `186px`}
+                                  padding={`4px 13px`}
                                   height={`52px`}
                                   fontSize={`20px`}
                                   onClick={() =>
@@ -570,6 +571,7 @@ const MypageIndex = ({}) => {
                                   ""
                                 ) : width < 700 ? (
                                   <MobileCommonButton
+                                    padding={`4px 13px`}
                                     kindOf={
                                       enjoyMeList.find(
                                         (value) => value.MediumId === data.id
@@ -621,6 +623,7 @@ const MypageIndex = ({}) => {
                                         : `subTheme`
                                     }
                                     width={width < 700 ? `100%` : `186px`}
+                                    padding={`4px 13px`}
                                     height={`52px`}
                                     fontSize={`20px`}
                                     onClick={() =>

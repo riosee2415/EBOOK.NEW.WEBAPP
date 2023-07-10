@@ -594,7 +594,7 @@ const MediaDetail = () => {
                           borderBottom={`1px solid ${Theme.lightGrey4_C}`}
                         >
                           <Wrapper
-                            width={width < 700 ? `100%` : `50%`}
+                            width={width < 700 ? `100%` : `70%`}
                             al={`flex-start`}
                           >
                             <Wrapper dr={`row`} ju={`flex-start`}>
@@ -642,7 +642,7 @@ const MediaDetail = () => {
                             </Wrapper>
                           </Wrapper>
                           <Wrapper
-                            width={width < 700 ? `100%` : `50%`}
+                            width={width < 700 ? `100%` : `30%`}
                             al={`flex-end`}
                           >
                             <Wrapper dr={`row`} ju={`flex-end`}>
@@ -650,6 +650,7 @@ const MediaDetail = () => {
                               data.isSample ? (
                                 <CommonButton
                                   kindOf={`subTheme`}
+                                  padding={`4px 13px`}
                                   width={width < 700 ? `100%` : `186px`}
                                   height={`52px`}
                                   fontSize={`20px`}
@@ -684,6 +685,7 @@ const MediaDetail = () => {
                                         ? `checked`
                                         : `subTheme`
                                     }
+                                    padding={`4px 13px`}
                                     width={width < 700 ? `100%` : `186px`}
                                     height={`52px`}
                                     fontSize={`20px`}
@@ -727,6 +729,7 @@ const MediaDetail = () => {
                                         ? `checked`
                                         : `subTheme`
                                     }
+                                    padding={`4px 13px`}
                                     width={width < 700 ? `100%` : `186px`}
                                     height={`52px`}
                                     fontSize={`20px`}
