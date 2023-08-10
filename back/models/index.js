@@ -37,6 +37,7 @@ const keyword = require("./keyword");
 const keywordConnect = require("./keywordConnect");
 const tag = require("./tag");
 const tagConnect = require("./tagConnect");
+const levelTest = require("./levelTest");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -87,6 +88,7 @@ db.Keyword = keyword;
 db.KeywordConnect = keywordConnect;
 db.Tag = tag;
 db.TagConnect = tagConnect;
+db.LevelTest = levelTest;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
