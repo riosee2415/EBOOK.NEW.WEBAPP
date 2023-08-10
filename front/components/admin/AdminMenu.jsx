@@ -156,6 +156,10 @@ const AdminMenu = () => {
           name: "구매강의관리",
           link: "/admin/lecture/buyLecture",
         },
+        {
+          name: "레벨설문관리",
+          link: "/admin/lecture/survey",
+        },
       ],
     },
   ];

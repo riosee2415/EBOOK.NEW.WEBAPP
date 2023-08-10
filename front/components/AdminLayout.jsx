@@ -87,6 +87,11 @@ export const items = {
       link: "/admin/lecture/buyLecture",
       useYn: true,
     },
+    {
+      name: "레벨설문관리",
+      link: "/admin/lecture/survey",
+      useYn: true,
+    },
   ],
   게시판관리: [
     {
