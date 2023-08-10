@@ -90,7 +90,7 @@ const FixedNav = ({}) => {
           moveLinkHandler("/enrolment");
         }}
         width={`100px`}
-        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%87%E1%85%A9%E1%84%85%E1%85%A1%E1%84%89%E1%85%A2%E1%86%A8.png`}
+        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/fixed-icon.png`}
       />
 
       <ATag target="_blank" href="http://pf.kakao.com/_zxhxaxdb/chat">

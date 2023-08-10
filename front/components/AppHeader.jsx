@@ -222,7 +222,9 @@ const AppHeader = ({}) => {
             </Link>
             <Link href={`/lecture`}>
               <a>
-                <Menu isActive={router.pathname === `/lecture`}>커리큘럼</Menu>
+                <Menu isActive={router.pathname === `/lecture`}>
+                  친절한수정과
+                </Menu>
               </a>
             </Link>
             <Link href={`/review`}>
