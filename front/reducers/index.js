@@ -17,6 +17,7 @@ import review from "./review";
 import reference from "./reference";
 import boughtLecture from "./boughtLecture";
 import enjoy from "./enjoy";
+import level from "./level";
 
 const rootReducer = (state, action) => {
   switch (action.type) {
@@ -42,6 +43,7 @@ const rootReducer = (state, action) => {
         reference,
         boughtLecture,
         enjoy,
+        level,
       });
       return combinedReducer(state, action);
     }
