@@ -71,7 +71,7 @@ router.post("/valueUpdate", async (req, res, next) => {
 
   const uq = `
           UPDATE  levelTest
-             SET  value = ${nextValue}
+             SET  value = "${nextValue}"
            WHERE  id = ${id}
       `;
 
@@ -211,6 +211,46 @@ router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
   await actionUpdateQuery(uq);
 
   return res.status(200).json({ result: true });
+});
+
+//
+//  줌 강의 인원 추가하기
+//
+router.post("/zoom/lecture/addPeople", async (req, res, next) => {
+  const { ZoomId, UserId } = req.body;
+
+  const sq = `
+SELECT	COUNT(*)    AS cnt
+FROM	zoomPeople
+WHERE	ZoomLectureId =	${ZoomId}
+ AND  isCompleted = false
+`;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  if (list[0].cnt > 6) {
+    return res.status(400).send("해당 강의는 정원이 초과되었습니다.");
+  }
+
+  const sq2 = `
+  SELECT	COUNT(*)    AS cnt
+  FROM	zoomPeople
+  WHERE	ZoomLectureId =	${ZoomId}
+   AND  isCompleted = false
+  AND UserId = ${UserId}
+  `;
+
+  const list2 = await noneParameterSelectQuery(sq2);
+
+  if (list2[0].cnt > 0) {
+    return res.status(400).send("해당 강의는 이미 수강신청 되어있습니다.");
+  }
+
+  const nq = `
+  INSERT INTO zoomPeople (createdAt, updatedAt, UserId, ZoomLectureId) VALUES (
+    NOW(), NOW(), ${ZoomId}, ${UserId}
+  )
+  `;
 });
 
 module.exports = router;
