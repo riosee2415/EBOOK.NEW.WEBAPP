@@ -104,6 +104,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
        AND  isCompleted = false
   )	AS cnt
 FROM	zoomLecture	A
+ORDER  BY A.createdAt DESC
   `;
 
   const list = await noneParameterSelectQuery(sq);
