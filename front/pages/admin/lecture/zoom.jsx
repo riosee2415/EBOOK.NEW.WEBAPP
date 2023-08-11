@@ -27,7 +27,11 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { ZOOM_LEC_LIST_REQUEST } from "../../../reducers/level";
+import {
+  ZOOM_LEC_CREATE_REQUEST,
+  ZOOM_LEC_LIST_REQUEST,
+  ZOOM_LEC_UPDATE_REQUEST,
+} from "../../../reducers/level";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -51,7 +55,15 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Zoom = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
-  const { zoomLecList } = useSelector((state) => state.level);
+  const {
+    zoomLecList,
+
+    st_zoomLecCreateDone,
+    st_zoomLecCreateError,
+
+    st_zoomLecUpdateDone,
+    st_zoomLecUpdateError,
+  } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -114,6 +126,36 @@ const Zoom = ({}) => {
     });
   }, []);
 
+  ////////////////////// 줌강의 생성후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecCreateDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+      });
+
+      return message.success("줌강의가 생성되었습니다.");
+    }
+
+    if (st_zoomLecCreateError) {
+      return message.error(st_zoomLecCreateError);
+    }
+  }, [st_zoomLecCreateDone, st_zoomLecCreateError]);
+
+  ////////////////////// 줌강의 수정후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecUpdateDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+      });
+
+      return message.success("줌강의가 수정되었습니다.");
+    }
+
+    if (st_zoomLecUpdateError) {
+      return message.error(st_zoomLecUpdateError);
+    }
+  }, [st_zoomLecUpdateDone, st_zoomLecUpdateError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -133,6 +175,32 @@ const Zoom = ({}) => {
       });
     },
     [currentData, infoForm]
+  );
+
+  const createHandler = useCallback(() => {
+    dispatch({
+      type: ZOOM_LEC_CREATE_REQUEST,
+    });
+  }, []);
+
+  const updateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: ZOOM_LEC_UPDATE_REQUEST,
+        data: {
+          id: currentData.id,
+          days: data.days,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          levelValue: data.levelValue,
+          terms: data.terms,
+          tName: data.tName,
+          price: data.price,
+          zoomRink: data.zoomRink,
+        },
+      });
+    },
+    [currentData]
   );
 
   ////// DATAVIEW //////
@@ -195,8 +263,6 @@ const Zoom = ({}) => {
     },
   ];
 
-  console.log(zoomLecList);
-
   return (
     <AdminLayout>
       {/* MENU TAB */}
@@ -246,7 +312,7 @@ const Zoom = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
+            <Button size="small" type="primary" onClick={createHandler}>
               설문지 생성
             </Button>
           </Wrapper>
@@ -283,6 +349,7 @@ const Zoom = ({}) => {
                 style={{ width: `100%` }}
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 21 }}
+                onFinish={updateHandler}
               >
                 <Form.Item
                   label="레벨"
