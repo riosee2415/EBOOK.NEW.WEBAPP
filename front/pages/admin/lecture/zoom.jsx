@@ -274,7 +274,7 @@ const Zoom = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  줌강의 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -334,6 +334,45 @@ const Zoom = ({}) => {
                     {
                       required: true,
                       message: "시작시간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="종료시간"
+                  name="endTime"
+                  rules={[
+                    {
+                      required: true,
+                      message: "종료시간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="수강기간"
+                  name="terms"
+                  rules={[
+                    {
+                      required: true,
+                      message: "수강기간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="줌링크"
+                  name="zoomRink"
+                  rules={[
+                    {
+                      required: true,
+                      message: "줌링크은 필수 입력사항 입니다.",
                     },
                   ]}
                 >

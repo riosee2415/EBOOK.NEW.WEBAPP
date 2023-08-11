@@ -118,14 +118,14 @@ ORDER  BY A.createdAt DESC
 //
 router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
   const {
-    days,
-    startTime,
-    endTime,
-    levelValue,
-    terms,
-    tName,
-    price,
-    zoomRink,
+    days = "월화수",
+    startTime = "00:00",
+    endTime = "00:00",
+    levelValue = "LEVEL1",
+    terms = "01월 01일 ~ 01월 01일",
+    tName = "선생님이름",
+    price = 0,
+    zoomRink = "줌링크",
   } = req.body;
 
   const list = [
