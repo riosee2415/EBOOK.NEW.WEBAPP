@@ -37,10 +37,14 @@ const constructureHandler = async () => {
 constructureHandler();
 
 router.post("/list", async (req, res, next) => {
+  const { isAdmin = false } = req.body;
+
   const sq = `SELECT	id,
                         value
                   FROM	levelTest
-                 WHERE	isHide = 0`;
+                ${isAdmin ? `` : `WHERE	isHide = 0`}
+                ORDER BY  number ASC
+                `;
 
   const list = await noneParameterSelectQuery(sq);
 
