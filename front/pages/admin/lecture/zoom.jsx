@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
+import { Button, Form, Input, Popover, Select, Table, message } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -15,7 +15,6 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
-  DelBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -27,7 +26,11 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { ZOOM_LEC_LIST_REQUEST } from "../../../reducers/level";
+import {
+  ZOOM_LEC_CREATE_REQUEST,
+  ZOOM_LEC_LIST_REQUEST,
+  ZOOM_LEC_UPDATE_REQUEST,
+} from "../../../reducers/level";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -51,7 +54,15 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Zoom = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
-  const { zoomLecList } = useSelector((state) => state.level);
+  const {
+    zoomLecList,
+
+    st_zoomLecCreateDone,
+    st_zoomLecCreateError,
+
+    st_zoomLecUpdateDone,
+    st_zoomLecUpdateError,
+  } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -114,6 +125,36 @@ const Zoom = ({}) => {
     });
   }, []);
 
+  ////////////////////// 줌강의 생성후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecCreateDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+      });
+
+      return message.success("줌강의가 생성되었습니다.");
+    }
+
+    if (st_zoomLecCreateError) {
+      return message.error(st_zoomLecCreateError);
+    }
+  }, [st_zoomLecCreateDone, st_zoomLecCreateError]);
+
+  ////////////////////// 줌강의 수정후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecUpdateDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+      });
+
+      return message.success("줌강의가 수정되었습니다.");
+    }
+
+    if (st_zoomLecUpdateError) {
+      return message.error(st_zoomLecUpdateError);
+    }
+  }, [st_zoomLecUpdateDone, st_zoomLecUpdateError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -133,6 +174,32 @@ const Zoom = ({}) => {
       });
     },
     [currentData, infoForm]
+  );
+
+  const createHandler = useCallback(() => {
+    dispatch({
+      type: ZOOM_LEC_CREATE_REQUEST,
+    });
+  }, []);
+
+  const updateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: ZOOM_LEC_UPDATE_REQUEST,
+        data: {
+          id: currentData.id,
+          days: data.days,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          levelValue: data.levelValue,
+          terms: data.terms,
+          tName: data.tName,
+          price: data.price,
+          zoomRink: data.zoomRink,
+        },
+      });
+    },
+    [currentData]
   );
 
   ////// DATAVIEW //////
@@ -180,22 +247,7 @@ const Zoom = ({}) => {
         </>
       ),
     },
-    {
-      title: "삭제",
-      render: (data) => (
-        <Popconfirm
-          title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
-          okText="삭제"
-          cancelText="취소"
-        >
-          <DelBtn />
-        </Popconfirm>
-      ),
-    },
   ];
-
-  console.log(zoomLecList);
 
   return (
     <AdminLayout>
@@ -246,7 +298,7 @@ const Zoom = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
+            <Button size="small" type="primary" onClick={createHandler}>
               설문지 생성
             </Button>
           </Wrapper>
@@ -283,6 +335,7 @@ const Zoom = ({}) => {
                 style={{ width: `100%` }}
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 21 }}
+                onFinish={updateHandler}
               >
                 <Form.Item
                   label="레벨"
@@ -291,7 +344,15 @@ const Zoom = ({}) => {
                     { required: true, message: "레벨은 필수 입력사항 입니다." },
                   ]}
                 >
-                  <Input size="small" />
+                  <Select size="small">
+                    <Select.Option value={"LEVEL1"}>LEVEL1</Select.Option>
+                    <Select.Option value={"LEVEL2"}>LEVEL2</Select.Option>
+                    <Select.Option value={"LEVEL3"}>LEVEL3</Select.Option>
+                    <Select.Option value={"LEVEL4"}>LEVEL4</Select.Option>
+                    <Select.Option value={"LEVEL5"}>LEVEL5</Select.Option>
+                    <Select.Option value={"LEVEL6"}>LEVEL6</Select.Option>
+                    <Select.Option value={"LEVEL7"}>LEVEL7</Select.Option>
+                  </Select>
                 </Form.Item>
 
                 <Form.Item
