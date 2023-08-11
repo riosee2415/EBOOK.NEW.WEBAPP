@@ -116,6 +116,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     kindOf={`basic`}
                     margin={`0 10px`}
+                    onClick={() => setCurrentTab(99)}
                   >
                     아니오.
                   </CommonButton>
@@ -131,89 +132,88 @@ const Intro = () => {
                 </Wrapper>
               </Wrapper>
             ) : (
-              <Wrapper>{viewLv - 1 === 0 ? 1 : viewLv - 1}</Wrapper>
-            )}
-
-            {/* <Wrapper
-              border={`1px solid ${Theme.lightSubTheme2_C}`}
-              padding={`50px 20px`}
-            >
-              <Text
-                fontSize={`30px`}
-                fontWeight={`bold`}
-                margin={`0 0 20px`}
-                color={Theme.basicTheme_C}
+              <Wrapper
+                border={`1px solid ${Theme.lightSubTheme2_C}`}
+                padding={`50px 20px`}
               >
-                귀하는 Level3 과정 수강을 권장드립니다.
-              </Text>
-              <Wrapper dr={`row`}>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
+                <Text
+                  fontSize={`30px`}
+                  fontWeight={`bold`}
+                  margin={`0 0 20px`}
+                  color={Theme.basicTheme_C}
                 >
-                  레벨1신청
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨2신청
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨3신청
-                </CommonButton>
+                  귀하는 Level{viewLv - 1 === 0 ? 1 : viewLv - 1} 과정 수강을
+                  권장드립니다.
+                </Text>
+                <Wrapper dr={`row`}>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨1신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨2신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨3신청
+                  </CommonButton>
+                </Wrapper>
+                <Wrapper dr={`row`}>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨4신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨5신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨6신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                  >
+                    레벨7신청
+                  </CommonButton>
+                </Wrapper>
               </Wrapper>
-              <Wrapper dr={`row`}>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨4신청
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨5신청
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨6신청
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  margin={`10px 5px`}
-                  kindOf={`basic`}
-                >
-                  레벨7신청
-                </CommonButton>
-              </Wrapper>
-            </Wrapper> */}
+            )}
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
