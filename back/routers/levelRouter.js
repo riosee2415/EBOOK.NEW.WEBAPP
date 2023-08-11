@@ -101,6 +101,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
     SELECT	COUNT(*)
       FROM	zoomPeople
      WHERE	ZoomLectureId =	A.id 
+       AND  isCompleted = false
   )	AS cnt
 FROM	zoomLecture	A
   `;
@@ -173,6 +174,41 @@ router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
   if (!result) {
     return res.status(400).send("상품을 생성할 수 없습니다.");
   }
+  return res.status(200).json({ result: true });
+});
+
+//
+//  줌 강의 수정하기
+//
+router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
+  const {
+    id,
+    days,
+    startTime,
+    endTime,
+    levelValue,
+    terms,
+    tName,
+    price,
+    zoomRink,
+  } = req.body;
+
+  const uq = `
+    UPDATE  zoomLecture
+       SET  id = "${id}",
+            days = "${days}",
+            startTime = "${startTime}",
+            endTime = "${endTime}",
+            levelValue = "${levelValue}",
+            terms = "${terms}",
+            tName = "${tName}",
+            price = ${price},
+            zoomRink = "${zoomRink}"
+    WHERE   id = ${id}
+  `;
+
+  await actionUpdateQuery(uq);
+
   return res.status(200).json({ result: true });
 });
 
