@@ -272,7 +272,6 @@ router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
 		B.username,
 		B.birth,
 		B.gender,
-		B.tel,
 		B.mobile,
 		B.email
   FROM	zoomPeople	A

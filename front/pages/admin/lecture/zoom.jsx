@@ -2,7 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popover, Select, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Popover,
+  Select,
+  Table,
+  message,
+  Modal,
+} from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -28,6 +37,7 @@ import {
 } from "@ant-design/icons";
 import {
   ZOOM_LEC_CREATE_REQUEST,
+  ZOOM_LEC_DETAIL_REQUEST,
   ZOOM_LEC_LIST_REQUEST,
   ZOOM_LEC_UPDATE_REQUEST,
 } from "../../../reducers/level";
@@ -56,6 +66,7 @@ const Zoom = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
     zoomLecList,
+    zoomDetail,
 
     st_zoomLecCreateDone,
     st_zoomLecCreateError,
@@ -72,8 +83,10 @@ const Zoom = ({}) => {
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
+  const [isModal, setIsModal] = useState(null);
 
   const [infoForm] = Form.useForm();
+  const [peopleForm] = Form.useForm();
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -202,6 +215,20 @@ const Zoom = ({}) => {
     [currentData]
   );
 
+  const modalToggle = useCallback(
+    (data) => {
+      setIsModal((prev) => !prev);
+
+      dispatch({
+        type: ZOOM_LEC_DETAIL_REQUEST,
+        data: {
+          ZoomId: data.id,
+        },
+      });
+    },
+    [isModal]
+  );
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -229,7 +256,11 @@ const Zoom = ({}) => {
     },
     {
       title: "수강생수",
-      render: (data) => <Text>{data.cnt}명</Text>,
+      render: (data) => (
+        <Button type="primary" size="small" onClick={() => modalToggle(data)}>
+          {data.cnt}명
+        </Button>
+      ),
     },
     {
       title: "생성일",
@@ -246,6 +277,33 @@ const Zoom = ({}) => {
           />
         </>
       ),
+    },
+  ];
+
+  const col2 = [
+    {
+      title: "이름",
+      dataIndex: "username",
+    },
+    {
+      title: "생년월일",
+      dataIndex: "birth",
+    },
+    {
+      title: "성별",
+      dataIndex: "gender",
+    },
+    {
+      title: "연락처",
+      dataIndex: "tel",
+    },
+    {
+      title: "연락처",
+      dataIndex: "mobile",
+    },
+    {
+      title: "이메일",
+      dataIndex: "email",
     },
   ];
 
@@ -476,6 +534,23 @@ const Zoom = ({}) => {
           )}
         </Wrapper>
       </Wrapper>
+
+      <Modal
+        onCancel={modalToggle}
+        visible={isModal}
+        footer={null}
+        width={`700px`}
+      >
+        <Wrapper padding={`50px 0 20px`}>
+          <Table
+            style={{ width: "100%" }}
+            rowKey="id"
+            columns={col2}
+            dataSource={zoomDetail}
+            size="small"
+          />
+        </Wrapper>
+      </Modal>
     </AdminLayout>
   );
 };
