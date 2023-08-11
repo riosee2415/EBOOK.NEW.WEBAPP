@@ -252,6 +252,38 @@ WHERE	ZoomLectureId =	${ZoomId}
     NOW(), NOW(), ${ZoomId}, ${UserId}
   )
   `;
+
+  await models.sequelize.query(nq);
+
+  return res.status(200).json({ result: true });
+});
+
+//
+//  강의 수강생 정보 보기
+//
+router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
+  const { ZoomId } = req.body;
+
+  if (!ZoomId) {
+    return res.status(400).send("다시 시도해주세요.");
+  }
+
+  const sq = `SELECT	B.userId,
+		B.username,
+		B.birth,
+		B.gender,
+		B.tel,
+		B.mobile,
+		B.email
+  FROM	zoomPeople	A
+ INNER
+  JOIN	users 		B
+    ON	A.UserId = B.id
+ WHERE	A.ZoomLectureId = ${ZoomId}`;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  return res.status(200).json(list);
 });
 
 module.exports = router;
