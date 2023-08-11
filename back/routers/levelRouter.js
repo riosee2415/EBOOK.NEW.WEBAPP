@@ -374,7 +374,7 @@ ORDER	BY	A.createdAt DESC
 //  줌 결제내역 추가하기
 //
 router.post(
-  "/zoom/lecture/history/list",
+  "/zoom/lecture/history/add",
   isAdminCheck,
   async (req, res, next) => {
     const { impUid, merchantUid, payment, UserId, ZoomLectureId } = req.body;
