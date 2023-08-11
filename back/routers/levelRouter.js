@@ -114,6 +114,40 @@ ORDER  BY A.createdAt DESC
 });
 
 //
+//  줌 강의 디테일 정보가져오기
+//
+router.post("/zoom/lecture/target", async (req, res, next) => {
+  const { id } = req.body;
+  const sq = `
+  SELECT	A.id,
+  A.days,
+  A.startTime,
+  A.endTime,
+  A.levelValue,
+  A.terms,
+  A.tName,
+  A.price,
+  A.isEnd,
+  A.createdAt,
+  A.zoomRink,
+  DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
+  (
+    SELECT	COUNT(*)
+      FROM	zoomPeople
+     WHERE	ZoomLectureId =	A.id 
+       AND  isCompleted = false
+  )	AS cnt
+FROM	zoomLecture	A
+WHERE id = ${id}
+ORDER  BY A.createdAt DESC
+  `;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  return res.status(200).json(list);
+});
+
+//
 //  줌 강의 추가하기
 //
 router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
