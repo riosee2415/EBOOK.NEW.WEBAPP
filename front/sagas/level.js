@@ -24,6 +24,14 @@ import {
   ZOOM_LEC_UPDATE_REQUEST,
   ZOOM_LEC_UPDATE_SUCCESS,
   ZOOM_LEC_UPDATE_FAILURE,
+  //
+  ZOOM_LEC_ADD_PEOPLE_REQUEST,
+  ZOOM_LEC_ADD_PEOPLE_SUCCESS,
+  ZOOM_LEC_ADD_PEOPLE_FAILURE,
+  //
+  ZOOM_LEC_DETAIL_REQUEST,
+  ZOOM_LEC_DETAIL_SUCCESS,
+  ZOOM_LEC_DETAIL_FAILURE,
 } from "../reducers/level";
 
 // ******************************************************************************************************************
@@ -188,6 +196,60 @@ function* zoomLecUpdate(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecAddPeopleAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/addPeople`, data);
+}
+
+function* zoomLecAddPeople(action) {
+  try {
+    const result = yield call(zoomLecAddPeopleAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_ADD_PEOPLE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_ADD_PEOPLE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecDetailAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/detail`, data);
+}
+
+function* zoomLecDetail(action) {
+  try {
+    const result = yield call(zoomLecDetailAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchLevelList() {
   yield takeLatest(LEVEL_REQUEST, levelList);
@@ -207,6 +269,12 @@ function* watchZoomLecCreate() {
 function* watchZoomLecUpdate() {
   yield takeLatest(ZOOM_LEC_UPDATE_REQUEST, zoomLecUpdate);
 }
+function* watchZoomLecAddPeople() {
+  yield takeLatest(ZOOM_LEC_ADD_PEOPLE_REQUEST, zoomLecAddPeople);
+}
+function* watchZoomLecDetail() {
+  yield takeLatest(ZOOM_LEC_DETAIL_REQUEST, zoomLecDetail);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* levelSaga() {
@@ -217,6 +285,8 @@ export default function* levelSaga() {
     fork(watchZoomLecList),
     fork(watchZoomLecCreate),
     fork(watchZoomLecUpdate),
+    fork(watchZoomLecAddPeople),
+    fork(watchZoomLecDetail),
     //
   ]);
 }

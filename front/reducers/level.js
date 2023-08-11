@@ -3,6 +3,7 @@ import produce from "../util/produce";
 export const initialState = {
   levelList: [],
   zoomLecList: [], // 줌강의
+  zoomDetail: null, // 줌강의
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -27,6 +28,14 @@ export const initialState = {
   st_zoomLecUpdateLoading: false, // 줌 강의 수정하기
   st_zoomLecUpdateDone: false,
   st_zoomLecUpdateError: null,
+  //
+  st_zoomLecAddPeopleLoading: false, // 줌 강의 인원 추가하기
+  st_zoomLecAddPeopleDone: false,
+  st_zoomLecAddPeopleError: null,
+  //
+  st_zoomLecDetailLoading: false, // 강의 수강생 정보 보기
+  st_zoomLecDetailDone: false,
+  st_zoomLecDetailError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -52,6 +61,14 @@ export const ZOOM_LEC_CREATE_FAILURE = "ZOOM_LEC_CREATE_FAILURE";
 export const ZOOM_LEC_UPDATE_REQUEST = "ZOOM_LEC_UPDATE_REQUEST";
 export const ZOOM_LEC_UPDATE_SUCCESS = "ZOOM_LEC_UPDATE_SUCCESS";
 export const ZOOM_LEC_UPDATE_FAILURE = "ZOOM_LEC_UPDATE_FAILURE";
+
+export const ZOOM_LEC_ADD_PEOPLE_REQUEST = "ZOOM_LEC_ADD_PEOPLE_REQUEST";
+export const ZOOM_LEC_ADD_PEOPLE_SUCCESS = "ZOOM_LEC_ADD_PEOPLE_SUCCESS";
+export const ZOOM_LEC_ADD_PEOPLE_FAILURE = "ZOOM_LEC_ADD_PEOPLE_FAILURE";
+
+export const ZOOM_LEC_DETAIL_REQUEST = "ZOOM_LEC_DETAIL_REQUEST";
+export const ZOOM_LEC_DETAIL_SUCCESS = "ZOOM_LEC_DETAIL_SUCCESS";
+export const ZOOM_LEC_DETAIL_FAILURE = "ZOOM_LEC_DETAIL_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -172,6 +189,47 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecUpdateLoading = false;
         draft.st_zoomLecUpdateDone = false;
         draft.st_zoomLecUpdateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_ADD_PEOPLE_REQUEST: {
+        draft.st_zoomLecAddPeopleLoading = true;
+        draft.st_zoomLecAddPeopleDone = null;
+        draft.st_zoomLecAddPeopleError = false;
+        break;
+      }
+      case ZOOM_LEC_ADD_PEOPLE_SUCCESS: {
+        draft.st_zoomLecAddPeopleLoading = false;
+        draft.st_zoomLecAddPeopleDone = true;
+        draft.st_zoomLecAddPeopleError = null;
+        break;
+      }
+      case ZOOM_LEC_ADD_PEOPLE_FAILURE: {
+        draft.st_zoomLecAddPeopleLoading = false;
+        draft.st_zoomLecAddPeopleDone = false;
+        draft.st_zoomLecAddPeopleError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_DETAIL_REQUEST: {
+        draft.st_zoomLecDetailLoading = true;
+        draft.st_zoomLecDetailDone = null;
+        draft.st_zoomLecDetailError = false;
+        break;
+      }
+      case ZOOM_LEC_DETAIL_SUCCESS: {
+        draft.st_zoomLecDetailLoading = false;
+        draft.st_zoomLecDetailDone = true;
+        draft.st_zoomLecDetailError = null;
+        draft.zoomDetail = action.data;
+        break;
+      }
+      case ZOOM_LEC_DETAIL_FAILURE: {
+        draft.st_zoomLecDetailLoading = false;
+        draft.st_zoomLecDetailDone = false;
+        draft.st_zoomLecDetailError = action.error;
         break;
       }
       //////////////////////////////////////////////
