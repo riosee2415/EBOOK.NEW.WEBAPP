@@ -347,7 +347,7 @@ router.post(
   A.payment,
   CONCAT(FORMAT(A.payment, 0), "원")	as viewPrice,
   A.createdAt,
-  DATE_FORMAT(A.createdAt, "%Y-%m%d")	as viewCreatedAt,
+  DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
   A.UserId,
   A.ZoomLectureId,
   B.userId,
