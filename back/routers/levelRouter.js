@@ -96,7 +96,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
   A.isEnd,
   A.createdAt,
   A.zoomRink,
-  DATE_FORMAT(A.createdAt, "%Y-%m%d")	as viewCreatedAt,
+  DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
   (
     SELECT	COUNT(*)
       FROM	zoomPeople

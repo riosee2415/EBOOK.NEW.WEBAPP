@@ -27,6 +27,7 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { ZOOM_LEC_LIST_REQUEST } from "../../../reducers/level";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -50,6 +51,7 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Zoom = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const { zoomLecList } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -138,7 +140,7 @@ const Zoom = ({}) => {
   const col = [
     {
       title: "번호",
-      dataIndex: "num",
+      dataIndex: "id",
     },
     {
       title: "이미지 명칭",
@@ -176,6 +178,8 @@ const Zoom = ({}) => {
       ),
     },
   ];
+
+  console.log(zoomLecList);
 
   return (
     <AdminLayout>
@@ -219,19 +223,6 @@ const Zoom = ({}) => {
         </GuideUl>
       </Wrapper>
 
-      {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          미완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          전체
-        </Button>
-      </Wrapper>
-
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
           width={`calc(50% - 10px)`}
@@ -245,9 +236,9 @@ const Zoom = ({}) => {
           </Wrapper>
           <Table
             style={{ width: "100%" }}
-            rowKey="num"
+            rowKey="id"
             columns={col}
-            dataSource={[]}
+            dataSource={zoomLecList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -374,6 +365,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ZOOM_LEC_LIST_REQUEST,
     });
 
     // 구현부 종료
