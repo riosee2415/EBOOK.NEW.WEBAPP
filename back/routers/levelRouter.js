@@ -285,4 +285,19 @@ router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
   return res.status(200).json(list);
 });
 
+//
+//  내 수강기록 보기
+//
+router.post("/zoom/lecture/my", async (req, res, next) => {
+  const sq = `
+  SELECT	*
+  FROM	zoomLecture
+ WHERE	id IN (SELECT id FROM zoomPeople WHERE UserId = ${req.user.id})
+  `;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  return res.status(200).json(list);
+});
+
 module.exports = router;
