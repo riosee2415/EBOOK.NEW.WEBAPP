@@ -160,6 +160,10 @@ const AdminMenu = () => {
           name: "레벨설문관리",
           link: "/admin/lecture/survey",
         },
+        {
+          name: "줌강의관리",
+          link: "/admin/lecture/zoom",
+        },
       ],
     },
   ];
