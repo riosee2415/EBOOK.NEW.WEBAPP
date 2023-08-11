@@ -41,9 +41,10 @@ router.post("/list", async (req, res, next) => {
   const { isAdmin = false } = req.body;
 
   const sq = `SELECT	id,
-                        value
+                        value,
+                        isHide
                   FROM	levelTest
-                ${isAdmin ? `` : `WHERE	isHide = 0`}
+                ${isAdmin ? `WHERE	isHide = 0` : ``}
                 ORDER BY  number ASC
                 `;
 
@@ -117,14 +118,14 @@ ORDER  BY A.createdAt DESC
 //
 router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
   const {
-    days,
-    startTime,
-    endTime,
-    levelValue,
-    terms,
-    tName,
-    price,
-    zoomRink,
+    days = "월화수",
+    startTime = "00:00",
+    endTime = "00:00",
+    levelValue = "LEVEL1",
+    terms = "01월 01일 ~ 01월 01일",
+    tName = "선생님이름",
+    price = 0,
+    zoomRink = "줌링크",
   } = req.body;
 
   const list = [

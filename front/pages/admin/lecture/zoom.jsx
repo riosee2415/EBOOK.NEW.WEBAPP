@@ -40,13 +40,13 @@ const InfoTitle = styled.div`
   align-items: center;
 
   padding-left: 15px;
-  color: ${(props) => props.theme.subTheme5_C};
+  color: ${(props) => props.theme.basicTheme_C};
 `;
 
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
+    props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
 const Zoom = ({}) => {
@@ -121,13 +121,15 @@ const Zoom = ({}) => {
       setCurrentData(record);
 
       infoForm.setFieldsValue({
-        title: record.title,
-        typeId: record.NoticeTypeId,
-        content: record.content,
-        hit: record.hit,
+        levelValue: record.levelValue,
+        days: record.days,
+        price: record.price,
+        tName: record.tName,
+        startTime: record.startTime,
+        endTime: record.endTime,
+        terms: record.terms,
+        zoomRink: record.zoomRink,
         createdAt: record.viewCreatedAt,
-        updatedAt: record.viewUpdatedAt,
-        updator: record.updator,
       });
     },
     [currentData, infoForm]
@@ -143,10 +145,25 @@ const Zoom = ({}) => {
       dataIndex: "id",
     },
     {
-      title: "이미지 명칭",
-      dataIndex: "title",
+      title: "레벨",
+      dataIndex: "levelValue",
     },
-
+    {
+      title: "요일",
+      dataIndex: "days",
+    },
+    {
+      title: "가격",
+      dataIndex: "price",
+    },
+    {
+      title: "선생님",
+      dataIndex: "tName",
+    },
+    {
+      title: "수강생수",
+      render: (data) => <Text>{data.cnt}명</Text>,
+    },
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
@@ -163,7 +180,6 @@ const Zoom = ({}) => {
         </>
       ),
     },
-
     {
       title: "삭제",
       render: (data) => (
@@ -258,61 +274,112 @@ const Zoom = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  줌강의 기본정보
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 2 }}
-                wrapperCol={{ span: 22 }}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 21 }}
               >
                 <Form.Item
-                  label="제목"
-                  name="title"
+                  label="레벨"
+                  name="levelValue"
                   rules={[
-                    { required: true, message: "제목은 필수 입력사항 입니다." },
+                    { required: true, message: "레벨은 필수 입력사항 입니다." },
                   ]}
                 >
                   <Input size="small" />
                 </Form.Item>
 
                 <Form.Item
-                  label="내용"
-                  name="content"
+                  label="요일"
+                  name="days"
                   rules={[
-                    { required: true, message: "내용은 필수 입력사항 입니다." },
+                    { required: true, message: "요일은 필수 입력사항 입니다." },
                   ]}
                 >
-                  <Input.TextArea rows={10} />
+                  <Input size="small" />
                 </Form.Item>
 
-                <Form.Item label="조회수" name="hit">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
+                <Form.Item
+                  label="가격"
+                  name="price"
+                  rules={[
+                    { required: true, message: "가격은 필수 입력사항 입니다." },
+                  ]}
+                >
+                  <Input size="small" type="number" />
+                </Form.Item>
+
+                <Form.Item
+                  label="선생님"
+                  name="tName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "선생님은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="시작시간"
+                  name="startTime"
+                  rules={[
+                    {
+                      required: true,
+                      message: "시작시간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="종료시간"
+                  name="endTime"
+                  rules={[
+                    {
+                      required: true,
+                      message: "종료시간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="수강기간"
+                  name="terms"
+                  rules={[
+                    {
+                      required: true,
+                      message: "수강기간은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
+                  label="줌링크"
+                  name="zoomRink"
+                  rules={[
+                    {
+                      required: true,
+                      message: "줌링크은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
                 </Form.Item>
 
                 <Form.Item label="작성일" name="createdAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="수정일" name="updatedAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
                     style={{ background: Theme.lightGrey_C, border: "none" }}
