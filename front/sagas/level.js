@@ -17,7 +17,7 @@ import {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function levelListAPI(data) {
-  return await axios.post(`/api/level/list`), data;
+  return await axios.post(`/api/lev/list`, data);
 }
 
 function* levelList(action) {
@@ -44,7 +44,7 @@ function* levelList(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function levelUpdateAPI(data) {
-  return await axios.post(`/api/level/valueUpdate`, data);
+  return await axios.post(`/api/lev/valueUpdate`, data);
 }
 
 function* levelUpdate(action) {
@@ -71,7 +71,7 @@ function* levelUpdate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function levelToggleAPI(data) {
-  return await axios.post(`/api/level/toggle`, data);
+  return await axios.post(`/api/lev/toggle`, data);
 }
 
 function* levelToggle(action) {
