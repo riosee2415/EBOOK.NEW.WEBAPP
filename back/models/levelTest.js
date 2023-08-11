@@ -15,6 +15,12 @@ module.exports = class LevelTest extends Model {
           type: DataTypes.TEXT,
           allowNull: false, // 필수
         },
+
+        isHide: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false, // 필수
+          defaultValue: false,
+        },
       },
       {
         modelName: "LevelTest",
