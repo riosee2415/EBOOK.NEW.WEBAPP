@@ -44,7 +44,7 @@ router.post("/list", async (req, res, next) => {
                         value,
                         isHide
                   FROM	levelTest
-                ${isAdmin ? `` : `WHERE	isHide = 0`}
+                ${isAdmin ? `WHERE	isHide = 0` : ``}
                 ORDER BY  number ASC
                 `;
 

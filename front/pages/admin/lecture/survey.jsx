@@ -2,7 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Popconfirm,
+  Popover,
+  Table,
+  message,
+  Switch,
+} from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -27,7 +36,11 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { LEVEL_REQUEST } from "../../../reducers/level";
+import {
+  LEVEL_REQUEST,
+  LEVEL_TOGGLE_REQUEST,
+  LEVEL_UPDATE_REQUEST,
+} from "../../../reducers/level";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -40,18 +53,24 @@ const InfoTitle = styled.div`
   align-items: center;
 
   padding-left: 15px;
-  color: ${(props) => props.theme.subTheme5_C};
+  color: ${(props) => props.theme.basicTheme_C};
 `;
 
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
+    props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
 const Survey = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
-  const { levelList } = useSelector((state) => state.level);
+  const {
+    levelList,
+    st_levelUpdateDone,
+    st_levelUpdateError,
+    st_levelToggleDone,
+    st_levelToggleError,
+  } = useSelector((state) => state.level);
 
   console.log(levelList);
 
@@ -116,6 +135,38 @@ const Survey = ({}) => {
     });
   }, []);
 
+  useEffect(() => {
+    if (st_levelUpdateDone) {
+      dispatch({
+        type: LEVEL_REQUEST,
+      });
+
+      setCurrentData(null);
+
+      return message.success("설문 내용이 수정되었습니다.");
+    }
+
+    if (st_levelUpdateError) {
+      return message.error(st_levelUpdateError);
+    }
+  }, [st_levelUpdateDone, st_levelUpdateError]);
+
+  useEffect(() => {
+    if (st_levelToggleDone) {
+      dispatch({
+        type: LEVEL_REQUEST,
+      });
+
+      setCurrentData(null);
+
+      return message.success("사용여부가 수정되었습니다.");
+    }
+
+    if (st_levelToggleError) {
+      return message.error(st_levelToggleError);
+    }
+  }, [st_levelToggleDone, st_levelToggleError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -123,17 +174,37 @@ const Survey = ({}) => {
       setCurrentData(record);
 
       infoForm.setFieldsValue({
-        title: record.title,
-        typeId: record.NoticeTypeId,
-        content: record.content,
-        hit: record.hit,
-        createdAt: record.viewCreatedAt,
-        updatedAt: record.viewUpdatedAt,
-        updator: record.updator,
+        id: record.id,
+        value: record.value,
       });
     },
     [currentData, infoForm]
   );
+
+  const infoFormFinish = useCallback(
+    (data) => {
+      dispatch({
+        type: LEVEL_UPDATE_REQUEST,
+        data: {
+          id: currentData.id,
+          nextValue: data.value.replace(/\'/gi, `''`, /\"/gi, `""`),
+        },
+      });
+    },
+    [currentData]
+  );
+
+  const dataToggleUpdate = useCallback((e, row) => {
+    const nextFlag = e ? 1 : 0;
+
+    dispatch({
+      type: LEVEL_TOGGLE_REQUEST,
+      data: {
+        id: row.id,
+        nextFlag,
+      },
+    });
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -142,17 +213,27 @@ const Survey = ({}) => {
   const col = [
     {
       title: "번호",
-      dataIndex: "num",
+      dataIndex: "id",
     },
     {
-      title: "이미지 명칭",
-      dataIndex: "title",
+      title: "설문 내용",
+      render: (data) => (
+        <Text width={`400px`} isEllipsis>
+          {data.value}
+        </Text>
+      ),
+      width: "60%",
+    },
+    {
+      title: "사용여부",
+      render: (row) => (
+        <Switch
+          checked={row.isHide}
+          onChange={(e) => dataToggleUpdate(e, row)}
+        />
+      ),
     },
 
-    {
-      title: "생성일",
-      dataIndex: "viewCreatedAt",
-    },
     {
       title: "상태창",
       render: (data) => (
@@ -163,20 +244,6 @@ const Survey = ({}) => {
             }
           />
         </>
-      ),
-    },
-
-    {
-      title: "삭제",
-      render: (data) => (
-        <Popconfirm
-          title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
-          okText="삭제"
-          cancelText="취소"
-        >
-          <DelBtn />
-        </Popconfirm>
       ),
     },
   ];
@@ -259,57 +326,17 @@ const Survey = ({}) => {
                 style={{ width: `100%` }}
                 labelCol={{ span: 2 }}
                 wrapperCol={{ span: 22 }}
+                onFinish={infoFormFinish}
               >
-                <Form.Item
-                  label="제목"
-                  name="title"
-                  rules={[
-                    { required: true, message: "제목은 필수 입력사항 입니다." },
-                  ]}
-                >
-                  <Input size="small" />
-                </Form.Item>
-
+                <Form.Item name="id" hidden></Form.Item>
                 <Form.Item
                   label="내용"
-                  name="content"
+                  name="value"
                   rules={[
                     { required: true, message: "내용은 필수 입력사항 입니다." },
                   ]}
                 >
                   <Input.TextArea rows={10} />
-                </Form.Item>
-
-                <Form.Item label="조회수" name="hit">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="작성일" name="createdAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="수정일" name="updatedAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="최근작업자" name="updator">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
                 </Form.Item>
 
                 <Wrapper al="flex-end">
