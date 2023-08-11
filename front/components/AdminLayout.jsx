@@ -92,6 +92,11 @@ export const items = {
       link: "/admin/lecture/survey",
       useYn: true,
     },
+    {
+      name: "줌강의관리",
+      link: "/admin/lecture/zoom",
+      useYn: true,
+    },
   ],
   게시판관리: [
     {
