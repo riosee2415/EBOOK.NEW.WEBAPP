@@ -3,7 +3,7 @@ import produce from "../util/produce";
 export const initialState = {
   levelList: [],
   zoomLecList: [], // 줌강의
-  zoomDetail: null, // 줌강의
+  zoomDetail: [], // 줌강의
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
