@@ -139,10 +139,31 @@ const AdminMenu = () => {
         },
       ],
     },
+    {
+      title: "줌수업관리",
+      key: "sub6",
+      subMenu: [
+        {
+          name: "레벨설문관리",
+          link: "/admin/lecture/survey",
+          useYn: true,
+        },
+        {
+          name: "줌강의관리",
+          link: "/admin/lecture/zoom",
+          useYn: true,
+        },
+        {
+          name: "결제내역관리",
+          link: "/admin/lecture/hisory",
+          useYn: true,
+        },
+      ],
+    },
 
     {
       title: "강의관리",
-      key: "sub6",
+      key: "sub7",
       subMenu: [
         {
           name: "강의상품관리",
@@ -155,14 +176,6 @@ const AdminMenu = () => {
         {
           name: "구매강의관리",
           link: "/admin/lecture/buyLecture",
-        },
-        {
-          name: "레벨설문관리",
-          link: "/admin/lecture/survey",
-        },
-        {
-          name: "줌강의관리",
-          link: "/admin/lecture/zoom",
         },
       ],
     },
