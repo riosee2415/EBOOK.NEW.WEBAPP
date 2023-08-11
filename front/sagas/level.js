@@ -48,6 +48,10 @@ import {
   ZOOM_LEC_HISTORY_DELETE_REQUEST,
   ZOOM_LEC_HISTORY_DELETE_SUCCESS,
   ZOOM_LEC_HISTORY_DELETE_FAILURE,
+  //
+  ZOOM_DETAIL_REQUEST,
+  ZOOM_DETAIL_SUCCESS,
+  ZOOM_DETAIL_FAILURE,
 } from "../reducers/level";
 
 // ******************************************************************************************************************
@@ -374,6 +378,33 @@ function* zoomLecHistoryDel(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomDetailAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/target`, data);
+}
+
+function* zoomDetail(action) {
+  try {
+    const result = yield call(zoomDetailAPI, action.data);
+
+    yield put({
+      type: ZOOM_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchLevelList() {
   yield takeLatest(LEVEL_REQUEST, levelList);
@@ -411,6 +442,9 @@ function* watchZoomLecHistoryAdd() {
 function* watchZoomLecHistoryDel() {
   yield takeLatest(ZOOM_LEC_HISTORY_DELETE_REQUEST, zoomLecHistoryDel);
 }
+function* watchZoomDetail() {
+  yield takeLatest(ZOOM_DETAIL_REQUEST, zoomDetail);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* levelSaga() {
@@ -427,6 +461,7 @@ export default function* levelSaga() {
     fork(watchZoomLecHistory),
     fork(watchZoomLecHistoryAdd),
     fork(watchZoomLecHistoryDel),
+    fork(watchZoomDetail),
     //
   ]);
 }

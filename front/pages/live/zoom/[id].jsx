@@ -20,7 +20,6 @@ import useWidth from "../../../hooks/useWidth";
 import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import Popup from "../../../components/popup/popup";
 import { Empty, Form, message, Radio, Modal, Select } from "antd";
 import {
   PlusCircleOutlined,
@@ -28,7 +27,6 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import { LECTURE_DETAIL_REQUEST } from "../../../reducers/lecture";
 import DaumPostcode from "react-daum-postcode";
 import { numberWithCommas } from "../../../components/commonUtils";
 import moment from "moment";
@@ -36,6 +34,7 @@ import {
   BOUGHT_CREATE_REQUEST,
   BOUGHT_ME_DETAIL_REQUEST,
 } from "../../../reducers/boughtLecture";
+import { ZOOM_DETAIL_REQUEST } from "../../../reducers/level";
 
 const BuyForm = styled(Form)`
   width: 100%;
@@ -149,9 +148,7 @@ const CustomRadio = styled(Radio)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
-  const { lectureDetail, st_lectureDetailError } = useSelector(
-    (state) => state.lecture
-  );
+  const { zoomLecDetail } = useSelector((state) => state.level);
   const {
     boughtCreateId,
     //
@@ -170,9 +167,6 @@ const Home = ({}) => {
   const [addressData, setAddressData] = useState(null);
   const [aModal, setAModal] = useState(false);
 
-  const [isBuyBook, setIsBuyBook] = useState(
-    lectureDetail && !lectureDetail.isBookPay ? 2 : 1
-  );
   const [isBuyType, setIsBuyType] = useState(null);
   const [isOverseas, setIsOverseas] = useState(false);
   const [overAddress, setOverAddress] = useState(false);
@@ -198,6 +192,8 @@ const Home = ({}) => {
     },
   ];
 
+  console.log(zoomLecDetail);
+
   ////// REDUX //////
   ////// USEEFFECT //////
 
@@ -207,7 +203,7 @@ const Home = ({}) => {
   useEffect(() => {
     if (router.query) {
       dispatch({
-        type: LECTURE_DETAIL_REQUEST,
+        type: ZOOM_DETAIL_REQUEST,
         data: {
           id: router.query.id,
         },
@@ -320,56 +316,15 @@ const Home = ({}) => {
         return message.error("결제 방법을 선택해주세요.");
       }
 
-      if (st_boughtCreateDone) {
-        return message.error("이미 결제되었습니다.");
-      }
-
       const IMP = window.IMP;
 
-      const address = isOverseas
-        ? isBuyBook === 1
-          ? dataArr.find((value) => value.id === data.overAddress).title +
-            " / " +
-            (data.detailAddress ? data.detailAddress : "") +
-            " " +
-            (data.detailAddress2 ? data.detailAddress2 : "") +
-            " " +
-            (data.detailAddress3 ? data.detailAddress3 : "")
-          : data.address
-        : data.address;
+      const address = data.address;
 
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
       let paypalPay = null;
 
-      // 금액 계산 순선
-      // 할인 가격 :
-      //  ⭕️ 할인 가격 +
-      //  ❌ 정상 가격 +
-      // 해외 + 책 구매시
-      //  ⭕️ 해외 추가금액
-      //  ❌ 0원
-      // 책 구매시
-      //  ⭕️ 책 할인 날짜 지났거나 null이 아닐때
-      //        ⭕️ 할인 가격 :
-      //                    ⭕️ 할인 가격 +
-      //                    ❌ 정상 가격 +
-      //        ❌ 정상 가격
-      //  ❌ 0
-      const buyPay =
-        (lectureDetail.discountPrice
-          ? lectureDetail.discountPrice
-          : lectureDetail.price) +
-        (isBuyBook === 1 && overAddress
-          ? dataArr.find((data) => data.id === overAddress).price
-          : 0) +
-        (isBuyBook === 1
-          ? lectureDetail.bookEndDate
-            ? lectureDetail.bookDiscountPrice
-              ? lectureDetail.bookDiscountPrice
-              : lectureDetail.bookPrice
-            : lectureDetail.bookPrice
-          : 0);
+      const buyPay = zoomLecDetail.price;
 
       await dollarChange(
         buyPay
@@ -396,17 +351,10 @@ const Home = ({}) => {
             detailAddress: isOverseas ? "-" : data.detailAddress,
             payType: isBuyType,
             pay: buyPay,
-            lectureType: lectureDetail.type,
+            lectureType: zoomLecDetail.type,
             name: data.name,
             impUid: "-",
             merchantUid: "-",
-            isBuyBook: isBuyBook === 1 ? 1 : 0,
-            bookPrice:
-              isBuyBook === 1
-                ? lectureDetail.bookEndDate
-                  ? lectureDetail.bookDiscountPrice
-                  : lectureDetail.bookPrice
-                : 0,
             lectureId: router.query.id,
           },
         });
@@ -419,43 +367,17 @@ const Home = ({}) => {
             pg: `${isBuyType}`,
             pay_method: "card",
             merchant_uid: orderPK,
-            name: lectureDetail && lectureDetail.title,
+            name: zoomLecDetail && zoomLecDetail.title,
             currency: "USD",
             amount: paypalPay,
             // amount: 0.12,
             m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
-              lectureDetail &&
-              lectureDetail.discountPrice +
-                (isBuyBook === 1 && overAddress
-                  ? dataArr.find((data) => data.id === overAddress).price
-                  : 0) +
-                (isBuyBook === 1
-                  ? lectureDetail.bookEndDate
-                    ? lectureDetail.bookDiscountPrice
-                    : lectureDetail.bookPrice
-                  : 0)
+              zoomLecDetail && zoomLecDetail.price
             }&address=${address}&mobile=${data.mobile}&receiver=${
               data.receiver
             }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
-              lectureDetail &&
-              lectureDetail.discountPrice +
-                (isBuyBook === 1 && overAddress
-                  ? dataArr.find((data) => data.id === overAddress).price
-                  : 0) +
-                (isBuyBook === 1
-                  ? lectureDetail.bookEndDate
-                    ? lectureDetail.bookDiscountPrice
-                    : lectureDetail.bookPrice
-                  : 0)
-            }&type=${
-              lectureDetail && lectureDetail.type
-            }&isBuyBook=${isBuyBook}&bookPrice=${
-              isBuyBook === 1
-                ? lectureDetail.bookEndDate
-                  ? lectureDetail.bookDiscountPrice
-                  : lectureDetail.bookPrice
-                : 0
-            }`,
+              zoomLecDetail && zoomLecDetail.price
+            }&type=${zoomLecDetail && zoomLecDetail.type}`,
           },
           async (rsp) => {
             if (rsp.success) {
@@ -469,17 +391,10 @@ const Home = ({}) => {
                   detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
                   pay: buyPay,
-                  lectureType: lectureDetail.type,
+                  lectureType: zoomLecDetail.type,
                   name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
-                  isBuyBook: isBuyBook === 1 ? 1 : 0,
-                  bookPrice:
-                    isBuyBook === 1
-                      ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookDiscountPrice
-                        : lectureDetail.bookPrice
-                      : 0,
                   lectureId: router.query.id,
                 },
               });
@@ -502,22 +417,11 @@ const Home = ({}) => {
             pg: "danal_tpay.A010052124",
             pay_method: isBuyType,
             merchant_uid: orderPK,
-            name: lectureDetail && lectureDetail.title,
+            name: zoomLecDetail && zoomLecDetail.levelValue,
             buyer_name: me.username,
             biz_num: me.mobile,
             // amount: 150,
-            amount:
-              (lectureDetail.discountPrice
-                ? lectureDetail.discountPrice
-                : lectureDetail.price) +
-              (isBuyBook === 1 && overAddress
-                ? dataArr.find((data) => data.id === overAddress).price
-                : 0) +
-              (isBuyBook === 1
-                ? lectureDetail.bookEndDate
-                  ? lectureDetail.bookDiscountPrice
-                  : lectureDetail.bookPrice
-                : 0),
+            amount: zoomLecDetail.price,
           },
           async (rsp) => {
             if (rsp.success) {
@@ -531,17 +435,10 @@ const Home = ({}) => {
                   detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
                   pay: buyPay,
-                  lectureType: lectureDetail.type,
+                  lectureType: zoomLecDetail.type,
                   name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
-                  isBuyBook: isBuyBook === 1 ? 1 : 0,
-                  bookPrice:
-                    isBuyBook === 1
-                      ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookDiscountPrice
-                        : lectureDetail.bookPrice
-                      : 0,
                   lectureId: router.query.id,
                 },
               });
@@ -550,7 +447,7 @@ const Home = ({}) => {
         );
       }
     },
-    [isBuyType, lectureDetail, isBuyBook, overAddress, st_boughtCreateDone]
+    [isBuyType, zoomLecDetail, overAddress, st_boughtCreateDone]
   );
 
   ////// DATAVIEW //////
@@ -633,13 +530,11 @@ const Home = ({}) => {
                     color={Theme.basicTheme_C}
                     margin={`0 0 20px`}
                   >
-                    상품명
+                    {zoomLecDetail && zoomLecDetail.levelValue}
                   </Text>
                   <Text fontSize={width < 700 ? `28px` : `32px`}>
-                    {lectureDetail && lectureDetail.subTitle}
-                    {lectureDetail && isBuyBook === 1
-                      ? ` + ${lectureDetail.bookTitle}`
-                      : ``}
+                    {zoomLecDetail && zoomLecDetail.terms}(
+                    {zoomLecDetail && zoomLecDetail.days})
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -647,39 +542,13 @@ const Home = ({}) => {
                   dr={`row`}
                   fontSize={width < 700 ? `28px` : `32px`}
                 >
-                  {lectureDetail &&
-                    (lectureDetail.subPrice > 0 ? (
-                      <>
-                        <SpanText
-                          fontWeight={`700`}
-                          color={Theme.basicTheme_C}
-                          margin={`0 4px 0 0`}
-                        >
-                          {lectureDetail && lectureDetail.viewSubPrice}
-                        </SpanText>
-                        원
-                      </>
-                    ) : (
-                      ""
-                    ))}
+                  {String(zoomLecDetail && zoomLecDetail.price).replace(
+                    /\B(?=(\d{3})+(?!\d))/g,
+                    ","
+                  )}
+                  원
                 </Wrapper>
               </Wrapper>
-
-              <Wrapper al={`flex-start`}>
-                <Text
-                  fontSize={`26px`}
-                  fontWeight={`bold`}
-                  color={Theme.grey4_C}
-                >
-                  책 배송정보
-                </Text>
-              </Wrapper>
-
-              <Wrapper
-                margin={`30px 0 42px`}
-                height={`1px`}
-                bgColor={Theme.lightGrey4_C}
-              />
 
               <BuyForm
                 form={infoForm}
@@ -703,167 +572,7 @@ const Home = ({}) => {
                     readOnly
                   />
                 </Form.Item>
-                <Form.Item
-                  label="수령인"
-                  name="receiver"
-                  rules={[{ required: true, message: "수령인은 필수 입니다." }]}
-                  colon={false}
-                >
-                  <TextInput
-                    width={width < 700 ? `100%` : `420px`}
-                    height={`54px`}
-                    radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
-                    fontSize={`18px`}
-                    placeholder="성함을 입력해주세요."
-                    margin={`0 0 10px`}
-                  />
-                </Form.Item>
 
-                {isOverseas ? (
-                  <Form.Item
-                    label="배송지"
-                    name="overAddress"
-                    colon={false}
-                    style={{ display: "flex", justifyContent: "flex-end" }}
-                    rules={[
-                      {
-                        required: isBuyBook === 1,
-                        message: "배송지는 필수 입니다.",
-                      },
-                    ]}
-                  >
-                    <CustomSelect
-                      onChange={overAddressChange}
-                      placeholder="해외 배송지를 선택해주세요."
-                      disabled={isBuyBook === 2}
-                    >
-                      {dataArr.map((data, idx) => {
-                        return (
-                          <Select.Option key={idx} value={data.id}>
-                            {data.title} - {data.viewPrice}
-                          </Select.Option>
-                        );
-                      })}
-                    </CustomSelect>
-                  </Form.Item>
-                ) : (
-                  <>
-                    <Wrapper dr={`row`}>
-                      <Form.Item
-                        label="배송지"
-                        name="zoneCode"
-                        rules={[
-                          { required: true, message: "배송지는 필수 입니다." },
-                        ]}
-                        colon={false}
-                        style={{
-                          width: "100%",
-                        }}
-                      >
-                        <TextInput
-                          width={
-                            width < 700
-                              ? `calc(100% - 140px)`
-                              : `calc(420px - 140px)`
-                          }
-                          height={`54px`}
-                          radius={`5px`}
-                          border={`1px solid ${Theme.lightGrey4_C}`}
-                          fontSize={`18px`}
-                          placeholder="우편번호를 검색해주세요."
-                          margin={`0 0 10px`}
-                          value={addressData && addressData.zonecode}
-                          readOnly={!isOverseas}
-                        />
-                        <CommonButton
-                          width={`140px`}
-                          height={`54px`}
-                          fontSize={`21px`}
-                          padding={`0`}
-                          onClick={aModalToggle}
-                        >
-                          우편번호 검색
-                        </CommonButton>
-                      </Form.Item>
-                    </Wrapper>
-
-                    <Form.Item
-                      name="address"
-                      colon={false}
-                      style={{ display: "flex", justifyContent: "flex-end" }}
-                    >
-                      <TextInput
-                        readOnly={!isOverseas}
-                        width={`100%`}
-                        height={`54px`}
-                        radius={`5px`}
-                        border={`1px solid ${Theme.lightGrey4_C}`}
-                        fontSize={`18px`}
-                        placeholder="-"
-                        margin={`0 0 10px`}
-                      />
-                    </Form.Item>
-                  </>
-                )}
-
-                {isOverseas ? (
-                  ""
-                ) : (
-                  <Form.Item
-                    name="detailAddress"
-                    colon={false}
-                    style={{ display: "flex", justifyContent: "flex-end" }}
-                  >
-                    <TextInput
-                      width={`100%`}
-                      height={`54px`}
-                      radius={`5px`}
-                      border={`1px solid ${Theme.lightGrey4_C}`}
-                      fontSize={`18px`}
-                      placeholder={
-                        isOverseas
-                          ? "주소지를  입력해주세요"
-                          : "상세주소를 입력해주세요."
-                      }
-                      margin={`0 0 10px`}
-                    />
-                  </Form.Item>
-                )}
-                {isOverseas && isBuyBook === 1 && (
-                  <>
-                    <Form.Item
-                      name="detailAddress2"
-                      colon={false}
-                      style={{ display: "flex", justifyContent: "flex-end" }}
-                    >
-                      <TextInput
-                        width={`100%`}
-                        height={`54px`}
-                        radius={`5px`}
-                        border={`1px solid ${Theme.lightGrey4_C}`}
-                        fontSize={`18px`}
-                        placeholder="주소지를 입력해주세요."
-                        margin={`0 0 10px`}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="detailAddress3"
-                      colon={false}
-                      style={{ display: "flex", justifyContent: "flex-end" }}
-                    >
-                      <TextInput
-                        width={`100%`}
-                        height={`54px`}
-                        radius={`5px`}
-                        border={`1px solid ${Theme.lightGrey4_C}`}
-                        fontSize={`18px`}
-                        placeholder="주소지를 입력해주세요."
-                        margin={`0 0 10px`}
-                      />
-                    </Form.Item>
-                  </>
-                )}
                 <Form.Item
                   label="연락처"
                   name="mobile"
@@ -917,7 +626,7 @@ const Home = ({}) => {
                     >
                       카드결제
                     </CustomRadio>
-                    <CustomRadio
+                    {/* <CustomRadio
                       value={"nobank"}
                       style={{
                         margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
@@ -927,7 +636,7 @@ const Home = ({}) => {
                     </CustomRadio>
                     {isOverseas && (
                       <CustomRadio value={"paypal"}>PayPal(페이팔)</CustomRadio>
-                    )}
+                    )} */}
                   </Radio.Group>
                 </Wrapper>
 
@@ -962,21 +671,15 @@ const Home = ({}) => {
                   fontSize={width < 700 ? `18px` : `20px`}
                 >
                   <Wrapper
-                    width={`calc(100% / 3)`}
+                    width={`calc(100% / 2)`}
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
                     주문 금액
                   </Wrapper>
+
                   <Wrapper
-                    width={`calc(100% / 3)`}
-                    fontWeight={`600`}
-                    color={Theme.grey2_C}
-                  >
-                    교재 금액
-                  </Wrapper>
-                  <Wrapper
-                    width={`calc(100% / 3)`}
+                    width={`calc(100% / 2)`}
                     fontWeight={`600`}
                     color={Theme.grey4_C}
                   >
@@ -999,69 +702,10 @@ const Home = ({}) => {
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
-                    {lectureDetail &&
-                      (lectureDetail.discountPrice
-                        ? numberWithCommas(
-                            lectureDetail.discountPrice +
-                              (isBuyBook === 1 && overAddress
-                                ? dataArr.find(
-                                    (data) => data.id === overAddress
-                                  ).price
-                                : 0)
-                          )
-                        : numberWithCommas(
-                            lectureDetail.price +
-                              (isBuyBook === 1 && overAddress
-                                ? dataArr.find(
-                                    (data) => data.id === overAddress
-                                  ).price
-                                : 0)
-                          ))}
-                    원
-                  </Wrapper>
-                  <CustomPlusCircleOutlined />
-                  <Wrapper
-                    width={
-                      width < 700
-                        ? `calc(100% / 3 - 12px)`
-                        : `calc(100% / 3 - 30px)`
-                    }
-                    fontWeight={`600`}
-                    color={Theme.grey2_C}
-                  >
-                    {isBuyBook === 1
-                      ? lectureDetail &&
-                        (lectureDetail.bookEndDate
-                          ? lectureDetail.viewBookDiscountPrice
-                          : lectureDetail.viewBookPrice)
-                      : 0}
-                    원
-                  </Wrapper>
-                  <CustomPauseCircleOutlined />
-                  <Wrapper
-                    width={
-                      width < 700
-                        ? `calc(100% / 3 - 12px)`
-                        : `calc(100% / 3 - 30px)`
-                    }
-                    fontWeight={`600`}
-                    color={Theme.grey4_C}
-                  >
-                    {lectureDetail &&
-                      numberWithCommas(
-                        (lectureDetail.discountPrice
-                          ? lectureDetail.discountPrice
-                          : lectureDetail.price) +
-                          (isBuyBook === 1 && overAddress
-                            ? dataArr.find((data) => data.id === overAddress)
-                                .price
-                            : 0) +
-                          (isBuyBook === 1
-                            ? lectureDetail.bookEndDate
-                              ? lectureDetail.bookDiscountPrice
-                              : lectureDetail.bookPrice
-                            : 0)
-                      )}
+                    {String(zoomLecDetail && zoomLecDetail.price).replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ","
+                    )}
                     원
                   </Wrapper>
                 </Wrapper>
@@ -1076,27 +720,6 @@ const Home = ({}) => {
                   결제하기
                 </CommonButton>
               </BuyForm>
-
-              {/* ADDRESS MODAL */}
-              <Modal
-                title="주소 검색"
-                visible={aModal}
-                onCancel={aModalToggle}
-                footer={null}
-              >
-                <DaumPostcode
-                  onComplete={(data) => {
-                    setAddressData(data);
-                    setAModal(false);
-                    infoForm.setFieldsValue({
-                      address: data.address,
-                    });
-                  }}
-                  width={`100%`}
-                  height={`450px`}
-                  animation
-                />
-              </Modal>
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>

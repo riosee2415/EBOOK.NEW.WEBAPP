@@ -143,7 +143,7 @@ WHERE A.id = ${id}
 
   const list = await noneParameterSelectQuery(sq);
 
-  return res.status(200).json(list);
+  return res.status(200).json(list[0]);
 });
 
 //
