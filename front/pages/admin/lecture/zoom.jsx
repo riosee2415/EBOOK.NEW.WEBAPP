@@ -293,10 +293,7 @@ const Zoom = ({}) => {
       title: "성별",
       dataIndex: "gender",
     },
-    {
-      title: "연락처",
-      dataIndex: "tel",
-    },
+
     {
       title: "연락처",
       dataIndex: "mobile",

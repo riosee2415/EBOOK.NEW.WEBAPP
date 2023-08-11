@@ -37,9 +37,8 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import {
-  LEVEL_REQUEST,
-  LEVEL_TOGGLE_REQUEST,
-  LEVEL_UPDATE_REQUEST,
+  ZOOM_LEC_HISTORY_DELETE_REQUEST,
+  ZOOM_LEC_HISTORY_REQUEST,
 } from "../../../reducers/level";
 
 const InfoTitle = styled.div`
@@ -65,20 +64,17 @@ const ViewStatusIcon = styled(EyeOutlined)`
 const Survey = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    levelList,
-    st_levelUpdateDone,
-    st_levelUpdateError,
-    st_levelToggleDone,
-    st_levelToggleError,
-  } = useSelector((state) => state.level);
+    zoomHistory,
 
-  console.log(levelList);
+    st_zoomLecHistoryDelDone,
+    st_zoomLecHistoryDelError,
+  } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("강의관리");
+  const [level1, setLevel1] = useState("줌수업관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
@@ -136,36 +132,19 @@ const Survey = ({}) => {
   }, []);
 
   useEffect(() => {
-    if (st_levelUpdateDone) {
+    if (st_zoomLecHistoryDelDone) {
       dispatch({
-        type: LEVEL_REQUEST,
+        type: ZOOM_LEC_HISTORY_REQUEST,
       });
-
       setCurrentData(null);
 
-      return message.success("설문 내용이 수정되었습니다.");
+      return message.success("결제내역이 삭제되었습니다.");
     }
 
-    if (st_levelUpdateError) {
-      return message.error(st_levelUpdateError);
+    if (st_zoomLecHistoryDelError) {
+      return message.error(st_zoomLecHistoryDelError);
     }
-  }, [st_levelUpdateDone, st_levelUpdateError]);
-
-  useEffect(() => {
-    if (st_levelToggleDone) {
-      dispatch({
-        type: LEVEL_REQUEST,
-      });
-
-      setCurrentData(null);
-
-      return message.success("사용여부가 수정되었습니다.");
-    }
-
-    if (st_levelToggleError) {
-      return message.error(st_levelToggleError);
-    }
-  }, [st_levelToggleDone, st_levelToggleError]);
+  }, [st_zoomLecHistoryDelDone, st_zoomLecHistoryDelError]);
 
   ////// HANDLER //////
 
@@ -175,33 +154,23 @@ const Survey = ({}) => {
 
       infoForm.setFieldsValue({
         id: record.id,
-        value: record.value,
+        userId: record.userId,
+        username: record.username,
+        birth: record.birth,
+        mobile: record.mobile,
+        levelValue: record.levelValue,
+        viewPrice: record.viewPrice,
+        viewCreatedAt: record.viewCreatedAt,
       });
     },
     [currentData, infoForm]
   );
 
-  const infoFormFinish = useCallback(
-    (data) => {
-      dispatch({
-        type: LEVEL_UPDATE_REQUEST,
-        data: {
-          id: currentData.id,
-          nextValue: data.value.replace(/\'/gi, `''`, /\"/gi, `""`),
-        },
-      });
-    },
-    [currentData]
-  );
-
-  const dataToggleUpdate = useCallback((e, row) => {
-    const nextFlag = e ? 1 : 0;
-
+  const deleteHandler = useCallback((data) => {
     dispatch({
-      type: LEVEL_TOGGLE_REQUEST,
+      type: ZOOM_LEC_HISTORY_DELETE_REQUEST,
       data: {
-        id: row.id,
-        nextFlag,
+        id: data.id,
       },
     });
   }, []);
@@ -216,22 +185,16 @@ const Survey = ({}) => {
       dataIndex: "id",
     },
     {
-      title: "설문 내용",
-      render: (data) => (
-        <Text width={`400px`} isEllipsis>
-          {data.value}
-        </Text>
-      ),
-      width: "60%",
+      title: "회원 ID",
+      dataIndex: "userId",
     },
     {
-      title: "사용여부",
-      render: (row) => (
-        <Switch
-          checked={row.isHide}
-          onChange={(e) => dataToggleUpdate(e, row)}
-        />
-      ),
+      title: "레벨",
+      dataIndex: "levelValue",
+    },
+    {
+      title: "가격",
+      dataIndex: "viewPrice",
     },
 
     {
@@ -244,6 +207,23 @@ const Survey = ({}) => {
             }
           />
         </>
+      ),
+    },
+    {
+      width: "10%",
+      align: "center",
+      title: "삭제하기",
+      render: (data) => (
+        <Popconfirm
+          title="해당 자료를 삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => deleteHandler(data)}
+        >
+          <Button size="small" type="danger">
+            삭제하기
+          </Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -281,7 +261,8 @@ const Survey = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>설문지를 수정 할 수 있습니다.</GuideLi>
+          <GuideLi>결제내역을 조회 / 수정 할 수 있습니다.</GuideLi>
+          <GuideLi isImpo>수정된 내역은 복구할 수 없습니다.</GuideLi>
         </GuideUl>
       </Wrapper>
 
@@ -297,7 +278,7 @@ const Survey = ({}) => {
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={levelList}
+            dataSource={zoomHistory}
             size="small"
             onRow={(record, index) => {
               return {
@@ -317,33 +298,38 @@ const Survey = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  결제내역
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 2 }}
-                wrapperCol={{ span: 22 }}
-                onFinish={infoFormFinish}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 20 }}
               >
                 <Form.Item name="id" hidden></Form.Item>
-                <Form.Item
-                  label="내용"
-                  name="value"
-                  rules={[
-                    { required: true, message: "내용은 필수 입력사항 입니다." },
-                  ]}
-                >
-                  <Input.TextArea rows={10} />
+                <Form.Item label="회원아이디" name="userId">
+                  <Input size="small" />
                 </Form.Item>
-
-                <Wrapper al="flex-end">
-                  <Button type="primary" size="small" htmlType="submit">
-                    정보 업데이트
-                  </Button>
-                </Wrapper>
+                <Form.Item label="회원 이름" name="username">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="생년월일" name="birth">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="전화번호" name="mobile">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="레벨" name="levelValue">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="가격" name="viewPrice">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="생성일" name="viewCreatedAt">
+                  <Input size="small" />
+                </Form.Item>
               </Form>
 
               <Wrapper
@@ -387,7 +373,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: LEVEL_REQUEST,
+      type: ZOOM_LEC_HISTORY_REQUEST,
     });
 
     // 구현부 종료

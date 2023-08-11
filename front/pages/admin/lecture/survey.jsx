@@ -72,8 +72,6 @@ const Survey = ({}) => {
     st_levelToggleError,
   } = useSelector((state) => state.level);
 
-  console.log(levelList);
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -317,7 +315,7 @@ const Survey = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  설문조사 내용
                 </InfoTitle>
               </Wrapper>
 
