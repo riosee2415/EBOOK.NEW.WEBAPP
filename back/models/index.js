@@ -40,6 +40,7 @@ const tagConnect = require("./tagConnect");
 const levelTest = require("./levelTest");
 const zoomLecture = require("./zoomLecture");
 const zoomPeople = require("./zoomPeople");
+const zoomBoughtHistory = require("./zoomBoughtHistory");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -93,6 +94,7 @@ db.TagConnect = tagConnect;
 db.LevelTest = levelTest;
 db.ZoomLecture = zoomLecture;
 db.ZoomPeople = zoomPeople;
+db.ZoomBoughtHistory = zoomBoughtHistory;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);

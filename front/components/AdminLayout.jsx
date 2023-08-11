@@ -87,6 +87,8 @@ export const items = {
       link: "/admin/lecture/buyLecture",
       useYn: true,
     },
+  ],
+  줌수업관리: [
     {
       name: "레벨설문관리",
       link: "/admin/lecture/survey",
@@ -95,6 +97,11 @@ export const items = {
     {
       name: "줌강의관리",
       link: "/admin/lecture/zoom",
+      useYn: true,
+    },
+    {
+      name: "결제내역관리",
+      link: "/admin/lecture/hisory",
       useYn: true,
     },
   ],
@@ -149,6 +156,7 @@ export const items = {
       useYn: true,
     },
   ],
+
   기록관리: [
     {
       name: "사업자정보이력관리",
@@ -329,9 +337,14 @@ const AdminLayout = ({ children }) => {
             menus={items["기록관리"]}
           /> */}
           <AdminMenuBox
-            right={me && me.menuRight8}
+            right={me && me.menuRight6}
             title={`강의관리`}
             menus={items["강의관리"]}
+          />
+          <AdminMenuBox
+            right={me && me.menuRight7}
+            title={`줌수업관리`}
+            menus={items["줌수업관리"]}
           />
         </Wrapper>
       ) : (

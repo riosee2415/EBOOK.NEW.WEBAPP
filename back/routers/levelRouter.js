@@ -300,4 +300,111 @@ router.post("/zoom/lecture/my", async (req, res, next) => {
   return res.status(200).json(list);
 });
 
+//
+//  줌 결제내역 가져오기
+//
+router.post(
+  "/zoom/lecture/history/list",
+  isAdminCheck,
+  async (req, res, next) => {
+    const sq = `
+  SELECT	A.id,
+  A.impUid,
+  A.merchantUid,
+  A.payment,
+  CONCAT(FORMAT(A.payment, 0), "원")	as viewPrice,
+  A.createdAt,
+  DATE_FORMAT(A.createdAt, "%Y-%m%d")	as viewCreatedAt,
+  A.UserId,
+  A.ZoomLectureId,
+  B.userId,
+  B.username,
+  B.birth,
+  B.tel,
+  B.mobile,
+  B.mobile
+FROM	zoomBoughtHistory	A
+INNER
+JOIN	users  				B
+  ON	A.UserId = B.id
+ORDER	BY	A.createdAt DESC
+  `;
+
+    const list = await noneParameterSelectQuery(sq);
+
+    return res.status(200).json(list);
+  }
+);
+
+//
+//  줌 결제내역 추가하기
+//
+router.post(
+  "/zoom/lecture/history/list",
+  isAdminCheck,
+  async (req, res, next) => {
+    const { impUid, merchantUid, payment, UserId, ZoomLectureId } = req.body;
+
+    const list = [
+      {
+        column: "impUid",
+        data: impUid,
+        isNumeric: false,
+      },
+      {
+        column: "merchantUid",
+        data: merchantUid,
+        isNumeric: false,
+      },
+      {
+        column: "payment",
+        data: payment,
+        isNumeric: true,
+      },
+      {
+        column: "UserId",
+        data: UserId,
+        isNumeric: true,
+      },
+      {
+        column: "ZoomLectureId",
+        data: ZoomLectureId,
+        isNumeric: true,
+      },
+    ];
+
+    const { result, targetId } = await insertAction("zoomBoughtHistory", list);
+
+    if (!result) {
+      return res.status(400).send("데이터를 생성할 수 없습니다.");
+    }
+    return res.status(200).json({ result: true });
+  }
+);
+
+//
+//  줌 결제내역 삭제하기
+//
+router.post(
+  "/zoom/lecture/history/delete",
+  isAdminCheck,
+  async (req, res, next) => {
+    const { id } = req.body;
+
+    const dq = `
+    DELETE  FROM  zoomBoughtHistory
+    WHERE id = ${id}
+  `;
+
+    try {
+      await models.sequelize.query(dq);
+
+      return res.status(200).json({ result: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send("잠시 후 다시 시도해주세요.");
+    }
+  }
+);
+
 module.exports = router;
