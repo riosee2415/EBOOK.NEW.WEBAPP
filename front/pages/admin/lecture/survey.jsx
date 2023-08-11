@@ -27,6 +27,7 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { LEVEL_REQUEST } from "../../../reducers/level";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -50,6 +51,9 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Survey = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const { levelList } = useSelector((state) => state.level);
+
+  console.log(levelList);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -210,25 +214,11 @@ const Survey = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>설문지를 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
-          <GuideLi isImpo={true}>
-            삭제처리 된 설문지는 복구가 불가능합니다.
-          </GuideLi>
+          <GuideLi>설문지를 수정 할 수 있습니다.</GuideLi>
         </GuideUl>
       </Wrapper>
 
       {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          미완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          전체
-        </Button>
-      </Wrapper>
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
@@ -236,16 +226,11 @@ const Survey = ({}) => {
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
-          <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
-              설문지 생성
-            </Button>
-          </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={[]}
+            dataSource={levelList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -372,6 +357,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LEVEL_REQUEST,
     });
 
     // 구현부 종료
