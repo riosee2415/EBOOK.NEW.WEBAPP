@@ -382,4 +382,29 @@ router.post(
   }
 );
 
+//
+//  줌 결제내역 삭제하기
+//
+router.post(
+  "/zoom/lecture/history/delete",
+  isAdminCheck,
+  async (req, res, next) => {
+    const { id } = req.body;
+
+    const dq = `
+    DELETE  FROM  zoomBoughtHistory
+    WHERE id = ${id}
+  `;
+
+    try {
+      await models.sequelize.query(dq);
+
+      return res.status(200).json({ result: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send("잠시 후 다시 시도해주세요.");
+    }
+  }
+);
+
 module.exports = router;

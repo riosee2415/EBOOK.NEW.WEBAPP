@@ -31,6 +31,8 @@ const Intro = () => {
   ////// HANDLER //////
   ////// DATAVIEW //////
 
+  console.log(levelList);
+
   return (
     <>
       <Head>
@@ -63,55 +65,51 @@ const Intro = () => {
               </Wrapper>
             </Wrapper>
 
-            {currentTab === 0 && (
-              <Wrapper
-                border={`1px solid ${Theme.lightSubTheme2_C}`}
-                padding={`50px 20px`}
+            <Wrapper
+              border={`1px solid ${Theme.lightSubTheme2_C}`}
+              padding={`50px 20px`}
+            >
+              <Text
+                fontSize={`30px`}
+                fontWeight={`bold`}
+                margin={`0 0 20px`}
+                color={Theme.basicTheme_C}
               >
-                <Text
-                  fontSize={`30px`}
-                  fontWeight={`bold`}
-                  margin={`0 0 20px`}
-                  color={Theme.basicTheme_C}
-                >
-                  1번
-                </Text>
-                <Text textAlign={`center`} fontSize={`22px`}>
-                  나는 아래의 영어 단어를 문제 없이 읽을 수 있다.
-                </Text>
-                <Text textAlign={`center`} fontSize={`22px`}>
-                  land, rain, play, size, face
-                </Text>
+                {currentTab + 1}번
+              </Text>
+              <Text textAlign={`center`} fontSize={`22px`}>
+                {levelList[[currentTab]].value}
+              </Text>
 
-                <Wrapper dr={`row`} margin={`25px 0 0`}>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    kindOf={`basic`}
-                  >
-                    네.
-                  </CommonButton>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    kindOf={`basic`}
-                    margin={`0 10px`}
-                  >
-                    아니오.
-                  </CommonButton>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    kindOf={`basic`}
-                  >
-                    잘 모르겠어요.
-                  </CommonButton>
-                </Wrapper>
+              <Wrapper dr={`row`} margin={`25px 0 0`}>
+                <CommonButton
+                  width={`150px`}
+                  height={`50px`}
+                  fontSize={`18px`}
+                  kindOf={`basic`}
+                  onClick={() => setCurrentTab((p) => p + 1)}
+                >
+                  네.
+                </CommonButton>
+                <CommonButton
+                  width={`150px`}
+                  height={`50px`}
+                  fontSize={`18px`}
+                  kindOf={`basic`}
+                  margin={`0 10px`}
+                >
+                  아니오.
+                </CommonButton>
+                <CommonButton
+                  width={`150px`}
+                  height={`50px`}
+                  fontSize={`18px`}
+                  kindOf={`basic`}
+                >
+                  잘 모르겠어요.
+                </CommonButton>
               </Wrapper>
-            )}
+            </Wrapper>
 
             {/* <Wrapper
               border={`1px solid ${Theme.lightSubTheme2_C}`}
