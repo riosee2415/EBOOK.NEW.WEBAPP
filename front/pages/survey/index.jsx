@@ -18,6 +18,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LEVEL_REQUEST } from "../../reducers/level";
+import Link from "next/dist/client/link";
 
 const Intro = () => {
   ////// GLOBAL STATE //////
@@ -97,7 +98,9 @@ const Intro = () => {
                   {currentTab + 1}번
                 </Text>
                 <Text textAlign={`center`} fontSize={`22px`}>
-                  {levelList[[currentTab]].value}
+                  {levelList &&
+                    levelList[currentTab] &&
+                    levelList[currentTab].value}
                 </Text>
 
                 <Wrapper dr={`row`} margin={`25px 0 0`}>
@@ -146,15 +149,19 @@ const Intro = () => {
                   권장드립니다.
                 </Text>
                 <Wrapper dr={`row`}>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    margin={`10px 5px`}
-                    kindOf={`basic`}
-                  >
-                    레벨1신청
-                  </CommonButton>
+                  <Link href={`/live/zoom`}>
+                    <a>
+                      <CommonButton
+                        width={`150px`}
+                        height={`50px`}
+                        fontSize={`18px`}
+                        margin={`10px 5px`}
+                        kindOf={`basic`}
+                      >
+                        레벨1신청
+                      </CommonButton>
+                    </a>
+                  </Link>
                   <CommonButton
                     width={`150px`}
                     height={`50px`}
