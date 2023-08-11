@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
+import { Button, Form, Input, Popover, Select, Table, message } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -15,7 +15,6 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
-  DelBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -248,19 +247,6 @@ const Zoom = ({}) => {
         </>
       ),
     },
-    {
-      title: "삭제",
-      render: (data) => (
-        <Popconfirm
-          title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
-          okText="삭제"
-          cancelText="취소"
-        >
-          <DelBtn />
-        </Popconfirm>
-      ),
-    },
   ];
 
   return (
@@ -358,7 +344,15 @@ const Zoom = ({}) => {
                     { required: true, message: "레벨은 필수 입력사항 입니다." },
                   ]}
                 >
-                  <Input size="small" />
+                  <Select size="small">
+                    <Select.Option value={"LEVEL1"}>LEVEL1</Select.Option>
+                    <Select.Option value={"LEVEL2"}>LEVEL2</Select.Option>
+                    <Select.Option value={"LEVEL3"}>LEVEL3</Select.Option>
+                    <Select.Option value={"LEVEL4"}>LEVEL4</Select.Option>
+                    <Select.Option value={"LEVEL5"}>LEVEL5</Select.Option>
+                    <Select.Option value={"LEVEL6"}>LEVEL6</Select.Option>
+                    <Select.Option value={"LEVEL7"}>LEVEL7</Select.Option>
+                  </Select>
                 </Form.Item>
 
                 <Form.Item
