@@ -138,8 +138,7 @@ router.post("/zoom/lecture/target", async (req, res, next) => {
        AND  isCompleted = false
   )	AS cnt
 FROM	zoomLecture	A
-WHERE id = ${id}
-ORDER  BY A.createdAt DESC
+WHERE A.id = ${id}
   `;
 
   const list = await noneParameterSelectQuery(sq);
@@ -356,11 +355,14 @@ router.post(
   B.birth,
   B.tel,
   B.mobile,
-  B.mobile
+  C.levelValue
 FROM	zoomBoughtHistory	A
 INNER
 JOIN	users  				B
   ON	A.UserId = B.id
+INNER
+JOIN	zoomLecture  				C
+  ON	A.ZoomLectureId = C.id
 ORDER	BY	A.createdAt DESC
   `;
 

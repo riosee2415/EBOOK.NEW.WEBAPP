@@ -6,6 +6,7 @@ export const initialState = {
   zoomDetail: [], // 수강생정보
   myZoomList: [], // 내 수강기록
   zoomHistory: [], // 줌 결제내역 가져오기
+  zoomLecDetail: null, //  줌 강의 디테일 정보가져오기
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -58,6 +59,7 @@ export const initialState = {
   st_zoomLecHistoryDelLoading: false, // 줌 결제내역 삭제하기
   st_zoomLecHistoryDelDone: false,
   st_zoomLecHistoryDelError: null,
+  //
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
