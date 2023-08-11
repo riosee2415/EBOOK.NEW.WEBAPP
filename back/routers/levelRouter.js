@@ -79,4 +79,33 @@ router.post("/valueUpdate", async (req, res, next) => {
   return res.status(200).json({ result: true });
 });
 
+//
+//  줌 강의 가져오기
+//
+router.post("/zoom/lecture/list", async (req, res, next) => {
+  const sq = `
+  SELECT	A.id,
+  A.days,
+  A.startTime,
+  A.endTime,
+  A.levelValue,
+  A.terms,
+  A.tName,
+  A.price,
+  A.isEnd,
+  A.createdAt,
+  DATE_FORMAT(A.createdAt, "%Y-%m%d")	as viewCreatedAt,
+  (
+    SELECT	COUNT(*)
+      FROM	zoomPeople
+     WHERE	ZoomLectureId =	A.id 
+  )	AS cnt
+FROM	zoomLecture	A
+  `;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  return res.status(200).json(list);
+});
+
 module.exports = router;
