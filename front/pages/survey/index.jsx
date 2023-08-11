@@ -23,6 +23,8 @@ const Intro = () => {
   ////// GLOBAL STATE //////
   const { levelList } = useSelector((state) => state.level);
   const [currentTab, setCurrentTab] = useState(0);
+
+  const [viewLv, setViewLv] = useState(1);
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
@@ -31,7 +33,23 @@ const Intro = () => {
   ////// HANDLER //////
   ////// DATAVIEW //////
 
-  console.log(levelList);
+  const suv = useCallback(() => {
+    if (currentTab === 6) {
+      setViewLv((p) => p + 1);
+      setCurrentTab(99);
+    } else {
+      setCurrentTab((p) => p + 1);
+      setViewLv((p) => p + 1);
+    }
+  }, [currentTab, viewLv]);
+
+  const suvv = useCallback(() => {
+    if (currentTab === 6) {
+      setCurrentTab(99);
+    } else {
+      setCurrentTab((p) => p + 1);
+    }
+  }, [currentTab]);
 
   return (
     <>
@@ -65,51 +83,56 @@ const Intro = () => {
               </Wrapper>
             </Wrapper>
 
-            <Wrapper
-              border={`1px solid ${Theme.lightSubTheme2_C}`}
-              padding={`50px 20px`}
-            >
-              <Text
-                fontSize={`30px`}
-                fontWeight={`bold`}
-                margin={`0 0 20px`}
-                color={Theme.basicTheme_C}
+            {currentTab !== 99 ? (
+              <Wrapper
+                border={`1px solid ${Theme.lightSubTheme2_C}`}
+                padding={`50px 20px`}
               >
-                {currentTab + 1}번
-              </Text>
-              <Text textAlign={`center`} fontSize={`22px`}>
-                {levelList[[currentTab]].value}
-              </Text>
+                <Text
+                  fontSize={`30px`}
+                  fontWeight={`bold`}
+                  margin={`0 0 20px`}
+                  color={Theme.basicTheme_C}
+                >
+                  {currentTab + 1}번
+                </Text>
+                <Text textAlign={`center`} fontSize={`22px`}>
+                  {levelList[[currentTab]].value}
+                </Text>
 
-              <Wrapper dr={`row`} margin={`25px 0 0`}>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                  onClick={() => setCurrentTab((p) => p + 1)}
-                >
-                  네.
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                  margin={`0 10px`}
-                >
-                  아니오.
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                >
-                  잘 모르겠어요.
-                </CommonButton>
+                <Wrapper dr={`row`} margin={`25px 0 0`}>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                    onClick={suv}
+                  >
+                    네.
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                    margin={`0 10px`}
+                  >
+                    아니오.
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                    onClick={suvv}
+                  >
+                    잘 모르겠어요.
+                  </CommonButton>
+                </Wrapper>
               </Wrapper>
-            </Wrapper>
+            ) : (
+              <Wrapper>{viewLv - 1 === 0 ? 1 : viewLv - 1}</Wrapper>
+            )}
 
             {/* <Wrapper
               border={`1px solid ${Theme.lightSubTheme2_C}`}

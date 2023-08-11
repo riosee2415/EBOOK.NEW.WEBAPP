@@ -155,7 +155,7 @@ const AdminMenu = () => {
         },
         {
           name: "결제내역관리",
-          link: "/admin/lecture/hisory",
+          link: "/admin/lecture/history",
           useYn: true,
         },
       ],
