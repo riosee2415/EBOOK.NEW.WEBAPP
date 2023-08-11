@@ -4,6 +4,7 @@ const models = require("../models");
 const {
   noneParameterSelectQuery,
   actionUpdateQuery,
+  insertAction,
 } = require("../middlewares/structure");
 
 const router = express.Router();
@@ -94,6 +95,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
   A.price,
   A.isEnd,
   A.createdAt,
+  A.zoomRink,
   DATE_FORMAT(A.createdAt, "%Y-%m%d")	as viewCreatedAt,
   (
     SELECT	COUNT(*)
@@ -106,6 +108,72 @@ FROM	zoomLecture	A
   const list = await noneParameterSelectQuery(sq);
 
   return res.status(200).json(list);
+});
+
+//
+//  줌 강의 추가하기
+//
+router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
+  const {
+    days,
+    startTime,
+    endTime,
+    levelValue,
+    terms,
+    tName,
+    price,
+    zoomRink,
+  } = req.body;
+
+  const list = [
+    {
+      column: "days",
+      data: days,
+      isNumeric: false,
+    },
+    {
+      column: "startTime",
+      data: startTime,
+      isNumeric: false,
+    },
+    {
+      column: "endTime",
+      data: endTime,
+      isNumeric: false,
+    },
+    {
+      column: "levelValue",
+      data: levelValue,
+      isNumeric: false,
+    },
+    {
+      column: "terms",
+      data: terms,
+      isNumeric: false,
+    },
+    {
+      column: "tName",
+      data: tName,
+      isNumeric: false,
+    },
+    {
+      column: "price",
+      data: price,
+      isNumeric: true,
+    },
+    {
+      column: "zoomRink",
+      data: zoomRink,
+      isNumeric: false,
+    },
+  ];
+
+  const { result, targetId } = await insertAction("zoomLecture", list);
+
+  if (!result) {
+    return res.status(400).send("상품을 생성할 수 없습니다.");
+  }
+  return res.status(200).json({ result: true });
 });
 
 module.exports = router;
