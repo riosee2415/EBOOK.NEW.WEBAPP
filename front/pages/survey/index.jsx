@@ -14,9 +14,15 @@ import {
   Wrapper,
 } from "../../components/commonComponents";
 import Theme from "../../components/Theme";
+import { useCallback } from "react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { LEVEL_REQUEST } from "../../reducers/level";
 
 const Intro = () => {
   ////// GLOBAL STATE //////
+  const { levelList } = useSelector((state) => state.level);
+  const [currentTab, setCurrentTab] = useState(0);
   ////// HOOKS //////
   const width = useWidth();
   ////// REDUX //////
@@ -57,55 +63,57 @@ const Intro = () => {
               </Wrapper>
             </Wrapper>
 
-            <Wrapper
-              border={`1px solid ${Theme.lightSubTheme2_C}`}
-              padding={`50px 20px`}
-            >
-              <Text
-                fontSize={`30px`}
-                fontWeight={`bold`}
-                margin={`0 0 20px`}
-                color={Theme.basicTheme_C}
+            {currentTab === 0 && (
+              <Wrapper
+                border={`1px solid ${Theme.lightSubTheme2_C}`}
+                padding={`50px 20px`}
               >
-                1번
-              </Text>
-              <Text textAlign={`center`} fontSize={`22px`}>
-                나는 아래의 영어 단어를 문제 없이 읽을 수 있다.
-              </Text>
-              <Text textAlign={`center`} fontSize={`22px`}>
-                land, rain, play, size, face
-              </Text>
+                <Text
+                  fontSize={`30px`}
+                  fontWeight={`bold`}
+                  margin={`0 0 20px`}
+                  color={Theme.basicTheme_C}
+                >
+                  1번
+                </Text>
+                <Text textAlign={`center`} fontSize={`22px`}>
+                  나는 아래의 영어 단어를 문제 없이 읽을 수 있다.
+                </Text>
+                <Text textAlign={`center`} fontSize={`22px`}>
+                  land, rain, play, size, face
+                </Text>
 
-              <Wrapper dr={`row`} margin={`25px 0 0`}>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                >
-                  네.
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                  margin={`0 10px`}
-                >
-                  아니오.
-                </CommonButton>
-                <CommonButton
-                  width={`150px`}
-                  height={`50px`}
-                  fontSize={`18px`}
-                  kindOf={`basic`}
-                >
-                  잘 모르겠어요.
-                </CommonButton>
+                <Wrapper dr={`row`} margin={`25px 0 0`}>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                  >
+                    네.
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                    margin={`0 10px`}
+                  >
+                    아니오.
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    kindOf={`basic`}
+                  >
+                    잘 모르겠어요.
+                  </CommonButton>
+                </Wrapper>
               </Wrapper>
-            </Wrapper>
+            )}
 
-            <Wrapper
+            {/* <Wrapper
               border={`1px solid ${Theme.lightSubTheme2_C}`}
               padding={`50px 20px`}
             >
@@ -184,7 +192,7 @@ const Intro = () => {
                   레벨7신청
                 </CommonButton>
               </Wrapper>
-            </Wrapper>
+            </Wrapper> */}
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
@@ -205,6 +213,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LEVEL_REQUEST,
     });
 
     // 구현부 종료
