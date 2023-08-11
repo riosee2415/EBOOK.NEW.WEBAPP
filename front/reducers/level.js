@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initialState = {
   levelList: [],
+  zoomLecList: [], // 줌강의
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -14,6 +15,10 @@ export const initialState = {
   st_levelToggleLoading: false, // 레벨 토글
   st_levelToggleDone: false,
   st_levelToggleError: null,
+  //
+  st_zoomLecListLoading: false, // 줌 강의 가져오기
+  st_zoomLecListDone: false,
+  st_zoomLecListError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -27,6 +32,10 @@ export const LEVEL_UPDATE_FAILURE = "LEVEL_UPDATE_FAILURE";
 export const LEVEL_TOGGLE_REQUEST = "LEVEL_TOGGLE_REQUEST";
 export const LEVEL_TOGGLE_SUCCESS = "LEVEL_TOGGLE_SUCCESS";
 export const LEVEL_TOGGLE_FAILURE = "LEVEL_TOGGLE_FAILURE";
+
+export const ZOOM_LEC_LIST_REQUEST = "ZOOM_LEC_LIST_REQUEST";
+export const ZOOM_LEC_LIST_SUCCESS = "ZOOM_LEC_LIST_SUCCESS";
+export const ZOOM_LEC_LIST_FAILURE = "ZOOM_LEC_LIST_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -86,6 +95,27 @@ const reducer = (state = initialState, action) =>
         draft.st_levelToggleLoading = false;
         draft.st_levelToggleDone = false;
         draft.st_levelToggleError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_LIST_REQUEST: {
+        draft.st_zoomLecListLoading = true;
+        draft.st_zoomLecListDone = null;
+        draft.st_zoomLecListError = false;
+        break;
+      }
+      case ZOOM_LEC_LIST_SUCCESS: {
+        draft.st_zoomLecListLoading = false;
+        draft.st_zoomLecListDone = true;
+        draft.st_zoomLecListError = null;
+        draft.zoomLecList = action.data;
+        break;
+      }
+      case ZOOM_LEC_LIST_FAILURE: {
+        draft.st_zoomLecListLoading = false;
+        draft.st_zoomLecListDone = false;
+        draft.st_zoomLecListError = action.error;
         break;
       }
       //////////////////////////////////////////////
