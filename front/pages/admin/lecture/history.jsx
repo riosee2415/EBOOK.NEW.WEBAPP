@@ -159,6 +159,8 @@ const Survey = ({}) => {
         birth: record.birth,
         mobile: record.mobile,
         levelValue: record.levelValue,
+        payType: record.payType === "card" ? "카드결제" : "무통장",
+        name: record.name,
         viewPrice: record.viewPrice,
         viewCreatedAt: record.viewCreatedAt,
       });
@@ -327,6 +329,14 @@ const Survey = ({}) => {
                 <Form.Item label="가격" name="viewPrice">
                   <Input size="small" />
                 </Form.Item>
+                <Form.Item label="결제방법" name="payType">
+                  <Input size="small" />
+                </Form.Item>
+                {currentData.payType === "nobank" && (
+                  <Form.Item label="입금자명" name="name">
+                    <Input size="small" />
+                  </Form.Item>
+                )}
                 <Form.Item label="생성일" name="viewCreatedAt">
                   <Input size="small" />
                 </Form.Item>
