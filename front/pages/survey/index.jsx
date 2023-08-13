@@ -19,6 +19,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LEVEL_REQUEST } from "../../reducers/level";
 import Link from "next/dist/client/link";
+import { useRouter } from "next/router";
 
 const Intro = () => {
   ////// GLOBAL STATE //////
@@ -28,6 +29,7 @@ const Intro = () => {
   const [viewLv, setViewLv] = useState(1);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -51,6 +53,11 @@ const Intro = () => {
       setCurrentTab((p) => p + 1);
     }
   }, [currentTab]);
+
+  const moveLevel = useCallback((target) => {
+    router.push(`/live/zoom?type=${target}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <>
@@ -149,25 +156,24 @@ const Intro = () => {
                   권장드립니다.
                 </Text>
                 <Wrapper dr={`row`}>
-                  <Link href={`/live/zoom`}>
-                    <a>
-                      <CommonButton
-                        width={`150px`}
-                        height={`50px`}
-                        fontSize={`18px`}
-                        margin={`10px 5px`}
-                        kindOf={`basic`}
-                      >
-                        레벨1신청
-                      </CommonButton>
-                    </a>
-                  </Link>
                   <CommonButton
                     width={`150px`}
                     height={`50px`}
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(1)}
+                  >
+                    레벨1신청
+                  </CommonButton>
+
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                    onClick={() => moveLevel(2)}
                   >
                     레벨2신청
                   </CommonButton>
@@ -177,6 +183,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(3)}
                   >
                     레벨3신청
                   </CommonButton>
@@ -188,6 +195,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(4)}
                   >
                     레벨4신청
                   </CommonButton>
@@ -197,6 +205,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(5)}
                   >
                     레벨5신청
                   </CommonButton>
@@ -206,6 +215,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(6)}
                   >
                     레벨6신청
                   </CommonButton>
@@ -215,6 +225,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel(7)}
                   >
                     레벨7신청
                   </CommonButton>
