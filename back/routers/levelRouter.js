@@ -6,6 +6,7 @@ const {
   actionUpdateQuery,
   insertAction,
 } = require("../middlewares/structure");
+const isLoggedIn = require("../middlewares/isLoggedIn");
 
 const router = express.Router();
 
@@ -378,48 +379,44 @@ ORDER	BY	A.createdAt DESC
 //
 //  줌 결제내역 추가하기
 //
-router.post(
-  "/zoom/lecture/history/add",
-  isAdminCheck,
-  async (req, res, next) => {
-    const { impUid, merchantUid, payment, UserId, ZoomLectureId } = req.body;
+router.post("/zoom/lecture/history/add", isLoggedIn, async (req, res, next) => {
+  const { impUid, merchantUid, payment, UserId, ZoomLectureId } = req.body;
 
-    const list = [
-      {
-        column: "impUid",
-        data: impUid,
-        isNumeric: false,
-      },
-      {
-        column: "merchantUid",
-        data: merchantUid,
-        isNumeric: false,
-      },
-      {
-        column: "payment",
-        data: payment,
-        isNumeric: true,
-      },
-      {
-        column: "UserId",
-        data: UserId,
-        isNumeric: true,
-      },
-      {
-        column: "ZoomLectureId",
-        data: ZoomLectureId,
-        isNumeric: true,
-      },
-    ];
+  const list = [
+    {
+      column: "impUid",
+      data: impUid,
+      isNumeric: false,
+    },
+    {
+      column: "merchantUid",
+      data: merchantUid,
+      isNumeric: false,
+    },
+    {
+      column: "payment",
+      data: payment,
+      isNumeric: true,
+    },
+    {
+      column: "UserId",
+      data: UserId,
+      isNumeric: true,
+    },
+    {
+      column: "ZoomLectureId",
+      data: ZoomLectureId,
+      isNumeric: true,
+    },
+  ];
 
-    const { result, targetId } = await insertAction("zoomBoughtHistory", list);
+  const { result, targetId } = await insertAction("zoomBoughtHistory", list);
 
-    if (!result) {
-      return res.status(400).send("데이터를 생성할 수 없습니다.");
-    }
-    return res.status(200).json({ result: true });
+  if (!result) {
+    return res.status(400).send("데이터를 생성할 수 없습니다.");
   }
-);
+  return res.status(200).json({ result: targetId });
+});
 
 //
 //  줌 결제내역 삭제하기

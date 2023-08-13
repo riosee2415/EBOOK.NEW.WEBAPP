@@ -162,7 +162,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(1)}
+                    onClick={() => moveLevel("LEVEL1")}
                   >
                     레벨1신청
                   </CommonButton>
@@ -173,7 +173,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(2)}
+                    onClick={() => moveLevel("LEVEL2")}
                   >
                     레벨2신청
                   </CommonButton>
@@ -183,7 +183,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(3)}
+                    onClick={() => moveLevel("LEVEL3")}
                   >
                     레벨3신청
                   </CommonButton>
@@ -195,7 +195,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(4)}
+                    onClick={() => moveLevel("LEVEL4")}
                   >
                     레벨4신청
                   </CommonButton>
@@ -205,7 +205,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(5)}
+                    onClick={() => moveLevel("LEVEL5")}
                   >
                     레벨5신청
                   </CommonButton>
@@ -215,7 +215,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(6)}
+                    onClick={() => moveLevel("LEVEL6")}
                   >
                     레벨6신청
                   </CommonButton>
@@ -225,7 +225,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
-                    onClick={() => moveLevel(7)}
+                    onClick={() => moveLevel("LEVEL7")}
                   >
                     레벨7신청
                   </CommonButton>

@@ -7,6 +7,7 @@ export const initialState = {
   myZoomList: [], // 내 수강기록
   zoomHistory: [], // 줌 결제내역 가져오기
   zoomLecDetail: null, //  줌 강의 디테일 정보가져오기
+  zoomBoughtId: null, //  줌 결제내역 아이디
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -336,6 +337,7 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecHistoryAddLoading = false;
         draft.st_zoomLecHistoryAddDone = true;
         draft.st_zoomLecHistoryAddError = null;
+        draft.zoomBoughtId = action.data.result;
         break;
       }
       case ZOOM_LEC_HISTORY_ADD_FAILURE: {

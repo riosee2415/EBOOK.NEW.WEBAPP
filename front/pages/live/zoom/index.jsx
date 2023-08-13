@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
@@ -21,9 +21,8 @@ import { Empty, message } from "antd";
 
 const Zoom = () => {
   ////// GLOBAL STATE //////
+  const { me } = useSelector((state) => state.user);
   const { zoomLecList } = useSelector((state) => state.level);
-
-  const [currentTab, setCurrentTab] = useState(0);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -31,6 +30,25 @@ const Zoom = () => {
   const dispatch = useDispatch();
 
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (!me) {
+      router.push("/user/login");
+      return message.error("로그인 후 이용해주세요.");
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+        data: {
+          level: router.query.type,
+        },
+      });
+    }
+  }, [router.query]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
   const moveLinkHandler = useCallback((data) => {
