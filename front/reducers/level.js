@@ -8,6 +8,7 @@ export const initialState = {
   zoomHistory: [], // 줌 결제내역 가져오기
   zoomLecDetail: null, //  줌 강의 디테일 정보가져오기
   zoomBoughtId: null, //  줌 결제내역 아이디
+  zoomHistoryDetail: null, //  줌 결제내역 상세
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -64,6 +65,10 @@ export const initialState = {
   st_zoomDetailLoading: false, // 줌 강의 디테일 정보가져오기
   st_zoomDetailDone: false,
   st_zoomDetailError: null,
+  //
+  st_zoomLecHistoryDetailLoading: false, // 줌 결제내역 상세
+  st_zoomLecHistoryDetailDone: false,
+  st_zoomLecHistoryDetailError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -120,6 +125,13 @@ export const ZOOM_LEC_HISTORY_DELETE_FAILURE =
 export const ZOOM_DETAIL_REQUEST = "ZOOM_DETAIL_REQUEST";
 export const ZOOM_DETAIL_SUCCESS = "ZOOM_DETAIL_SUCCESS";
 export const ZOOM_DETAIL_FAILURE = "ZOOM_DETAIL_FAILURE";
+
+export const ZOOM_LEC_HISTORY_DETAIL_REQUEST =
+  "ZOOM_LEC_HISTORY_DETAIL_REQUEST";
+export const ZOOM_LEC_HISTORY_DETAIL_SUCCESS =
+  "ZOOM_LEC_HISTORY_DETAIL_SUCCESS";
+export const ZOOM_LEC_HISTORY_DETAIL_FAILURE =
+  "ZOOM_LEC_HISTORY_DETAIL_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -385,6 +397,27 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomDetailLoading = false;
         draft.st_zoomDetailDone = false;
         draft.st_zoomDetailError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_HISTORY_DETAIL_REQUEST: {
+        draft.st_zoomLecHistoryDetailLoading = true;
+        draft.st_zoomLecHistoryDetailDone = null;
+        draft.st_zoomLecHistoryDetailError = false;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_DETAIL_SUCCESS: {
+        draft.st_zoomLecHistoryDetailLoading = false;
+        draft.st_zoomLecHistoryDetailDone = true;
+        draft.st_zoomLecHistoryDetailError = null;
+        draft.zoomHistoryDetail = action.data;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_DETAIL_FAILURE: {
+        draft.st_zoomLecHistoryDetailLoading = false;
+        draft.st_zoomLecHistoryDetailDone = false;
+        draft.st_zoomLecHistoryDetailError = action.error;
         break;
       }
       //////////////////////////////////////////////

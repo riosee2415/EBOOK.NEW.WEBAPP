@@ -21,20 +21,14 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import { Empty, Form, message, Radio, Modal, Select } from "antd";
-import {
-  PlusCircleOutlined,
-  PauseCircleOutlined,
-  ArrowRightOutlined,
-} from "@ant-design/icons";
 import { useRouter } from "next/router";
-import DaumPostcode from "react-daum-postcode";
-import { numberWithCommas } from "../../../components/commonUtils";
 import moment from "moment";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../../reducers/boughtLecture";
 import {
-  BOUGHT_CREATE_REQUEST,
-  BOUGHT_ME_DETAIL_REQUEST,
-} from "../../../reducers/boughtLecture";
-import { ZOOM_DETAIL_REQUEST } from "../../../reducers/level";
+  ZOOM_DETAIL_REQUEST,
+  ZOOM_LEC_ADD_PEOPLE_REQUEST,
+  ZOOM_LEC_HISTORY_ADD_REQUEST,
+} from "../../../reducers/level";
 
 const BuyForm = styled(Form)`
   width: 100%;
@@ -102,14 +96,15 @@ const CustomRadio = styled(Radio)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
-  const { zoomLecDetail } = useSelector((state) => state.level);
   const {
-    boughtCreateId,
-    //
-    st_boughtCreateLoading,
-    st_boughtCreateDone,
-    st_boughtCreateError,
-  } = useSelector((state) => state.boughtLecture);
+    zoomLecDetail,
+
+    zoomBoughtId,
+
+    st_zoomLecHistoryAddLoading,
+    st_zoomLecHistoryAddDone,
+    st_zoomLecHistoryAddError,
+  } = useSelector((state) => state.level);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -119,8 +114,6 @@ const Home = ({}) => {
   const [infoForm] = Form.useForm();
 
   const [isBuyType, setIsBuyType] = useState(null);
-
-  console.log(zoomLecDetail);
 
   ////// REDUX //////
   ////// USEEFFECT //////
@@ -146,10 +139,6 @@ const Home = ({}) => {
     } else {
       infoForm.setFieldsValue({
         username: me.username,
-        receiver: me.username,
-        zoneCode: me.zoneCode,
-        address: me.address,
-        detailAddress: me.detailAddress,
         mobile: me.mobile,
       });
     }
@@ -157,20 +146,28 @@ const Home = ({}) => {
 
   // 결제 후처리
   useEffect(() => {
-    if (st_boughtCreateDone) {
-      if (isBuyType === "nobank" && boughtCreateId) {
+    if (st_zoomLecHistoryAddDone) {
+      dispatch({
+        type: ZOOM_LEC_ADD_PEOPLE_REQUEST,
+        data: {
+          ZoomId: router.query.id,
+          UserId: me.id,
+        },
+      });
+
+      if (isBuyType === "nobank" && zoomBoughtId) {
         message.success("결제되었습니다.");
-        return router.push(`/enrolment/buy/finish/${boughtCreateId}`);
+        return router.push(`/live/zoom/finish/${zoomBoughtId}`);
       } else {
         message.success("결제되었습니다.");
         return router.push("/mypage");
       }
     }
 
-    if (st_boughtCreateError) {
-      return message.error(st_boughtCreateError);
+    if (st_zoomLecHistoryAddError) {
+      return message.error(st_zoomLecHistoryAddError);
     }
-  }, [st_boughtCreateDone, st_boughtCreateError]);
+  }, [st_zoomLecHistoryAddDone, st_zoomLecHistoryAddError]);
   ////// TOGGLE //////
 
   ////// HANDLER //////
@@ -183,19 +180,6 @@ const Home = ({}) => {
     [isBuyType]
   );
 
-  // 환율 계산 함수
-  const dollarChange = useCallback(async (inputDollar) => {
-    const res = await fetch(
-      "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD"
-    );
-    const result = await res.json();
-
-    const exchangeRate = result[0].basePrice;
-    const exchangedWon = inputDollar / exchangeRate;
-
-    return exchangedWon;
-  }, []);
-
   // 결제
   const buyHandler = useCallback(
     async (data) => {
@@ -205,22 +189,9 @@ const Home = ({}) => {
 
       const IMP = window.IMP;
 
-      const address = data.address;
-
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
-      let paypalPay = null;
-
       const buyPay = zoomLecDetail.price;
-
-      await dollarChange(
-        buyPay
-        // 10000
-      ).then((data) => {
-        paypalPay = data;
-      });
-
-      // console.log(paypalPay);
 
       IMP.init("imp20437848");
 
@@ -229,70 +200,17 @@ const Home = ({}) => {
         // 무통장입금
         // 무통장입금
         dispatch({
-          type: BOUGHT_CREATE_REQUEST,
+          type: ZOOM_LEC_HISTORY_ADD_REQUEST,
           data: {
-            mobile: data.mobile,
-            receiver: data.receiver,
-            zoneCode: data.zoneCode,
-            address: address,
+            payment: buyPay,
+            UserId: me.id,
+            ZoomLectureId: router.query.id,
             payType: isBuyType,
-            pay: buyPay,
-            lectureType: zoomLecDetail.type,
             name: data.name,
             impUid: "-",
             merchantUid: "-",
-            lectureId: router.query.id,
           },
         });
-      } else if (isBuyType === "paypal") {
-        // 해외 결제
-        // 해외 결제
-        // 해외 결제
-        IMP.request_pay(
-          {
-            pg: `${isBuyType}`,
-            pay_method: "card",
-            merchant_uid: orderPK,
-            name: zoomLecDetail && zoomLecDetail.title,
-            currency: "USD",
-            amount: paypalPay,
-            // amount: 0.12,
-            m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
-              zoomLecDetail && zoomLecDetail.price
-            }&address=${address}&mobile=${data.mobile}&receiver=${
-              data.receiver
-            }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
-              zoomLecDetail && zoomLecDetail.price
-            }&type=${zoomLecDetail && zoomLecDetail.type}`,
-          },
-          async (rsp) => {
-            if (rsp.success) {
-              dispatch({
-                type: BOUGHT_CREATE_REQUEST,
-                data: {
-                  mobile: data.mobile,
-                  receiver: data.receiver,
-                  zoneCode: data.zoneCode,
-                  address: address,
-                  payType: isBuyType,
-                  pay: buyPay,
-                  lectureType: zoomLecDetail.type,
-                  name: "-",
-                  impUid: rsp.imp_uid,
-                  merchantUid: rsp.merchant_uid,
-                  lectureId: router.query.id,
-                },
-              });
-            } else {
-              console.log(rsp.error_msg);
-              if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
-                message.error(
-                  "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
-                );
-              }
-            }
-          }
-        );
       } else {
         // 신용카드 결제
         // 신용카드 결제
@@ -311,19 +229,15 @@ const Home = ({}) => {
           async (rsp) => {
             if (rsp.success) {
               dispatch({
-                type: BOUGHT_CREATE_REQUEST,
+                type: ZOOM_LEC_HISTORY_ADD_REQUEST,
                 data: {
-                  mobile: data.mobile,
-                  receiver: data.receiver,
-                  zoneCode: data.zoneCode,
-                  address: address,
+                  payment: buyPay,
+                  UserId: me.id,
+                  ZoomLectureId: router.query.id,
                   payType: isBuyType,
-                  pay: buyPay,
-                  lectureType: zoomLecDetail.type,
-                  name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
-                  lectureId: router.query.id,
+                  name: me.username,
                 },
               });
             }
@@ -331,7 +245,7 @@ const Home = ({}) => {
         );
       }
     },
-    [isBuyType, zoomLecDetail, st_boughtCreateDone]
+    [isBuyType, zoomLecDetail, st_zoomLecHistoryAddDone, me, router.query]
   );
 
   ////// DATAVIEW //////
@@ -573,7 +487,7 @@ const Home = ({}) => {
                   fontSize={`20px`}
                   kindOf={`basic`}
                   htmlType="submit"
-                  loading={st_boughtCreateLoading}
+                  loading={st_zoomLecHistoryAddLoading}
                 >
                   결제하기
                 </CommonButton>
