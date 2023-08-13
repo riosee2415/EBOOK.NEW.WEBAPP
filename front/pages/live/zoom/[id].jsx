@@ -104,6 +104,8 @@ const Home = ({}) => {
     st_zoomLecHistoryAddLoading,
     st_zoomLecHistoryAddDone,
     st_zoomLecHistoryAddError,
+
+    st_zoomLecAddPeopleError,
   } = useSelector((state) => state.level);
 
   ////// HOOKS //////
@@ -168,6 +170,12 @@ const Home = ({}) => {
       return message.error(st_zoomLecHistoryAddError);
     }
   }, [st_zoomLecHistoryAddDone, st_zoomLecHistoryAddError]);
+
+  useEffect(() => {
+    if (st_zoomLecAddPeopleError) {
+      return message.error(st_zoomLecAddPeopleError);
+    }
+  }, [st_zoomLecAddPeopleError]);
   ////// TOGGLE //////
 
   ////// HANDLER //////
