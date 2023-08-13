@@ -160,7 +160,7 @@ const Home = ({}) => {
         return router.push(`/live/zoom/finish/${zoomBoughtId}`);
       } else {
         message.success("결제되었습니다.");
-        return router.push("/mypage");
+        return router.push("/mypage/zoom");
       }
     }
 
