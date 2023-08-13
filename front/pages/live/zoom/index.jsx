@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import ClientLayout from "../../../components/ClientLayout";
 import Head from "next/head";
 import wrapper from "../../../store/configureStore";
@@ -22,6 +22,8 @@ import { Empty, message } from "antd";
 const Zoom = () => {
   ////// GLOBAL STATE //////
   const { zoomLecList } = useSelector((state) => state.level);
+
+  const [currentTab, setCurrentTab] = useState(0);
 
   ////// HOOKS //////
   const width = useWidth();

@@ -85,6 +85,8 @@ router.post("/valueUpdate", async (req, res, next) => {
 //  줌 강의 가져오기
 //
 router.post("/zoom/lecture/list", async (req, res, next) => {
+  const { level = false } = req.body;
+
   const sq = `
   SELECT	A.id,
   A.days,
@@ -105,6 +107,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
        AND  isCompleted = false
   )	AS cnt
 FROM	zoomLecture	A
+${level ? `WHERE A.levelValue =	"${level}"` : ``}
 ORDER  BY A.createdAt DESC
   `;
 
