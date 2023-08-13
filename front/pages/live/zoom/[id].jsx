@@ -63,52 +63,6 @@ const BuyForm = styled(Form)`
   }
 `;
 
-const CustomPlusCircleOutlined = styled(PlusCircleOutlined)`
-  font-size: 30px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 1px;
-  }
-`;
-const CustomPauseCircleOutlined = styled(PauseCircleOutlined)`
-  font-size: 30px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  transform: rotate(90deg);
-
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 1px;
-  }
-`;
-
-const CustomArrowRightOutlined = styled(ArrowRightOutlined)`
-  font-size: 20px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  margin: 0 10px;
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 5px;
-  }
-`;
-
-const CustomSelect = styled(Select)`
-  width: 100%;
-  border-radius: 5px;
-  border: 1px solid ${(props) => props.theme.lightGrey4_C};
-  font-size: 18px;
-  margin: 0 0 10px;
-
-  &:not(.ant-select-customize-input) .ant-select-selector {
-    height: 54px !important;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-
-    align-items: center;
-  }
-`;
-
 const CustomRadio = styled(Radio)`
   & span {
     font-size: 24px;
@@ -164,33 +118,7 @@ const Home = ({}) => {
 
   const [infoForm] = Form.useForm();
 
-  const [addressData, setAddressData] = useState(null);
-  const [aModal, setAModal] = useState(false);
-
   const [isBuyType, setIsBuyType] = useState(null);
-  const [isOverseas, setIsOverseas] = useState(false);
-  const [overAddress, setOverAddress] = useState(false);
-
-  const dataArr = [
-    {
-      id: 1,
-      title: "미국 캐나다 북미 남미 아프리카",
-      price: 100000,
-      viewPrice: "100,000원",
-    },
-    {
-      id: 2,
-      title: "일본 베트남 아시아",
-      price: 40000,
-      viewPrice: "40,000원",
-    },
-    {
-      id: 3,
-      title: "유럽 오세아니아",
-      price: 80000,
-      viewPrice: "80,000원",
-    },
-  ];
 
   console.log(zoomLecDetail);
 
@@ -224,10 +152,6 @@ const Home = ({}) => {
         detailAddress: me.detailAddress,
         mobile: me.mobile,
       });
-
-      setAddressData({
-        zonecode: me.zoneCode,
-      });
     }
   }, [me]);
 
@@ -249,36 +173,7 @@ const Home = ({}) => {
   }, [st_boughtCreateDone, st_boughtCreateError]);
   ////// TOGGLE //////
 
-  // 주소 모달
-  const aModalToggle = useCallback(() => {
-    setAModal((prev) => !prev);
-  }, [aModal]);
-
   ////// HANDLER //////
-
-  // 해외 여부
-  const isOverseasChangeHandler = useCallback(
-    (data) => {
-      setIsOverseas(data);
-
-      setIsBuyType(null);
-      if (!data) {
-        infoForm.setFieldsValue({
-          username: me.username,
-          receiver: me.username,
-          zoneCode: me.zoneCode,
-          address: me.address,
-          detailAddress: me.detailAddress,
-          mobile: me.mobile,
-        });
-
-        setAddressData({
-          zonecode: me.zoneCode,
-        });
-      }
-    },
-    [isOverseas]
-  );
 
   // 결제 방법
   const isBuyTypeChangeHandler = useCallback(
@@ -286,14 +181,6 @@ const Home = ({}) => {
       setIsBuyType(data.target.value);
     },
     [isBuyType]
-  );
-
-  // 해외 주소 변경
-  const overAddressChange = useCallback(
-    (data) => {
-      setOverAddress(data);
-    },
-    [overAddress]
   );
 
   // 환율 계산 함수
@@ -348,7 +235,6 @@ const Home = ({}) => {
             receiver: data.receiver,
             zoneCode: data.zoneCode,
             address: address,
-            detailAddress: isOverseas ? "-" : data.detailAddress,
             payType: isBuyType,
             pay: buyPay,
             lectureType: zoomLecDetail.type,
@@ -388,7 +274,6 @@ const Home = ({}) => {
                   receiver: data.receiver,
                   zoneCode: data.zoneCode,
                   address: address,
-                  detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
                   pay: buyPay,
                   lectureType: zoomLecDetail.type,
@@ -432,7 +317,6 @@ const Home = ({}) => {
                   receiver: data.receiver,
                   zoneCode: data.zoneCode,
                   address: address,
-                  detailAddress: isOverseas ? "-" : data.detailAddress,
                   payType: isBuyType,
                   pay: buyPay,
                   lectureType: zoomLecDetail.type,
@@ -447,7 +331,7 @@ const Home = ({}) => {
         );
       }
     },
-    [isBuyType, zoomLecDetail, overAddress, st_boughtCreateDone]
+    [isBuyType, zoomLecDetail, st_boughtCreateDone]
   );
 
   ////// DATAVIEW //////
@@ -473,29 +357,6 @@ const Home = ({}) => {
                 >
                   결제 진행
                 </Text>
-                <Wrapper width={`auto`} dr={`row`}>
-                  <CommonButton
-                    width={width < 700 ? `90px` : `110px`}
-                    height={width < 700 ? `38px` : `44px`}
-                    fontSize={`20px`}
-                    fontWeight={`600`}
-                    kindOf={!isOverseas && `basic`}
-                    margin={`0 8px 0 0`}
-                    onClick={() => isOverseasChangeHandler(false)}
-                  >
-                    국내
-                  </CommonButton>
-                  <CommonButton
-                    width={width < 700 ? `90px` : `110px`}
-                    height={width < 700 ? `38px` : `44px`}
-                    fontSize={`20px`}
-                    fontWeight={`600`}
-                    kindOf={isOverseas && `basic`}
-                    onClick={() => isOverseasChangeHandler(true)}
-                  >
-                    해외
-                  </CommonButton>
-                </Wrapper>
               </Wrapper>
 
               <Wrapper
@@ -626,7 +487,7 @@ const Home = ({}) => {
                     >
                       카드결제
                     </CustomRadio>
-                    {/* <CustomRadio
+                    <CustomRadio
                       value={"nobank"}
                       style={{
                         margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
@@ -634,9 +495,6 @@ const Home = ({}) => {
                     >
                       무통장입금(계좌이체)
                     </CustomRadio>
-                    {isOverseas && (
-                      <CustomRadio value={"paypal"}>PayPal(페이팔)</CustomRadio>
-                    )} */}
                   </Radio.Group>
                 </Wrapper>
 

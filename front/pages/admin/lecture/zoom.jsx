@@ -111,6 +111,8 @@ const Zoom = ({}) => {
 
   ////// HOOKS //////
 
+  const [zoomLevel, setZoomLevel] = useState("");
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -137,6 +139,15 @@ const Zoom = ({}) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: ZOOM_LEC_LIST_REQUEST,
+      data: {
+        level: zoomLevel,
+      },
+    });
+  }, [zoomLevel]);
 
   ////////////////////// 줌강의 생성후처리 //////////////////////
   useEffect(() => {
@@ -344,6 +355,74 @@ const Zoom = ({}) => {
             삭제처리 된 줌강의는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
+      </Wrapper>
+
+      {/* TAB */}
+      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
+        <Button
+          type={zoomLevel === "" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("")}
+        >
+          전체
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL1" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL1")}
+        >
+          LEVEL1
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL2" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL2")}
+        >
+          LEVEL2
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL3" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL3")}
+        >
+          LEVEL3
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL4" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL4")}
+        >
+          LEVEL4
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL5" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL5")}
+        >
+          LEVEL5
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL6" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL6")}
+        >
+          LEVEL6
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL7" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL7")}
+        >
+          LEVEL7
+        </Button>
       </Wrapper>
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
