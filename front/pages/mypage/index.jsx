@@ -163,23 +163,35 @@ const MypageIndex = ({}) => {
               <Text fontSize={`32px`} fontWeight={`600`}>
                 안녕하세요. {me && me.username}님!
               </Text>
-              <CommonButton
-                margin={width < 700 && `20px 0 0`}
-                kindOf={`basic`}
-                width={`154px`}
-                height={`40px`}
-                fontSize={`18px`}
-                onClick={() => moveLinkHandler(`/mypage/update`)}
-              >
-                내정보 수정
-              </CommonButton>
+              <Wrapper width={`auto`} dr={`row`}>
+                <CommonButton
+                  margin={width < 700 && `20px 0 0`}
+                  kindOf={`basic`}
+                  width={`154px`}
+                  height={`40px`}
+                  fontSize={`18px`}
+                  onClick={() => moveLinkHandler(`/mypage/update`)}
+                >
+                  내정보 수정
+                </CommonButton>
+                <CommonButton
+                  margin={width < 700 && `20px 0 0`}
+                  kindOf={`basic`}
+                  width={`154px`}
+                  height={`40px`}
+                  fontSize={`18px`}
+                  onClick={() => moveLinkHandler(`/mypage/zoom`)}
+                >
+                  줌수업관리
+                </CommonButton>
+              </Wrapper>
             </Wrapper>
 
             <Wrapper
               padding={width < 700 ? `20px` : `40px`}
               radius={`10px`}
               border={`1px solid ${Theme.grey2_C}`}
-              margin={width < 700 ? `35px 0 0` : `35px 0 0`}
+              margin={`35px 0 0`}
               al={`flex-start`}
             >
               <Wrapper dr={`row`} ju={`flex-start`}>
