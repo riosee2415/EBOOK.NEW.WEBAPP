@@ -184,7 +184,6 @@ const BuyLecture = ({}) => {
 
       boughtAdminList &&
         boughtAdminList.map((data, idx) => {
-          // console.log(data.mobile);
           scvData.push({
             no: data.boughtDate,
             name: data.receiver,

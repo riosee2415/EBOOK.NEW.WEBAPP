@@ -995,8 +995,6 @@ const UserList = ({}) => {
     { label: "가입일", key: "createdAt" },
   ];
 
-  // console.log(xlsxData);
-
   ////// DATAVIEW //////
 
   const columns = [

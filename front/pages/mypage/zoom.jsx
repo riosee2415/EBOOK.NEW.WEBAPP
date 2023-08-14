@@ -23,7 +23,6 @@ const Zoom = () => {
   ////// GLOBAL STATE //////
   const { myZoomList } = useSelector((state) => state.level);
 
-  console.log(myZoomList);
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();

@@ -55,7 +55,6 @@ const Zoom = () => {
     if (data.cnt === 6) {
       return message.error("더 이상 구매할 수 없습니다.");
     }
-    console.log(data);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
     router.push(`/live/zoom/${data.id}`);

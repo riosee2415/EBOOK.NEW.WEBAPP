@@ -28,8 +28,6 @@ const Home = ({}) => {
   const { lectureList } = useSelector((state) => state.lecture);
   const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
-  console.log(boughtMeDetail);
-
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();

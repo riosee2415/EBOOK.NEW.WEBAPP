@@ -191,13 +191,9 @@ const Notice = ({}) => {
           .insertEmbed(range.index, "image", uploadFilePath);
         quillRef.current.getEditor().setSelection(range.index + 1);
         document.body.querySelector(":scope > input").remove();
-
-        console.log(uploadFilePath);
       }
     }
   }, [uploadFilePath, quillRef]);
-
-  console.log(quillRef);
 
   // ********************** 공지사항 생성 후처리 *************************
   useEffect(() => {

@@ -60,8 +60,6 @@ router.get("/list", async (req, res, next) => {
 router.post("/create", isAdminCheck, async (req, res, next) => {
   const { name, value } = req.body;
 
-  console.log(name, value);
-
   const insertQuery = `
     INSERT INTO companyInfo (name, value, updator, createdAt, updatedAt) VALUES 
     (

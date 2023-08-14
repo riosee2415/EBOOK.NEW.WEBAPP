@@ -49,8 +49,6 @@ const upload = multer({
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post("/image", upload.single("image"), async (req, res, next) => {
-  console.log(req.file);
-
   return res.json({ path: req.file.location });
 });
 

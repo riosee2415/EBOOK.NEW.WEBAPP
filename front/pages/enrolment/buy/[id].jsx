@@ -420,8 +420,6 @@ const Home = ({}) => {
         paypalPay = data;
       });
 
-      // console.log(paypalPay);
-
       IMP.init("imp20437848");
 
       if (isBuyType === "nobank") {
@@ -526,7 +524,6 @@ const Home = ({}) => {
                 },
               });
             } else {
-              console.log(rsp.error_msg);
               if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
                 message.error(
                   "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
