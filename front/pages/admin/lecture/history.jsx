@@ -212,6 +212,10 @@ const Survey = ({}) => {
       ),
     },
     {
+      title: "결제일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
       width: "10%",
       align: "center",
       title: "삭제하기",
@@ -337,7 +341,7 @@ const Survey = ({}) => {
                     <Input size="small" />
                   </Form.Item>
                 )}
-                <Form.Item label="생성일" name="viewCreatedAt">
+                <Form.Item label="결제일" name="viewCreatedAt">
                   <Input size="small" />
                 </Form.Item>
               </Form>
