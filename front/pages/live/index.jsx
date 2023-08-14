@@ -30,54 +30,54 @@ const Live = () => {
   ////// DATAVIEW //////
   const datum = [
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_1.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_1.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_1.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_1.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_2.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_2.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_2.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_2.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_3.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_3.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_3.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_3.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_4.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_4.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_4.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_4.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_5.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_5.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_5.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_5.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_6.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_6.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_6.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_6.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_7.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_7.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_7.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_7.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_8.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_8.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_8.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_8.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_9.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_9.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_9.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_9.png",
     },
     {
-      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_10.jpg",
+      url: "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_10.png",
       mobileUrl:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/%E1%84%89%E1%85%AE%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%80%E1%85%AA_m_10.jpg",
+        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/live/live_m_10.png",
     },
   ];
 
