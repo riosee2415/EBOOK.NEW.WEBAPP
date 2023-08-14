@@ -266,6 +266,14 @@ const Zoom = ({}) => {
       dataIndex: "tName",
     },
     {
+      title: "수업시간",
+      render: (data) => (
+        <Text>
+          {data.startTime} ~ {data.endTime}
+        </Text>
+      ),
+    },
+    {
       title: "수강생수",
       render: (data) => (
         <Button type="primary" size="small" onClick={() => modalToggle(data)}>
@@ -427,7 +435,7 @@ const Zoom = ({}) => {
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
-          width={`calc(50% - 10px)`}
+          width={`calc(60% - 10px)`}
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
@@ -451,7 +459,7 @@ const Zoom = ({}) => {
         </Wrapper>
 
         <Wrapper
-          width={`calc(50% - 10px)`}
+          width={`calc(40% - 10px)`}
           padding="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
