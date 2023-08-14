@@ -105,6 +105,7 @@ const Live = () => {
               height={`70px`}
               fontSize={`25px`}
               kindOf={`basic`}
+              onClick={() => movelinkHandler(`/live/zoom`)}
             >
               수강신청하기
             </CommonButton>

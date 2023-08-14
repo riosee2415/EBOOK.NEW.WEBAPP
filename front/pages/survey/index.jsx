@@ -59,6 +59,11 @@ const Intro = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const movelinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <>
       <Head>
@@ -156,6 +161,16 @@ const Intro = () => {
                   권장드립니다.
                 </Text>
                 <Wrapper dr={`row`}>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                    onClick={() => movelinkHandler(`/live/zoom`)}
+                  >
+                    수강신청
+                  </CommonButton>
                   <CommonButton
                     width={`150px`}
                     height={`50px`}

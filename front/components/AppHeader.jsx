@@ -220,18 +220,12 @@ const AppHeader = ({}) => {
                 </Menu>
               </a>
             </Link>
-            <Link href={`/lecture`}>
-              <a>
-                <Menu isActive={router.pathname === `/lecture`}>
-                  친절한수정과
-                </Menu>
-              </a>
-            </Link>
             <Link href={`/live`}>
               <a>
-                <Menu isActive={router.pathname === `/live`}>실시간수업</Menu>
+                <Menu isActive={router.pathname === `/live`}>수정과</Menu>
               </a>
             </Link>
+
             <Link href={`/review`}>
               <a>
                 <Menu isActive={router.pathname === `/review`}>수강후기</Menu>
