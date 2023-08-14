@@ -40,6 +40,30 @@ import {
   ZOOM_LEC_HISTORY_DELETE_REQUEST,
   ZOOM_LEC_HISTORY_REQUEST,
 } from "../../../reducers/level";
+import { CSVLink } from "react-csv";
+
+const DownloadBtn = styled(CSVLink)`
+  width: 200px;
+  height: 25px;
+  margin: 0 0 0 10px;
+  border-radius: 3px;
+
+  background: ${(props) => props.theme.basicTheme_C};
+  color: ${(props) => props.theme.white_C};
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.4s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
+  }
+`;
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -104,6 +128,8 @@ const Survey = ({}) => {
 
   ////// HOOKS //////
 
+  const [scvData, setScvData] = useState(null);
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -145,6 +171,29 @@ const Survey = ({}) => {
       return message.error(st_zoomLecHistoryDelError);
     }
   }, [st_zoomLecHistoryDelDone, st_zoomLecHistoryDelError]);
+
+  // 엑셀
+
+  useEffect(() => {
+    if (zoomHistory) {
+      const scvData = [];
+
+      zoomHistory &&
+        zoomHistory.map((data, idx) => {
+          scvData.push({
+            no: data.viewCreatedAt,
+            name: data.username,
+            mobile: data.mobile + "'",
+            id: data.userId,
+            birth: data.birth,
+            type: data.payType === "card" ? "카드" : "무통장입금",
+            level: data.levelValue,
+          });
+        });
+
+      setScvData(scvData);
+    }
+  }, [zoomHistory]);
 
   ////// HANDLER //////
 
@@ -234,6 +283,16 @@ const Survey = ({}) => {
     },
   ];
 
+  const headers = [
+    { label: "신청일자", key: "no" },
+    { label: "성함", key: "name" },
+    { label: "연락처", key: "mobile" },
+    { label: "아이디", key: "id" },
+    { label: "생년월일", key: "birth" },
+    { label: "결제 유형", key: "type" },
+    { label: "레벨", key: "level" },
+  ];
+
   return (
     <AdminLayout>
       {/* MENU TAB */}
@@ -280,6 +339,18 @@ const Survey = ({}) => {
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
+          <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+            {scvData && (
+              <DownloadBtn
+                filename={`결제내역`}
+                headers={headers}
+                data={scvData}
+              >
+                엑셀 다운로드{" "}
+              </DownloadBtn>
+            )}
+          </Wrapper>
+
           <Table
             style={{ width: "100%" }}
             rowKey="num"
