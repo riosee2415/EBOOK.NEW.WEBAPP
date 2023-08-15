@@ -310,7 +310,8 @@ router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
 		B.birth,
 		B.gender,
 		B.mobile,
-		B.email
+		B.email,
+    A.UserId
   FROM	zoomPeople	A
  INNER
   JOIN	users 		B
