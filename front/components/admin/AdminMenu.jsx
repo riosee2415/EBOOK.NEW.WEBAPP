@@ -149,7 +149,7 @@ const AdminMenu = () => {
           useYn: true,
         },
         {
-          name: "줌강의관리",
+          name: "수정과관리",
           link: "/admin/lecture/zoom",
           useYn: true,
         },

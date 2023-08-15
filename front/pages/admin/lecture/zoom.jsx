@@ -149,14 +149,14 @@ const Zoom = ({}) => {
     });
   }, [zoomLevel]);
 
-  ////////////////////// 줌강의 생성후처리 //////////////////////
+  ////////////////////// 수정과 생성후처리 //////////////////////
   useEffect(() => {
     if (st_zoomLecCreateDone) {
       dispatch({
         type: ZOOM_LEC_LIST_REQUEST,
       });
 
-      return message.success("줌강의가 생성되었습니다.");
+      return message.success("수정과가 생성되었습니다.");
     }
 
     if (st_zoomLecCreateError) {
@@ -164,14 +164,14 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecCreateDone, st_zoomLecCreateError]);
 
-  ////////////////////// 줌강의 수정후처리 //////////////////////
+  ////////////////////// 수정과 수정후처리 //////////////////////
   useEffect(() => {
     if (st_zoomLecUpdateDone) {
       dispatch({
         type: ZOOM_LEC_LIST_REQUEST,
       });
 
-      return message.success("줌강의가 수정되었습니다.");
+      return message.success("수정과가 수정되었습니다.");
     }
 
     if (st_zoomLecUpdateError) {
@@ -357,10 +357,10 @@ const Zoom = ({}) => {
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
           <GuideLi>
-            줌강의를 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
+            수정과를 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
           </GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 줌강의는 복구가 불가능합니다.
+            삭제처리 된 수정과는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -468,7 +468,7 @@ const Zoom = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  줌강의 기본정보
+                  수정과 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -570,12 +570,12 @@ const Zoom = ({}) => {
                 </Form.Item>
 
                 <Form.Item
-                  label="줌링크"
+                  label="수정과링크"
                   name="zoomRink"
                   rules={[
                     {
                       required: true,
-                      message: "줌링크은 필수 입력사항 입니다.",
+                      message: "수정과링크은 필수 입력사항 입니다.",
                     },
                   ]}
                 >

@@ -2,7 +2,7 @@ import produce from "../util/produce";
 
 export const initialState = {
   levelList: [],
-  zoomLecList: [], // 줌강의
+  zoomLecList: [], // 수정과
   zoomDetail: [], // 수강생정보
   myZoomList: [], // 내 수강기록
   zoomHistory: [], // 줌 결제내역 가져오기

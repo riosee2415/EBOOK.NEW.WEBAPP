@@ -80,7 +80,7 @@ const Zoom = () => {
                 fontSize={width < 700 ? `20px` : `23px !important`}
                 margin={width < 700 ? `0 0 0 20px` : `0`}
               >
-                원하시는 레벨의 줌 수업을 선택해주세요.
+                원하시는 레벨의 수정과 수업을 선택해주세요.
               </Text>
               <Wrapper
                 dr={`row`}
