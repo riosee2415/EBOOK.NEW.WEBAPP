@@ -39,6 +39,7 @@ import {
   ZOOM_LEC_CREATE_REQUEST,
   ZOOM_LEC_DETAIL_REQUEST,
   ZOOM_LEC_LIST_REQUEST,
+  ZOOM_LEC_MOVE_REQUEST,
   ZOOM_LEC_UPDATE_REQUEST,
 } from "../../../reducers/level";
 
@@ -73,6 +74,9 @@ const Zoom = ({}) => {
 
     st_zoomLecUpdateDone,
     st_zoomLecUpdateError,
+
+    st_zoomLecMoveDone,
+    st_zoomLecMoveError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
@@ -83,10 +87,12 @@ const Zoom = ({}) => {
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
+  const [deData, setDeData] = useState(null);
   const [isModal, setIsModal] = useState(null);
+  const [mModal, setMModal] = useState(false);
 
   const [infoForm] = Form.useForm();
-  const [peopleForm] = Form.useForm();
+  const [moveForm] = Form.useForm();
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -179,6 +185,54 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecUpdateDone, st_zoomLecUpdateError]);
 
+  ////////////////////// 줌강의 이동후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecMoveDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+        data: {
+          level: zoomLevel,
+        },
+      });
+
+      modalToggle(null);
+      moveModalToggle(null);
+      moveForm.resetFields();
+
+      return message.success("수강생이 이동되었습니다.");
+    }
+
+    if (st_zoomLecMoveError) {
+      return message.error(st_zoomLecMoveError);
+    }
+  }, [st_zoomLecMoveDone, st_zoomLecMoveError]);
+
+  ////// TOGGLE //////
+  const modalToggle = useCallback(
+    (data) => {
+      setIsModal((prev) => !prev);
+
+      if (data) {
+        dispatch({
+          type: ZOOM_LEC_DETAIL_REQUEST,
+          data: {
+            ZoomId: data.id,
+          },
+        });
+      }
+    },
+    [isModal]
+  );
+
+  const moveModalToggle = useCallback(
+    (data) => {
+      setMModal((p) => !p);
+
+      setDeData(data);
+    },
+    [mModal]
+  );
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -226,18 +280,18 @@ const Zoom = ({}) => {
     [currentData]
   );
 
-  const modalToggle = useCallback(
+  const lectureMoveHandler = useCallback(
     (data) => {
-      setIsModal((prev) => !prev);
-
       dispatch({
-        type: ZOOM_LEC_DETAIL_REQUEST,
+        type: ZOOM_LEC_MOVE_REQUEST,
         data: {
-          ZoomId: data.id,
+          ZoomId: currentData.id,
+          UserId: deData.UserId,
+          MoveZoomId: data.lecId,
         },
       });
     },
-    [isModal]
+    [deData, currentData]
   );
 
   ////// DATAVIEW //////
@@ -320,6 +374,18 @@ const Zoom = ({}) => {
     {
       title: "이메일",
       dataIndex: "email",
+    },
+    {
+      title: "강의 이동",
+      render: (data) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => moveModalToggle(data)}
+        >
+          이동
+        </Button>
+      ),
     },
   ];
 
@@ -634,6 +700,48 @@ const Zoom = ({}) => {
             size="small"
           />
         </Wrapper>
+      </Modal>
+
+      <Modal
+        onCancel={() => moveModalToggle(null)}
+        visible={mModal}
+        footer={null}
+        width={`500px`}
+        title={"강의 이동"}
+      >
+        <Form
+          form={moveForm}
+          style={{ width: `100%` }}
+          labelCol={{ span: 3 }}
+          wrapperCol={{ span: 21 }}
+          onFinish={lectureMoveHandler}
+        >
+          <Form.Item
+            label="줌강의"
+            name="lecId"
+            rules={[
+              { required: true, message: "줌강의는 필수 입력사항 입니다." },
+            ]}
+          >
+            <Select size="small">
+              {zoomLecList &&
+                zoomLecList.map((data) => {
+                  return (
+                    <Select.Option key={data.id} value={data.id}>
+                      {data.levelValue} ({data.days}) ({data.startTime} ~{" "}
+                      {data.endTime})
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
+
+          <Wrapper al="flex-end">
+            <Button type="primary" size="small" htmlType="submit">
+              강의 이동하기
+            </Button>
+          </Wrapper>
+        </Form>
       </Modal>
     </AdminLayout>
   );

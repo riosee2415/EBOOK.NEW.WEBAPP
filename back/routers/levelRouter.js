@@ -310,7 +310,8 @@ router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
 		B.birth,
 		B.gender,
 		B.mobile,
-		B.email
+		B.email,
+    A.UserId
   FROM	zoomPeople	A
  INNER
   JOIN	users 		B
@@ -500,5 +501,35 @@ router.post(
     }
   }
 );
+
+//
+//  줌 강의 인원 이동하기
+//
+router.post("/zoom/lecture/move", async (req, res, next) => {
+  const { ZoomId, UserId, MoveZoomId } = req.body;
+
+  const sq = `
+    SELECT	id
+      FROM	zoomPeople
+     WHERE	ZoomLectureId =	${ZoomId}
+       AND  UserId = ${UserId}
+`;
+
+  const list = await noneParameterSelectQuery(sq);
+
+  if (!list[0]) {
+    return res.status(400).send("해당 강의에 사용자가 존재하지 않습니다.");
+  }
+
+  const uq = `
+    UPDATE  zoomPeople
+       SET  ZoomLectureId = ${MoveZoomId}
+    WHERE   id = ${list[0].id}
+  `;
+
+  await actionUpdateQuery(uq);
+
+  return res.status(200).json({ result: true });
+});
 
 module.exports = router;
