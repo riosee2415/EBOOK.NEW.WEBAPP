@@ -140,7 +140,7 @@ const AdminMenu = () => {
       ],
     },
     {
-      title: "줌수업관리",
+      title: "수정과관리",
       key: "sub6",
       subMenu: [
         {

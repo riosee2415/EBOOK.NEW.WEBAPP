@@ -88,7 +88,7 @@ export const items = {
       useYn: true,
     },
   ],
-  줌수업관리: [
+  수정과관리: [
     {
       name: "레벨설문관리",
       link: "/admin/lecture/survey",
@@ -343,8 +343,8 @@ const AdminLayout = ({ children }) => {
           />
           <AdminMenuBox
             right={me && me.menuRight7}
-            title={`줌수업관리`}
-            menus={items["줌수업관리"]}
+            title={`수정과관리`}
+            menus={items["수정과관리"]}
           />
         </Wrapper>
       ) : (

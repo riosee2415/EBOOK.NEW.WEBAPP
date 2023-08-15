@@ -39,7 +39,7 @@ const Zoom = () => {
   return (
     <>
       <Head>
-        <title>친절한 영어교실 | 줌수업관리</title>
+        <title>친절한 영어교실 | 수정과관리</title>
       </Head>
 
       <ClientLayout>
@@ -52,7 +52,7 @@ const Zoom = () => {
               margin={`0 0 35px`}
             >
               <Text fontSize={`36px`} fontWeight={`700`}>
-                줌수업관리
+                수정과관리
               </Text>
             </Wrapper>
 

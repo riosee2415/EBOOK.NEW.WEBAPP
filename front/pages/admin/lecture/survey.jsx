@@ -76,7 +76,7 @@ const Survey = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("줌수업관리");
+  const [level1, setLevel1] = useState("수정과관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);

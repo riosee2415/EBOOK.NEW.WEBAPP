@@ -182,7 +182,7 @@ const MypageIndex = ({}) => {
                   fontSize={`18px`}
                   onClick={() => moveLinkHandler(`/mypage/zoom`)}
                 >
-                  줌수업관리
+                  수정과관리
                 </CommonButton>
               </Wrapper>
             </Wrapper>
