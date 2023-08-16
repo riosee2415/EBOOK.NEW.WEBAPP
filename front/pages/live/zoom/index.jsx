@@ -60,6 +60,11 @@ const Zoom = () => {
     router.push(`/live/zoom/${data.id}`);
   }, []);
 
+  const movelinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   ////// DATAVIEW //////
 
   return (
