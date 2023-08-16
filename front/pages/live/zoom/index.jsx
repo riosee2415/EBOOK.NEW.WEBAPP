@@ -66,6 +66,36 @@ const Zoom = () => {
   }, []);
 
   ////// DATAVIEW //////
+  const levelBtn = [
+    {
+      id: 1,
+      value: "LEVEL1",
+    },
+    {
+      id: 2,
+      value: "LEVEL2",
+    },
+    {
+      id: 3,
+      value: "LEVEL3",
+    },
+    {
+      id: 4,
+      value: "LEVEL4",
+    },
+    {
+      id: 5,
+      value: "LEVEL5",
+    },
+    {
+      id: 6,
+      value: "LEVEL6",
+    },
+    {
+      id: 7,
+      value: "LEVEL7",
+    },
+  ];
 
   return (
     <>
@@ -108,6 +138,25 @@ const Zoom = () => {
                   bgColor={Theme.subTheme7_C}
                   width={`30px`}
                 ></Wrapper>
+              </Wrapper>
+
+              <Wrapper dr={`row`} ju={`flex-start`}>
+                {levelBtn.map((data) => {
+                  return (
+                    <CommonButton
+                      key={data.id}
+                      width={`186px`}
+                      height={`50px`}
+                      fontSize={`20px`}
+                      kindOf={`basic`}
+                      onClick={() =>
+                        movelinkHandler(`/live/zoom?type=${data.value}`)
+                      }
+                    >
+                      {data.value}
+                    </CommonButton>
+                  );
+                })}
               </Wrapper>
             </Wrapper>
 

@@ -142,6 +142,9 @@ const Home = ({}) => {
       infoForm.setFieldsValue({
         username: me.username,
         mobile: me.mobile,
+        adrs: me.address,
+        deadrs: me.detailAddress,
+        zoneCode: me.zoneCode,
       });
     }
   }, [me]);
@@ -317,7 +320,8 @@ const Home = ({}) => {
                   </Text>
                   <Text fontSize={width < 700 ? `28px` : `32px`}>
                     {zoomLecDetail && zoomLecDetail.terms}(
-                    {zoomLecDetail && zoomLecDetail.days})
+                    {zoomLecDetail && zoomLecDetail.days})&nbsp;+&nbsp;워크북
+                    1권
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -342,11 +346,11 @@ const Home = ({}) => {
                 <Form.Item
                   label="회원명"
                   name="username"
-                  rules={[{ required: true, message: "회원명은 필수 입니다." }]}
+                  rules={[{ required: true, message: "회원명은 필수입니다." }]}
                   colon={false}
                 >
                   <TextInput
-                    width={`100%`}
+                    width={width < 700 ? `100%` : `420px`}
                     height={`54px`}
                     radius={`5px`}
                     border={`none`}
@@ -359,17 +363,92 @@ const Home = ({}) => {
                 <Form.Item
                   label="연락처"
                   name="mobile"
-                  rules={[{ required: true, message: "연락처는 필수 입니다." }]}
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "연락처는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
                   colon={false}
                 >
                   <TextInput
                     width={width < 700 ? `100%` : `420px`}
                     height={`54px`}
                     radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
+                    border={`none`}
                     fontSize={`18px`}
-                    placeholder="'-'를 제외한 연락처를 입력해주세요."
                     margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="주소"
+                  name="adrs"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "주소는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="상세주소"
+                  name="deadrs"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "우편번호는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="우편번호"
+                  name="zoneCode"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "우편번호는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
                   />
                 </Form.Item>
                 <Wrapper
@@ -426,7 +505,7 @@ const Home = ({}) => {
                     colon={false}
                     label="입금자명"
                     rules={[
-                      { required: true, message: "입금자명은 필수 입니다." },
+                      { required: true, message: "입금자명은 필수입니다." },
                     ]}
                   >
                     <TextInput
