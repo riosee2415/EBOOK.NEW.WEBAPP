@@ -220,6 +220,7 @@ const Home = ({}) => {
             name: data.name,
             impUid: "-",
             merchantUid: "-",
+            isPay: 0,
           },
         });
       } else {
@@ -249,6 +250,7 @@ const Home = ({}) => {
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
                   name: me.username,
+                  isPay: 0,
                 },
               });
             }

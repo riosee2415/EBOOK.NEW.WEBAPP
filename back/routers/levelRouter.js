@@ -363,6 +363,7 @@ router.post(
   A.payment,
   A.payType,
   A.name,
+  A.isPay,
   CONCAT(FORMAT(A.payment, 0), "원")	as viewPrice,
   A.createdAt,
   DATE_FORMAT(A.createdAt, "%Y-%m-%d %H:%i:%s")	as viewCreatedAt,
@@ -410,6 +411,7 @@ router.post(
                 A.payment,
                 A.payType,
                 A.name,
+                A.isPay,
                 CONCAT(FORMAT(A.payment, 0), "원")	as viewPrice,
                 A.createdAt,
                 DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
@@ -444,8 +446,16 @@ router.post(
 //  줌 결제내역 추가하기
 //
 router.post("/zoom/lecture/history/add", isLoggedIn, async (req, res, next) => {
-  const { impUid, merchantUid, payment, UserId, ZoomLectureId, payType, name } =
-    req.body;
+  const {
+    impUid,
+    merchantUid,
+    payment,
+    UserId,
+    ZoomLectureId,
+    payType,
+    name,
+    isPay,
+  } = req.body;
 
   const list = [
     {
@@ -472,6 +482,11 @@ router.post("/zoom/lecture/history/add", isLoggedIn, async (req, res, next) => {
       column: "name",
       data: name,
       isNumeric: false,
+    },
+    {
+      column: "isPay",
+      data: isPay,
+      isNumeric: true,
     },
     {
       column: "UserId",
@@ -509,6 +524,32 @@ router.post(
 
     try {
       await models.sequelize.query(dq);
+
+      return res.status(200).json({ result: true });
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send("잠시 후 다시 시도해주세요.");
+    }
+  }
+);
+
+//
+//  줌 결제내역 처리여부 변경
+//
+router.post(
+  "/zoom/lecture/history/isPay",
+  isAdminCheck,
+  async (req, res, next) => {
+    const { id, isPay } = req.body;
+
+    const uq = `
+    UPDATE  zoomBoughtHistory
+       SET  isPay = ${isPay}
+    WHERE   id = ${id}
+  `;
+
+    try {
+      await models.sequelize.query(uq);
 
       return res.status(200).json({ result: true });
     } catch (error) {

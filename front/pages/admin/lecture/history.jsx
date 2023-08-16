@@ -38,6 +38,7 @@ import {
 } from "@ant-design/icons";
 import {
   ZOOM_LEC_HISTORY_DELETE_REQUEST,
+  ZOOM_LEC_HISTORY_PAY_REQUEST,
   ZOOM_LEC_HISTORY_REQUEST,
 } from "../../../reducers/level";
 import { CSVLink } from "react-csv";
@@ -92,6 +93,10 @@ const Survey = ({}) => {
 
     st_zoomLecHistoryDelDone,
     st_zoomLecHistoryDelError,
+
+    st_zoomLecHistoryPayLoading,
+    st_zoomLecHistoryPayDone,
+    st_zoomLecHistoryPayError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
@@ -172,6 +177,21 @@ const Survey = ({}) => {
     }
   }, [st_zoomLecHistoryDelDone, st_zoomLecHistoryDelError]);
 
+  useEffect(() => {
+    if (st_zoomLecHistoryPayDone) {
+      dispatch({
+        type: ZOOM_LEC_HISTORY_REQUEST,
+      });
+      setCurrentData(null);
+
+      return message.success("결제내역이 처리되었습니다.");
+    }
+
+    if (st_zoomLecHistoryPayError) {
+      return message.error(st_zoomLecHistoryPayError);
+    }
+  }, [st_zoomLecHistoryPayDone, st_zoomLecHistoryPayError]);
+
   // 엑셀
 
   useEffect(() => {
@@ -192,6 +212,7 @@ const Survey = ({}) => {
             gender: data.gender,
             type: data.payType === "card" ? "카드" : "무통장입금",
             level: data.levelValue,
+            isPay: data.isPay === 0 ? "미처리" : "처리완료",
           });
         });
 
@@ -217,6 +238,7 @@ const Survey = ({}) => {
         levelValue: record.levelValue,
         payType: record.payType === "card" ? "카드결제" : "무통장",
         name: record.name,
+        isPay: record.isPay === 0 ? "미처리" : "처리완료",
         viewPrice: record.viewPrice,
         viewCreatedAt: record.viewCreatedAt,
       });
@@ -229,6 +251,17 @@ const Survey = ({}) => {
       type: ZOOM_LEC_HISTORY_DELETE_REQUEST,
       data: {
         id: data.id,
+      },
+    });
+  }, []);
+
+  // 처리하기
+  const isPayUpdateHandler = useCallback((data) => {
+    dispatch({
+      type: ZOOM_LEC_HISTORY_PAY_REQUEST,
+      data: {
+        id: data.id,
+        isPay: 1,
       },
     });
   }, []);
@@ -256,6 +289,32 @@ const Survey = ({}) => {
     },
 
     {
+      title: "결제일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "처리",
+      render: (data) =>
+        data.isPay ? (
+          <CheckOutlined style={{ color: Theme.naver_C }} />
+        ) : (
+          <Popconfirm
+            title="승인하시겠습니까?"
+            okText="승인"
+            cancelText="취소"
+            onConfirm={() => isPayUpdateHandler(data)}
+          >
+            <Button
+              size="small"
+              type="primary"
+              loading={st_zoomLecHistoryPayLoading}
+            >
+              승인
+            </Button>
+          </Popconfirm>
+        ),
+    },
+    {
       title: "상태창",
       render: (data) => (
         <>
@@ -266,10 +325,6 @@ const Survey = ({}) => {
           />
         </>
       ),
-    },
-    {
-      title: "결제일",
-      dataIndex: "viewCreatedAt",
     },
     {
       width: "10%",
@@ -301,6 +356,7 @@ const Survey = ({}) => {
     { label: "생년월일", key: "birth" },
     { label: "성별", key: "gender" },
     { label: "결제 유형", key: "type" },
+    { label: "처리여부", key: "isPay" },
     { label: "레벨", key: "level" },
   ];
 
@@ -424,6 +480,7 @@ const Survey = ({}) => {
                 <Form.Item label="가격" name="viewPrice">
                   <Input size="small" />
                 </Form.Item>
+
                 <Form.Item label="결제방법" name="payType">
                   <Input size="small" />
                 </Form.Item>
@@ -432,6 +489,9 @@ const Survey = ({}) => {
                     <Input size="small" />
                   </Form.Item>
                 )}
+                <Form.Item label="처리여부" name="isPay">
+                  <Input size="small" />
+                </Form.Item>
                 <Form.Item label="결제일" name="viewCreatedAt">
                   <Input size="small" />
                 </Form.Item>

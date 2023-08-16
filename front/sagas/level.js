@@ -60,6 +60,10 @@ import {
   ZOOM_LEC_MOVE_REQUEST,
   ZOOM_LEC_MOVE_SUCCESS,
   ZOOM_LEC_MOVE_FAILURE,
+  //
+  ZOOM_LEC_HISTORY_PAY_REQUEST,
+  ZOOM_LEC_HISTORY_PAY_SUCCESS,
+  ZOOM_LEC_HISTORY_PAY_FAILURE,
 } from "../reducers/level";
 
 // ******************************************************************************************************************
@@ -467,6 +471,33 @@ function* zoomLecMove(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecHistoryPayAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/history/isPay`, data);
+}
+
+function* zoomLecHistoryPay(action) {
+  try {
+    const result = yield call(zoomLecHistoryPayAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_HISTORY_PAY_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_HISTORY_PAY_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchLevelList() {
   yield takeLatest(LEVEL_REQUEST, levelList);
@@ -513,6 +544,9 @@ function* watchZoomLecHistoryDetail() {
 function* watchZoomLecMove() {
   yield takeLatest(ZOOM_LEC_MOVE_REQUEST, zoomLecMove);
 }
+function* watchZoomLecHistoryPay() {
+  yield takeLatest(ZOOM_LEC_HISTORY_PAY_REQUEST, zoomLecHistoryPay);
+}
 //////////////////////////////////////////////////////////////
 export default function* levelSaga() {
   yield all([
@@ -531,6 +565,7 @@ export default function* levelSaga() {
     fork(watchZoomDetail),
     fork(watchZoomLecHistoryDetail),
     fork(watchZoomLecMove),
+    fork(watchZoomLecHistoryPay),
     //
   ]);
 }

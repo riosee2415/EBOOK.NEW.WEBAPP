@@ -73,6 +73,10 @@ export const initialState = {
   st_zoomLecMoveLoading: false, // 줌 강의 인원 이동하기
   st_zoomLecMoveDone: false,
   st_zoomLecMoveError: null,
+  //
+  st_zoomLecHistoryPayLoading: false, // 줌 결제내역 처리여부 변경
+  st_zoomLecHistoryPayDone: false,
+  st_zoomLecHistoryPayError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -140,6 +144,10 @@ export const ZOOM_LEC_HISTORY_DETAIL_FAILURE =
 export const ZOOM_LEC_MOVE_REQUEST = "ZOOM_LEC_MOVE_REQUEST";
 export const ZOOM_LEC_MOVE_SUCCESS = "ZOOM_LEC_MOVE_SUCCESS";
 export const ZOOM_LEC_MOVE_FAILURE = "ZOOM_LEC_MOVE_FAILURE";
+
+export const ZOOM_LEC_HISTORY_PAY_REQUEST = "ZOOM_LEC_HISTORY_PAY_REQUEST";
+export const ZOOM_LEC_HISTORY_PAY_SUCCESS = "ZOOM_LEC_HISTORY_PAY_SUCCESS";
+export const ZOOM_LEC_HISTORY_PAY_FAILURE = "ZOOM_LEC_HISTORY_PAY_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -446,6 +454,26 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecMoveLoading = false;
         draft.st_zoomLecMoveDone = false;
         draft.st_zoomLecMoveError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_HISTORY_PAY_REQUEST: {
+        draft.st_zoomLecHistoryPayLoading = true;
+        draft.st_zoomLecHistoryPayDone = null;
+        draft.st_zoomLecHistoryPayError = false;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_PAY_SUCCESS: {
+        draft.st_zoomLecHistoryPayLoading = false;
+        draft.st_zoomLecHistoryPayDone = true;
+        draft.st_zoomLecHistoryPayError = null;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_PAY_FAILURE: {
+        draft.st_zoomLecHistoryPayLoading = false;
+        draft.st_zoomLecHistoryPayDone = false;
+        draft.st_zoomLecHistoryPayError = action.error;
         break;
       }
       //////////////////////////////////////////////
