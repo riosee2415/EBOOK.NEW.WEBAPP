@@ -99,7 +99,7 @@ const Live = () => {
             );
           })}
 
-          <RsWrapper dr={`row`} ju={`space-between`}>
+          <RsWrapper>
             <CommonButton
               width={`47%`}
               height={`70px`}
@@ -108,15 +108,6 @@ const Live = () => {
               onClick={() => movelinkHandler(`/live/zoom`)}
             >
               수강신청하기
-            </CommonButton>
-            <CommonButton
-              width={`47%`}
-              height={`70px`}
-              fontSize={`25px`}
-              kindOf={`basic`}
-              onClick={() => movelinkHandler(`/survey`)}
-            >
-              레벨테스트하기
             </CommonButton>
           </RsWrapper>
         </WholeWrapper>

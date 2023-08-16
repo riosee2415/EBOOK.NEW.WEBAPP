@@ -74,7 +74,7 @@ const Zoom = () => {
             margin={width < 700 ? `45px 0 40px` : `120px 0 100px`}
             padding={width < 1280 ? `0` : `0 210px`}
           >
-            <Wrapper al={`flex-start`}>
+            <Wrapper ju={`space-between`} dr={`row`}>
               <Text
                 color={Theme.grey5_C}
                 fontSize={width < 700 ? `20px` : `23px !important`}
@@ -82,6 +82,15 @@ const Zoom = () => {
               >
                 원하시는 레벨의 수정과 수업을 선택해주세요.
               </Text>
+              <CommonButton
+                width={`186px`}
+                height={`50px`}
+                fontSize={`20px`}
+                kindOf={`basic`}
+                onClick={() => movelinkHandler(`/survey`)}
+              >
+                레벨테스트하기
+              </CommonButton>
               <Wrapper
                 dr={`row`}
                 height={`2px`}
