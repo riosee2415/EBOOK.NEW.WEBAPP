@@ -37,6 +37,11 @@ module.exports = class ZoomLecture extends Model {
           allowNull: false, // 필수
         },
 
+        degree: {
+          type: DataTypes.STRING(100),
+          allowNull: false, // 필수
+        },
+
         price: {
           type: DataTypes.INTEGER,
           allowNull: false, // 필수
