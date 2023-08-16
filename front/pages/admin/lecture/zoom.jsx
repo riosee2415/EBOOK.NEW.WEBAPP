@@ -185,7 +185,7 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecUpdateDone, st_zoomLecUpdateError]);
 
-  ////////////////////// 줌강의 이동후처리 //////////////////////
+  ////////////////////// 수정과 이동후처리 //////////////////////
   useEffect(() => {
     if (st_zoomLecMoveDone) {
       dispatch({
@@ -248,6 +248,7 @@ const Zoom = ({}) => {
         endTime: record.endTime,
         terms: record.terms,
         zoomRink: record.zoomRink,
+        degree: record.degree,
         createdAt: record.viewCreatedAt,
       });
     },
@@ -273,6 +274,7 @@ const Zoom = ({}) => {
           terms: data.terms,
           tName: data.tName,
           price: data.price,
+          degree: data.degree,
           zoomRink: data.zoomRink,
         },
       });
@@ -636,6 +638,19 @@ const Zoom = ({}) => {
                 </Form.Item>
 
                 <Form.Item
+                  label="차수"
+                  name="degree"
+                  rules={[
+                    {
+                      required: true,
+                      message: "차수은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item>
+
+                <Form.Item
                   label="수정과링크"
                   name="zoomRink"
                   rules={[
@@ -717,10 +732,10 @@ const Zoom = ({}) => {
           onFinish={lectureMoveHandler}
         >
           <Form.Item
-            label="줌강의"
+            label="수정과"
             name="lecId"
             rules={[
-              { required: true, message: "줌강의는 필수 입력사항 입니다." },
+              { required: true, message: "수정과는 필수 입력사항 입니다." },
             ]}
           >
             <Select size="small">

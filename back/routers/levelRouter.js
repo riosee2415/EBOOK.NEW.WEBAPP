@@ -100,6 +100,7 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
   A.isEnd,
   A.createdAt,
   A.zoomRink,
+  A.degree,
   DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
   (
     SELECT	COUNT(*)
@@ -134,6 +135,7 @@ router.post("/zoom/lecture/target", async (req, res, next) => {
   A.isEnd,
   A.createdAt,
   A.zoomRink,
+  A.degree,
   DATE_FORMAT(A.createdAt, "%Y-%m-%d")	as viewCreatedAt,
   (
     SELECT	COUNT(*)
@@ -163,6 +165,7 @@ router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
     tName = "선생님이름",
     price = 0,
     zoomRink = "줌링크",
+    degree = "1차수",
   } = req.body;
 
   const list = [
@@ -206,6 +209,11 @@ router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
       data: zoomRink,
       isNumeric: false,
     },
+    {
+      column: "degree",
+      data: degree,
+      isNumeric: false,
+    },
   ];
 
   const { result, targetId } = await insertAction("zoomLecture", list);
@@ -230,6 +238,7 @@ router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
     tName,
     price,
     zoomRink,
+    degree,
   } = req.body;
 
   const uq = `
@@ -242,7 +251,8 @@ router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
             terms = "${terms}",
             tName = "${tName}",
             price = ${price},
-            zoomRink = "${zoomRink}"
+            zoomRink = "${zoomRink}",
+            degree = "${degree}"
     WHERE   id = ${id}
   `;
 
@@ -362,7 +372,8 @@ router.post(
   B.birth,
   B.tel,
   B.mobile,
-  C.levelValue
+  C.levelValue,
+  C.degree
 FROM	zoomBoughtHistory	A
 INNER
 JOIN	users  				B
@@ -405,7 +416,8 @@ router.post(
                 B.birth,
                 B.tel,
                 B.mobile,
-                C.levelValue
+                C.levelValue,
+                C.degree
           FROM	zoomBoughtHistory	A
          INNER
           JOIN	users  				B
