@@ -137,6 +137,9 @@ const Survey = ({}) => {
     if (st_levelUpdateDone) {
       dispatch({
         type: LEVEL_REQUEST,
+        data: {
+          isAdmin: true,
+        },
       });
 
       setCurrentData(null);
@@ -153,6 +156,9 @@ const Survey = ({}) => {
     if (st_levelToggleDone) {
       dispatch({
         type: LEVEL_REQUEST,
+        data: {
+          isAdmin: true,
+        },
       });
 
       setCurrentData(null);
@@ -386,6 +392,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LEVEL_REQUEST,
+      data: {
+        isAdmin: true,
+      },
     });
 
     // 구현부 종료

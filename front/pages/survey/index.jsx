@@ -37,22 +37,22 @@ const Intro = () => {
   ////// DATAVIEW //////
 
   const suv = useCallback(() => {
-    if (currentTab === 6) {
+    if (levelList.length - 1 === currentTab) {
       setViewLv((p) => p + 1);
       setCurrentTab(99);
     } else {
       setCurrentTab((p) => p + 1);
       setViewLv((p) => p + 1);
     }
-  }, [currentTab, viewLv]);
+  }, [currentTab, viewLv, levelList]);
 
   const suvv = useCallback(() => {
-    if (currentTab === 6) {
+    if (levelList.length - 1 === currentTab) {
       setCurrentTab(99);
     } else {
       setCurrentTab((p) => p + 1);
     }
-  }, [currentTab]);
+  }, [currentTab, levelList]);
 
   const moveLevel = useCallback((target) => {
     router.push(`/live/zoom?type=${target}`);
