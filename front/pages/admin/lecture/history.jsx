@@ -184,8 +184,12 @@ const Survey = ({}) => {
             no: data.viewCreatedAt,
             name: data.username,
             mobile: data.mobile + "'",
+            zone: data.zoneCode,
+            adrs: data.address,
+            deadrs: data.detailAddress,
             id: data.userId,
             birth: data.birth,
+            gender: data.gender,
             type: data.payType === "card" ? "카드" : "무통장입금",
             level: data.levelValue,
           });
@@ -205,6 +209,9 @@ const Survey = ({}) => {
         id: record.id,
         userId: record.userId,
         username: record.username,
+        address: record.address,
+        detailAddress: record.detailAddress,
+        zoneCode: record.zoneCode,
         birth: record.birth,
         mobile: record.mobile,
         levelValue: record.levelValue,
@@ -287,8 +294,12 @@ const Survey = ({}) => {
     { label: "신청일자", key: "no" },
     { label: "성함", key: "name" },
     { label: "연락처", key: "mobile" },
+    { label: "우편번호", key: "zone" },
+    { label: "주소", key: "adrs" },
+    { label: "상세주소", key: "deadrs" },
     { label: "아이디", key: "id" },
     { label: "생년월일", key: "birth" },
+    { label: "성별", key: "gender" },
     { label: "결제 유형", key: "type" },
     { label: "레벨", key: "level" },
   ];
@@ -390,6 +401,15 @@ const Survey = ({}) => {
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item label="회원 이름" name="username">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="주소" name="address">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="상세주소" name="detailAddress">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="우편번호" name="zoneCode">
                   <Input size="small" />
                 </Form.Item>
                 <Form.Item label="생년월일" name="birth">

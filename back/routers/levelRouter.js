@@ -371,8 +371,11 @@ router.post(
   B.userId,
   B.username,
   B.birth,
-  B.tel,
+  B.gender,
   B.mobile,
+  B.address,
+  B.detailAddress,
+  B.zoneCode,
   C.levelValue,
   C.degree
 FROM	zoomBoughtHistory	A

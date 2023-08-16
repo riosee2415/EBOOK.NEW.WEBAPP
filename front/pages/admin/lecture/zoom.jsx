@@ -42,6 +42,30 @@ import {
   ZOOM_LEC_MOVE_REQUEST,
   ZOOM_LEC_UPDATE_REQUEST,
 } from "../../../reducers/level";
+import { CSVLink } from "react-csv";
+
+const DownloadBtn = styled(CSVLink)`
+  width: 200px;
+  height: 25px;
+  margin: 0 0 0 10px;
+  border-radius: 3px;
+
+  background: ${(props) => props.theme.basicTheme_C};
+  color: ${(props) => props.theme.white_C};
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.4s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
+  }
+`;
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -118,6 +142,8 @@ const Zoom = ({}) => {
   ////// HOOKS //////
 
   const [zoomLevel, setZoomLevel] = useState("");
+
+  const [scvData, setScvData] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -207,6 +233,31 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecMoveDone, st_zoomLecMoveError]);
 
+  //엑셀
+  useEffect(() => {
+    if (zoomLecList) {
+      const scvData = [];
+
+      zoomLecList &&
+        zoomLecList.map((data) => {
+          if (data.levelValue === zoomLevel) {
+            scvData.push({
+              level: data.levelValue,
+              day: data.days,
+              price: data.price,
+              teacher: data.tName,
+              startTime: data.startTime,
+              endTime: data.endTime,
+              term: data.terms,
+              degree: data.degree,
+            });
+          }
+        });
+
+      setScvData(scvData);
+    }
+  }, [zoomLecList, zoomLevel]);
+
   ////// TOGGLE //////
   const modalToggle = useCallback(
     (data) => {
@@ -247,7 +298,7 @@ const Zoom = ({}) => {
         startTime: record.startTime,
         endTime: record.endTime,
         terms: record.terms,
-        zoomRink: record.zoomRink,
+        zoomRink: "-",
         degree: record.degree,
         createdAt: record.viewCreatedAt,
       });
@@ -275,7 +326,7 @@ const Zoom = ({}) => {
           tName: data.tName,
           price: data.price,
           degree: data.degree,
-          zoomRink: data.zoomRink,
+          zoomRink: "-",
         },
       });
     },
@@ -389,6 +440,17 @@ const Zoom = ({}) => {
         </Button>
       ),
     },
+  ];
+
+  const headers = [
+    { label: "차수", key: "degree" },
+    { label: "레벨", key: "level" },
+    { label: "선생님", key: "teacher" },
+    { label: "요일", key: "day" },
+    { label: "가격", key: "price" },
+    { label: "시작시간", key: "startTime" },
+    { label: "종료시간", key: "endTime" },
+    { label: "수강기간", key: "term" },
   ];
 
   return (
@@ -507,8 +569,23 @@ const Zoom = ({}) => {
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
-          <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary" onClick={createHandler}>
+          <Wrapper dr={`row`} ju="flex-end" margin={`0px 0px 5px 0px`}>
+            {zoomLevel !== "" && scvData && (
+              <DownloadBtn
+                filename={zoomLevel}
+                headers={headers}
+                data={scvData}
+              >
+                엑셀 다운로드
+              </DownloadBtn>
+            )}
+
+            <Button
+              style={{ marginLeft: "10px" }}
+              size="small"
+              type="primary"
+              onClick={createHandler}
+            >
               설문지 생성
             </Button>
           </Wrapper>
@@ -650,7 +727,7 @@ const Zoom = ({}) => {
                   <Input size="small" />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="수정과링크"
                   name="zoomRink"
                   rules={[
@@ -661,7 +738,7 @@ const Zoom = ({}) => {
                   ]}
                 >
                   <Input size="small" />
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item label="작성일" name="createdAt">
                   <Input
