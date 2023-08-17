@@ -214,7 +214,7 @@ const Intro = () => {
                   >
                     레벨4신청
                   </CommonButton>
-                  <CommonButton
+                  {/* <CommonButton
                     width={`150px`}
                     height={`50px`}
                     fontSize={`18px`}
@@ -243,7 +243,7 @@ const Intro = () => {
                     onClick={() => moveLevel("LEVEL7")}
                   >
                     레벨7신청
-                  </CommonButton>
+                  </CommonButton> */}
                 </Wrapper>
               </Wrapper>
             )}

@@ -83,18 +83,18 @@ const Zoom = () => {
       id: 4,
       value: "LEVEL4",
     },
-    {
-      id: 5,
-      value: "LEVEL5",
-    },
-    {
-      id: 6,
-      value: "LEVEL6",
-    },
-    {
-      id: 7,
-      value: "LEVEL7",
-    },
+    // {
+    //   id: 5,
+    //   value: "LEVEL5",
+    // },
+    // {
+    //   id: 6,
+    //   value: "LEVEL6",
+    // },
+    // {
+    //   id: 7,
+    //   value: "LEVEL7",
+    // },
   ];
 
   return (
@@ -160,584 +160,83 @@ const Zoom = () => {
               </Wrapper>
             </Wrapper>
 
-            {/* level1 */}
             {zoomLecList &&
               zoomLecList.map((data) => {
                 return (
-                  data.levelValue === "LEVEL1" && (
+                  <Wrapper
+                    key={data.id}
+                    padding={`30px 0 50px`}
+                    dr={`row`}
+                    borderBottom={`1px solid ${Theme.lightGrey4_C}`}
+                  >
                     <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
+                      width={width < 700 ? `100%` : `70%`}
+                      al={`flex-start`}
                     >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
+                      <Wrapper dr={`row`} ju={`flex-start`}>
+                        <Text
+                          fontSize={`24px`}
+                          fontWeight={`600`}
+                          color={Theme.grey_C}
                         >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
+                          {data.levelValue}
+                        </Text>
+                        <Wrapper
+                          width={`4px`}
+                          height={`4px`}
+                          margin={`0 10px`}
+                          borderRadius={`100%`}
+                          bgColor={Theme.lightGrey4_C}
+                        />
+                        <Text
+                          fontSize={`24px`}
+                          fontWeight={`600`}
+                          color={Theme.basicTheme_C}
+                        >
+                          {data.terms} ({data.days})
+                        </Text>
                       </Wrapper>
                       <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
+                        dr={`row`}
+                        ju={`flex-start`}
+                        margin={width < 700 && `10px 0 20px`}
                       >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
+                        <Wrapper
+                          width={`4px`}
+                          height={`4px`}
+                          borderRadius={`100%`}
+                          color={Theme.black2_C}
+                        />
+                        <Text
+                          fontSize={width < 700 ? `22px` : `26px`}
+                          fontWeight={"700"}
+                        >
+                          가격 :{" "}
+                          {String(data.price).replace(
+                            /\B(?=(\d{3})+(?!\d))/g,
+                            ","
+                          )}
+                          원
+                        </Text>
                       </Wrapper>
                     </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level2 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL2" && (
                     <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
+                      width={width < 700 ? `100%` : `30%`}
+                      al={`flex-end`}
                     >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
+                      <Wrapper dr={`row`} ju={`flex-end`}>
+                        <CommonButton
+                          kindOf={data.cnt === 6 ? `delete` : `basic`}
+                          width={width < 700 ? `100%` : `186px`}
+                          height={`52px`}
+                          fontSize={`20px`}
+                          onClick={() => moveLinkHandler(data)}
                         >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
+                          {data.cnt === 6 ? `구매불가` : `구매하기`}
+                        </CommonButton>
                       </Wrapper>
                     </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level3 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL3" && (
-                    <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                    >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
-                        >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
-                      </Wrapper>
-                    </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level4 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL4" && (
-                    <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                    >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
-                        >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
-                      </Wrapper>
-                    </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level5 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL5" && (
-                    <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                    >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
-                        >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
-                      </Wrapper>
-                    </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level6 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL6" && (
-                    <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                    >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
-                        >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
-                      </Wrapper>
-                    </Wrapper>
-                  )
-                );
-              })}
-
-            {/* level7 */}
-            {zoomLecList &&
-              zoomLecList.map((data) => {
-                return (
-                  data.levelValue === "LEVEL7" && (
-                    <Wrapper
-                      key={data.id}
-                      padding={`30px 0 50px`}
-                      dr={`row`}
-                      borderBottom={`1px solid ${Theme.lightGrey4_C}`}
-                    >
-                      <Wrapper
-                        width={width < 700 ? `100%` : `70%`}
-                        al={`flex-start`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-start`}>
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.grey_C}
-                          >
-                            {data.levelValue}
-                          </Text>
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            margin={`0 10px`}
-                            borderRadius={`100%`}
-                            bgColor={Theme.lightGrey4_C}
-                          />
-                          <Text
-                            fontSize={`24px`}
-                            fontWeight={`600`}
-                            color={Theme.basicTheme_C}
-                          >
-                            {data.terms} ({data.days})
-                          </Text>
-                        </Wrapper>
-                        <Wrapper
-                          dr={`row`}
-                          ju={`flex-start`}
-                          margin={width < 700 && `10px 0 20px`}
-                        >
-                          <Wrapper
-                            width={`4px`}
-                            height={`4px`}
-                            borderRadius={`100%`}
-                            color={Theme.black2_C}
-                          />
-                          <Text
-                            fontSize={width < 700 ? `22px` : `26px`}
-                            fontWeight={"700"}
-                          >
-                            가격 :{" "}
-                            {String(data.price).replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ","
-                            )}
-                            원
-                          </Text>
-                        </Wrapper>
-                      </Wrapper>
-                      <Wrapper
-                        width={width < 700 ? `100%` : `30%`}
-                        al={`flex-end`}
-                      >
-                        <Wrapper dr={`row`} ju={`flex-end`}>
-                          <CommonButton
-                            kindOf={data.cnt === 6 ? `delete` : `basic`}
-                            width={width < 700 ? `100%` : `186px`}
-                            height={`52px`}
-                            fontSize={`20px`}
-                            onClick={() => moveLinkHandler(data)}
-                          >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
-                          </CommonButton>
-                        </Wrapper>
-                      </Wrapper>
-                    </Wrapper>
-                  )
+                  </Wrapper>
                 );
               })}
           </RsWrapper>
