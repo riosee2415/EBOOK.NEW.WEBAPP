@@ -234,6 +234,8 @@ const Survey = ({}) => {
         <Switch
           checked={row.isHide}
           onChange={(e) => dataToggleUpdate(e, row)}
+          checkedChildren={"사용"}
+          unCheckedChildren={"미사용"}
         />
       ),
     },
