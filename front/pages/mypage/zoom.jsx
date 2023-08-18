@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import Theme from "../../components/Theme";
 import { useSelector } from "react-redux";
 import { ZOOM_LEC_MY_REQUEST } from "../../reducers/level";
+import { Empty } from "antd";
 
 const Zoom = () => {
   ////// GLOBAL STATE //////
@@ -56,7 +57,12 @@ const Zoom = () => {
               </Text>
             </Wrapper>
 
-            {myZoomList &&
+            {myZoomList && myZoomList.length === 0 ? (
+              <Wrapper margin={`100px 0`}>
+                <Empty description={"수정과 / 수강 중인 강의가 없습니다."} />
+              </Wrapper>
+            ) : (
+              myZoomList &&
               myZoomList.map((data) => {
                 return (
                   <Wrapper
@@ -123,7 +129,8 @@ const Zoom = () => {
                     </Wrapper>
                   </Wrapper>
                 );
-              })}
+              })
+            )}
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>

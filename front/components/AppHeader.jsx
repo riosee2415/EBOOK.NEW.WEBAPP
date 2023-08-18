@@ -19,6 +19,7 @@ import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { useRouter } from "next/router";
 import useWidth from "../hooks/useWidth";
 import { LOAD_MY_INFO_REQUEST, LOGOUT_REQUEST } from "../reducers/user";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../reducers/boughtLecture";
 
 const MobileRow = styled(RowWrapper)`
   display: none;
@@ -110,6 +111,7 @@ const AppHeader = ({}) => {
   const { me, st_logoutDone, st_logoutError } = useSelector(
     (state) => state.user
   );
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
 
   ///////////// - EVENT HANDLER- ////////////
 
@@ -144,13 +146,24 @@ const AppHeader = ({}) => {
   }, [router.query]);
 
   useEffect(() => {
+    dispatch({
+      type: BOUGHT_ME_DETAIL_REQUEST,
+    });
+  }, [me]);
+
+  useEffect(() => {
     if (st_logoutDone) {
       dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
 
+      dispatch({
+        type: BOUGHT_ME_DETAIL_REQUEST,
+      });
+
       localStorage.removeItem("ebook_login");
 
+      router.push("/");
       return message.success("로그아웃 되었습니다.");
     }
 
@@ -213,18 +226,21 @@ const AppHeader = ({}) => {
         <Wrapper height={`1px`} bgColor={Theme.lightGrey3_C} />
         <RsWrapper>
           <Wrapper dr={`row`} ju={`space-between`}>
-            <Link href={`/enrolment`}>
-              <a>
-                <Menu isActive={router.pathname === `/enrolment`}>
-                  수강신청
-                </Menu>
-              </a>
-            </Link>
-            <Link href={`/live`}>
-              <a>
-                <Menu isActive={router.pathname === `/live`}>수정과</Menu>
-              </a>
-            </Link>
+            {boughtMeDetail && boughtMeDetail ? (
+              <Link href={`/live`}>
+                <a>
+                  <Menu isActive={router.pathname === `/live`}>수정과</Menu>
+                </a>
+              </Link>
+            ) : (
+              <Link href={`/enrolment`}>
+                <a>
+                  <Menu isActive={router.pathname === `/enrolment`}>
+                    수강신청
+                  </Menu>
+                </a>
+              </Link>
+            )}
 
             <Link href={`/review`}>
               <a>
