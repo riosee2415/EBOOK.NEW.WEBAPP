@@ -172,8 +172,6 @@ const AppHeader = ({}) => {
     }
   }, [st_logoutDone, st_logoutError]);
 
-  console.log(boughtMeDetail);
-
   return (
     <>
       <WholeWrapper
