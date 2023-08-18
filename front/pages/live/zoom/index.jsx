@@ -241,7 +241,7 @@ const Zoom = () => {
                       al={`flex-end`}
                     >
                       <Wrapper dr={`row`} ju={`flex-end`}>
-                        {checkId.includes(data.id) ? (
+                        {checkId && checkId.includes(data.id) ? (
                           <CommonButton
                             kindOf={`delete`}
                             width={width < 700 ? `100%` : `200px`}
