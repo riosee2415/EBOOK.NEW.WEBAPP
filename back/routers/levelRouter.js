@@ -608,7 +608,7 @@ router.post("/zoom/ex", isLoggedIn, async (req, res, next) => {
   if (ex.length > 0) {
     return res.status(400).send("이미 수강중인 강의가 있습니다.");
   } else {
-    return res.status(200).json({ result: true });
+    return res.status(200).json(ex);
   }
 });
 
