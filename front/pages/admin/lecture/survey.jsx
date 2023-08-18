@@ -229,13 +229,13 @@ const Survey = ({}) => {
       width: "60%",
     },
     {
-      title: "사용여부",
+      title: "숨김여부",
       render: (row) => (
         <Switch
           checked={row.isHide}
           onChange={(e) => dataToggleUpdate(e, row)}
-          checkedChildren={"사용"}
-          unCheckedChildren={"미사용"}
+          checkedChildren={"미사용"}
+          unCheckedChildren={"사용"}
         />
       ),
     },
@@ -250,6 +250,15 @@ const Survey = ({}) => {
             }
           />
         </>
+      ),
+    },
+
+    {
+      title: "상태",
+      render: (row) => (
+        <Text color={row.isHide ? "red" : "blue"}>
+          {row.isHide ? "미사용" : "사용중"}
+        </Text>
       ),
     },
   ];
