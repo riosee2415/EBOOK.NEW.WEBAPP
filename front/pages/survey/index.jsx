@@ -26,7 +26,7 @@ const Intro = () => {
   const { levelList } = useSelector((state) => state.level);
   const [currentTab, setCurrentTab] = useState(0);
 
-  const [viewLv, setViewLv] = useState(1);
+  const [viewLv, setViewLv] = useState(0);
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
@@ -140,7 +140,7 @@ const Intro = () => {
                     height={`50px`}
                     fontSize={`18px`}
                     kindOf={`basic`}
-                    onClick={suvv}
+                    onClick={() => setCurrentTab(99)}
                   >
                     잘 모르겠어요.
                   </CommonButton>
@@ -157,63 +157,104 @@ const Intro = () => {
                   margin={`0 0 20px`}
                   color={Theme.basicTheme_C}
                 >
-                  귀하는 Level{viewLv - 1 === 0 ? 1 : viewLv - 1} 과정 수강을
-                  권장드립니다.
+                  {parseInt(viewLv) === 0 &&
+                    `귀하는 Level1 과정 수강을 권장드립니다.`}
+                  {parseInt(viewLv) === 1 &&
+                    `귀하는 Level2 과정 수강을 권장드립니다.`}
+                  {parseInt(viewLv) === 2 &&
+                    `귀하는 Level2 과정 수강을 권장드립니다.`}
+                  {parseInt(viewLv) === 3 &&
+                    `귀하는 Level3 과정 수강을 권장드립니다.`}
+                  {parseInt(viewLv) === 4 &&
+                    `귀하는 Level3 과정 수강을 권장드립니다.`}
+                  {parseInt(viewLv) === 5 &&
+                    `귀하는 Level4 과정 수강을 권장드립니다.`}
                 </Text>
                 <Wrapper dr={`row`}>
                   <CommonButton
-                    width={`150px`}
+                    width={`200px`}
                     height={`50px`}
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
                     onClick={() => movelinkHandler(`/live/zoom`)}
                   >
-                    수강신청
-                  </CommonButton>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    margin={`10px 5px`}
-                    kindOf={`basic`}
-                    onClick={() => moveLevel("LEVEL1")}
-                  >
-                    레벨1신청
+                    전체 강의 보러가기
                   </CommonButton>
 
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    margin={`10px 5px`}
-                    kindOf={`basic`}
-                    onClick={() => moveLevel("LEVEL2")}
-                  >
-                    레벨2신청
-                  </CommonButton>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    margin={`10px 5px`}
-                    kindOf={`basic`}
-                    onClick={() => moveLevel("LEVEL3")}
-                  >
-                    레벨3신청
-                  </CommonButton>
-                </Wrapper>
-                <Wrapper dr={`row`}>
-                  <CommonButton
-                    width={`150px`}
-                    height={`50px`}
-                    fontSize={`18px`}
-                    margin={`10px 5px`}
-                    kindOf={`basic`}
-                    onClick={() => moveLevel("LEVEL4")}
-                  >
-                    레벨4신청
-                  </CommonButton>
+                  {parseInt(viewLv) === 0 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL1")}
+                    >
+                      레벨1신청
+                    </CommonButton>
+                  )}
+                  {parseInt(viewLv) === 1 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL2")}
+                    >
+                      레벨2신청
+                    </CommonButton>
+                  )}
+                  {parseInt(viewLv) === 2 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL2")}
+                    >
+                      레벨2신청
+                    </CommonButton>
+                  )}
+                  {parseInt(viewLv) === 3 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL3")}
+                    >
+                      레벨3신청
+                    </CommonButton>
+                  )}
+                  {parseInt(viewLv) === 4 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL3")}
+                    >
+                      레벨3신청
+                    </CommonButton>
+                  )}
+                  {parseInt(viewLv) === 5 && (
+                    <CommonButton
+                      width={`150px`}
+                      height={`50px`}
+                      fontSize={`18px`}
+                      margin={`10px 5px`}
+                      kindOf={`basic`}
+                      onClick={() => moveLevel("LEVEL4")}
+                    >
+                      레벨4신청
+                    </CommonButton>
+                  )}
+
                   {/* <CommonButton
                     width={`150px`}
                     height={`50px`}
