@@ -9,6 +9,8 @@ export const initialState = {
   zoomLecDetail: null, //  줌 강의 디테일 정보가져오기
   zoomBoughtId: null, //  줌 결제내역 아이디
   zoomHistoryDetail: null, //  줌 결제내역 상세
+
+  zoomLecCheck: [], // 수강신청 전! 수강중인지 체크하기
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -77,6 +79,14 @@ export const initialState = {
   st_zoomLecHistoryPayLoading: false, // 줌 결제내역 처리여부 변경
   st_zoomLecHistoryPayDone: false,
   st_zoomLecHistoryPayError: null,
+  //
+  st_zoomLecCheckLoading: false, // 수강신청 전! 수강중인지 체크하기
+  st_zoomLecCheckDone: false,
+  st_zoomLecCheckError: null,
+  //
+  st_zoomLecDeleteLoading: false, // 수강신청 삭제하기
+  st_zoomLecDeleteDone: false,
+  st_zoomLecDeleteError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -148,6 +158,14 @@ export const ZOOM_LEC_MOVE_FAILURE = "ZOOM_LEC_MOVE_FAILURE";
 export const ZOOM_LEC_HISTORY_PAY_REQUEST = "ZOOM_LEC_HISTORY_PAY_REQUEST";
 export const ZOOM_LEC_HISTORY_PAY_SUCCESS = "ZOOM_LEC_HISTORY_PAY_SUCCESS";
 export const ZOOM_LEC_HISTORY_PAY_FAILURE = "ZOOM_LEC_HISTORY_PAY_FAILURE";
+
+export const ZOOM_LEC_CHECK_REQUEST = "ZOOM_LEC_CHECK_REQUEST";
+export const ZOOM_LEC_CHECK_SUCCESS = "ZOOM_LEC_CHECK_SUCCESS";
+export const ZOOM_LEC_CHECK_FAILURE = "ZOOM_LEC_CHECK_FAILURE";
+
+export const ZOOM_LEC_DELETE_REQUEST = "ZOOM_LEC_DELETE_REQUEST";
+export const ZOOM_LEC_DELETE_SUCCESS = "ZOOM_LEC_DELETE_SUCCESS";
+export const ZOOM_LEC_DELETE_FAILURE = "ZOOM_LEC_DELETE_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -474,6 +492,47 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecHistoryPayLoading = false;
         draft.st_zoomLecHistoryPayDone = false;
         draft.st_zoomLecHistoryPayError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_CHECK_REQUEST: {
+        draft.st_zoomLecCheckLoading = true;
+        draft.st_zoomLecCheckDone = null;
+        draft.st_zoomLecCheckError = false;
+        break;
+      }
+      case ZOOM_LEC_CHECK_SUCCESS: {
+        draft.st_zoomLecCheckLoading = false;
+        draft.st_zoomLecCheckDone = true;
+        draft.st_zoomLecCheckError = null;
+        draft.zoomLecCheck = action.data;
+        break;
+      }
+      case ZOOM_LEC_CHECK_FAILURE: {
+        draft.st_zoomLecCheckLoading = false;
+        draft.st_zoomLecCheckDone = false;
+        draft.st_zoomLecCheckError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_DELETE_REQUEST: {
+        draft.st_zoomLecDeleteLoading = true;
+        draft.st_zoomLecDeleteDone = null;
+        draft.st_zoomLecDeleteError = false;
+        break;
+      }
+      case ZOOM_LEC_DELETE_SUCCESS: {
+        draft.st_zoomLecDeleteLoading = false;
+        draft.st_zoomLecDeleteDone = true;
+        draft.st_zoomLecDeleteError = null;
+        break;
+      }
+      case ZOOM_LEC_DELETE_FAILURE: {
+        draft.st_zoomLecDeleteLoading = false;
+        draft.st_zoomLecDeleteDone = false;
+        draft.st_zoomLecDeleteError = action.error;
         break;
       }
       //////////////////////////////////////////////

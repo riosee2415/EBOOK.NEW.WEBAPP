@@ -11,6 +11,7 @@ import {
   Table,
   message,
   Modal,
+  Popconfirm,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -37,6 +38,7 @@ import {
 } from "@ant-design/icons";
 import {
   ZOOM_LEC_CREATE_REQUEST,
+  ZOOM_LEC_DELETE_REQUEST,
   ZOOM_LEC_DETAIL_REQUEST,
   ZOOM_LEC_LIST_REQUEST,
   ZOOM_LEC_MOVE_REQUEST,
@@ -101,6 +103,10 @@ const Zoom = ({}) => {
 
     st_zoomLecMoveDone,
     st_zoomLecMoveError,
+
+    st_zoomLecDeleteLoading,
+    st_zoomLecDeleteDone,
+    st_zoomLecDeleteError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
@@ -233,6 +239,26 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecMoveDone, st_zoomLecMoveError]);
 
+  ////////////////////// 수강인원 삭제 후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecDeleteDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+        data: {
+          level: zoomLevel,
+        },
+      });
+
+      modalToggle(null);
+
+      return message.success("수강생이 삭제되었습니다.");
+    }
+
+    if (st_zoomLecDeleteError) {
+      return message.error(st_zoomLecDeleteError);
+    }
+  }, [st_zoomLecDeleteDone, st_zoomLecDeleteError]);
+
   //엑셀
   useEffect(() => {
     if (zoomLecList) {
@@ -347,6 +373,15 @@ const Zoom = ({}) => {
     [deData, currentData]
   );
 
+  const zoomPeopleDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: ZOOM_LEC_DELETE_REQUEST,
+      data: {
+        targetId: data.id,
+      },
+    });
+  }, []);
+
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -442,6 +477,21 @@ const Zoom = ({}) => {
         >
           이동
         </Button>
+      ),
+    },
+    {
+      title: "인원 삭제",
+      render: (data) => (
+        <Popconfirm
+          title={"삭제시 데이터 복구가 불가능합니다."}
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => zoomPeopleDeleteHandler(data)}
+        >
+          <Button size="small" type="danger" loading={st_zoomLecDeleteLoading}>
+            삭제
+          </Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -787,7 +837,13 @@ const Zoom = ({}) => {
         footer={null}
         width={`700px`}
       >
-        <Wrapper padding={`50px 0 20px`}>
+        <GuideUl>
+          <GuideLi isImpo={true}>
+            삭제처리 된 수강인원는 복구가 불가능합니다.
+          </GuideLi>
+        </GuideUl>
+
+        <Wrapper padding={`20px 0`}>
           <Table
             style={{ width: "100%" }}
             rowKey="id"

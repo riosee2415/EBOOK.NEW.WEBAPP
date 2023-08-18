@@ -16,18 +16,23 @@ import {
 import Theme from "../../../components/Theme";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { ZOOM_LEC_LIST_REQUEST } from "../../../reducers/level";
+import {
+  ZOOM_LEC_CHECK_REQUEST,
+  ZOOM_LEC_LIST_REQUEST,
+} from "../../../reducers/level";
 import { Empty, message } from "antd";
 
 const Zoom = () => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
-  const { zoomLecList } = useSelector((state) => state.level);
+  const { zoomLecList, zoomLecCheck } = useSelector((state) => state.level);
 
   ////// HOOKS //////
   const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [checkId, setCheckId] = useState([]);
 
   ////// USEEFFECT //////
 
@@ -48,6 +53,18 @@ const Zoom = () => {
       });
     }
   }, [router.query]);
+
+  useEffect(() => {
+    if (zoomLecCheck) {
+      let temp = [];
+
+      zoomLecCheck.map((data) => {
+        temp.push(data.ZoomLectureId);
+      });
+
+      setCheckId(temp);
+    }
+  }, [zoomLecCheck]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -197,16 +214,15 @@ const Zoom = () => {
                         </Text>
                       </Wrapper>
                       <Wrapper
-                        dr={`row`}
-                        ju={`flex-start`}
+                        al={`flex-start`}
                         margin={width < 700 && `10px 0 20px`}
                       >
-                        <Wrapper
-                          width={`4px`}
-                          height={`4px`}
-                          borderRadius={`100%`}
-                          color={Theme.black2_C}
-                        />
+                        <Text
+                          fontSize={width < 700 ? `22px` : `26px`}
+                          fontWeight={"700"}
+                        >
+                          시간 : {data.startTime} ~ {data.endTime}
+                        </Text>
                         <Text
                           fontSize={width < 700 ? `22px` : `26px`}
                           fontWeight={"700"}
@@ -225,15 +241,26 @@ const Zoom = () => {
                       al={`flex-end`}
                     >
                       <Wrapper dr={`row`} ju={`flex-end`}>
-                        <CommonButton
-                          kindOf={data.cnt === 6 ? `delete` : `basic`}
-                          width={width < 700 ? `100%` : `186px`}
-                          height={`52px`}
-                          fontSize={`20px`}
-                          onClick={() => moveLinkHandler(data)}
-                        >
-                          {data.cnt === 6 ? `구매불가` : `구매하기`}
-                        </CommonButton>
+                        {checkId.includes(data.id) ? (
+                          <CommonButton
+                            kindOf={`delete`}
+                            width={width < 700 ? `100%` : `200px`}
+                            height={`52px`}
+                            fontSize={`20px`}
+                          >
+                            수강중인 강의입니다.
+                          </CommonButton>
+                        ) : (
+                          <CommonButton
+                            kindOf={data.cnt === 6 ? `delete` : `basic`}
+                            width={width < 700 ? `100%` : `186px`}
+                            height={`52px`}
+                            fontSize={`20px`}
+                            onClick={() => moveLinkHandler(data)}
+                          >
+                            {data.cnt === 6 ? `구매불가` : `구매하기`}
+                          </CommonButton>
+                        )}
                       </Wrapper>
                     </Wrapper>
                   </Wrapper>
@@ -263,6 +290,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: ZOOM_LEC_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ZOOM_LEC_CHECK_REQUEST,
     });
 
     // 구현부 종료

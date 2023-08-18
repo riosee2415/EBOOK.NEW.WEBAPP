@@ -323,7 +323,8 @@ router.post("/zoom/lecture/detail", isAdminCheck, async (req, res, next) => {
 		B.gender,
 		B.mobile,
 		B.email,
-    A.UserId
+    A.UserId,
+    A.id
   FROM	zoomPeople	A
  INNER
   JOIN	users 		B
@@ -593,8 +594,7 @@ router.post("/zoom/lecture/move", async (req, res, next) => {
 // 수강신청 전! 수강중인지 체크하기
 router.post("/zoom/ex", isLoggedIn, async (req, res, next) => {
   const sq = `
-  SELECT	id,
-          ZoomLectureId
+  SELECT ZoomLectureId
   FROM	zoomPeople
  WHERE	ZoomLectureId  IN 	(
  							SELECT 	id
@@ -606,11 +606,7 @@ router.post("/zoom/ex", isLoggedIn, async (req, res, next) => {
 
   const ex = await noneParameterSelectQuery(sq);
 
-  if (ex.length > 0) {
-    return res.status(400).send("이미 수강중인 강의가 있습니다.");
-  } else {
-    return res.status(200).json(ex);
-  }
+  return res.status(200).json(ex);
 });
 
 // 수강신청 삭제하기
