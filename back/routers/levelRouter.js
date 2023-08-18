@@ -593,7 +593,8 @@ router.post("/zoom/lecture/move", async (req, res, next) => {
 // 수강신청 전! 수강중인지 체크하기
 router.post("/zoom/ex", isLoggedIn, async (req, res, next) => {
   const sq = `
-  SELECT	id
+  SELECT	id,
+          ZoomLectureId
   FROM	zoomPeople
  WHERE	ZoomLectureId  IN 	(
  							SELECT 	id
