@@ -18,6 +18,19 @@ module.exports = class ZoomBoughtHistory extends Model {
           type: DataTypes.INTEGER,
           allowNull: true,
         },
+        payType: {
+          type: DataTypes.STRING(100),
+          allowNull: true,
+        },
+        name: {
+          type: DataTypes.STRING(100),
+          allowNull: true,
+        },
+        isPay: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
       },
       {
         modelName: "ZoomBoughtHistory",

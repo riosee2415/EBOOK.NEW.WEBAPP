@@ -87,7 +87,7 @@ const FixedNav = ({}) => {
     <FixedWrapper>
       <Image
         onClick={() => {
-          moveLinkHandler("/enrolment");
+          moveLinkHandler("/live/zoom");
         }}
         width={`100px`}
         src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/fixed-icon.png`}

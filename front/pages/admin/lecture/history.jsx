@@ -38,8 +38,33 @@ import {
 } from "@ant-design/icons";
 import {
   ZOOM_LEC_HISTORY_DELETE_REQUEST,
+  ZOOM_LEC_HISTORY_PAY_REQUEST,
   ZOOM_LEC_HISTORY_REQUEST,
 } from "../../../reducers/level";
+import { CSVLink } from "react-csv";
+
+const DownloadBtn = styled(CSVLink)`
+  width: 200px;
+  height: 25px;
+  margin: 0 0 0 10px;
+  border-radius: 3px;
+
+  background: ${(props) => props.theme.basicTheme_C};
+  color: ${(props) => props.theme.white_C};
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.4s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
+  }
+`;
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -68,13 +93,17 @@ const Survey = ({}) => {
 
     st_zoomLecHistoryDelDone,
     st_zoomLecHistoryDelError,
+
+    st_zoomLecHistoryPayLoading,
+    st_zoomLecHistoryPayDone,
+    st_zoomLecHistoryPayError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("줌수업관리");
+  const [level1, setLevel1] = useState("수정과관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
@@ -103,6 +132,8 @@ const Survey = ({}) => {
   /////////////////////////////////////////////////////////////////////////
 
   ////// HOOKS //////
+
+  const [scvData, setScvData] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -146,6 +177,49 @@ const Survey = ({}) => {
     }
   }, [st_zoomLecHistoryDelDone, st_zoomLecHistoryDelError]);
 
+  useEffect(() => {
+    if (st_zoomLecHistoryPayDone) {
+      dispatch({
+        type: ZOOM_LEC_HISTORY_REQUEST,
+      });
+      setCurrentData(null);
+
+      return message.success("결제내역이 처리되었습니다.");
+    }
+
+    if (st_zoomLecHistoryPayError) {
+      return message.error(st_zoomLecHistoryPayError);
+    }
+  }, [st_zoomLecHistoryPayDone, st_zoomLecHistoryPayError]);
+
+  // 엑셀
+
+  useEffect(() => {
+    if (zoomHistory) {
+      const scvData = [];
+
+      zoomHistory &&
+        zoomHistory.map((data, idx) => {
+          scvData.push({
+            no: data.viewCreatedAt,
+            name: data.username,
+            mobile: data.mobile + "'",
+            zone: data.zoneCode,
+            adrs: data.address,
+            deadrs: data.detailAddress,
+            id: data.userId,
+            birth: data.birth,
+            gender: data.gender,
+            type: data.payType === "card" ? "카드" : "무통장입금",
+            level: data.levelValue,
+            isPay: data.isPay === 0 ? "미처리" : "처리완료",
+          });
+        });
+
+      setScvData(scvData);
+    }
+  }, [zoomHistory]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -156,9 +230,15 @@ const Survey = ({}) => {
         id: record.id,
         userId: record.userId,
         username: record.username,
+        address: record.address,
+        detailAddress: record.detailAddress,
+        zoneCode: record.zoneCode,
         birth: record.birth,
         mobile: record.mobile,
         levelValue: record.levelValue,
+        payType: record.payType === "card" ? "카드결제" : "무통장",
+        name: record.name,
+        isPay: record.isPay === 0 ? "미처리" : "처리완료",
         viewPrice: record.viewPrice,
         viewCreatedAt: record.viewCreatedAt,
       });
@@ -171,6 +251,17 @@ const Survey = ({}) => {
       type: ZOOM_LEC_HISTORY_DELETE_REQUEST,
       data: {
         id: data.id,
+      },
+    });
+  }, []);
+
+  // 처리하기
+  const isPayUpdateHandler = useCallback((data) => {
+    dispatch({
+      type: ZOOM_LEC_HISTORY_PAY_REQUEST,
+      data: {
+        id: data.id,
+        isPay: 1,
       },
     });
   }, []);
@@ -197,6 +288,32 @@ const Survey = ({}) => {
       dataIndex: "viewPrice",
     },
 
+    {
+      title: "결제일",
+      dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "처리",
+      render: (data) =>
+        data.isPay ? (
+          <CheckOutlined style={{ color: Theme.naver_C }} />
+        ) : (
+          <Popconfirm
+            title="승인하시겠습니까?"
+            okText="승인"
+            cancelText="취소"
+            onConfirm={() => isPayUpdateHandler(data)}
+          >
+            <Button
+              size="small"
+              type="primary"
+              loading={st_zoomLecHistoryPayLoading}
+            >
+              승인
+            </Button>
+          </Popconfirm>
+        ),
+    },
     {
       title: "상태창",
       render: (data) => (
@@ -226,6 +343,21 @@ const Survey = ({}) => {
         </Popconfirm>
       ),
     },
+  ];
+
+  const headers = [
+    { label: "신청일자", key: "no" },
+    { label: "성함", key: "name" },
+    { label: "연락처", key: "mobile" },
+    { label: "우편번호", key: "zone" },
+    { label: "주소", key: "adrs" },
+    { label: "상세주소", key: "deadrs" },
+    { label: "아이디", key: "id" },
+    { label: "생년월일", key: "birth" },
+    { label: "성별", key: "gender" },
+    { label: "결제 유형", key: "type" },
+    { label: "처리여부", key: "isPay" },
+    { label: "레벨", key: "level" },
   ];
 
   return (
@@ -274,6 +406,18 @@ const Survey = ({}) => {
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
+          <Wrapper al={`flex-end`} margin={`0 0 10px`}>
+            {scvData && (
+              <DownloadBtn
+                filename={`결제내역`}
+                headers={headers}
+                data={scvData}
+              >
+                엑셀 다운로드{" "}
+              </DownloadBtn>
+            )}
+          </Wrapper>
+
           <Table
             style={{ width: "100%" }}
             rowKey="num"
@@ -315,6 +459,15 @@ const Survey = ({}) => {
                 <Form.Item label="회원 이름" name="username">
                   <Input size="small" />
                 </Form.Item>
+                <Form.Item label="주소" name="address">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="상세주소" name="detailAddress">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="우편번호" name="zoneCode">
+                  <Input size="small" />
+                </Form.Item>
                 <Form.Item label="생년월일" name="birth">
                   <Input size="small" />
                 </Form.Item>
@@ -327,7 +480,19 @@ const Survey = ({}) => {
                 <Form.Item label="가격" name="viewPrice">
                   <Input size="small" />
                 </Form.Item>
-                <Form.Item label="생성일" name="viewCreatedAt">
+
+                <Form.Item label="결제방법" name="payType">
+                  <Input size="small" />
+                </Form.Item>
+                {currentData.payType === "nobank" && (
+                  <Form.Item label="입금자명" name="name">
+                    <Input size="small" />
+                  </Form.Item>
+                )}
+                <Form.Item label="처리여부" name="isPay">
+                  <Input size="small" />
+                </Form.Item>
+                <Form.Item label="결제일" name="viewCreatedAt">
                   <Input size="small" />
                 </Form.Item>
               </Form>

@@ -2,11 +2,13 @@ import produce from "../util/produce";
 
 export const initialState = {
   levelList: [],
-  zoomLecList: [], // 줌강의
+  zoomLecList: [], // 수정과
   zoomDetail: [], // 수강생정보
   myZoomList: [], // 내 수강기록
   zoomHistory: [], // 줌 결제내역 가져오기
   zoomLecDetail: null, //  줌 강의 디테일 정보가져오기
+  zoomBoughtId: null, //  줌 결제내역 아이디
+  zoomHistoryDetail: null, //  줌 결제내역 상세
   //
   st_levelListLoading: false, // 레벨 가져오기
   st_levelListDone: false,
@@ -63,6 +65,18 @@ export const initialState = {
   st_zoomDetailLoading: false, // 줌 강의 디테일 정보가져오기
   st_zoomDetailDone: false,
   st_zoomDetailError: null,
+  //
+  st_zoomLecHistoryDetailLoading: false, // 줌 결제내역 상세
+  st_zoomLecHistoryDetailDone: false,
+  st_zoomLecHistoryDetailError: null,
+  //
+  st_zoomLecMoveLoading: false, // 줌 강의 인원 이동하기
+  st_zoomLecMoveDone: false,
+  st_zoomLecMoveError: null,
+  //
+  st_zoomLecHistoryPayLoading: false, // 줌 결제내역 처리여부 변경
+  st_zoomLecHistoryPayDone: false,
+  st_zoomLecHistoryPayError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -119,6 +133,21 @@ export const ZOOM_LEC_HISTORY_DELETE_FAILURE =
 export const ZOOM_DETAIL_REQUEST = "ZOOM_DETAIL_REQUEST";
 export const ZOOM_DETAIL_SUCCESS = "ZOOM_DETAIL_SUCCESS";
 export const ZOOM_DETAIL_FAILURE = "ZOOM_DETAIL_FAILURE";
+
+export const ZOOM_LEC_HISTORY_DETAIL_REQUEST =
+  "ZOOM_LEC_HISTORY_DETAIL_REQUEST";
+export const ZOOM_LEC_HISTORY_DETAIL_SUCCESS =
+  "ZOOM_LEC_HISTORY_DETAIL_SUCCESS";
+export const ZOOM_LEC_HISTORY_DETAIL_FAILURE =
+  "ZOOM_LEC_HISTORY_DETAIL_FAILURE";
+
+export const ZOOM_LEC_MOVE_REQUEST = "ZOOM_LEC_MOVE_REQUEST";
+export const ZOOM_LEC_MOVE_SUCCESS = "ZOOM_LEC_MOVE_SUCCESS";
+export const ZOOM_LEC_MOVE_FAILURE = "ZOOM_LEC_MOVE_FAILURE";
+
+export const ZOOM_LEC_HISTORY_PAY_REQUEST = "ZOOM_LEC_HISTORY_PAY_REQUEST";
+export const ZOOM_LEC_HISTORY_PAY_SUCCESS = "ZOOM_LEC_HISTORY_PAY_SUCCESS";
+export const ZOOM_LEC_HISTORY_PAY_FAILURE = "ZOOM_LEC_HISTORY_PAY_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -336,6 +365,7 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecHistoryAddLoading = false;
         draft.st_zoomLecHistoryAddDone = true;
         draft.st_zoomLecHistoryAddError = null;
+        draft.zoomBoughtId = action.data.result;
         break;
       }
       case ZOOM_LEC_HISTORY_ADD_FAILURE: {
@@ -383,6 +413,67 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomDetailLoading = false;
         draft.st_zoomDetailDone = false;
         draft.st_zoomDetailError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_HISTORY_DETAIL_REQUEST: {
+        draft.st_zoomLecHistoryDetailLoading = true;
+        draft.st_zoomLecHistoryDetailDone = null;
+        draft.st_zoomLecHistoryDetailError = false;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_DETAIL_SUCCESS: {
+        draft.st_zoomLecHistoryDetailLoading = false;
+        draft.st_zoomLecHistoryDetailDone = true;
+        draft.st_zoomLecHistoryDetailError = null;
+        draft.zoomHistoryDetail = action.data;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_DETAIL_FAILURE: {
+        draft.st_zoomLecHistoryDetailLoading = false;
+        draft.st_zoomLecHistoryDetailDone = false;
+        draft.st_zoomLecHistoryDetailError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_MOVE_REQUEST: {
+        draft.st_zoomLecMoveLoading = true;
+        draft.st_zoomLecMoveDone = null;
+        draft.st_zoomLecMoveError = false;
+        break;
+      }
+      case ZOOM_LEC_MOVE_SUCCESS: {
+        draft.st_zoomLecMoveLoading = false;
+        draft.st_zoomLecMoveDone = true;
+        draft.st_zoomLecMoveError = null;
+        break;
+      }
+      case ZOOM_LEC_MOVE_FAILURE: {
+        draft.st_zoomLecMoveLoading = false;
+        draft.st_zoomLecMoveDone = false;
+        draft.st_zoomLecMoveError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ZOOM_LEC_HISTORY_PAY_REQUEST: {
+        draft.st_zoomLecHistoryPayLoading = true;
+        draft.st_zoomLecHistoryPayDone = null;
+        draft.st_zoomLecHistoryPayError = false;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_PAY_SUCCESS: {
+        draft.st_zoomLecHistoryPayLoading = false;
+        draft.st_zoomLecHistoryPayDone = true;
+        draft.st_zoomLecHistoryPayError = null;
+        break;
+      }
+      case ZOOM_LEC_HISTORY_PAY_FAILURE: {
+        draft.st_zoomLecHistoryPayLoading = false;
+        draft.st_zoomLecHistoryPayDone = false;
+        draft.st_zoomLecHistoryPayError = action.error;
         break;
       }
       //////////////////////////////////////////////

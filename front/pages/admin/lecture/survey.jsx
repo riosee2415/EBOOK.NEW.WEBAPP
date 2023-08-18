@@ -76,7 +76,7 @@ const Survey = ({}) => {
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("줌수업관리");
+  const [level1, setLevel1] = useState("수정과관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
@@ -137,6 +137,9 @@ const Survey = ({}) => {
     if (st_levelUpdateDone) {
       dispatch({
         type: LEVEL_REQUEST,
+        data: {
+          isAdmin: true,
+        },
       });
 
       setCurrentData(null);
@@ -153,6 +156,9 @@ const Survey = ({}) => {
     if (st_levelToggleDone) {
       dispatch({
         type: LEVEL_REQUEST,
+        data: {
+          isAdmin: true,
+        },
       });
 
       setCurrentData(null);
@@ -228,6 +234,8 @@ const Survey = ({}) => {
         <Switch
           checked={row.isHide}
           onChange={(e) => dataToggleUpdate(e, row)}
+          checkedChildren={"사용"}
+          unCheckedChildren={"미사용"}
         />
       ),
     },
@@ -386,6 +394,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LEVEL_REQUEST,
+      data: {
+        isAdmin: true,
+      },
     });
 
     // 구현부 종료

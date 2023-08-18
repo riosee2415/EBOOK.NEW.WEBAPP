@@ -534,8 +534,6 @@ router.post("/adminList", async (req, res, next) => {
   try {
     const result = await models.sequelize.query(selectQuery);
 
-    console.log(result[0]);
-
     return res.status(200).json(result[0]);
   } catch (error) {
     console.error(error);

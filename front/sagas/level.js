@@ -52,6 +52,18 @@ import {
   ZOOM_DETAIL_REQUEST,
   ZOOM_DETAIL_SUCCESS,
   ZOOM_DETAIL_FAILURE,
+  //
+  ZOOM_LEC_HISTORY_DETAIL_REQUEST,
+  ZOOM_LEC_HISTORY_DETAIL_SUCCESS,
+  ZOOM_LEC_HISTORY_DETAIL_FAILURE,
+  //
+  ZOOM_LEC_MOVE_REQUEST,
+  ZOOM_LEC_MOVE_SUCCESS,
+  ZOOM_LEC_MOVE_FAILURE,
+  //
+  ZOOM_LEC_HISTORY_PAY_REQUEST,
+  ZOOM_LEC_HISTORY_PAY_SUCCESS,
+  ZOOM_LEC_HISTORY_PAY_FAILURE,
 } from "../reducers/level";
 
 // ******************************************************************************************************************
@@ -405,6 +417,87 @@ function* zoomDetail(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecHistoryDetailAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/history/detail`, data);
+}
+
+function* zoomLecHistoryDetail(action) {
+  try {
+    const result = yield call(zoomLecHistoryDetailAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_HISTORY_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_HISTORY_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecMoveAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/move`, data);
+}
+
+function* zoomLecMove(action) {
+  try {
+    const result = yield call(zoomLecMoveAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_MOVE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_MOVE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function zoomLecHistoryPayAPI(data) {
+  return await axios.post(`/api/lev/zoom/lecture/history/isPay`, data);
+}
+
+function* zoomLecHistoryPay(action) {
+  try {
+    const result = yield call(zoomLecHistoryPayAPI, action.data);
+
+    yield put({
+      type: ZOOM_LEC_HISTORY_PAY_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ZOOM_LEC_HISTORY_PAY_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchLevelList() {
   yield takeLatest(LEVEL_REQUEST, levelList);
@@ -445,7 +538,15 @@ function* watchZoomLecHistoryDel() {
 function* watchZoomDetail() {
   yield takeLatest(ZOOM_DETAIL_REQUEST, zoomDetail);
 }
-
+function* watchZoomLecHistoryDetail() {
+  yield takeLatest(ZOOM_LEC_HISTORY_DETAIL_REQUEST, zoomLecHistoryDetail);
+}
+function* watchZoomLecMove() {
+  yield takeLatest(ZOOM_LEC_MOVE_REQUEST, zoomLecMove);
+}
+function* watchZoomLecHistoryPay() {
+  yield takeLatest(ZOOM_LEC_HISTORY_PAY_REQUEST, zoomLecHistoryPay);
+}
 //////////////////////////////////////////////////////////////
 export default function* levelSaga() {
   yield all([
@@ -462,6 +563,9 @@ export default function* levelSaga() {
     fork(watchZoomLecHistoryAdd),
     fork(watchZoomLecHistoryDel),
     fork(watchZoomDetail),
+    fork(watchZoomLecHistoryDetail),
+    fork(watchZoomLecMove),
+    fork(watchZoomLecHistoryPay),
     //
   ]);
 }

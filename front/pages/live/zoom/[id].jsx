@@ -21,20 +21,14 @@ import Theme from "../../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import { Empty, Form, message, Radio, Modal, Select } from "antd";
-import {
-  PlusCircleOutlined,
-  PauseCircleOutlined,
-  ArrowRightOutlined,
-} from "@ant-design/icons";
 import { useRouter } from "next/router";
-import DaumPostcode from "react-daum-postcode";
-import { numberWithCommas } from "../../../components/commonUtils";
 import moment from "moment";
+import { BOUGHT_ME_DETAIL_REQUEST } from "../../../reducers/boughtLecture";
 import {
-  BOUGHT_CREATE_REQUEST,
-  BOUGHT_ME_DETAIL_REQUEST,
-} from "../../../reducers/boughtLecture";
-import { ZOOM_DETAIL_REQUEST } from "../../../reducers/level";
+  ZOOM_DETAIL_REQUEST,
+  ZOOM_LEC_ADD_PEOPLE_REQUEST,
+  ZOOM_LEC_HISTORY_ADD_REQUEST,
+} from "../../../reducers/level";
 
 const BuyForm = styled(Form)`
   width: 100%;
@@ -60,52 +54,6 @@ const BuyForm = styled(Form)`
     & .ant-form-item-label label {
       font-size: 20px;
     }
-  }
-`;
-
-const CustomPlusCircleOutlined = styled(PlusCircleOutlined)`
-  font-size: 30px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 1px;
-  }
-`;
-const CustomPauseCircleOutlined = styled(PauseCircleOutlined)`
-  font-size: 30px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  transform: rotate(90deg);
-
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 1px;
-  }
-`;
-
-const CustomArrowRightOutlined = styled(ArrowRightOutlined)`
-  font-size: 20px;
-  color: ${(porps) => porps.theme.basicTheme_C};
-  margin: 0 10px;
-  @media (max-width: 700px) {
-    font-size: 14px;
-    margin: 0 5px;
-  }
-`;
-
-const CustomSelect = styled(Select)`
-  width: 100%;
-  border-radius: 5px;
-  border: 1px solid ${(props) => props.theme.lightGrey4_C};
-  font-size: 18px;
-  margin: 0 0 10px;
-
-  &:not(.ant-select-customize-input) .ant-select-selector {
-    height: 54px !important;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-
-    align-items: center;
   }
 `;
 
@@ -148,14 +96,17 @@ const CustomRadio = styled(Radio)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { me } = useSelector((state) => state.user);
-  const { zoomLecDetail } = useSelector((state) => state.level);
   const {
-    boughtCreateId,
-    //
-    st_boughtCreateLoading,
-    st_boughtCreateDone,
-    st_boughtCreateError,
-  } = useSelector((state) => state.boughtLecture);
+    zoomLecDetail,
+
+    zoomBoughtId,
+
+    st_zoomLecHistoryAddLoading,
+    st_zoomLecHistoryAddDone,
+    st_zoomLecHistoryAddError,
+
+    st_zoomLecAddPeopleError,
+  } = useSelector((state) => state.level);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -164,35 +115,7 @@ const Home = ({}) => {
 
   const [infoForm] = Form.useForm();
 
-  const [addressData, setAddressData] = useState(null);
-  const [aModal, setAModal] = useState(false);
-
   const [isBuyType, setIsBuyType] = useState(null);
-  const [isOverseas, setIsOverseas] = useState(false);
-  const [overAddress, setOverAddress] = useState(false);
-
-  const dataArr = [
-    {
-      id: 1,
-      title: "미국 캐나다 북미 남미 아프리카",
-      price: 100000,
-      viewPrice: "100,000원",
-    },
-    {
-      id: 2,
-      title: "일본 베트남 아시아",
-      price: 40000,
-      viewPrice: "40,000원",
-    },
-    {
-      id: 3,
-      title: "유럽 오세아니아",
-      price: 80000,
-      viewPrice: "80,000원",
-    },
-  ];
-
-  console.log(zoomLecDetail);
 
   ////// REDUX //////
   ////// USEEFFECT //////
@@ -218,67 +141,47 @@ const Home = ({}) => {
     } else {
       infoForm.setFieldsValue({
         username: me.username,
-        receiver: me.username,
-        zoneCode: me.zoneCode,
-        address: me.address,
-        detailAddress: me.detailAddress,
         mobile: me.mobile,
-      });
-
-      setAddressData({
-        zonecode: me.zoneCode,
+        adrs: me.address,
+        deadrs: me.detailAddress,
+        zoneCode: me.zoneCode,
       });
     }
   }, [me]);
 
   // 결제 후처리
   useEffect(() => {
-    if (st_boughtCreateDone) {
-      if (isBuyType === "nobank" && boughtCreateId) {
+    if (st_zoomLecHistoryAddDone) {
+      dispatch({
+        type: ZOOM_LEC_ADD_PEOPLE_REQUEST,
+        data: {
+          ZoomId: router.query.id,
+          UserId: me.id,
+        },
+      });
+
+      if (isBuyType === "nobank" && zoomBoughtId) {
         message.success("결제되었습니다.");
-        return router.push(`/enrolment/buy/finish/${boughtCreateId}`);
+        return router.push(`/live/zoom/finish/${zoomBoughtId}`);
       } else {
         message.success("결제되었습니다.");
-        return router.push("/mypage");
+        return router.push("/mypage/zoom");
       }
     }
 
-    if (st_boughtCreateError) {
-      return message.error(st_boughtCreateError);
+    if (st_zoomLecHistoryAddError) {
+      return message.error(st_zoomLecHistoryAddError);
     }
-  }, [st_boughtCreateDone, st_boughtCreateError]);
+  }, [st_zoomLecHistoryAddDone, st_zoomLecHistoryAddError]);
+
+  useEffect(() => {
+    if (st_zoomLecAddPeopleError) {
+      return message.error(st_zoomLecAddPeopleError);
+    }
+  }, [st_zoomLecAddPeopleError]);
   ////// TOGGLE //////
 
-  // 주소 모달
-  const aModalToggle = useCallback(() => {
-    setAModal((prev) => !prev);
-  }, [aModal]);
-
   ////// HANDLER //////
-
-  // 해외 여부
-  const isOverseasChangeHandler = useCallback(
-    (data) => {
-      setIsOverseas(data);
-
-      setIsBuyType(null);
-      if (!data) {
-        infoForm.setFieldsValue({
-          username: me.username,
-          receiver: me.username,
-          zoneCode: me.zoneCode,
-          address: me.address,
-          detailAddress: me.detailAddress,
-          mobile: me.mobile,
-        });
-
-        setAddressData({
-          zonecode: me.zoneCode,
-        });
-      }
-    },
-    [isOverseas]
-  );
 
   // 결제 방법
   const isBuyTypeChangeHandler = useCallback(
@@ -287,27 +190,6 @@ const Home = ({}) => {
     },
     [isBuyType]
   );
-
-  // 해외 주소 변경
-  const overAddressChange = useCallback(
-    (data) => {
-      setOverAddress(data);
-    },
-    [overAddress]
-  );
-
-  // 환율 계산 함수
-  const dollarChange = useCallback(async (inputDollar) => {
-    const res = await fetch(
-      "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD"
-    );
-    const result = await res.json();
-
-    const exchangeRate = result[0].basePrice;
-    const exchangedWon = inputDollar / exchangeRate;
-
-    return exchangedWon;
-  }, []);
 
   // 결제
   const buyHandler = useCallback(
@@ -318,22 +200,9 @@ const Home = ({}) => {
 
       const IMP = window.IMP;
 
-      const address = data.address;
-
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
-      let paypalPay = null;
-
       const buyPay = zoomLecDetail.price;
-
-      await dollarChange(
-        buyPay
-        // 10000
-      ).then((data) => {
-        paypalPay = data;
-      });
-
-      // console.log(paypalPay);
 
       IMP.init("imp20437848");
 
@@ -342,72 +211,18 @@ const Home = ({}) => {
         // 무통장입금
         // 무통장입금
         dispatch({
-          type: BOUGHT_CREATE_REQUEST,
+          type: ZOOM_LEC_HISTORY_ADD_REQUEST,
           data: {
-            mobile: data.mobile,
-            receiver: data.receiver,
-            zoneCode: data.zoneCode,
-            address: address,
-            detailAddress: isOverseas ? "-" : data.detailAddress,
+            payment: buyPay,
+            UserId: me.id,
+            ZoomLectureId: router.query.id,
             payType: isBuyType,
-            pay: buyPay,
-            lectureType: zoomLecDetail.type,
             name: data.name,
             impUid: "-",
             merchantUid: "-",
-            lectureId: router.query.id,
+            isPay: 0,
           },
         });
-      } else if (isBuyType === "paypal") {
-        // 해외 결제
-        // 해외 결제
-        // 해외 결제
-        IMP.request_pay(
-          {
-            pg: `${isBuyType}`,
-            pay_method: "card",
-            merchant_uid: orderPK,
-            name: zoomLecDetail && zoomLecDetail.title,
-            currency: "USD",
-            amount: paypalPay,
-            // amount: 0.12,
-            m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
-              zoomLecDetail && zoomLecDetail.price
-            }&address=${address}&mobile=${data.mobile}&receiver=${
-              data.receiver
-            }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
-              zoomLecDetail && zoomLecDetail.price
-            }&type=${zoomLecDetail && zoomLecDetail.type}`,
-          },
-          async (rsp) => {
-            if (rsp.success) {
-              dispatch({
-                type: BOUGHT_CREATE_REQUEST,
-                data: {
-                  mobile: data.mobile,
-                  receiver: data.receiver,
-                  zoneCode: data.zoneCode,
-                  address: address,
-                  detailAddress: isOverseas ? "-" : data.detailAddress,
-                  payType: isBuyType,
-                  pay: buyPay,
-                  lectureType: zoomLecDetail.type,
-                  name: "-",
-                  impUid: rsp.imp_uid,
-                  merchantUid: rsp.merchant_uid,
-                  lectureId: router.query.id,
-                },
-              });
-            } else {
-              console.log(rsp.error_msg);
-              if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
-                message.error(
-                  "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
-                );
-              }
-            }
-          }
-        );
       } else {
         // 신용카드 결제
         // 신용카드 결제
@@ -426,20 +241,16 @@ const Home = ({}) => {
           async (rsp) => {
             if (rsp.success) {
               dispatch({
-                type: BOUGHT_CREATE_REQUEST,
+                type: ZOOM_LEC_HISTORY_ADD_REQUEST,
                 data: {
-                  mobile: data.mobile,
-                  receiver: data.receiver,
-                  zoneCode: data.zoneCode,
-                  address: address,
-                  detailAddress: isOverseas ? "-" : data.detailAddress,
+                  payment: buyPay,
+                  UserId: me.id,
+                  ZoomLectureId: router.query.id,
                   payType: isBuyType,
-                  pay: buyPay,
-                  lectureType: zoomLecDetail.type,
-                  name: "-",
                   impUid: rsp.imp_uid,
                   merchantUid: rsp.merchant_uid,
-                  lectureId: router.query.id,
+                  name: me.username,
+                  isPay: 0,
                 },
               });
             }
@@ -447,7 +258,7 @@ const Home = ({}) => {
         );
       }
     },
-    [isBuyType, zoomLecDetail, overAddress, st_boughtCreateDone]
+    [isBuyType, zoomLecDetail, st_zoomLecHistoryAddDone, me, router.query]
   );
 
   ////// DATAVIEW //////
@@ -473,29 +284,6 @@ const Home = ({}) => {
                 >
                   결제 진행
                 </Text>
-                <Wrapper width={`auto`} dr={`row`}>
-                  <CommonButton
-                    width={width < 700 ? `90px` : `110px`}
-                    height={width < 700 ? `38px` : `44px`}
-                    fontSize={`20px`}
-                    fontWeight={`600`}
-                    kindOf={!isOverseas && `basic`}
-                    margin={`0 8px 0 0`}
-                    onClick={() => isOverseasChangeHandler(false)}
-                  >
-                    국내
-                  </CommonButton>
-                  <CommonButton
-                    width={width < 700 ? `90px` : `110px`}
-                    height={width < 700 ? `38px` : `44px`}
-                    fontSize={`20px`}
-                    fontWeight={`600`}
-                    kindOf={isOverseas && `basic`}
-                    onClick={() => isOverseasChangeHandler(true)}
-                  >
-                    해외
-                  </CommonButton>
-                </Wrapper>
               </Wrapper>
 
               <Wrapper
@@ -534,7 +322,8 @@ const Home = ({}) => {
                   </Text>
                   <Text fontSize={width < 700 ? `28px` : `32px`}>
                     {zoomLecDetail && zoomLecDetail.terms}(
-                    {zoomLecDetail && zoomLecDetail.days})
+                    {zoomLecDetail && zoomLecDetail.days})&nbsp;+&nbsp;워크북
+                    1권
                   </Text>
                 </Wrapper>
                 <Wrapper
@@ -559,11 +348,11 @@ const Home = ({}) => {
                 <Form.Item
                   label="회원명"
                   name="username"
-                  rules={[{ required: true, message: "회원명은 필수 입니다." }]}
+                  rules={[{ required: true, message: "회원명은 필수입니다." }]}
                   colon={false}
                 >
                   <TextInput
-                    width={`100%`}
+                    width={width < 700 ? `100%` : `420px`}
                     height={`54px`}
                     radius={`5px`}
                     border={`none`}
@@ -576,17 +365,92 @@ const Home = ({}) => {
                 <Form.Item
                   label="연락처"
                   name="mobile"
-                  rules={[{ required: true, message: "연락처는 필수 입니다." }]}
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "연락처는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
                   colon={false}
                 >
                   <TextInput
                     width={width < 700 ? `100%` : `420px`}
                     height={`54px`}
                     radius={`5px`}
-                    border={`1px solid ${Theme.lightGrey4_C}`}
+                    border={`none`}
                     fontSize={`18px`}
-                    placeholder="'-'를 제외한 연락처를 입력해주세요."
                     margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="주소"
+                  name="adrs"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "주소는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="상세주소"
+                  name="deadrs"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "우편번호는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="우편번호"
+                  name="zoneCode"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "우편번호는 필수입니다. 등록이 안되어 있다면 마이페이지에서 수정해주세요.",
+                    },
+                  ]}
+                  colon={false}
+                >
+                  <TextInput
+                    width={width < 700 ? `100%` : `420px`}
+                    height={`54px`}
+                    radius={`5px`}
+                    border={`none`}
+                    fontSize={`18px`}
+                    margin={`0 0 10px`}
+                    readOnly
                   />
                 </Form.Item>
                 <Wrapper
@@ -626,7 +490,7 @@ const Home = ({}) => {
                     >
                       카드결제
                     </CustomRadio>
-                    {/* <CustomRadio
+                    <CustomRadio
                       value={"nobank"}
                       style={{
                         margin: width < 700 ? `0 90px 20px 0` : `0 90px 0 0`,
@@ -634,9 +498,6 @@ const Home = ({}) => {
                     >
                       무통장입금(계좌이체)
                     </CustomRadio>
-                    {isOverseas && (
-                      <CustomRadio value={"paypal"}>PayPal(페이팔)</CustomRadio>
-                    )} */}
                   </Radio.Group>
                 </Wrapper>
 
@@ -646,7 +507,7 @@ const Home = ({}) => {
                     colon={false}
                     label="입금자명"
                     rules={[
-                      { required: true, message: "입금자명은 필수 입니다." },
+                      { required: true, message: "입금자명은 필수입니다." },
                     ]}
                   >
                     <TextInput
@@ -715,7 +576,7 @@ const Home = ({}) => {
                   fontSize={`20px`}
                   kindOf={`basic`}
                   htmlType="submit"
-                  loading={st_boughtCreateLoading}
+                  loading={st_zoomLecHistoryAddLoading}
                 >
                   결제하기
                 </CommonButton>

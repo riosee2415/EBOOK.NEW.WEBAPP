@@ -19,6 +19,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { LEVEL_REQUEST } from "../../reducers/level";
 import Link from "next/dist/client/link";
+import { useRouter } from "next/router";
 
 const Intro = () => {
   ////// GLOBAL STATE //////
@@ -28,6 +29,7 @@ const Intro = () => {
   const [viewLv, setViewLv] = useState(1);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
@@ -35,22 +37,32 @@ const Intro = () => {
   ////// DATAVIEW //////
 
   const suv = useCallback(() => {
-    if (currentTab === 6) {
+    if (levelList.length - 1 === currentTab) {
       setViewLv((p) => p + 1);
       setCurrentTab(99);
     } else {
       setCurrentTab((p) => p + 1);
       setViewLv((p) => p + 1);
     }
-  }, [currentTab, viewLv]);
+  }, [currentTab, viewLv, levelList]);
 
   const suvv = useCallback(() => {
-    if (currentTab === 6) {
+    if (levelList.length - 1 === currentTab) {
       setCurrentTab(99);
     } else {
       setCurrentTab((p) => p + 1);
     }
-  }, [currentTab]);
+  }, [currentTab, levelList]);
+
+  const moveLevel = useCallback((target) => {
+    router.push(`/live/zoom?type=${target}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const movelinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <>
@@ -149,25 +161,34 @@ const Intro = () => {
                   권장드립니다.
                 </Text>
                 <Wrapper dr={`row`}>
-                  <Link href={`/live/zoom`}>
-                    <a>
-                      <CommonButton
-                        width={`150px`}
-                        height={`50px`}
-                        fontSize={`18px`}
-                        margin={`10px 5px`}
-                        kindOf={`basic`}
-                      >
-                        레벨1신청
-                      </CommonButton>
-                    </a>
-                  </Link>
                   <CommonButton
                     width={`150px`}
                     height={`50px`}
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => movelinkHandler(`/live/zoom`)}
+                  >
+                    수강신청
+                  </CommonButton>
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL1")}
+                  >
+                    레벨1신청
+                  </CommonButton>
+
+                  <CommonButton
+                    width={`150px`}
+                    height={`50px`}
+                    fontSize={`18px`}
+                    margin={`10px 5px`}
+                    kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL2")}
                   >
                     레벨2신청
                   </CommonButton>
@@ -177,6 +198,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL3")}
                   >
                     레벨3신청
                   </CommonButton>
@@ -188,15 +210,17 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL4")}
                   >
                     레벨4신청
                   </CommonButton>
-                  <CommonButton
+                  {/* <CommonButton
                     width={`150px`}
                     height={`50px`}
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL5")}
                   >
                     레벨5신청
                   </CommonButton>
@@ -206,6 +230,7 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL6")}
                   >
                     레벨6신청
                   </CommonButton>
@@ -215,9 +240,10 @@ const Intro = () => {
                     fontSize={`18px`}
                     margin={`10px 5px`}
                     kindOf={`basic`}
+                    onClick={() => moveLevel("LEVEL7")}
                   >
                     레벨7신청
-                  </CommonButton>
+                  </CommonButton> */}
                 </Wrapper>
               </Wrapper>
             )}

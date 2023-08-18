@@ -39,8 +39,33 @@ import {
   ZOOM_LEC_CREATE_REQUEST,
   ZOOM_LEC_DETAIL_REQUEST,
   ZOOM_LEC_LIST_REQUEST,
+  ZOOM_LEC_MOVE_REQUEST,
   ZOOM_LEC_UPDATE_REQUEST,
 } from "../../../reducers/level";
+import { CSVLink } from "react-csv";
+
+const DownloadBtn = styled(CSVLink)`
+  width: 200px;
+  height: 25px;
+  margin: 0 0 0 10px;
+  border-radius: 3px;
+
+  background: ${(props) => props.theme.basicTheme_C};
+  color: ${(props) => props.theme.white_C};
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.4s;
+
+  &:hover {
+    color: ${(props) => props.theme.basicTheme_C};
+    background: ${(props) => props.theme.white_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
+  }
+`;
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -73,20 +98,25 @@ const Zoom = ({}) => {
 
     st_zoomLecUpdateDone,
     st_zoomLecUpdateError,
+
+    st_zoomLecMoveDone,
+    st_zoomLecMoveError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   // 상위메뉴 변수
-  const [level1, setLevel1] = useState("줌수업관리");
+  const [level1, setLevel1] = useState("수정과관리");
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
+  const [deData, setDeData] = useState(null);
   const [isModal, setIsModal] = useState(null);
+  const [mModal, setMModal] = useState(false);
 
   const [infoForm] = Form.useForm();
-  const [peopleForm] = Form.useForm();
+  const [moveForm] = Form.useForm();
 
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
@@ -110,6 +140,10 @@ const Zoom = ({}) => {
   /////////////////////////////////////////////////////////////////////////
 
   ////// HOOKS //////
+
+  const [zoomLevel, setZoomLevel] = useState("");
+
+  const [scvData, setScvData] = useState(null);
 
   ////// USEEFFECT //////
 
@@ -138,14 +172,23 @@ const Zoom = ({}) => {
     });
   }, []);
 
-  ////////////////////// 줌강의 생성후처리 //////////////////////
+  useEffect(() => {
+    dispatch({
+      type: ZOOM_LEC_LIST_REQUEST,
+      data: {
+        level: zoomLevel,
+      },
+    });
+  }, [zoomLevel]);
+
+  ////////////////////// 수정과 생성후처리 //////////////////////
   useEffect(() => {
     if (st_zoomLecCreateDone) {
       dispatch({
         type: ZOOM_LEC_LIST_REQUEST,
       });
 
-      return message.success("줌강의가 생성되었습니다.");
+      return message.success("수정과가 생성되었습니다.");
     }
 
     if (st_zoomLecCreateError) {
@@ -153,20 +196,93 @@ const Zoom = ({}) => {
     }
   }, [st_zoomLecCreateDone, st_zoomLecCreateError]);
 
-  ////////////////////// 줌강의 수정후처리 //////////////////////
+  ////////////////////// 수정과 수정후처리 //////////////////////
   useEffect(() => {
     if (st_zoomLecUpdateDone) {
       dispatch({
         type: ZOOM_LEC_LIST_REQUEST,
       });
 
-      return message.success("줌강의가 수정되었습니다.");
+      return message.success("수정과가 수정되었습니다.");
     }
 
     if (st_zoomLecUpdateError) {
       return message.error(st_zoomLecUpdateError);
     }
   }, [st_zoomLecUpdateDone, st_zoomLecUpdateError]);
+
+  ////////////////////// 수정과 이동후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomLecMoveDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+        data: {
+          level: zoomLevel,
+        },
+      });
+
+      modalToggle(null);
+      moveModalToggle(null);
+      moveForm.resetFields();
+
+      return message.success("수강생이 이동되었습니다.");
+    }
+
+    if (st_zoomLecMoveError) {
+      return message.error(st_zoomLecMoveError);
+    }
+  }, [st_zoomLecMoveDone, st_zoomLecMoveError]);
+
+  //엑셀
+  useEffect(() => {
+    if (zoomLecList) {
+      const scvData = [];
+
+      zoomLecList &&
+        zoomLecList.map((data) => {
+          if (data.levelValue === zoomLevel) {
+            scvData.push({
+              level: data.levelValue,
+              day: data.days,
+              price: data.price,
+              teacher: data.tName,
+              startTime: data.startTime,
+              endTime: data.endTime,
+              term: data.terms,
+              degree: data.degree,
+            });
+          }
+        });
+
+      setScvData(scvData);
+    }
+  }, [zoomLecList, zoomLevel]);
+
+  ////// TOGGLE //////
+  const modalToggle = useCallback(
+    (data) => {
+      setIsModal((prev) => !prev);
+
+      if (data) {
+        dispatch({
+          type: ZOOM_LEC_DETAIL_REQUEST,
+          data: {
+            ZoomId: data.id,
+          },
+        });
+      }
+    },
+    [isModal]
+  );
+
+  const moveModalToggle = useCallback(
+    (data) => {
+      setMModal((p) => !p);
+
+      setDeData(data);
+    },
+    [mModal]
+  );
 
   ////// HANDLER //////
 
@@ -182,7 +298,8 @@ const Zoom = ({}) => {
         startTime: record.startTime,
         endTime: record.endTime,
         terms: record.terms,
-        zoomRink: record.zoomRink,
+        zoomRink: "-",
+        degree: record.degree,
         createdAt: record.viewCreatedAt,
       });
     },
@@ -208,25 +325,26 @@ const Zoom = ({}) => {
           terms: data.terms,
           tName: data.tName,
           price: data.price,
-          zoomRink: data.zoomRink,
+          degree: data.degree,
+          zoomRink: "-",
         },
       });
     },
     [currentData]
   );
 
-  const modalToggle = useCallback(
+  const lectureMoveHandler = useCallback(
     (data) => {
-      setIsModal((prev) => !prev);
-
       dispatch({
-        type: ZOOM_LEC_DETAIL_REQUEST,
+        type: ZOOM_LEC_MOVE_REQUEST,
         data: {
-          ZoomId: data.id,
+          ZoomId: currentData.id,
+          UserId: deData.UserId,
+          MoveZoomId: data.lecId,
         },
       });
     },
-    [isModal]
+    [deData, currentData]
   );
 
   ////// DATAVIEW //////
@@ -253,6 +371,14 @@ const Zoom = ({}) => {
     {
       title: "선생님",
       dataIndex: "tName",
+    },
+    {
+      title: "수업시간",
+      render: (data) => (
+        <Text>
+          {data.startTime} ~ {data.endTime}
+        </Text>
+      ),
     },
     {
       title: "수강생수",
@@ -302,6 +428,29 @@ const Zoom = ({}) => {
       title: "이메일",
       dataIndex: "email",
     },
+    {
+      title: "강의 이동",
+      render: (data) => (
+        <Button
+          type="primary"
+          size="small"
+          onClick={() => moveModalToggle(data)}
+        >
+          이동
+        </Button>
+      ),
+    },
+  ];
+
+  const headers = [
+    { label: "차수", key: "degree" },
+    { label: "레벨", key: "level" },
+    { label: "선생님", key: "teacher" },
+    { label: "요일", key: "day" },
+    { label: "가격", key: "price" },
+    { label: "시작시간", key: "startTime" },
+    { label: "종료시간", key: "endTime" },
+    { label: "수강기간", key: "term" },
   ];
 
   return (
@@ -338,22 +487,105 @@ const Zoom = ({}) => {
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
           <GuideLi>
-            줌강의를 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
+            수정과를 추가 / 수정 / 삭제 등 관리를 할 수 있습니다.
           </GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 줌강의는 복구가 불가능합니다.
+            삭제처리 된 수정과는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
 
+      {/* TAB */}
+      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
+        <Button
+          type={zoomLevel === "" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("")}
+        >
+          전체
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL1" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL1")}
+        >
+          LEVEL1
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL2" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL2")}
+        >
+          LEVEL2
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL3" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL3")}
+        >
+          LEVEL3
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL4" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL4")}
+        >
+          LEVEL4
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL5" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL5")}
+        >
+          LEVEL5
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL6" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL6")}
+        >
+          LEVEL6
+        </Button>
+        <Button
+          type={zoomLevel === "LEVEL7" ? "primary" : "default"}
+          size="small"
+          style={{ marginRight: "5px" }}
+          onClick={() => setZoomLevel("LEVEL7")}
+        >
+          LEVEL7
+        </Button>
+      </Wrapper>
+
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
-          width={`calc(50% - 10px)`}
+          width={`calc(60% - 10px)`}
           padding="0px 10px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
-          <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary" onClick={createHandler}>
+          <Wrapper dr={`row`} ju="flex-end" margin={`0px 0px 5px 0px`}>
+            {zoomLevel !== "" && scvData && (
+              <DownloadBtn
+                filename={zoomLevel}
+                headers={headers}
+                data={scvData}
+              >
+                엑셀 다운로드
+              </DownloadBtn>
+            )}
+
+            <Button
+              style={{ marginLeft: "10px" }}
+              size="small"
+              type="primary"
+              onClick={createHandler}
+            >
               설문지 생성
             </Button>
           </Wrapper>
@@ -372,7 +604,7 @@ const Zoom = ({}) => {
         </Wrapper>
 
         <Wrapper
-          width={`calc(50% - 10px)`}
+          width={`calc(40% - 10px)`}
           padding="5px"
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
@@ -381,7 +613,7 @@ const Zoom = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  줌강의 기본정보
+                  수정과 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -483,17 +715,30 @@ const Zoom = ({}) => {
                 </Form.Item>
 
                 <Form.Item
-                  label="줌링크"
-                  name="zoomRink"
+                  label="차수"
+                  name="degree"
                   rules={[
                     {
                       required: true,
-                      message: "줌링크은 필수 입력사항 입니다.",
+                      message: "차수은 필수 입력사항 입니다.",
                     },
                   ]}
                 >
                   <Input size="small" />
                 </Form.Item>
+
+                {/* <Form.Item
+                  label="수정과링크"
+                  name="zoomRink"
+                  rules={[
+                    {
+                      required: true,
+                      message: "수정과링크은 필수 입력사항 입니다.",
+                    },
+                  ]}
+                >
+                  <Input size="small" />
+                </Form.Item> */}
 
                 <Form.Item label="작성일" name="createdAt">
                   <Input
@@ -547,6 +792,48 @@ const Zoom = ({}) => {
             size="small"
           />
         </Wrapper>
+      </Modal>
+
+      <Modal
+        onCancel={() => moveModalToggle(null)}
+        visible={mModal}
+        footer={null}
+        width={`500px`}
+        title={"강의 이동"}
+      >
+        <Form
+          form={moveForm}
+          style={{ width: `100%` }}
+          labelCol={{ span: 3 }}
+          wrapperCol={{ span: 21 }}
+          onFinish={lectureMoveHandler}
+        >
+          <Form.Item
+            label="수정과"
+            name="lecId"
+            rules={[
+              { required: true, message: "수정과는 필수 입력사항 입니다." },
+            ]}
+          >
+            <Select size="small">
+              {zoomLecList &&
+                zoomLecList.map((data) => {
+                  return (
+                    <Select.Option key={data.id} value={data.id}>
+                      {data.levelValue} ({data.days}) ({data.startTime} ~{" "}
+                      {data.endTime})
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
+
+          <Wrapper al="flex-end">
+            <Button type="primary" size="small" htmlType="submit">
+              강의 이동하기
+            </Button>
+          </Wrapper>
+        </Form>
       </Modal>
     </AdminLayout>
   );
