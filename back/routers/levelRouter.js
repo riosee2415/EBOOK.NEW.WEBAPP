@@ -41,6 +41,7 @@ router.post("/list", async (req, res, next) => {
   const { isAdmin = false } = req.body;
 
   const sq = `SELECT	id,
+                      number,
                         value,
                         isHide
                   FROM	levelTest

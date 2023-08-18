@@ -211,7 +211,7 @@ const Survey = ({}) => {
   const col = [
     {
       title: "번호",
-      dataIndex: "id",
+      dataIndex: "number",
     },
     {
       title: "설문 내용",
