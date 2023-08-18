@@ -704,45 +704,4 @@ router.post("/recently/update", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// 수강신청 전! 수강중인지 체크하기
-router.post("/zoom/ex", isLoggedIn, async (req, res, next) => {
-  const sq = `
-  SELECT	id
-  FROM	boughtLecture
- WHERE	lectureId IN 	(
- 							SELECT 	id
-							  FROM	zoomLecture
-							 WHERE 	isEnd = 0
- 						)
-  AND	userId = ${req.user.id}
-  `;
-
-  const ex = await noneParameterSelectQuery(sq);
-
-  if (ex.length > 0) {
-    return res.status(400).send("이미 수강중인 강의가 있습니다.");
-  } else {
-    return res.status(200).json({ result: true });
-  }
-});
-
-// 수강신청 삭제하기
-router.post("/zoom/exclude", isAdminCheck, async (req, res, next) => {
-  const { targetId } = req.body;
-
-  const dq = `
-    DELETE  FROM  boughtLecture
-      WHERE id = ${targetId}
-  `;
-
-  try {
-    await models.sequelize.query(dq);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send("데이터를 제어할 수 없습니다.");
-  }
-});
-
 module.exports = router;
