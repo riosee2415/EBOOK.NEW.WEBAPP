@@ -357,6 +357,10 @@ const Zoom = ({}) => {
       dataIndex: "id",
     },
     {
+      title: "차수",
+      dataIndex: "degree",
+    },
+    {
       title: "레벨",
       dataIndex: "levelValue",
     },

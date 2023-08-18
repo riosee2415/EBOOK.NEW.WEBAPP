@@ -298,7 +298,7 @@ WHERE	ZoomLectureId =	${ZoomId}
 
   const nq = `
   INSERT INTO zoomPeople (createdAt, updatedAt, UserId, ZoomLectureId) VALUES (
-    NOW(), NOW(), ${ZoomId}, ${UserId}
+    NOW(), NOW(), ${UserId}, ${ZoomId}
   )
   `;
 
