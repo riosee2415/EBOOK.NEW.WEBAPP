@@ -32,8 +32,6 @@ const Zoom = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [checkId, setCheckId] = useState([]);
-
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -53,18 +51,6 @@ const Zoom = () => {
       });
     }
   }, [router.query]);
-
-  useEffect(() => {
-    if (zoomLecCheck) {
-      let temp = [];
-
-      zoomLecCheck.map((data) => {
-        temp.push(data.ZoomLectureId);
-      });
-
-      setCheckId(temp);
-    }
-  }, [zoomLecCheck]);
 
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -241,14 +227,14 @@ const Zoom = () => {
                       al={`flex-end`}
                     >
                       <Wrapper dr={`row`} ju={`flex-end`}>
-                        {checkId && checkId.includes(data.id) ? (
+                        {zoomLecCheck && zoomLecCheck.length !== 0 ? (
                           <CommonButton
                             kindOf={`delete`}
                             width={width < 700 ? `100%` : `200px`}
                             height={`52px`}
                             fontSize={`20px`}
                           >
-                            수강중인 강의입니다.
+                            수강할 수 없습니다.
                           </CommonButton>
                         ) : (
                           <CommonButton
