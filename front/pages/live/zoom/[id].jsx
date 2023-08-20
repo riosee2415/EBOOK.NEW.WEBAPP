@@ -236,7 +236,7 @@ const Home = ({}) => {
             buyer_name: me.username,
             biz_num: me.mobile,
             // amount: 150,
-            amount: zoomLecDetail.price,
+            amount: buyPay,
           },
           async (rsp) => {
             if (rsp.success) {
