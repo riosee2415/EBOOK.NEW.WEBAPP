@@ -276,8 +276,8 @@ const Survey = ({}) => {
       dataIndex: "id",
     },
     {
-      title: "회원 ID",
-      dataIndex: "userId",
+      title: "회원이름",
+      dataIndex: "username",
     },
     {
       title: "레벨",
