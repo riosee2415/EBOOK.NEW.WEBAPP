@@ -271,6 +271,7 @@ const Zoom = ({}) => {
               level: data.levelValue,
               day: data.days,
               price: data.price,
+              month: data.month,
               teacher: data.tName,
               startTime: data.startTime,
               endTime: data.endTime,
@@ -320,6 +321,7 @@ const Zoom = ({}) => {
         levelValue: record.levelValue,
         days: record.days,
         price: record.price,
+        month: record.month,
         tName: record.tName,
         startTime: record.startTime,
         endTime: record.endTime,
@@ -351,6 +353,7 @@ const Zoom = ({}) => {
           terms: data.terms,
           tName: data.tName,
           price: data.price,
+          month: data.month,
           degree: data.degree,
           zoomRink: "-",
         },
@@ -405,7 +408,11 @@ const Zoom = ({}) => {
     },
     {
       title: "가격",
-      dataIndex: "price",
+      dataIndex: "viewPrice",
+    },
+    {
+      title: "개월",
+      dataIndex: "month",
     },
     {
       title: "선생님",
@@ -502,6 +509,7 @@ const Zoom = ({}) => {
     { label: "선생님", key: "teacher" },
     { label: "요일", key: "day" },
     { label: "가격", key: "price" },
+    { label: "개월", key: "month" },
     { label: "시작시간", key: "startTime" },
     { label: "종료시간", key: "endTime" },
     { label: "수강기간", key: "term" },
@@ -711,6 +719,16 @@ const Zoom = ({}) => {
                   name="price"
                   rules={[
                     { required: true, message: "가격은 필수 입력사항 입니다." },
+                  ]}
+                >
+                  <Input size="small" type="number" />
+                </Form.Item>
+
+                <Form.Item
+                  label="개월"
+                  name="month"
+                  rules={[
+                    { required: true, message: "개월은 필수 입력사항 입니다." },
                   ]}
                 >
                   <Input size="small" type="number" />

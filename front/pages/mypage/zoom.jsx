@@ -73,16 +73,6 @@ const Zoom = () => {
                   >
                     <Wrapper al={`flex-start`}>
                       <Wrapper dr={`row`} ju={`flex-start`}>
-                        <Text fontSize={`24px`} fontWeight={`600`}>
-                          {data.tName}
-                        </Text>
-                        <Wrapper
-                          width={`4px`}
-                          height={`4px`}
-                          margin={`0 10px`}
-                          borderRadius={`100%`}
-                          bgColor={Theme.lightGrey4_C}
-                        />
                         <Text
                           fontSize={`24px`}
                           fontWeight={`600`}

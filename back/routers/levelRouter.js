@@ -99,6 +99,8 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
   A.terms,
   A.tName,
   A.price,
+  CONCAT(FORMAT(A.price, 0), "원")	as viewPrice,
+  A.month,
   A.isEnd,
   A.createdAt,
   A.zoomRink,
@@ -134,6 +136,8 @@ router.post("/zoom/lecture/target", async (req, res, next) => {
   A.terms,
   A.tName,
   A.price,
+  CONCAT(FORMAT(A.price, 0), "원")	as viewPrice,
+  A.month,
   A.isEnd,
   A.createdAt,
   A.zoomRink,
@@ -166,6 +170,7 @@ router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
     terms = "01월 01일 ~ 01월 01일",
     tName = "선생님이름",
     price = 0,
+    month = 0,
     zoomRink = "줌링크",
     degree = "1차수",
   } = req.body;
@@ -207,6 +212,11 @@ router.post("/zoom/lecture/new", isAdminCheck, async (req, res, next) => {
       isNumeric: true,
     },
     {
+      column: "month",
+      data: month,
+      isNumeric: true,
+    },
+    {
       column: "zoomRink",
       data: zoomRink,
       isNumeric: false,
@@ -239,6 +249,7 @@ router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
     terms,
     tName,
     price,
+    month,
     zoomRink,
     degree,
   } = req.body;
@@ -253,6 +264,7 @@ router.post("/zoom/lecture/modify", isAdminCheck, async (req, res, next) => {
             terms = "${terms}",
             tName = "${tName}",
             price = ${price},
+            month = ${month},
             zoomRink = "${zoomRink}",
             degree = "${degree}"
     WHERE   id = ${id}

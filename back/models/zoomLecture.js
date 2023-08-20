@@ -47,6 +47,11 @@ module.exports = class ZoomLecture extends Model {
           allowNull: false, // 필수
         },
 
+        month: {
+          type: DataTypes.INTEGER,
+          allowNull: false, // 필수
+        },
+
         isEnd: {
           type: DataTypes.BOOLEAN,
           allowNull: false, // 필수

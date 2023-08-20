@@ -202,7 +202,7 @@ const Home = ({}) => {
 
       const orderPK = "ORD" + moment().format("YYYYMMDDHHmmssms");
 
-      const buyPay = zoomLecDetail.price;
+      const buyPay = zoomLecDetail.price * zoomLecDetail.month;
 
       IMP.init("imp20437848");
 
@@ -331,10 +331,10 @@ const Home = ({}) => {
                   dr={`row`}
                   fontSize={width < 700 ? `28px` : `32px`}
                 >
-                  {String(zoomLecDetail && zoomLecDetail.price).replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ","
-                  )}
+                  {String(
+                    (zoomLecDetail && zoomLecDetail.price) *
+                      (zoomLecDetail && zoomLecDetail.month)
+                  ).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   원
                 </Wrapper>
               </Wrapper>
@@ -563,10 +563,10 @@ const Home = ({}) => {
                     fontWeight={`600`}
                     color={Theme.grey2_C}
                   >
-                    {String(zoomLecDetail && zoomLecDetail.price).replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ","
-                    )}
+                    {String(
+                      (zoomLecDetail && zoomLecDetail.price) *
+                        (zoomLecDetail && zoomLecDetail.month)
+                    ).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     원
                   </Wrapper>
                 </Wrapper>

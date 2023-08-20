@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { Wrapper, ATag, Image } from "../components/commonComponents";
 import Theme from "../components/Theme";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const translate10 = keyframes`
 0%{
@@ -63,6 +64,9 @@ const FixedContents = styled.div`
 `;
 
 const FixedNav = ({}) => {
+  const { me } = useSelector((state) => state.user);
+  const { boughtMeDetail } = useSelector((state) => state.boughtLecture);
+
   const router = useRouter();
   const moveLinkHandler = (link) => {
     router.push(link);
@@ -85,13 +89,23 @@ const FixedNav = ({}) => {
 
   return (
     <FixedWrapper>
-      <Image
-        onClick={() => {
-          moveLinkHandler("/live/zoom");
-        }}
-        width={`100px`}
-        src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/fixed-icon.png`}
-      />
+      {boughtMeDetail && boughtMeDetail ? (
+        <Image
+          onClick={() => {
+            moveLinkHandler("/live/zoom");
+          }}
+          width={`100px`}
+          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/assets/images/fixed-icon.png`}
+        />
+      ) : (
+        <Image
+          onClick={() => {
+            moveLinkHandler("/enrolment");
+          }}
+          width={`100px`}
+          src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%87%E1%85%A9%E1%84%85%E1%85%A1%E1%84%89%E1%85%A2%E1%86%A8.png`}
+        />
+      )}
 
       <ATag target="_blank" href="http://pf.kakao.com/_zxhxaxdb/chat">
         <Image

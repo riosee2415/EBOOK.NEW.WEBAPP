@@ -56,7 +56,7 @@ const Zoom = () => {
   ////// HANDLER //////
   const moveLinkHandler = useCallback((data) => {
     if (data.cnt === 6) {
-      return message.error("더 이상 구매할 수 없습니다.");
+      return message.error("이 수강은 마감되었습니다.");
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -213,12 +213,7 @@ const Zoom = () => {
                           fontSize={width < 700 ? `22px` : `26px`}
                           fontWeight={"700"}
                         >
-                          가격 :{" "}
-                          {String(data.price).replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ","
-                          )}
-                          원
+                          가격 : {data.viewPrice} X {data.month}개월
                         </Text>
                       </Wrapper>
                     </Wrapper>
@@ -244,7 +239,7 @@ const Zoom = () => {
                             fontSize={`20px`}
                             onClick={() => moveLinkHandler(data)}
                           >
-                            {data.cnt === 6 ? `구매불가` : `구매하기`}
+                            {data.cnt === 6 ? `마감` : `구매하기`}
                           </CommonButton>
                         )}
                       </Wrapper>
