@@ -109,7 +109,7 @@ const Zoom = () => {
                           fontWeight={"700"}
                         >
                           가격 :{" "}
-                          {String(data.price).replace(
+                          {String(data.price * data.month).replace(
                             /\B(?=(\d{3})+(?!\d))/g,
                             ","
                           )}
