@@ -355,7 +355,7 @@ router.post("/zoom/lecture/my", async (req, res, next) => {
   const sq = `
   SELECT	*
   FROM	zoomLecture
- WHERE	id IN (SELECT id FROM zoomPeople WHERE UserId = ${req.user.id})
+ WHERE	id IN (SELECT ZoomLectureId FROM zoomPeople WHERE UserId = ${req.user.id})
   `;
 
   const list = await noneParameterSelectQuery(sq);
