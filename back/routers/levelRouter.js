@@ -113,7 +113,10 @@ router.post("/zoom/lecture/list", async (req, res, next) => {
        AND  isCompleted = false
   )	AS cnt
 FROM	zoomLecture	A
-${level ? `WHERE A.levelValue =	"${level}"` : ``}
+WHERE 1 = 1
+AND A.isDelete = 0
+${level ? `AND A.levelValue =	"${level}"` : ``}
+
 ORDER  BY A.createdAt DESC
   `;
 
@@ -455,6 +458,27 @@ router.post(
     return res.status(200).json(list[0]);
   }
 );
+
+//
+//  줌 수업 삭제하기
+//
+router.post("/zoom/del/lecture", isAdminCheck, async (req, res, next) => {
+  const { targetId } = req.body;
+
+  const dq = `
+    DELETE  FROM  zoomLecture
+     WHERE  id = ${targetId}
+  `;
+
+  try {
+    await models.sequelize.query(dq);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("삭제할 수 없습니다.");
+  }
+});
 
 //
 //  줌 결제내역 추가하기

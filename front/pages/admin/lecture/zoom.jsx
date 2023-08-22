@@ -43,6 +43,7 @@ import {
   ZOOM_LEC_LIST_REQUEST,
   ZOOM_LEC_MOVE_REQUEST,
   ZOOM_LEC_UPDATE_REQUEST,
+  ZOOM_DELETE_REQUEST,
 } from "../../../reducers/level";
 import { CSVLink } from "react-csv";
 
@@ -107,6 +108,9 @@ const Zoom = ({}) => {
     st_zoomLecDeleteLoading,
     st_zoomLecDeleteDone,
     st_zoomLecDeleteError,
+
+    st_zoomDeleteDone,
+    st_zoomDeleteError,
   } = useSelector((state) => state.level);
 
   const router = useRouter();
@@ -186,6 +190,21 @@ const Zoom = ({}) => {
       },
     });
   }, [zoomLevel]);
+
+  ////////////////////// 수정과 삭제 후처리 //////////////////////
+  useEffect(() => {
+    if (st_zoomDeleteDone) {
+      dispatch({
+        type: ZOOM_LEC_LIST_REQUEST,
+      });
+
+      return message.success("수정과가 생성되었습니다.");
+    }
+
+    if (st_zoomDeleteError) {
+      return message.error(st_zoomDeleteError);
+    }
+  }, [st_zoomDeleteDone, st_zoomDeleteError]);
 
   ////////////////////// 수정과 생성후처리 //////////////////////
   useEffect(() => {
@@ -313,6 +332,15 @@ const Zoom = ({}) => {
 
   ////// HANDLER //////
 
+  const zoomDelHandler = useCallback((id) => {
+    dispatch({
+      type: ZOOM_DELETE_REQUEST,
+      data: {
+        targetId: id,
+      },
+    });
+  }, []);
+
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
@@ -437,6 +465,21 @@ const Zoom = ({}) => {
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
+    },
+    {
+      title: "삭제",
+      render: (row) => (
+        <Popconfirm
+          title="정말 삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => zoomDelHandler(row.id)}
+        >
+          <Button type="danger" size="small">
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
     },
     {
       title: "상태창",

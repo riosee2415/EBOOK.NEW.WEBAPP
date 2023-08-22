@@ -87,6 +87,10 @@ export const initialState = {
   st_zoomLecDeleteLoading: false, // 수강신청 삭제하기
   st_zoomLecDeleteDone: false,
   st_zoomLecDeleteError: null,
+  //
+  st_zoomDeleteLoading: false, // 강의 삭제하기
+  st_zoomDeleteDone: false,
+  st_zoomDeleteError: null,
 };
 
 export const LEVEL_REQUEST = "LEVEL_REQUEST";
@@ -166,6 +170,10 @@ export const ZOOM_LEC_CHECK_FAILURE = "ZOOM_LEC_CHECK_FAILURE";
 export const ZOOM_LEC_DELETE_REQUEST = "ZOOM_LEC_DELETE_REQUEST";
 export const ZOOM_LEC_DELETE_SUCCESS = "ZOOM_LEC_DELETE_SUCCESS";
 export const ZOOM_LEC_DELETE_FAILURE = "ZOOM_LEC_DELETE_FAILURE";
+
+export const ZOOM_DELETE_REQUEST = "ZOOM_DELETE_REQUEST";
+export const ZOOM_DELETE_SUCCESS = "ZOOM_DELETE_SUCCESS";
+export const ZOOM_DELETE_FAILURE = "ZOOM_DELETE_FAILURE";
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -533,6 +541,25 @@ const reducer = (state = initialState, action) =>
         draft.st_zoomLecDeleteLoading = false;
         draft.st_zoomLecDeleteDone = false;
         draft.st_zoomLecDeleteError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+      case ZOOM_DELETE_REQUEST: {
+        draft.st_zoomDeleteLoading = true;
+        draft.st_zoomDeleteDone = null;
+        draft.st_zoomDeleteError = false;
+        break;
+      }
+      case ZOOM_DELETE_SUCCESS: {
+        draft.st_zoomDeleteLoading = false;
+        draft.st_zoomDeleteDone = true;
+        draft.st_zoomDeleteError = null;
+        break;
+      }
+      case ZOOM_DELETE_FAILURE: {
+        draft.st_zoomDeleteLoading = false;
+        draft.st_zoomDeleteDone = false;
+        draft.st_zoomDeleteError = action.error;
         break;
       }
       //////////////////////////////////////////////

@@ -62,6 +62,12 @@ module.exports = class ZoomLecture extends Model {
           type: DataTypes.TEXT,
           allowNull: false, // 필수
         },
+
+        isDelete: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false, // 필수
+          defaultValue: false,
+        },
       },
       {
         modelName: "ZoomLecture",
