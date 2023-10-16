@@ -452,6 +452,13 @@ const Home = ({}) => {
         // 해외 결제
         // 해외 결제
         // 해외 결제
+
+        await dollarChange(
+          buyPay
+          // 10000
+        ).then((data) => {
+          paypalPay = data;
+        });
         IMP.request_pay(
           {
             pg: `${isBuyType}`,
