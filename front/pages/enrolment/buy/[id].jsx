@@ -448,95 +448,6 @@ const Home = ({}) => {
             lectureId: router.query.id,
           },
         });
-      } else if (isBuyType === "paypal") {
-        // 해외 결제
-        // 해외 결제
-        // 해외 결제
-
-        await dollarChange(
-          buyPay
-          // 10000
-        ).then((data) => {
-          paypalPay = data;
-        });
-        IMP.request_pay(
-          {
-            pg: `${isBuyType}`,
-            pay_method: "card",
-            merchant_uid: orderPK,
-            name: lectureDetail && lectureDetail.title,
-            currency: "USD",
-            amount: paypalPay,
-            // amount: 0.12,
-            m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
-              lectureDetail &&
-              lectureDetail.discountPrice +
-                (isBuyBook === 1 && overAddress
-                  ? dataArr.find((data) => data.id === overAddress).price
-                  : 0) +
-                (isBuyBook === 1
-                  ? lectureDetail.bookEndDate
-                    ? lectureDetail.bookDiscountPrice
-                    : lectureDetail.bookPrice
-                  : 0)
-            }&address=${address}&mobile=${data.mobile}&receiver=${
-              data.receiver
-            }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
-              lectureDetail &&
-              lectureDetail.discountPrice +
-                (isBuyBook === 1 && overAddress
-                  ? dataArr.find((data) => data.id === overAddress).price
-                  : 0) +
-                (isBuyBook === 1
-                  ? lectureDetail.bookEndDate
-                    ? lectureDetail.bookDiscountPrice
-                    : lectureDetail.bookPrice
-                  : 0)
-            }&type=${
-              lectureDetail && lectureDetail.type
-            }&isBuyBook=${isBuyBook}&bookPrice=${
-              isBuyBook === 1
-                ? lectureDetail.bookEndDate
-                  ? lectureDetail.bookDiscountPrice
-                  : lectureDetail.bookPrice
-                : 0
-            }`,
-          },
-          async (rsp) => {
-            if (rsp.success) {
-              dispatch({
-                type: BOUGHT_CREATE_REQUEST,
-                data: {
-                  mobile: data.mobile,
-                  receiver: data.receiver,
-                  zoneCode: data.zoneCode,
-                  address: address,
-                  detailAddress: isOverseas ? "-" : data.detailAddress,
-                  payType: isBuyType,
-                  pay: buyPay,
-                  lectureType: lectureDetail.type,
-                  name: "-",
-                  impUid: rsp.imp_uid,
-                  merchantUid: rsp.merchant_uid,
-                  isBuyBook: isBuyBook === 1 ? 1 : 0,
-                  bookPrice:
-                    isBuyBook === 1
-                      ? lectureDetail.bookEndDate
-                        ? lectureDetail.bookDiscountPrice
-                        : lectureDetail.bookPrice
-                      : 0,
-                  lectureId: router.query.id,
-                },
-              });
-            } else {
-              if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
-                message.error(
-                  "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
-                );
-              }
-            }
-          }
-        );
       } else {
         // 신용카드 결제
         // 신용카드 결제
@@ -596,6 +507,97 @@ const Home = ({}) => {
     },
     [isBuyType, lectureDetail, isBuyBook, overAddress, st_boughtCreateDone]
   );
+
+  // else if (isBuyType === "paypal") {
+  //   // 해외 결제
+  //   // 해외 결제
+  //   // 해외 결제
+
+  //   await dollarChange(
+  //     buyPay
+  //     // 10000
+  //   ).then((data) => {
+  //     paypalPay = data;
+  //   });
+  //   IMP.request_pay(
+  //     {
+  //       pg: `${isBuyType}`,
+  //       pay_method: "card",
+  //       merchant_uid: orderPK,
+  //       name: lectureDetail && lectureDetail.title,
+  //       currency: "USD",
+  //       amount: paypalPay,
+  //       // amount: 0.12,
+  //       m_redirect_url: `http://localhost:3000/enrolment/buy/paypal?amount=${
+  //         lectureDetail &&
+  //         lectureDetail.discountPrice +
+  //           (isBuyBook === 1 && overAddress
+  //             ? dataArr.find((data) => data.id === overAddress).price
+  //             : 0) +
+  //           (isBuyBook === 1
+  //             ? lectureDetail.bookEndDate
+  //               ? lectureDetail.bookDiscountPrice
+  //               : lectureDetail.bookPrice
+  //             : 0)
+  //       }&address=${address}&mobile=${data.mobile}&receiver=${
+  //         data.receiver
+  //       }&payType=${isBuyType}&lectureId=${router.query.id}&pay=${
+  //         lectureDetail &&
+  //         lectureDetail.discountPrice +
+  //           (isBuyBook === 1 && overAddress
+  //             ? dataArr.find((data) => data.id === overAddress).price
+  //             : 0) +
+  //           (isBuyBook === 1
+  //             ? lectureDetail.bookEndDate
+  //               ? lectureDetail.bookDiscountPrice
+  //               : lectureDetail.bookPrice
+  //             : 0)
+  //       }&type=${
+  //         lectureDetail && lectureDetail.type
+  //       }&isBuyBook=${isBuyBook}&bookPrice=${
+  //         isBuyBook === 1
+  //           ? lectureDetail.bookEndDate
+  //             ? lectureDetail.bookDiscountPrice
+  //             : lectureDetail.bookPrice
+  //           : 0
+  //       }`,
+  //     },
+  //     async (rsp) => {
+  //       if (rsp.success) {
+  //         dispatch({
+  //           type: BOUGHT_CREATE_REQUEST,
+  //           data: {
+  //             mobile: data.mobile,
+  //             receiver: data.receiver,
+  //             zoneCode: data.zoneCode,
+  //             address: address,
+  //             detailAddress: isOverseas ? "-" : data.detailAddress,
+  //             payType: isBuyType,
+  //             pay: buyPay,
+  //             lectureType: lectureDetail.type,
+  //             name: "-",
+  //             impUid: rsp.imp_uid,
+  //             merchantUid: rsp.merchant_uid,
+  //             isBuyBook: isBuyBook === 1 ? 1 : 0,
+  //             bookPrice:
+  //               isBuyBook === 1
+  //                 ? lectureDetail.bookEndDate
+  //                   ? lectureDetail.bookDiscountPrice
+  //                   : lectureDetail.bookPrice
+  //                 : 0,
+  //             lectureId: router.query.id,
+  //           },
+  //         });
+  //       } else {
+  //         if (rsp.error_msg !== "사용자가 결제를 취소하셨습니다") {
+  //           message.error(
+  //             "결제가 정상적으로 처리되지 못했습니다. 다시 시도해주세요."
+  //           );
+  //         }
+  //       }
+  //     }
+  //   );
+  // }
 
   ////// DATAVIEW //////
 
