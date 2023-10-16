@@ -343,17 +343,15 @@ const Home = ({}) => {
   );
 
   // 환율 계산 함수
-  // const dollarChange = useCallback(async (inputDollar) => {
-  //   const res = await fetch(
-  //     "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD"
-  //   );
-  //   const result = await res.json();
-
-  //   const exchangeRate = result[0].basePrice;
-  //   const exchangedWon = inputDollar / exchangeRate;
-
-  //   return exchangedWon;
-  // }, []);
+  const dollarChange = useCallback(async (inputDollar) => {
+    // const res = await fetch(
+    //   "https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD"
+    // );
+    // const result = await res.json();
+    // const exchangeRate = result[0].basePrice;
+    // const exchangedWon = inputDollar / exchangeRate;
+    // return exchangedWon;
+  }, []);
 
   // 결제
   const buyHandler = useCallback(
