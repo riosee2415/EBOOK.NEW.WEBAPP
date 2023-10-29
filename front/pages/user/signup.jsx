@@ -352,17 +352,17 @@ const SignUp = () => {
     {
       tab: 1,
       imagePath:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+01.png",
+        "https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+01.png",
     },
     {
       tab: 2,
       imagePath:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+02.png",
+        "https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+02.png",
     },
     {
       tab: 3,
       imagePath:
-        "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+03.png",
+        "https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+03.png",
     },
   ];
 
@@ -551,7 +551,7 @@ o	② 환불 의사표시에 대하여 회사가 회신한 날로 부터 영업�
                     <Image
                       margin={`10px 0`}
                       width={width < 700 ? `100%` : `40%`}
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.png`}
+                      src={`https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.png`}
                     />
 
                     <PreText>
@@ -1243,7 +1243,7 @@ URL : http://www.cyberprivacy.or.kr
                   <Image
                     width={`60px`}
                     src={
-                      "https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD+%E1%84%8B%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8F%E1%85%A9%E1%86%AB.png"
+                      "https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%A1%E1%84%8B%E1%85%B5%E1%86%B8+%E1%84%8B%E1%85%AA%E1%86%AB%E1%84%85%E1%85%AD+%E1%84%8B%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8F%E1%85%A9%E1%86%AB.png"
                     }
                     alt="successIcon"
                   />

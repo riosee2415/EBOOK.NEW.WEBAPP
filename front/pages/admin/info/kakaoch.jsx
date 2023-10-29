@@ -442,7 +442,7 @@ const KakaoCh = ({}) => {
         <Wrapper width={`50%`} padding={`10px`}>
           <Image
             style={{ width: "100%", height: "auto", objectFit: "cover" }}
-            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/ryr.png"
+            src="https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/4LEAFSOFTWARE/assets/images/ryr.png"
           />
 
           <Wrapper margin={`5px 0px 0px 0px`} al="flex-end">

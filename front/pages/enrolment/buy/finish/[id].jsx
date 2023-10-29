@@ -64,7 +64,7 @@ const NobankFinish = () => {
               <Image
                 width={`300px`}
                 margin={`0 10px 0 0`}
-                src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/p2.png`}
+                src={`https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/p2.png`}
               />
 
               <Text

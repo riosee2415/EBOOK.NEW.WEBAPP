@@ -284,7 +284,7 @@ const Home = ({}) => {
                     <Image
                       width={width < 700 ? `30px` : `30px`}
                       margin={width < 700 ? `0 5px 0 0` : `0 0 0 0`}
-                      src={`https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%91%E1%85%A2%E1%84%89%E1%85%B3+8.png`}
+                      src={`https://f-ebook-s3.s3.ap-northeast-2.amazonaws.com/newEbook/original/%E1%84%91%E1%85%A2%E1%84%89%E1%85%B3+8.png`}
                     />
                     <Text
                       fontSize={width < 700 ? `20px !important` : `32px`}
